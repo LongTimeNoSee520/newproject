@@ -7,12 +7,14 @@ import com.zjtc.model.UseWaterUnit;
 import com.zjtc.service.UseWaterUnitService;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Service;
 
 /**
  * @author yuyantian
  * @date 2020/12/23
  * @description
  */
+@Service
 public class UseWaterUnitServiceImpl extends ServiceImpl<UseWaterUnitMapper, UseWaterUnit> implements
     UseWaterUnitService {
 

@@ -3,13 +3,10 @@ package com.zjtc.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.mapper.UseWaterUnitMeterMapper;
-import com.zjtc.model.Bank;
 import com.zjtc.model.UseWaterUnitMeter;
-import com.zjtc.service.BankService;
 import com.zjtc.service.UseWaterUnitMeterService;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,8 +43,8 @@ public class UseWaterUnitMeterServiceImpl extends
   }
 
   @Override
-//  @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
-  public boolean deletedUseWaterUnitMeter( List<String> id) {
+  @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
+  public boolean deletedUseWaterUnitMeter(List<String> id) {
     if (id.size() == 0) {
       return false;
     }
@@ -59,11 +56,10 @@ public class UseWaterUnitMeterServiceImpl extends
   }
 
   @Override
-  public List<UseWaterUnitMeter> selectUseWaterUnitMeter(String useWaterUnitId,String nodeCode) {
-
+  public List<UseWaterUnitMeter> selectUseWaterUnitMeter(String useWaterUnitId, String nodeCode) {
     EntityWrapper<UseWaterUnitMeter> wrapper = new EntityWrapper<>();
-    wrapper.eq("use_water_unitId",useWaterUnitId);
-    wrapper.eq("node_code",nodeCode);
+    wrapper.eq("use_water_unitId", useWaterUnitId);
+    wrapper.eq("node_code", nodeCode);
     return this.baseMapper.selectList(wrapper);
   }
 }
