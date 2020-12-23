@@ -29,7 +29,7 @@ public class UseWaterUnitRole extends Model<UseWaterUnitRole> {
   private String id;
 
   @ApiModelProperty(value = "父节点id")
-  @TableField(value = "parent_id", exist = true)
+  @TableField(value = "person_id", exist = true)
   private String personId;
 
   @ApiModelProperty(value = "单位类型号")

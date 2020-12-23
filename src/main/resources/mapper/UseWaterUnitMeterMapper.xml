@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="">
+<mapper namespace="com.zjtc.mapper.UseWaterUnitMeterMapper">
+
+    <select id="selectWaterMeterCodeWhetherOccupy" resultType="int">
+      select count(1) from t_w_use_water_unit_meter t1 WHERE t1.water_meter_code = #{waterMeterCode}
+    </select>
 
 </mapper>

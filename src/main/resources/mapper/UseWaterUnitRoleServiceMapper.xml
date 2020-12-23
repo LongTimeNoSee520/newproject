@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.UseWaterUnitRoleMapper">
+  
+  <resultMap id="UseWaterUnitRoleModel" type="com.zjtc.model.UseWaterUnitRole">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="person_id" property="personId" jdbcType="VARCHAR"/>
+    <result column="unit_type_code" property="unitTypeCode" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="module_type" property="moduleType" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+
+  <select id="checkUserRight" resultType="int">
+    SELECT COUNT( 1 )
+    FROM
+    t_w_use_water_unit_role t1
+    WHERE 1 = 1
+    <if test="personId != null and personId != ''">
+      and t1.person_id = #{personId}
+    </if>
+    <if test="unitTypeCodes != null and unitTypeCodes != ''">
+      AND t1.unit_type_code = #{unitTypeCodes}
+    </if>
+    <if test="nodeCode != null and nodeCode != ''">
+      AND t1.node_code = #{nodeCode}
+    </if>
+  </select>
+</mapper>
