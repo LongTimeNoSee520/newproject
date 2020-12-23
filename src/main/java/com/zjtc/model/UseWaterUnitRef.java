@@ -8,8 +8,6 @@ import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -20,11 +18,11 @@ import lombok.experimental.Accessors;
  * @description 用水相关单位关联表
  */
 @Data
-@TableName(value = "t_dict")
+@TableName(value = "t_w_use_water_unit_ref")
 @Accessors(chain = true)
 @ApiModel(value = "用水相关单位关联表", description = "用水相关单位关联表")
 @EqualsAndHashCode(callSuper = true)
-public class UserWaterUnitRef extends Model<UserWaterUnitRef> {
+public class UseWaterUnitRef extends Model<UseWaterUnitRef> {
 
   @ApiModelProperty("主键")
   @TableId(value = "id", type = IdType.UUID)

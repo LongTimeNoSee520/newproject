@@ -1,7 +1,7 @@
 package com.zjtc.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import com.zjtc.model.UserWaterUnitRef;
+import com.zjtc.model.UseWaterUnitRef;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,6 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @description
  */
 @Mapper
-public interface UserWaterUnitRefMapper extends BaseMapper<UserWaterUnitRef> {
+public interface UseWaterUnitRefMapper extends BaseMapper<UseWaterUnitRef> {
 
 }

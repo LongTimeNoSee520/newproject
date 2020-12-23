@@ -8,7 +8,7 @@ import com.zjtc.model.UseWaterUnit;
  * @date 2020/12/23
  * @description
  */
-public interface UserWaterUnitRefService  extends IService<UseWaterUnit> {
+public interface UseWaterUnitRefService extends IService<UseWaterUnit> {
 
 
 }
