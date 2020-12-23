@@ -2,9 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zjtc.mapper.UseWaterUnitMeterMapper">
+  <resultMap id="UseWaterUnitMeterModel" type="com.zjtc.model.UseWaterUnitMeter">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="use_water_unitId" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+  </resultMap>
 
-    <select id="selectWaterMeterCodeWhetherOccupy" resultType="int">
-      select count(1) from t_w_use_water_unit_meter t1 WHERE t1.water_meter_code = #{waterMeterCode}
-    </select>
+
+  <select id="selectWaterMeterCodeWhetherOccupy" resultType="int">
+    select count(1) from t_w_use_water_unit_meter t1
+    WHERE 1 = 1
+    <if test="waterMeterCode != null and waterMeterCode != ''">
+      and t1.water_meter_code = #{waterMeterCode}
+    </if>
+  </select>
 
 </mapper>

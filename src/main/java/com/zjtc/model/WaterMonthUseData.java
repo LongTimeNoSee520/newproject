@@ -97,6 +97,31 @@ public class WaterMonthUseData extends Model<WaterMonthUseData> {
   @TableField(value = "now_price", exist = true)
   private String nowPrice;
 
+  @ApiModelProperty(value = "是否警告")
+  @TableField(value = "is_warning", exist = true)
+  private int isWarning;
+
+  @ApiModelProperty(value = "口径")
+  @TableField(value = "caliber", exist = true)
+  private int caliber; //口径
+
+  @ApiModelProperty(value = "区段")
+  @TableField(value = "sector", exist = true)
+  private String sector; //区段
+
+  @ApiModelProperty(value = "用水性质")
+  @TableField(value = "water_use_kinds", exist = true)
+  private String waterUseKinds; //用水性质
+
+  @ApiModelProperty(value = "水表公司用户单位名称")
+  @TableField(value = "unit_names", exist = true)
+  private String unitNames;//水表公司用户单位名称
+
+  @ApiModelProperty(value = "水表公司用户单位地址")
+  @TableField(value = "unit_addresss", exist = true)
+  private String unitAddresss;//水表公司用户单位地址
+
+
   @Override
   protected Serializable pkVal() {
     return null;

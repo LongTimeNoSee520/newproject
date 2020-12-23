@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
  * @Date: 2020/12/23
  */
 @Data
-@TableName(value = "t_w_use_water_unit_role")
+@TableName(value = "t_w_use_water_unit_meter")
 @Accessors(chain = true)
 @ApiModel(value = "用水单位水表", description = "用水单位水表")
 @EqualsAndHashCode(callSuper = true)

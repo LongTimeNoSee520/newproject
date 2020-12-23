@@ -2,6 +2,7 @@ package com.zjtc.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.UseWaterUnitMeter;
+import java.util.List;
 
 /**
  * @Author: ZhouDaBo
@@ -11,10 +12,25 @@ import com.zjtc.model.UseWaterUnitMeter;
 public interface UseWaterUnitMeterService extends IService<UseWaterUnitMeter> {
 
   /**
-   * 更新水表
+   * 添加水表
    * @param useWaterUnitMeter 水表信息实体
-   * @return 更新是否成功
+   * @return 添加是否成功 ,false的原因为可能档案号为空或者已被使用
    */
  boolean insertUseWaterUnitMeter(UseWaterUnitMeter useWaterUnitMeter);
+
+  /**
+   * 删除水表
+   * @param id 水表id集
+   * @return 是否删除成功
+   */
+ boolean deletedUseWaterUnitMeter(List<String> id);
+
+  /**
+   * 查询水表信息
+   * @param useWaterUnitId 单位id
+   * @param nodeCode 区域编码
+   * @return 水表信息集
+   */
+ List<UseWaterUnitMeter> selectUseWaterUnitMeter(String useWaterUnitId,String nodeCode);
 
 }
