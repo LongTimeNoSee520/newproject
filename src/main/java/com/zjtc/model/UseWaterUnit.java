@@ -105,13 +105,13 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
   @TableField(value = "responsibility_code", exist = true)
   private String responsibilityCode;
 
-  @ApiModelProperty(value = "批次")
-  @TableField(value = "Column_21", exist = true)
-  private String Column_21;
+  @ApiModelProperty(value = "批次,取unit_code 3-4 位")
+  @TableField(value = "unit_code_group", exist = true)
+  private String unitCodeGroup;
 
-  @ApiModelProperty(value = "类型")
-  @TableField(value = "Column_22", exist = true)
-  private String Column_22;
+  @ApiModelProperty(value = "类型,取unit_code 5-6 位")
+  @TableField(value = "unit_code_type", exist = true)
+  private String unitCodeType;
 
   @Override
   protected Serializable pkVal() {
