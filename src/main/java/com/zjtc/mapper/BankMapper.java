@@ -16,7 +16,8 @@ public interface BankMapper extends BaseMapper<Bank> {
    * 判断账户在当前单位中是否已存在
    * @param bankAccount 银行账户
    * @param useWaterUnitId 单位id
+   * @param  id 当前单位id
    * @return 匹配到的行数
    */
-  int selectBankAccount(@Param("bankAccount") String bankAccount,@Param("useWaterUnitId") String useWaterUnitId);
+  int selectBankAccount(@Param("id") String id,@Param("bankAccount") String bankAccount,@Param("useWaterUnitId") String useWaterUnitId);
 }

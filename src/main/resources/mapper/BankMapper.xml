@@ -5,8 +5,11 @@
 
   <select id="selectBankAccount" resultType="int">
     select count(1) from t_w_bank where deleted = '0'
+    <if test="id != null and id != ''">
+      and id != #{id}
+    </if>
     <if test="bankAccount != null and bankAccount != ''">
-    and  bank_account = #{bankAccount}
+      and bank_account = #{bankAccount}
     </if>
     <if test="useWaterUnitId != null and useWaterUnitId != ''">
       and use_water_unit_Id = #{useWaterUnitId}

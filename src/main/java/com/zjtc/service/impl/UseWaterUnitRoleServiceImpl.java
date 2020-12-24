@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.mapper.UseWaterUnitRoleMapper;
 import com.zjtc.model.UseWaterUnitRole;
 import com.zjtc.service.UseWaterUnitRoleService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
  * @Date: 2020/12/23
  */
 @Service
+@Slf4j
 public class UseWaterUnitRoleServiceImpl extends
     ServiceImpl<UseWaterUnitRoleMapper, UseWaterUnitRole> implements
     UseWaterUnitRoleService {
@@ -20,6 +22,7 @@ public class UseWaterUnitRoleServiceImpl extends
   public boolean checkUserRight(String personId, String unitTypeCode, String nodeCode) {
     if (StringUtils.isBlank(personId) || StringUtils.isBlank(unitTypeCode) || StringUtils
         .isBlank(nodeCode)) {
+      log.error("查看用户是否有权限进行操作传入参数有误,方法名为:+checkUserRight");
       return false;
     }
 //    截取单位类型号的二至四位进行匹配

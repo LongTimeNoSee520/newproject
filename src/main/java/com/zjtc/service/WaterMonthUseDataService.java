@@ -2,6 +2,7 @@ package com.zjtc.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.WaterMonthUseData;
+import java.util.List;
 
 /**
  * @Author: ZhouDaBo
@@ -17,4 +18,12 @@ public interface WaterMonthUseDataService extends IService<WaterMonthUseData> {
    * @return 删除是否成功
    */
   boolean deletedUnit(String id);
+
+  /**
+   * 查询当年水表信息
+   * @param useWaterUnitId 单位id
+   * @param nodeCode 节点编码
+   * @return 水表集合
+   */
+  List<WaterMonthUseData> selectWaterMonthUseData(String useWaterUnitId,String nodeCode);
 }

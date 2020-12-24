@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.WaterMonthUseDataMapper">
+
+  <resultMap id="WaterMonthUseDataModel" type="com.zjtc.model.WaterMonthUseData">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="use_year" property="useYear" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="january_count" property="januaryCount" jdbcType="VARCHAR"/>
+    <result column="february_count" property="februaryCount" jdbcType="VARCHAR"/>
+    <result column="march_count" property="marchCount" jdbcType="VARCHAR"/>
+    <result column="may_count" property="mayCount" jdbcType="VARCHAR"/>
+    <result column="june_count" property="juneCount" jdbcType="VARCHAR"/>
+    <result column="july_count" property="julyCount" jdbcType="VARCHAR"/>
+    <result column="august_count" property="augustCount" jdbcType="VARCHAR"/>
+    <result column="september_count" property="septemberCount" jdbcType="VARCHAR"/>
+    <result column="october_count" property="octoberCount" jdbcType="VARCHAR"/>
+    <result column="november_count" property="novemberCount" jdbcType="VARCHAR"/>
+    <result column="december_count" property="decemberCount" jdbcType="VARCHAR"/>
+    <result column="now_price" property="nowPrice" jdbcType="VARCHAR"/>
+    <result column="is_warning" property="isWarning" jdbcType="INTEGER"/>
+    <result column="caliber" property="caliber" jdbcType="INTEGER"/>
+    <result column="sector" property="sector" jdbcType="VARCHAR"/>
+    <result column="water_use_kinds" property="waterUseKinds" jdbcType="VARCHAR"/>
+    <result column="unit_names" property="unitNames" jdbcType="VARCHAR"/>
+    <result column="unitAddresss" property="unit_addresss" jdbcType="VARCHAR"/>
+    <result column="waterNumber" property="waterNumber" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <select id="selectWaterMonthUseData" resultMap="WaterMonthUseDataModel">
+    SELECT
+    id,
+    use_water_unit_id,
+    use_year,
+    water_meter_code,
+    january_count,
+    february_count,
+    march_count,
+    april_count,
+    may_count,
+    june_count,
+    july_count,
+    august_count,
+    september_count,
+    october_count,
+    november_count,
+    december_count,
+    now_price,
+    node_code,
+    is_warning,
+    caliber,
+    sector,
+    water_use_kinds,
+    unit_names,
+    unit_addresss,
+    ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + october_count + november_count + december_count ) AS waterNumber
+    FROM
+    t_w_water_month_use_data
+    WHERE
+    node_code = #{nodeCode}
+    <if test="useWaterUnitId != null and useWaterUnitId != ''">
+      AND use_water_unit_id = #{useWaterUnitId}
+    </if>
+    AND use_year = DateName(YEAR,GetDate())
+    ORDER BY
+    waterNumber DESC;
+  </select>
+</mapper>

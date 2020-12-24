@@ -7,6 +7,7 @@ import com.zjtc.model.WaterMonthUseData;
 import com.zjtc.service.WaterMonthUseDataService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,7 +27,7 @@ public class WaterMonthUseDataServiceImpl extends
     entityWrapper.eq("use_water_unit_id", id);
     List<WaterMonthUseData> waterMonthUseData = this.baseMapper.selectList(entityWrapper);
     try {
-      for (WaterMonthUseData waterMonthUseData1 : waterMonthUseData){
+      for (WaterMonthUseData waterMonthUseData1 : waterMonthUseData) {
         byId = this.baseMapper.deleteById(waterMonthUseData1.getId());
       }
     } catch (Exception e) {
@@ -38,5 +39,14 @@ public class WaterMonthUseDataServiceImpl extends
     } else {
       return false;
     }
+  }
+
+  @Override
+  public List<WaterMonthUseData> selectWaterMonthUseData(String useWaterUnitId, String nodeCode) {
+    if (StringUtils.isBlank(useWaterUnitId) || StringUtils.isBlank(nodeCode)) {
+      log.error("查询当年水表信息传入参数错误,接口名为:selectWaterMonthUseData");
+      return null;
+    }
+    return this.baseMapper.selectWaterMonthUseData(useWaterUnitId,nodeCode);
   }
 }

@@ -3,7 +3,6 @@ package com.zjtc.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.UseWaterUnitMeter;
 import java.util.List;
-import org.springframework.context.annotation.Bean;
 
 /**
  * @Author: ZhouDaBo
@@ -32,7 +31,6 @@ public interface UseWaterUnitMeterService extends IService<UseWaterUnitMeter> {
    * @param nodeCode 区域编码
    * @return 水表信息集
    */
-  @Bean
  List<UseWaterUnitMeter> selectUseWaterUnitMeter(String useWaterUnitId,String nodeCode);
 
 

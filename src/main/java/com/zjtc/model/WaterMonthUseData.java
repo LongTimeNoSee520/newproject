@@ -121,6 +121,10 @@ public class WaterMonthUseData extends Model<WaterMonthUseData> {
   @TableField(value = "unit_addresss", exist = true)
   private String unitAddresss;//水表公司用户单位地址
 
+  @ApiModelProperty(value = "水量")
+  @TableField(value = "waterNumber", exist = false)
+  private String waterNumber;
+
 
   @Override
   protected Serializable pkVal() {

@@ -60,7 +60,7 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
     String bankAccount = bank.getBankAccount();
     String useWaterUnitId = bank.getUseWaterUnitId();
 //    判断当前单位的银行账号是否已存在
-    int i = this.baseMapper.selectBankAccount(bankAccount, useWaterUnitId);
+    int i = this.baseMapper.selectBankAccount("null",bankAccount, useWaterUnitId);
     if (i > 0) {
       return false;
     }
@@ -82,7 +82,7 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
     String bankAccount = bank.getBankAccount();
     String useWaterUnitId = bank.getUseWaterUnitId();
 //    判断当前单位的银行账号是否已存在
-    int i = this.baseMapper.selectBankAccount(bankAccount, useWaterUnitId);
+    int i = this.baseMapper.selectBankAccount(bank.getId(),bankAccount, useWaterUnitId);
     if (i > 0) {
       return false;
     }

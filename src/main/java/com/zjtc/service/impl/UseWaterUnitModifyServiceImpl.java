@@ -9,6 +9,8 @@ import com.zjtc.service.UseWaterUnitModifyService;
 import com.zjtc.service.UseWaterUnitService;
 import java.util.Date;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
  * @Date: 2020/12/23 用水单位名称修改日志
  */
 @Service
+@Slf4j
 public class UseWaterUnitModifyServiceImpl extends
     ServiceImpl<UseWaterUnitModifyMapper, UseWaterUnitModify> implements
     UseWaterUnitModifyService {
@@ -27,8 +30,12 @@ public class UseWaterUnitModifyServiceImpl extends
   @Override
   public boolean insertUnitName(String id, String nodeCode, String unitName, String personName,
       String personId) {
+
+    if (StringUtils.isBlank(id) || StringUtils.isBlank(nodeCode) || StringUtils.isBlank(unitName) || StringUtils.isBlank(personName) || StringUtils.isBlank(personId)){
+      log.error("判断部门名称是否被修改时传入参数出错");
+      return false;
+    }
     UseWaterUnitModify modify = new UseWaterUnitModify();
-    UseWaterUnit waterUnit = new UseWaterUnit();
     EntityWrapper<UseWaterUnit> useWaterUnitEntityWrapper = new EntityWrapper<>();
     useWaterUnitEntityWrapper.eq("id", id);
     useWaterUnitEntityWrapper.eq("node_code", nodeCode);
@@ -58,7 +65,7 @@ public class UseWaterUnitModifyServiceImpl extends
   @Override
   public List<UseWaterUnitModify> selectUseWaterUnitModify(String id, String nodeCode) {
     EntityWrapper<UseWaterUnitModify> entityWrapper = new EntityWrapper<>();
-    entityWrapper.eq("id",id);
+    entityWrapper.eq("use_water_unitId",id);
     entityWrapper.eq("node_code",nodeCode);
     return this.baseMapper.selectList(entityWrapper);
   }
