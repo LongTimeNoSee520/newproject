@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.UseWaterUnitMapper">
+
+  <select id="maxUnitCode" resultType="String">
+    SELECT
+    max(
+    substring( unit_code, cast( len ( unit_code ) AS INT ) - 2, cast( len ( unit_code ) AS INT ) )
+    )
+    FROM
+    t_w_use_water_unit
+    where deleted='0'
+    <if test="null !=unitCode">
+      unit_code like substring(unit_code,1,6)+'%'
+    </if>
+    <if test="null !=id">
+      id not in #{id}
+    </if>
+    <if test="null !=nodeCode">
+      nodeCode = #{nodeCode}
+    </if>
+  </select>
+
+  <select id="queryPage" resultType="java.util.LinkedHashMap">
+    SELECT
+    top ${size}
+
+    FROM
+    (
+    SELECT
+    row_number ( ) over ( ORDER BY a.dict_item_rank asc ) AS rownumber,
+    a.unit_code,
+    STUFF((
+          SELECT ',' + water_meter_code
+          FROM t_w_use_water_unit_meter
+          WHERE use_water_unitId=a.id
+          FOR XML PATH('')), 1, 1, ''
+          ) as water_meter_code
+    a.responsibility_code,
+    a.unit_name,
+    <!--所属行业-->
+    (select *from t_w_user_water_quota where use_water_unit_Id=a.id),
+    a.unit_address
+    <!--区域-->
+    <!--联系人-->
+    <!--座机号码-->
+    <!--手机号码-->
+    FROM
+    t_w_use_water_unit as a
+    WHERE deleted='0'
+      and node_code=#{nodeCode}
+      and unit_code_group in (select unit_type_code as unit_code_group from t_w_use_water_unit_role where person_id=#{userId})
+    ) temp_row
+    WHERE
+    rownumber > ( ( #{current}- 1 ) * #{size} );
+  </select>
+
+
+  <select id="queryListTotal" resultType="java.lang.Long">
+
+  </select>
+
+</mapper>

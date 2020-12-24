@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -50,11 +51,15 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
   @TableField(value = "industry", exist = true)
   private String industry;
 
+  @ApiModelProperty(value = "所属行业名称")
+  @TableField( exist = true)
+  private String industryName;
+
   @ApiModelProperty(value = "邮编")
   @TableField(value = "zip_code", exist = true)
   private String zipCode;
 
-  @ApiModelProperty(value = "是否是节水型单位")
+  @ApiModelProperty(value = "是否是节水型单位,0:否，1是")
   @TableField(value = "save_unit_type", exist = true)
   private String saveUnitType;
 
@@ -93,6 +98,10 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
   @TableField(value = "area_country", exist = true)
   private String areaCountry;
 
+  @ApiModelProperty(value = "所属区域名称")
+  @TableField( exist = false)
+  private String areaCountryName;
+
   @ApiModelProperty(value = "是否异常")
   @TableField(value = "abnormal", exist = true)
   private String abnormal;
@@ -112,6 +121,26 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
   @ApiModelProperty(value = "类型,取unit_code 5-6 位")
   @TableField(value = "unit_code_type", exist = true)
   private String unitCodeType;
+
+  @ApiModelProperty(value = "水表信息")
+  @TableField( exist = false)
+  private List<UseWaterUnitMeter> meterList;
+
+  @ApiModelProperty(value = "银行信息")
+  @TableField( exist = false)
+  private List<Bank> bankList;
+
+  @ApiModelProperty(value = "联系人信息")
+  @TableField( exist = false)
+  private List<User> userList;
+
+  @ApiModelProperty(value = "责任书信息")
+  @TableField( exist = false)
+  private List<File> sysFile;
+
+//  @ApiModelProperty(value = "用水定额信息")
+//  @TableField( exist = false)
+//  private List<quota> quotaFile;
 
   @Override
   protected Serializable pkVal() {
