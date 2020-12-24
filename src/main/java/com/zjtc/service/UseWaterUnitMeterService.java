@@ -16,7 +16,7 @@ public interface UseWaterUnitMeterService extends IService<UseWaterUnitMeter> {
    * @param useWaterUnitMeter 水表信息实体
    * @return 添加是否成功 ,false的原因为可能档案号为空或者已被使用
    */
- boolean insertUseWaterUnitMeter(UseWaterUnitMeter useWaterUnitMeter);
+ boolean insertUseWaterUnitMeter(List<UseWaterUnitMeter> useWaterUnitMeter,String useWaterUnitId,String nodeCode);
 
   /**
    * 删除水表

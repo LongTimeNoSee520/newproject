@@ -7,6 +7,7 @@ import com.zjtc.model.Bank;
 import com.zjtc.service.BankService;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -53,45 +54,42 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
   }
 
   @Override
-  public boolean insertBank(Bank bank) {
-    if (null == bank) {
+  public boolean insertBank(List<Bank> bank, String useWaterUnitId, String nodeCode) {
+    if (null == bank || StringUtils.isBlank(useWaterUnitId) || StringUtils
+        .isBlank(nodeCode)) {
       return false;
     }
-    String bankAccount = bank.getBankAccount();
-    String useWaterUnitId = bank.getUseWaterUnitId();
+    for (Bank bank1 : bank) {
+      String bankAccount = bank1.getBankAccount();
 //    判断当前单位的银行账号是否已存在
-    int i = this.baseMapper.selectBankAccount("null",bankAccount, useWaterUnitId);
-    if (i > 0) {
-      return false;
+      int i = this.baseMapper.selectBankAccount("null", bankAccount, useWaterUnitId);
+      if (i > 0) {
+        return false;
+      }
+      bank1.setUseWaterUnitId(useWaterUnitId);
+      bank1.setDeleted("0");
+      bank1.setNodeCode(nodeCode);
     }
-    bank.setDeleted("0");
 //    判断是本行还是他行(默认为建设银行)未实现
-    int result = this.baseMapper.insert(bank);
-    if (result > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return this.insertBatch(bank);
+
   }
 
   @Override
-  public boolean updateBank(Bank bank) {
+  public boolean updateBank(List<Bank> bank, String useWaterUnitId, String nodeCode) {
     if (null == bank) {
       return false;
     }
-    String bankAccount = bank.getBankAccount();
-    String useWaterUnitId = bank.getUseWaterUnitId();
+    for (Bank bank1 : bank) {
+      String bankAccount = bank1.getBankAccount();
 //    判断当前单位的银行账号是否已存在
-    int i = this.baseMapper.selectBankAccount(bank.getId(),bankAccount, useWaterUnitId);
-    if (i > 0) {
-      return false;
+      int i = this.baseMapper.selectBankAccount("null", bankAccount, useWaterUnitId);
+      if (i > 0) {
+        return false;
+      }
     }
-    int result = this.baseMapper.updateById(bank);
-    if (result > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return this.updateBatchById(bank);
+
   }
 
   @Override

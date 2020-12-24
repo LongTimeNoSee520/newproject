@@ -13,6 +13,7 @@ public interface BankService extends IService<Bank> {
 
   /**
    * 删除银行
+   *
    * @param ids 银行id
    * @return 是否删除成功
    */
@@ -20,29 +21,33 @@ public interface BankService extends IService<Bank> {
 
   /**
    * 批量删除银行信息
+   *
    * @param ids 银行id集
    * @return 是否删除成功
    */
   boolean batchDeletedBank(List<String> ids);
 
   /**
-   * 添加银行
+   * 批量添加银行
+   *
    * @param bank 银行实体
    * @return 是否添加成功
    */
-  boolean insertBank(Bank bank);
+  boolean insertBank(List<Bank> bank, String useWaterUnitId, String nodeCode);
 
   /**
-   * 修改银行
+   * 批量修改银行
+   *
    * @param bank 银行实体
    * @return 是否修改成功
    */
-  boolean updateBank(Bank bank);
+  boolean updateBank(List<Bank> bank, String useWaterUnitId, String nodeCode);
 
   /**
    * 银行信息查询
+   *
    * @param useWaterUnitId 当前单位id
    * @return 银行结果集
    */
-  List<Bank> selectBank(String useWaterUnitId,String nodeCode);
+  List<Bank> selectBank(String useWaterUnitId, String nodeCode);
 }
