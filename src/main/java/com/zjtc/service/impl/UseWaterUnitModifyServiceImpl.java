@@ -31,7 +31,8 @@ public class UseWaterUnitModifyServiceImpl extends
   public boolean insertUnitName(String id, String nodeCode, String unitName, String personName,
       String personId) {
 
-    if (StringUtils.isBlank(id) || StringUtils.isBlank(nodeCode) || StringUtils.isBlank(unitName) || StringUtils.isBlank(personName) || StringUtils.isBlank(personId)){
+    if (StringUtils.isBlank(id) || StringUtils.isBlank(nodeCode) || StringUtils.isBlank(unitName)
+        || StringUtils.isBlank(personName) || StringUtils.isBlank(personId)) {
       log.error("判断部门名称是否被修改时传入参数出错");
       return false;
     }
@@ -39,7 +40,7 @@ public class UseWaterUnitModifyServiceImpl extends
     EntityWrapper<UseWaterUnit> useWaterUnitEntityWrapper = new EntityWrapper<>();
     useWaterUnitEntityWrapper.eq("id", id);
     useWaterUnitEntityWrapper.eq("node_code", nodeCode);
-    useWaterUnitEntityWrapper.eq("deleted","0");
+    useWaterUnitEntityWrapper.eq("deleted", "0");
     List<UseWaterUnit> useWaterUnits = this.useWaterUnitService
         .selectList(useWaterUnitEntityWrapper);
     int insert = 0;
@@ -65,8 +66,24 @@ public class UseWaterUnitModifyServiceImpl extends
   @Override
   public List<UseWaterUnitModify> selectUseWaterUnitModify(String id, String nodeCode) {
     EntityWrapper<UseWaterUnitModify> entityWrapper = new EntityWrapper<>();
-    entityWrapper.eq("use_water_unitId",id);
-    entityWrapper.eq("node_code",nodeCode);
+    entityWrapper.eq("use_water_unitId", id);
+    entityWrapper.eq("node_code", nodeCode);
     return this.baseMapper.selectList(entityWrapper);
   }
+
+//  @Override
+//  public boolean deletedUseWaterUnitModify(String id) {
+//    EntityWrapper<UseWaterUnitModify> entityWrapper = new EntityWrapper<>();
+//    entityWrapper.eq("use_water_unitId", id);
+//    List<UseWaterUnitModify> useWaterUnitModifies = this.baseMapper.selectList(entityWrapper);
+//    int integer = 0;
+//    for (UseWaterUnitModify unitModify : useWaterUnitModifies) {
+//      integer = this.baseMapper.deleteById(unitModify.getId());
+//    }
+//    if (integer > 0) {
+//      return true;
+//    } else {
+//      return false;
+//    }
+//  }
 }

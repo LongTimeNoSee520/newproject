@@ -29,4 +29,11 @@ public interface UseWaterUnitModifyService extends IService<UseWaterUnitModify> 
    * @return 日志结果集
    */
  List<UseWaterUnitModify> selectUseWaterUnitModify(String id,String nodeCode);
+
+//  /**
+//   * 删除部门时删除相关的日志
+//   * @param id 部门id
+//   * @return 删除结果
+//   */
+// boolean deletedUseWaterUnitModify(String id);
 }

@@ -20,11 +20,16 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
 
   @Override
   public boolean deletedBank(String id) {
+    EntityWrapper<Bank> wrapper = new EntityWrapper<>();
+    wrapper.eq("useWaterUnitId",id);
+    List<Bank> banks = this.selectList(wrapper);
     Bank bank = new Bank();
-    bank.setId(id);
-    bank.setDeleted("1");
-    bank.setUseWaterUnitId(null);
-    int result = this.baseMapper.updateById(bank);
+    int result = 0;
+    for (Bank bankss : banks){
+      bank.setId(bankss.getId());
+      bank.setDeleted("1");
+      result = this.baseMapper.updateById(bank);
+    }
     if (result > 0) {
       return true;
     } else {
@@ -33,19 +38,18 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
   }
 
   @Override
-  public boolean batchDeletedBank(List<String> ids) {
-    List<Bank> list = new ArrayList<>();
+  public boolean batchDeletedBank(String id) {
+    EntityWrapper<Bank> wrapper = new EntityWrapper<>();
+    wrapper.eq("useWaterUnitId",id);
+    List<Bank> banks = this.selectList(wrapper);
     Bank bank = new Bank();
-    boolean b = false;
-    if (ids.size() == 0) {
-      return false;
-    }
-    for (String id : ids) {
-      bank.setId(id);
-      bank.setUseWaterUnitId("");
+    List<Bank> list = new ArrayList<>();
+    for (Bank bankss : banks){
+      bank.setId(bankss.getId());
+      bank.setDeleted("1");
       list.add(bank);
-      b = this.updateBatchById(list);
     }
+    boolean b = this.updateBatchById(list);
     if (b) {
       return true;
     } else {
@@ -55,8 +59,7 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
 
   @Override
   public boolean insertBank(List<Bank> bank, String useWaterUnitId, String nodeCode) {
-    if (null == bank || StringUtils.isBlank(useWaterUnitId) || StringUtils
-        .isBlank(nodeCode)) {
+    if (bank.size() == 0 || StringUtils.isBlank(useWaterUnitId) || StringUtils.isBlank(nodeCode)) {
       return false;
     }
     for (Bank bank1 : bank) {
@@ -77,7 +80,7 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
 
   @Override
   public boolean updateBank(List<Bank> bank, String useWaterUnitId, String nodeCode) {
-    if (null == bank) {
+    if (bank.size() == 0 || StringUtils.isBlank(useWaterUnitId) || StringUtils.isBlank(nodeCode)) {
       return false;
     }
     for (Bank bank1 : bank) {

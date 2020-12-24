@@ -12,20 +12,20 @@ public interface BankService extends IService<Bank> {
 
 
   /**
-   * 删除银行
+   * 删除部门时删除关联的银行
    *
-   * @param ids 银行id
+   * @param id 部门id
    * @return 是否删除成功
    */
-  boolean deletedBank(String ids);
+  boolean deletedBank(String id);
 
   /**
    * 批量删除银行信息
    *
-   * @param ids 银行id集
+   * @param id 部门id
    * @return 是否删除成功
    */
-  boolean batchDeletedBank(List<String> ids);
+  boolean batchDeletedBank(String id);
 
   /**
    * 批量添加银行
