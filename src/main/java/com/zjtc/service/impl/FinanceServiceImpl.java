@@ -34,6 +34,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
     }
     for (Finance finance : finances) {
       finance.setDeleted("0");
+      finance.setNodeCode(nodeCode);
     }
     boolean b = this.insertBatch(finances);
     if (b) {
@@ -57,7 +58,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
         return response;
       }
     }
-    boolean b = this.insertBatch(finances);
+    boolean b = this.updateBatchById(finances);
     if (b) {
       response.setCode(200);
       return response;
@@ -72,43 +73,9 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
       response.setMessage("系统错误");
       return response;
     }
-//    Finance finance1 = new Finance();
-//    List<Finance> financeList = new ArrayList<>(10);
-////    先查询到所有的加价费开票记录数据
-//    EntityWrapper<Finance> wrapper = new EntityWrapper<>();
-//    wrapper.eq("deleted", "0");
-//    List<Finance> finances = this.baseMapper.selectList(wrapper);
-////    依次遍历加价费开票记录数据
-//    for (Finance finance : finances) {
-////      依次遍历传入的需要删除的id
-//      for (String id : ids) {
-////        匹配加价费开票记录数据的id
-//        if (finance.getId().equals(id)) {
-////          匹配到后判断加价费开票记录数据的是否开票状态
-//          if (finance.getInvoiceState() == 1) {
-//            response.setMessage("缴费为:" + finance.getUnitName() + "的数据已开票不能删除");
-//            return response;
-//          }
-//        }
-//      }
-//    }
-//    for (String id : ids) {
-//      finance1.setId(id);
-//      finance1.setDeleted("1");
-//      financeList.add(finance1);
-//    }
-//    boolean b = this.updateBatchById(financeList);
-//    if (b) {
-//      response.setCode(200);
-//      return response;
-//    }
-//    for (String id : ids){
-//
-//    }
     EntityWrapper<Finance> wrapper = new EntityWrapper<>();
     wrapper.in("id", ids);
     int b = 0;
-    char a = 1;
     List<Finance> finances = this.selectList(wrapper);
     for (Finance finance : finances) {
       String invoiceState = finance.getInvoiceState();
@@ -179,12 +146,15 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
       return null;
     }
 //    总条数
-    Integer total = this.baseMapper.selectCountAll(nodeCode,unitName,paymentDateBegin,paymentDateFinish,money,invoiceState,drawer);
+    Integer total = this.baseMapper
+        .selectCountAll(nodeCode, unitName, paymentDateBegin, paymentDateFinish, money,
+            invoiceState, drawer);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<Finance> templates = this.baseMapper
-        .queryList(currPage, pageSize, nodeCode,unitName,paymentDateBegin,paymentDateFinish,money,invoiceState,drawer);
+        .queryList(currPage, pageSize, nodeCode, unitName, paymentDateBegin, paymentDateFinish,
+            money, invoiceState, drawer);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -198,6 +168,9 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
 
   @Override
   public ApiResponse countMoney(String nodeCode) {
-    return null;
+    ApiResponse response = new ApiResponse();
+    List<String> money = this.baseMapper.countMoney(nodeCode);
+    response.setData(money);
+    return response;
   }
 }

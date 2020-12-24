@@ -3,6 +3,24 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zjtc.mapper.FinanceMapper">
 
+  <resultMap id="FinanceModel" type="com.zjtc.model.Finance">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="money" property="money" jdbcType="VARCHAR"/>
+    <result column="payment_date" property="paymentDate" jdbcType="TIMESTAMP"/>
+    <result column="invoiceState" property="invoiceState" jdbcType="VARCHAR"/>
+    <result column="drawer" property="drawer" jdbcType="VARCHAR"/>
+    <result column="type" property="type" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="print_person" property="printPerson" jdbcType="VARCHAR"/>
+    <result column="print_time" property="printTime" jdbcType="TIMESTAMP"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+    <result column="invoice_number" property="invoiceNumber" jdbcType="VARCHAR"/>
+    <result column="user_type" property="usertype" jdbcType="VARCHAR"/>
+  </resultMap>
+
+
   <update id="updateFinanceDeleted">
     update t_w_finance
     <set>
@@ -10,5 +28,67 @@
     </set>
     WHERE id=#{id}
   </update>
+
+  <select id="queryList" parameterType="java.util.Map" resultMap="FinanceModel">
+    SELECT TOP
+    ${pageSize} c.*
+    FROM
+    (
+    SELECT
+    row_number () OVER ( ORDER BY [id] ) AS rownumber,
+    *
+    FROM
+    t_w_finance t1 where deleted = '0'
+    and t1.node_code = #{nodeCode}
+    <if test="unitName != null and unitName != ''">
+      and unit_name like '%${unitName}%'
+    </if>
+    <if test="paymentDateBegin != null and paymentDateFinish != null">
+      and (payment_date &gt; #{paymentDateBegin} and payment_date &lt; paymentDateFinish)
+    </if>
+    <if test="money != null and money != ''">
+      and money = #{money}
+    </if>
+    <if test="invoiceState != null and invoiceState != ''">
+      and invoice_state = #{invoiceState}
+    </if>
+    <if test="drawer != null and drawer != ''">
+      and drawer like '%${drawer}%'
+    </if>
+    ) c
+    WHERE
+    rownumber > (${pageSize}*(${currPage}-1));
+  </select>
+
+  <select id="selectCountAll" resultType="int">
+    SELECT
+    count(1)
+    FROM
+    t_w_finance t1 where deleted = '0'
+    and t1.node_code = #{nodeCode}
+    <if test="unitName != null and unitName != ''">
+      and unit_name like '%${unitName}%'
+    </if>
+    <if test="paymentDateBegin != null and paymentDateFinish != null">
+      and (payment_date &gt; #{paymentDateBegin} and payment_date &lt; paymentDateFinish)
+    </if>
+    <if test="money != null and money != ''">
+      and money = #{money}
+    </if>
+    <if test="invoiceState != null and invoiceState != ''">
+      and invoice_state = #{invoiceState}
+    </if>
+    <if test="drawer != null and drawer != ''">
+      and drawer like '%${drawer}%'
+    </if>
+  </select>
+
+
+  <select id="countMoney" resultType="java.util.Map">
+    SELECT
+    ( SELECT SUM ( money ) FROM t_w_finance WHERE deleted = '0' AND invoice_state = '0' ) AS ont,
+    ( SELECT SUM ( money )  FROM t_w_finance WHERE deleted = '0' AND invoice_state = '1' ) as yey
+    FROM t_w_finance WHERE deleted = '0' AND node_code = #{nodeCode} GROUP BY money
+  </select>
 
 </mapper>

@@ -23,15 +23,16 @@ public interface FinanceMapper extends BaseMapper<Finance> {
   int updateFinanceDeleted(@Param("id") String id);
 
   /**
+   * 根据条件查询总条数
    *
-   * @param nodeCode
-   * @param unitName
-   * @param paymentDateBegin
-   * @param paymentDateFinish
-   * @param money
-   * @param invoiceState
-   * @param drawer
-   * @return
+   * @param nodeCode          节点编码
+   * @param unitName          单位名称
+   * @param paymentDateBegin  开始时间
+   * @param paymentDateFinish 结束时间
+   * @param money             金额
+   * @param invoiceState      是否开票
+   * @param drawer            开票人
+   * @return 总条数
    */
   Integer selectCountAll(@Param("nodeCode") String nodeCode, @Param("unitName") String unitName,
       @Param("paymentDateBegin") Date paymentDateBegin,
@@ -39,21 +40,30 @@ public interface FinanceMapper extends BaseMapper<Finance> {
       @Param("invoiceState") String invoiceState, @Param("drawer") String drawer);
 
   /**
+   * 分页查询
    *
-   * @param currPage
-   * @param pageSize
-   * @param nodeCode
-   * @param unitName
-   * @param paymentDateBegin
-   * @param paymentDateFinish
-   * @param money
-   * @param invoiceState
-   * @param drawer
-   * @return
+   * @param currPage          页数
+   * @param pageSize          条数
+   * @param nodeCode          节点编码
+   * @param unitName          单位名称
+   * @param paymentDateBegin  开始时间
+   * @param paymentDateFinish 结束时间
+   * @param money             金额
+   * @param invoiceState      是否开票
+   * @param drawer            开票人
+   * @return 分页查询记录
    */
-  List<Finance> queryList(@Param("currPage") Integer currPage,
-      @Param("pageSize") Integer pageSize, @Param("nodeCode") String nodeCode,
-      @Param("unitName") String unitName, @Param("paymentDateBegin") Date paymentDateBegin,
+  List<Finance> queryList(@Param("currPage") Integer currPage, @Param("pageSize") Integer pageSize,
+      @Param("nodeCode") String nodeCode, @Param("unitName") String unitName,
+      @Param("paymentDateBegin") Date paymentDateBegin,
       @Param("paymentDateFinish") Date paymentDateFinish, @Param("money") String money,
       @Param("invoiceState") String invoiceState, @Param("drawer") String drawer);
+
+  /**
+   * 查询未开票金额和已开票金额
+   *
+   * @param nodeCode 节点编码
+   * @return 查询结果
+   */
+  List<String> countMoney(@Param("nodeCode") String nodeCode);
 }
