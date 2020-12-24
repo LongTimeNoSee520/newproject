@@ -5,6 +5,7 @@ import com.zjtc.mapper.UseWaterQuotaMapper;
 import com.zjtc.model.UseWaterQuota;
 
 import com.zjtc.service.UseWaterQuotaService;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,16 @@ public class UseWaterQuotaServiceImpl extends ServiceImpl<UseWaterQuotaMapper, U
     }else {
     return this.deleteBatchIds(ids);
     }
+  }
+
+  @Override
+  public boolean deleteQuotas(String useWaterUnitId) {
+    List<UseWaterQuota> useWaterQuotas = new ArrayList<>();
+    List<String> ids = new ArrayList<>();
+    for (UseWaterQuota quota:useWaterQuotas){
+      ids.add(quota.getId());
+    }
+    return this.delete(ids);
   }
 
   @Override

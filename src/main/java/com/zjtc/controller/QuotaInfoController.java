@@ -115,7 +115,7 @@ public class QuotaInfoController {
         response.recordError(500);
       }
     } else {
-      response.recordError("角色id不能为空");
+      response.recordError("定额信息id不能为空");
     }
     return response;
   }

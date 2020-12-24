@@ -22,6 +22,10 @@ public interface ContactsService extends IService<Contacts> {
   boolean delete(List<String> ids);
 
   /**
+   * 通过用水单位id批量删除
+   * */
+  boolean deleteContacts(String useWaterUnitId);
+  /**
    * 批量新增
    * */
   boolean add(List<Contacts> contactsList,String useWaterUnitId,String unitCode,String nodeCode);

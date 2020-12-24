@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.mapper.ContactsMapper;
 import com.zjtc.model.Contacts;
 import com.zjtc.service.ContactsService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,16 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
     }else {
       return this.baseMapper.delete(ids);
     }
+  }
+
+  @Override
+  public boolean deleteContacts(String useWaterUnitId) {
+    List<Contacts> contacts = this.queryByUnitId(useWaterUnitId);
+    List<String> ids = new ArrayList<>();
+    for (Contacts cont :contacts){
+      ids.add(cont.getId());
+    }
+    return this.delete(ids);
   }
 
   @Override
