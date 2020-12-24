@@ -25,7 +25,11 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
 
   @Override
   public boolean delete(List<String> ids) {
-    return this.baseMapper.delete(ids);
+    if (ids.isEmpty()){
+      return false;
+    }else {
+      return this.baseMapper.delete(ids);
+    }
   }
 
   @Override
@@ -39,6 +43,7 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
          contacts.setDeleted("0");
          contacts.setNodeCode(nodeCode);
          contacts.setUnitCode(unitCode);
+         contacts.setUseWaterUnitId(useWaterUnitId);
     }
     return this.insertBatch(contactsList);
   }

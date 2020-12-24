@@ -68,7 +68,7 @@ public class Contacts extends Model<Contacts> {
   private String locked;
 
   @ApiModelProperty(value = "密码输入错误次数")
-  @TableField(value = "wrongTimes", exist = true)
+  @TableField(value = "wrong_times", exist = true)
   private int wrongTimes;
 
   @Override
