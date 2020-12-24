@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.UseWaterBasePlanMapper">
+  <resultMap id="BaseResultMap" type="com.zjtc.model.UseWaterBasePlan">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="cur_year_plan" property="curYearPlan" jdbcType="FLOAT"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="one_quarter" property="oneQuarter" jdbcType="FLOAT"/>
+    <result column="two_quarter" property="twoQuarter" jdbcType="FLOAT"/>
+    <result column="three_quarter" property="threeQuarter" jdbcType="FLOAT"/>
+    <result column="four_quarter" property="fourQuarter" jdbcType="FLOAT"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="nature" property="nature" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="queryExistNum" resultType="int">
+    SELECT COUNT (id)
+    FROM t_w_use_water_base_plan
+    WHERE deleted = '0'
+    AND unit_code = #{unitCode}
+    AND node_code = #{nodeCode}
+    AND plan_year = #{planYear}
+  </select>
+  <select id="queryYear" resultType="int">
+    SELECT DISTINCT  t1.plan_year AS planYear
+    FROM (SELECT plan_year
+           FROM t_w_use_water_base_plan
+           WHERE deleted = '0'
+           AND node_code = #{nodeCode}
+           AND SUBSTRING(unit_code,3,2)
+           IN (
+           SELECT unit_type_code
+           FROM t_w_use_water_unit_role
+           WHERE person_id = #{userId}
+           ) <!-- in条件是查询当前登录者能查询的批次的单位基建计划年份-->
+            )t1
+    ORDER BY t1.plan_year ASC
+  </select>
+  <select id="queryNum" resultType="int">
+    SELECT COUNT (t1.id)
+    FROM (
+          SELECT id
+          FROM t_w_use_water_base_plan
+           WHERE deleted = '0'
+           AND node_code = #{nodeCode}
+           AND SUBSTRING(unit_code,3,2)
+           IN (
+           SELECT unit_type_code
+           FROM t_w_use_water_unit_role
+           WHERE person_id = #{userId}
+           )
+          <if test="planYear != null">AND plan_year = #{planYear} </if>
+          <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
+          <if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
+
+    )t1
+  </select>
+
+  <select id="queryPage" resultMap="BaseResultMap">
+    SELECT TOP  ${size} t1.*
+        FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,*
+              FROM
+              t_w_use_water_base_plan
+              WHERE id IN
+                  (SELECT id
+                  FROM t_w_use_water_base_plan
+                  WHERE deleted = '0'
+                  AND node_code = #{nodeCode}
+                  AND SUBSTRING(unit_code,3,2)
+                      IN (
+                      SELECT unit_type_code
+                      FROM t_w_use_water_unit_role
+                      WHERE person_id = #{userId}
+                      )
+                  <if test="planYear != null">AND plan_year = #{planYear} </if>
+                  <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
+                  <if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
+                  )
+        )t1
+    WHERE  rownumber > (#{current}-1)* #{size}
+  </select>
+  <update id="delete">
+    UPDATE t_w_use_water_base_plan SET deleted ='1'
+    WHERE id IN
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </update>
+</mapper>
