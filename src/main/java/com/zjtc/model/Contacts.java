@@ -28,7 +28,7 @@ public class Contacts extends Model<Contacts> {
   private String id;
 
   @ApiModelProperty("单位id")
-  @TableField(value = "use_water_unitId", exist = true)
+  @TableField(value = "use_water_unit_id", exist = true)
   private String useWaterUnitId;
 
   @ApiModelProperty(value = "节点编码")

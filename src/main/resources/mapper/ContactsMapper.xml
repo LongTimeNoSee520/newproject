@@ -5,7 +5,7 @@
   <resultMap id="BaseResultMap" type="com.zjtc.model.Contacts">
     <id column="id" property="id" jdbcType="VARCHAR"/>
     <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
-    <result column="use_water_unitId" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
     <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
     <result column="contacts" property="contacts" jdbcType="VARCHAR"/>
     <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
@@ -22,7 +22,7 @@
      open_id,deleted,locked,wrong_times
     FROM t_w_use_water_unit_contacts
     WHERE deleted = '0'
-    AND use_water_unitId = #{useWaterUnitId}
+    AND use_water_unit_id = #{useWaterUnitId}
     ORDER BY  main DESC
   </select>
   <update id="delete" >
