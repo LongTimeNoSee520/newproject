@@ -25,6 +25,11 @@ public interface UseWaterQuotaService extends IService<UseWaterQuota> {
    * 通过用水单位id批量删除
    * */
   boolean deleteQuotas(String useWaterUnitId);
+
+  /**
+   * 通过用水单位id列表批量删除
+   * */
+  boolean deleteQuotas(List<String> useWaterUnitIds);
   /**
    * 批量新增
    * */

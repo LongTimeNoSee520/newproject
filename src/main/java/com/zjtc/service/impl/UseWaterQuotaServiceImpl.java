@@ -36,12 +36,24 @@ public class UseWaterQuotaServiceImpl extends ServiceImpl<UseWaterQuotaMapper, U
 
   @Override
   public boolean deleteQuotas(String useWaterUnitId) {
-    List<UseWaterQuota> useWaterQuotas = new ArrayList<>();
+    List<UseWaterQuota> useWaterQuotas = this.queryByUnitId(useWaterUnitId);
     List<String> ids = new ArrayList<>();
     for (UseWaterQuota quota:useWaterQuotas){
       ids.add(quota.getId());
     }
     return this.delete(ids);
+  }
+
+  @Override
+  public boolean deleteQuotas(List<String> useWaterUnitIds) {
+    if (useWaterUnitIds.isEmpty()){
+      return false;
+    }else {
+      for (String id :useWaterUnitIds){
+        this.deleteQuotas(id);
+      }
+      return true;
+    }
   }
 
   @Override

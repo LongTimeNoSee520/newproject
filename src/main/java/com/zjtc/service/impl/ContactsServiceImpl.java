@@ -44,6 +44,18 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   }
 
   @Override
+  public boolean deleteContacts(List<String> useWaterUnitIds) {
+    if (useWaterUnitIds.isEmpty()){
+      return false;
+    }else {
+    for (String id :useWaterUnitIds){
+      this.deleteContacts(id);
+    }
+    return true;
+    }
+  }
+
+  @Override
   public boolean add(List<Contacts> contactsList, String useWaterUnitId, String unitCode,
       String nodeCode) {
     if(contactsList.isEmpty()){

@@ -17,7 +17,7 @@
     <result column="wrong_times" property="wrongTimes" jdbcType="INTEGER"/>
   </resultMap>
   <select id="queryByUnitId" resultMap="BaseResultMap">
-    SELECT id,node_code,use_water_unitId,unit_code,contacts,mobile_number,phone_number,
+    SELECT id,node_code,use_water_unit_id,unit_code,contacts,mobile_number,phone_number,
      CASE main WHEN '1' THEN '主联系人' WHEN '0' THEN '备用联系人' END AS main,
      open_id,deleted,locked,wrong_times
     FROM t_w_use_water_unit_contacts
