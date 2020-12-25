@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.AlgorithmMapper">
+	<!-- Algorithm的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+	<resultMap id="result_Algorithm_Map" type="com.zjtc.model.Algorithm">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+		<result column="algorithm_type" property="algorithmType" jdbcType="VARCHAR"/>
+		<result column="first_batch_num" property="firstBatchNum" jdbcType="DOUBLE"/>
+		<result column="second_batch_num" property="secondBatchNum" jdbcType="DOUBLE"/>
+		<result column="third_batch_num" property="thirdBatchNum" jdbcType="DOUBLE"/>
+		<result column="new_batch_num" property="newBatchNum" jdbcType="DOUBLE"/>
+		<result column="n8_floot" property="n8Floot" jdbcType="DOUBLE"/>
+		<result column="n8_up" property="n8Up" jdbcType="DOUBLE"/>
+		<result column="price_top" property="priceTop" jdbcType="DOUBLE"/>
+		<result column="price_bottom" property="priceBottom" jdbcType="DOUBLE"/>
+		<result column="third_year_pro" property="thirdYearPro" jdbcType="DOUBLE"/>
+		<result column="second_year_pro" property="secondYearPro" jdbcType="DOUBLE"/>
+		<result column="first_year_pro" property="firstYearPro" jdbcType="DOUBLE"/>
+		<result column="base_pro" property="basePro" jdbcType="DOUBLE"/>
+		<result column="three_avg_pro_1" property="threeAvgPro1" jdbcType="DOUBLE"/>
+		<result column="three_avg_pro_2" property="threeAvgPro2" jdbcType="DOUBLE"/>
+		<result column="three_avg_pro_3" property="threeAvgPro3" jdbcType="DOUBLE"/>
+		<result column="first_quarter_pro" property="firstQuarterPro" jdbcType="DOUBLE"/>
+		<result column="second_quarter_pro" property="secondQuarterPro" jdbcType="DOUBLE"/>
+		<result column="third_quarter_pro" property="thirdQuarterPro" jdbcType="DOUBLE"/>
+		<result column="fourth_quarter_pro" property="fourthQuarterPro" jdbcType="DOUBLE"/>
+		<result column="reduce_pro" property="reducePro" jdbcType="DOUBLE"/>
+		<result column="reward_pro" property="rewardPro" jdbcType="DOUBLE"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+
+	<!-- 数据库中表名为:t_w_algorithm的列名 -->
+	<sql id="t_w_algorithm_Column">
+		id,node_code,algorithm_type,first_batch_num,second_batch_num,third_batch_num,new_batch_num,n8_floot,n8_up,price_top,price_bottom,third_year_pro,second_year_pro,first_year_pro,base_pro,three_avg_pro_1,three_avg_pro_2,three_avg_pro_3,first_quarter_pro,second_quarter_pro,third_quarter_pro,fourth_quarter_pro,reduce_pro,reward_pro,create_time,modify_time
+	</sql>
+
+	<!-- 获得类名为:Algorithm对应数据库中表的数据集合 -->
+	<!--<select id="selectAlgorithm" parameterType="Map" resultMap="result_Algorithm_Map">-->
+	  <!--select * from-->
+      <!--(-->
+        <!--select <if test="distinct !=null">${distinct}</if> ROW_NUMBER() over(<choose><when test="order!=null">${order}</when><otherwise>order by id</otherwise></choose>) as page,-->
+          <!--<choose>-->
+            <!--<when test="resultColumn!=null">${resultColumn}</when>-->
+            <!--<otherwise><include refid="t_w_algorithm_Column" /></otherwise>-->
+            <!--</choose>-->
+            <!--from t_w_algorithm-->
+            <!--<if test="require!=null"><include refid="assist" /></if>-->
+            <!--<if test="order !=null">${order}</if>-->
+        <!--) result -->
+        <!--<choose>-->
+            <!--<when test="startRow!=null">where page &gt; #{startRow} <if test="rowSize!=null">and page &lt;= <if test="startRow!=null">#{startRow}+</if>#{rowSize} </if></when>-->
+            <!--<otherwise><if test="rowSize!=null">where page &lt;= #{rowSize}</if></otherwise>-->
+        <!--</choose>-->
+	<!--</select>-->
+	<!-- 通过Algorithm的id获得对应数据库中表的数据对象 -->
+	<select id="selectAlgorithmById" parameterType="String" resultMap="result_Algorithm_Map">
+		select
+		<include refid="t_w_algorithm_Column" />
+		from t_w_algorithm
+		where id = #{id}
+	</select>
+	
+	<!-- 获得一个Algorithm对象,以参数Algorithm对象中不为空的属性作为条件进行查询 -->
+	<select id="selectAlgorithmObjSingle" parameterType="com.zjtc.model.Algorithm" resultMap="result_Algorithm_Map">
+		select top 1 
+		<include refid="t_w_algorithm_Column" />
+		from t_w_algorithm
+		<where>
+		<if test="nodeCode != null"> and node_code = #{nodeCode}</if>
+		<if test="algorithmType != null"> and algorithm_type = #{algorithmType}</if>
+		<if test="firstBatchNum != null"> and first_batch_num = #{firstBatchNum}</if>
+		<if test="secondBatchNum != null"> and second_batch_num = #{secondBatchNum}</if>
+		<if test="thirdBatchNum != null"> and third_batch_num = #{thirdBatchNum}</if>
+		<if test="newBatchNum != null"> and new_batch_num = #{newBatchNum}</if>
+		<if test="n8Floot != null"> and n8_floot = #{n8Floot}</if>
+		<if test="n8Up != null"> and n8_up = #{n8Up}</if>
+		<if test="priceTop != null"> and price_top = #{priceTop}</if>
+		<if test="priceBottom != null"> and price_bottom = #{priceBottom}</if>
+		<if test="thirdYearPro != null"> and third_year_pro = #{thirdYearPro}</if>
+		<if test="secondYearPro != null"> and second_year_pro = #{secondYearPro}</if>
+		<if test="firstYearPro != null"> and first_year_pro = #{firstYearPro}</if>
+		<if test="basePro != null"> and base_pro = #{basePro}</if>
+		<if test="threeAvgPro1 != null"> and three_avg_pro_1 = #{threeAvgPro1}</if>
+		<if test="threeAvgPro2 != null"> and three_avg_pro_2 = #{threeAvgPro2}</if>
+		<if test="threeAvgPro3 != null"> and three_avg_pro_3 = #{threeAvgPro3}</if>
+		<if test="firstQuarterPro != null"> and first_quarter_pro = #{firstQuarterPro}</if>
+		<if test="secondQuarterPro != null"> and second_quarter_pro = #{secondQuarterPro}</if>
+		<if test="thirdQuarterPro != null"> and third_quarter_pro = #{thirdQuarterPro}</if>
+		<if test="fourthQuarterPro != null"> and fourth_quarter_pro = #{fourthQuarterPro}</if>
+		<if test="reducePro != null"> and reduce_pro = #{reducePro}</if>
+		<if test="rewardPro != null"> and reward_pro = #{rewardPro}</if>
+		<if test="createTime != null"> and create_time = #{createTime}</if>
+		<if test="modifyTime != null"> and modify_time = #{modifyTime}</if>
+		<if test="id != null"> and id = #{id} </if>
+		</where>
+		LIMIT 1
+	</select>
+	
+	<!-- 获得Algorithm对象,以参数Algorithm对象中不为空的属性作为条件进行查询 -->
+	<select id="selectAlgorithmByObj" parameterType="com.zjtc.model.Algorithm" resultMap="result_Algorithm_Map">
+		select
+		<include refid="t_w_algorithm_Column" />
+		from t_w_algorithm
+		<where>
+		<if test="nodeCode != null"> and node_code = #{nodeCode}</if>
+		<if test="algorithmType != null"> and algorithm_type = #{algorithmType}</if>
+		<if test="firstBatchNum != null"> and first_batch_num = #{firstBatchNum}</if>
+		<if test="secondBatchNum != null"> and second_batch_num = #{secondBatchNum}</if>
+		<if test="thirdBatchNum != null"> and third_batch_num = #{thirdBatchNum}</if>
+		<if test="newBatchNum != null"> and new_batch_num = #{newBatchNum}</if>
+		<if test="n8Floot != null"> and n8_floot = #{n8Floot}</if>
+		<if test="n8Up != null"> and n8_up = #{n8Up}</if>
+		<if test="priceTop != null"> and price_top = #{priceTop}</if>
+		<if test="priceBottom != null"> and price_bottom = #{priceBottom}</if>
+		<if test="thirdYearPro != null"> and third_year_pro = #{thirdYearPro}</if>
+		<if test="secondYearPro != null"> and second_year_pro = #{secondYearPro}</if>
+		<if test="firstYearPro != null"> and first_year_pro = #{firstYearPro}</if>
+		<if test="basePro != null"> and base_pro = #{basePro}</if>
+		<if test="threeAvgPro1 != null"> and three_avg_pro_1 = #{threeAvgPro1}</if>
+		<if test="threeAvgPro2 != null"> and three_avg_pro_2 = #{threeAvgPro2}</if>
+		<if test="threeAvgPro3 != null"> and three_avg_pro_3 = #{threeAvgPro3}</if>
+		<if test="firstQuarterPro != null"> and first_quarter_pro = #{firstQuarterPro}</if>
+		<if test="secondQuarterPro != null"> and second_quarter_pro = #{secondQuarterPro}</if>
+		<if test="thirdQuarterPro != null"> and third_quarter_pro = #{thirdQuarterPro}</if>
+		<if test="fourthQuarterPro != null"> and fourth_quarter_pro = #{fourthQuarterPro}</if>
+		<if test="reducePro != null"> and reduce_pro = #{reducePro}</if>
+		<if test="rewardPro != null"> and reward_pro = #{rewardPro}</if>
+		<if test="createTime != null"> and create_time = #{createTime}</if>
+		<if test="modifyTime != null"> and modify_time = #{modifyTime}</if>
+		<if test="id != null"> and id = #{id} </if>
+		</where>
+	</select>
+
+	<!-- 将Algorithm插入到对应数据库的表中,包括属性值为null的数据 -->
+	<insert id="insertAlgorithm" parameterType="com.zjtc.model.Algorithm">
+		insert into 
+		t_w_algorithm (id,node_code,algorithm_type,first_batch_num,second_batch_num,third_batch_num,new_batch_num,n8_floot,n8_up,price_top,price_bottom,third_year_pro,second_year_pro,first_year_pro,base_pro,three_avg_pro_1,three_avg_pro_2,three_avg_pro_3,first_quarter_pro,second_quarter_pro,third_quarter_pro,fourth_quarter_pro,reduce_pro,reward_pro,create_time,modify_time)
+		values(#{id},#{nodeCode},#{algorithmType},#{firstBatchNum},#{secondBatchNum},#{thirdBatchNum},#{newBatchNum},#{n8Floot},#{n8Up},#{priceTop},#{priceBottom},#{thirdYearPro},#{secondYearPro},#{firstYearPro},#{basePro},#{threeAvgPro1},#{threeAvgPro2},#{threeAvgPro3},#{firstQuarterPro},#{secondQuarterPro},#{thirdQuarterPro},#{fourthQuarterPro},#{reducePro},#{rewardPro},#{createTime},#{modifyTime})
+	</insert>
+
+	<!-- 将Algorithm中属性值不为null的数据,插入到对应数据库的表中 -->
+	<insert id="insertNotNull" parameterType="com.zjtc.model.Algorithm">
+		insert into t_w_algorithm
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">id,</if>
+			<if test="nodeCode != null">node_code,</if>
+			<if test="algorithmType != null">algorithm_type,</if>
+			<if test="firstBatchNum != null">first_batch_num,</if>
+			<if test="secondBatchNum != null">second_batch_num,</if>
+			<if test="thirdBatchNum != null">third_batch_num,</if>
+			<if test="newBatchNum != null">new_batch_num,</if>
+			<if test="n8Floot != null">n8_floot,</if>
+			<if test="n8Up != null">n8_up,</if>
+			<if test="priceTop != null">price_top,</if>
+			<if test="priceBottom != null">price_bottom,</if>
+			<if test="thirdYearPro != null">third_year_pro,</if>
+			<if test="secondYearPro != null">second_year_pro,</if>
+			<if test="firstYearPro != null">first_year_pro,</if>
+			<if test="basePro != null">base_pro,</if>
+			<if test="threeAvgPro1 != null">three_avg_pro_1,</if>
+			<if test="threeAvgPro2 != null">three_avg_pro_2,</if>
+			<if test="threeAvgPro3 != null">three_avg_pro_3,</if>
+			<if test="firstQuarterPro != null">first_quarter_pro,</if>
+			<if test="secondQuarterPro != null">second_quarter_pro,</if>
+			<if test="thirdQuarterPro != null">third_quarter_pro,</if>
+			<if test="fourthQuarterPro != null">fourth_quarter_pro,</if>
+			<if test="reducePro != null">reduce_pro,</if>
+			<if test="rewardPro != null">reward_pro,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="modifyTime != null">modify_time,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">#{id},</if>
+			<if test="nodeCode != null">#{nodeCode},</if>
+			<if test="algorithmType != null">#{algorithmType},</if>
+			<if test="firstBatchNum != null">#{firstBatchNum},</if>
+			<if test="secondBatchNum != null">#{secondBatchNum},</if>
+			<if test="thirdBatchNum != null">#{thirdBatchNum},</if>
+			<if test="newBatchNum != null">#{newBatchNum},</if>
+			<if test="n8Floot != null">#{n8Floot},</if>
+			<if test="n8Up != null">#{n8Up},</if>
+			<if test="priceTop != null">#{priceTop},</if>
+			<if test="priceBottom != null">#{priceBottom},</if>
+			<if test="thirdYearPro != null">#{thirdYearPro},</if>
+			<if test="secondYearPro != null">#{secondYearPro},</if>
+			<if test="firstYearPro != null">#{firstYearPro},</if>
+			<if test="basePro != null">#{basePro},</if>
+			<if test="threeAvgPro1 != null">#{threeAvgPro1},</if>
+			<if test="threeAvgPro2 != null">#{threeAvgPro2},</if>
+			<if test="threeAvgPro3 != null">#{threeAvgPro3},</if>
+			<if test="firstQuarterPro != null">#{firstQuarterPro},</if>
+			<if test="secondQuarterPro != null">#{secondQuarterPro},</if>
+			<if test="thirdQuarterPro != null">#{thirdQuarterPro},</if>
+			<if test="fourthQuarterPro != null">#{fourthQuarterPro},</if>
+			<if test="reducePro != null">#{reducePro},</if>
+			<if test="rewardPro != null">#{rewardPro},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="modifyTime != null">#{modifyTime},</if>
+		</trim>
+	</insert>
+
+	<!-- 将Algorithm批量插入到对应数据库的表中 -->
+	<insert id="insertAlgorithmByBatch" parameterType="ArrayList">
+		insert into t_w_algorithm(id,node_code,algorithm_type,first_batch_num,second_batch_num,third_batch_num,new_batch_num,n8_floot,n8_up,price_top,price_bottom,third_year_pro,second_year_pro,first_year_pro,base_pro,three_avg_pro_1,three_avg_pro_2,three_avg_pro_3,first_quarter_pro,second_quarter_pro,third_quarter_pro,fourth_quarter_pro,reduce_pro,reward_pro,create_time,modify_time) values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id},#{item.nodeCode},#{item.algorithmType},#{item.firstBatchNum},#{item.secondBatchNum},#{item.thirdBatchNum},#{item.newBatchNum},#{item.n8Floot},#{item.n8Up},#{item.priceTop},#{item.priceBottom},#{item.thirdYearPro},#{item.secondYearPro},#{item.firstYearPro},#{item.basePro},#{item.threeAvgPro1},#{item.threeAvgPro2},#{item.threeAvgPro3},#{item.firstQuarterPro},#{item.secondQuarterPro},#{item.thirdQuarterPro},#{item.fourthQuarterPro},#{item.reducePro},#{item.rewardPro},#{item.createTime},#{item.modifyTime})
+		</foreach>
+	</insert>
+	
+	<!-- 通过Algorithm的id将数据库表中对应的数据删除 -->
+	<delete id="deleteAlgorithmById" parameterType="String">
+		delete from t_w_algorithm
+		where  id  =  #{id}
+	</delete>
+
+
+	<!-- 通过Algorithm的id将Algorithm中属性值不为null的数据更新到数据库对应的表中 -->
+	<update id="updateNotNull" parameterType="com.zjtc.model.Algorithm">
+		update t_w_algorithm
+		<set>
+					<if test="nodeCode != null">node_code = #{nodeCode},</if>
+					<if test="algorithmType != null">algorithm_type = #{algorithmType},</if>
+					<if test="firstBatchNum != null">first_batch_num = #{firstBatchNum},</if>
+					<if test="secondBatchNum != null">second_batch_num = #{secondBatchNum},</if>
+					<if test="thirdBatchNum != null">third_batch_num = #{thirdBatchNum},</if>
+					<if test="newBatchNum != null">new_batch_num = #{newBatchNum},</if>
+					<if test="n8Floot != null">n8_floot = #{n8Floot},</if>
+					<if test="n8Up != null">n8_up = #{n8Up},</if>
+					<if test="priceTop != null">price_top = #{priceTop},</if>
+					<if test="priceBottom != null">price_bottom = #{priceBottom},</if>
+					<if test="thirdYearPro != null">third_year_pro = #{thirdYearPro},</if>
+					<if test="secondYearPro != null">second_year_pro = #{secondYearPro},</if>
+					<if test="firstYearPro != null">first_year_pro = #{firstYearPro},</if>
+					<if test="basePro != null">base_pro = #{basePro},</if>
+					<if test="threeAvgPro1 != null">three_avg_pro_1 = #{threeAvgPro1},</if>
+					<if test="threeAvgPro2 != null">three_avg_pro_2 = #{threeAvgPro2},</if>
+					<if test="threeAvgPro3 != null">three_avg_pro_3 = #{threeAvgPro3},</if>
+					<if test="firstQuarterPro != null">first_quarter_pro = #{firstQuarterPro},</if>
+					<if test="secondQuarterPro != null">second_quarter_pro = #{secondQuarterPro},</if>
+					<if test="thirdQuarterPro != null">third_quarter_pro = #{thirdQuarterPro},</if>
+					<if test="fourthQuarterPro != null">fourth_quarter_pro = #{fourthQuarterPro},</if>
+					<if test="reducePro != null">reduce_pro = #{reducePro},</if>
+					<if test="rewardPro != null">reward_pro = #{rewardPro},</if>
+					<if test="createTime != null">create_time = #{createTime},</if>
+					<if test="modifyTime != null">modify_time = #{modifyTime},</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+</mapper>
