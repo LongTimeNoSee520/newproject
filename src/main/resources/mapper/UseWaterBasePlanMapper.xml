@@ -27,6 +27,16 @@
     AND node_code = #{nodeCode}
     AND plan_year = #{planYear}
   </select>
+  <select id="queryOthers" resultType="int">
+    SELECT COUNT (id)
+    FROM t_w_use_water_base_plan
+    WHERE deleted = '0'
+    AND unit_code = #{useWaterBasePlan.unitCode}
+    AND node_code = #{useWaterBasePlan.nodeCode}
+    AND plan_year = #{useWaterBasePlan.planYear}
+    AND id  &lt; &gt; #{useWaterBasePlan.id}
+  </select>
+
   <select id="queryYear" resultType="int">
     SELECT DISTINCT  t1.plan_year AS planYear
     FROM (SELECT plan_year

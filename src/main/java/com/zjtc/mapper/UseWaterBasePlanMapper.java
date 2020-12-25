@@ -27,4 +27,6 @@ public interface UseWaterBasePlanMapper extends BaseMapper<UseWaterBasePlan> {
   int queryNum(Map<String, Object> map);
 
   List<UseWaterBasePlan> queryPage(Map<String, Object> map);
+
+  int queryOthers(@Param("useWaterBasePlan")UseWaterBasePlan useWaterBasePlan);
 }
