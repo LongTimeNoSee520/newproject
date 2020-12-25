@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 /**
  * @Author: ZhouDaBo
  * @Date: 2020/12/23
+ * 银行信息表
  */
 @Service
 public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
@@ -21,13 +22,13 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
   @Override
   public boolean deletedBank(String id) {
     EntityWrapper<Bank> wrapper = new EntityWrapper<>();
-    wrapper.eq("useWaterUnitId",id);
+    wrapper.eq("use_water_unit_Id", id);
     List<Bank> banks = this.selectList(wrapper);
     Bank bank = new Bank();
     int result = 0;
-    for (Bank bankss : banks){
+    for (Bank bankss : banks) {
       bank.setId(bankss.getId());
-      bank.setDeleted("1");
+      bank.setUseWaterUnitId(null);
       result = this.baseMapper.updateById(bank);
     }
     if (result > 0) {
@@ -38,24 +39,27 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
   }
 
   @Override
-  public boolean batchDeletedBank(String id) {
+  public boolean batchDeletedBank(List<String> id) {
     EntityWrapper<Bank> wrapper = new EntityWrapper<>();
-    wrapper.eq("useWaterUnitId",id);
+    wrapper.in("use_water_unit_Id", id);
     List<Bank> banks = this.selectList(wrapper);
     Bank bank = new Bank();
     List<Bank> list = new ArrayList<>();
-    for (Bank bankss : banks){
+    boolean b = false;
+    for (Bank bankss : banks) {
       bank.setId(bankss.getId());
-      bank.setDeleted("1");
+      bank.setUseWaterUnitId(null);
       list.add(bank);
+      b  = this.updateBatchById(list);
     }
-    boolean b = this.updateBatchById(list);
     if (b) {
       return true;
     } else {
       return false;
     }
   }
+
+
 
   @Override
   public boolean insertBank(List<Bank> bank, String useWaterUnitId, String nodeCode) {

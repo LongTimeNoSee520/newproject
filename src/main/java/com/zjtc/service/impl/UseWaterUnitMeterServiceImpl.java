@@ -46,9 +46,9 @@ public class UseWaterUnitMeterServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
-  public boolean deletedUseWaterUnitMeter(String id) {
+  public boolean deletedUseWaterUnitMeter(List<String> id) {
     EntityWrapper<UseWaterUnitMeter> wrapper = new EntityWrapper<>();
-    wrapper.eq("use_water_unitId", id);
+    wrapper.in("use_water_unitId", id);
     List<UseWaterUnitMeter> meters = this.selectList(wrapper);
     int integer = 0;
     for (UseWaterUnitMeter unitMeter : meters) {

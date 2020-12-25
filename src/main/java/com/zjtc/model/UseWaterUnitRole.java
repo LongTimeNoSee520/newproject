@@ -32,7 +32,7 @@ public class UseWaterUnitRole extends Model<UseWaterUnitRole> {
   @TableField(value = "person_id", exist = true)
   private String personId;
 
-  @ApiModelProperty(value = "单位类型号")
+  @ApiModelProperty(value = "单位批次号")
   @TableField(value = "unit_type_code", exist = true)
   private String unitTypeCode;
 

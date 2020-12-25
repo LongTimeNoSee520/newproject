@@ -23,7 +23,7 @@ public interface UseWaterUnitMeterService extends IService<UseWaterUnitMeter> {
    * @param id 部门id
    * @return 是否删除成功
    */
- boolean deletedUseWaterUnitMeter(String id);
+ boolean deletedUseWaterUnitMeter(List<String> id);
 
 //  /**
 //   * 删除关联的水表

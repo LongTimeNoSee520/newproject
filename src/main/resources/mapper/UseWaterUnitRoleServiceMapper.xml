@@ -28,4 +28,18 @@
       AND t1.node_code = #{nodeCode}
     </if>
   </select>
+
+  <select id="selectUseWaterUnitRole" resultType="java.lang.String">
+    SELECT unit_type_code
+    FROM
+    t_w_use_water_unit_role t1
+    WHERE 1 = 1
+    <if test="personId != null and personId != ''">
+      and t1.person_id = #{personId}
+    </if>
+    <if test="nodeCode != null and nodeCode != ''">
+      AND t1.node_code = #{nodeCode}
+    </if>
+  </select>
+
 </mapper>

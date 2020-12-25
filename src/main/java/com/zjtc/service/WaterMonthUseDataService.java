@@ -17,7 +17,7 @@ public interface WaterMonthUseDataService extends IService<WaterMonthUseData> {
    * @param id 部门id
    * @return 删除是否成功
    */
-  boolean deletedUnit(String id);
+  boolean deletedUnit(List<String> id);
 
   /**
    * 查询当年水表信息
