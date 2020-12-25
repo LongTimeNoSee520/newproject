@@ -69,7 +69,16 @@ public class UseWaterBasePlanServiceImpl extends
       response.recordError("当前登录用户没有操作当前批次的权限");
       return response;
     }
-    this.baseMapper.updateById(useWaterBasePlan);
+    /**因为有可能修改了单位编号，所以需要查询当前单位编号是否已经有编制(排除自己),
+     * 保证在同一单位编号下每年只有一个基建计划*/
+    int others = this.baseMapper.queryOthers(useWaterBasePlan);
+    if (others > 0 ){
+      response.recordError("当前单位编号在该年份已有基建计划");
+      return response;
+    }else {
+      this.baseMapper.updateById(useWaterBasePlan);
+    }
+
     /**TODO 调整该用水单位该年加价费算法*/
 
     return response;
