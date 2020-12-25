@@ -85,10 +85,31 @@
 
 
   <select id="countMoney" resultType="java.util.Map">
-    SELECT
-    ( SELECT SUM ( money ) FROM t_w_finance WHERE deleted = '0' AND invoice_state = '0' ) AS ont,
-    ( SELECT SUM ( money )  FROM t_w_finance WHERE deleted = '0' AND invoice_state = '1' ) as yey
-    FROM t_w_finance WHERE deleted = '0' AND node_code = #{nodeCode} GROUP BY money
+    SELECT DISTINCT
+    ( SELECT SUM ( money ) FROM t_w_finance WHERE deleted = '0' AND invoice_state = '0'
+    <if test="unitName != null and unitName != ''">
+      and unit_name like '%${unitName}%'
+    </if>
+    <if test="paymentDateBegin != null and paymentDateFinish != null">
+      and (payment_date &gt; #{paymentDateBegin} and payment_date &lt; paymentDateFinish)
+    </if>
+    <if test="drawer != null and drawer != ''">
+      and drawer like '%${drawer}%'
+    </if>
+    ) AS ont,
+    ( SELECT SUM ( money )  FROM t_w_finance WHERE deleted = '0' AND invoice_state = '1'
+    <if test="unitName != null and unitName != ''">
+      and unit_name like '%${unitName}%'
+    </if>
+    <if test="paymentDateBegin != null and paymentDateFinish != null">
+      and (payment_date &gt; #{paymentDateBegin} and payment_date &lt; paymentDateFinish)
+    </if>
+    <if test="drawer != null and drawer != ''">
+      and drawer like '%${drawer}%'
+    </if>
+    ) as yey
+    FROM t_w_finance WHERE deleted = '0' AND node_code = #{nodeCode}
+    GROUP BY money
   </select>
 
 </mapper>

@@ -99,6 +99,10 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
   @Override
   public ApiResponse queryPageFinance(JSONObject jsonObject, String nodeCode) {
     ApiResponse response = new ApiResponse();
+    if (null == jsonObject || StringUtils.isBlank(nodeCode)) {
+      response.setMessage("系统错误");
+      return response;
+    }
     Map<String, Object> map = new LinkedHashMap<>(10);
     //    查询条件
 //    缴费单位
@@ -155,21 +159,53 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
     List<Finance> templates = this.baseMapper
         .queryList(currPage, pageSize, nodeCode, unitName, paymentDateBegin, paymentDateFinish,
             money, invoiceState, drawer);
+//    查询未开票金额和已开票金额
+    List<String> sumMoney = this.baseMapper
+        .countMoney(unitName, paymentDateBegin, paymentDateFinish, drawer, nodeCode);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
     map.put("current", currPage);
     map.put("records", templates);
-    response.setCode(200);
-    response.setMessage("分页查询成功");
+    map.put("sumMoney",sumMoney);
     response.setData(map);
     return response;
   }
 
   @Override
-  public ApiResponse countMoney(String nodeCode) {
+  public ApiResponse countMoney(JSONObject jsonObject, String nodeCode) {
     ApiResponse response = new ApiResponse();
-    List<String> money = this.baseMapper.countMoney(nodeCode);
+    if (null == jsonObject || StringUtils.isBlank(nodeCode)) {
+      response.setMessage("系统错误");
+      return response;
+    }
+
+    //    缴费单位
+    String unitName = "";
+    if (null != jsonObject.getString("unitName")) {
+      unitName = jsonObject.getString("unitName").trim();
+    }
+
+//    到账时间开始
+    Date paymentDateBegin = null;
+    if (null != jsonObject.getDate("paymentDateBegin")) {
+      paymentDateBegin = jsonObject.getDate("paymentDateBegin");
+    }
+
+//    到账时间结束
+    Date paymentDateFinish = null;
+    if (null != jsonObject.getDate("paymentDateFinish")) {
+      paymentDateFinish = jsonObject.getDate("paymentDateFinish");
+    }
+
+//    开票人
+    String drawer = "";
+    if (null != jsonObject.getString("drawer")) {
+      drawer = jsonObject.getString("drawer").trim();
+    }
+
+    List<String> money = this.baseMapper
+        .countMoney(unitName, paymentDateBegin, paymentDateFinish, drawer, nodeCode);
     response.setData(money);
     return response;
   }

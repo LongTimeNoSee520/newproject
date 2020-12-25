@@ -59,11 +59,19 @@ public interface FinanceMapper extends BaseMapper<Finance> {
       @Param("paymentDateFinish") Date paymentDateFinish, @Param("money") String money,
       @Param("invoiceState") String invoiceState, @Param("drawer") String drawer);
 
+
   /**
    * 查询未开票金额和已开票金额
-   *
-   * @param nodeCode 节点编码
+   * @param nodeCode          节点编码
+   * @param unitName          单位名称
+   * @param paymentDateBegin  开始时间
+   * @param paymentDateFinish 结束时间
+   * @param drawer            开票人
    * @return 查询结果
    */
-  List<String> countMoney(@Param("nodeCode") String nodeCode);
+  List<String> countMoney(@Param("unitName") String unitName,
+      @Param("paymentDateBegin") Date paymentDateBegin,
+      @Param("paymentDateFinish") Date paymentDateFinish,
+      @Param("drawer") String drawer,
+      @Param("nodeCode") String nodeCode);
 }

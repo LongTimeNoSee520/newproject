@@ -161,24 +161,24 @@ public class FinanceController {
   }
 
 
-  @RequestMapping(value = "countMoney", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation("统计金额")
-  public ApiResponse countMoney(@RequestHeader("token") String token) {
-    ApiResponse response = new ApiResponse();
-    User user = jwtUtil.getUserByToken(token);
-    if (user == null) {
-      response.setMessage("统计金额失败");
-      return response;
-    }
-    try {
-      response = financeService.countMoney(user.getNodeCode());
-      return response;
-    } catch (Exception e) {
-      response.setCode(500);
-      response.setMessage("统计金额失败查询异常");
-      log.error("统计金额失败查询错误,errMsg==={}", e.getMessage());
-      e.printStackTrace();
-    }
-    return response;
-  }
+//  @RequestMapping(value = "countMoney", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+//  @ApiOperation("统计金额")
+//  public ApiResponse countMoney(@RequestBody JSONObject jsonObject,@RequestHeader("token") String token) {
+//    ApiResponse response = new ApiResponse();
+//    User user = jwtUtil.getUserByToken(token);
+//    if (user == null) {
+//      response.setMessage("统计金额失败");
+//      return response;
+//    }
+//    try {
+//      response = financeService.countMoney(jsonObject,user.getNodeCode());
+//      return response;
+//    } catch (Exception e) {
+//      response.setCode(500);
+//      response.setMessage("统计金额失败查询异常");
+//      log.error("统计金额失败查询错误,errMsg==={}", e.getMessage());
+//      e.printStackTrace();
+//    }
+//    return response;
+//  }
 }

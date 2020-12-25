@@ -54,5 +54,5 @@ public interface FinanceService extends IService<Finance> {
    * @param nodeCode 节点编码
    * @return 响应结果
    */
-  ApiResponse countMoney(String nodeCode);
+  ApiResponse countMoney(JSONObject jsonObject,String nodeCode);
 }
