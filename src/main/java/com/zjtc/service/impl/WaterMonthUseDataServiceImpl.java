@@ -29,6 +29,9 @@ public class WaterMonthUseDataServiceImpl extends
     for (WaterMonthUseData waterMonthUseData : dataList){
       ids.add(waterMonthUseData.getId());
     }
+    if (ids.isEmpty()){
+      return false;
+    }
     return this.baseMapper.updateWaterMonthUseData(ids);
   }
 

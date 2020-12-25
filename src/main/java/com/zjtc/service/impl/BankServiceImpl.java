@@ -29,6 +29,9 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
     for (Bank bank : banks) {
       ids.add(bank.getId());
     }
+    if (ids.isEmpty()){
+      return false;
+    }
     return this.baseMapper.deletedBank(ids);
   }
 

@@ -33,6 +33,9 @@ public class WaterUseDataServiceImpl extends
     for (WaterUseData waterUseData1 : waterUseData) {
       list.add(waterUseData1.getId());
     }
+    if (list.isEmpty()){
+      return false;
+    }
     return this.baseMapper.deletedUnit(list);
   }
 

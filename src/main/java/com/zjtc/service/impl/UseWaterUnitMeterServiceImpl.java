@@ -51,10 +51,13 @@ public class UseWaterUnitMeterServiceImpl extends
     for (UseWaterUnitMeter useWaterUnitMeter : meters) {
       ids.add(useWaterUnitMeter.getId());
     }
+    if (ids.isEmpty()) {
+      return false;
+    }
     int integer = this.baseMapper.deleteBatchIds(ids);
-    if (integer > 0){
+    if (integer > 0) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
