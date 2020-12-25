@@ -18,4 +18,8 @@
     </if>
   </select>
 
+  <select id="selectUseWaterUnitMeter" resultMap="UseWaterUnitMeterModel">
+    select * from t_w_use_water_unit_meter where use_water_unitId = #{id}
+  </select>
+
 </mapper>

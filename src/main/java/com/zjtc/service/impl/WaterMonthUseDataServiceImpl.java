@@ -21,27 +21,26 @@ public class WaterMonthUseDataServiceImpl extends
     ServiceImpl<WaterMonthUseDataMapper, WaterMonthUseData> implements
     WaterMonthUseDataService {
 
+
   @Override
-  public boolean deletedUnit(List<String> id) {
-    EntityWrapper<WaterMonthUseData> entityWrapper = new EntityWrapper<>();
-    entityWrapper.in("use_water_unit_id", id);
-    List<WaterMonthUseData> waterMonthUseData = this.baseMapper.selectList(entityWrapper);
-    List<WaterMonthUseData> list = new ArrayList<>();
-    int b = 0;
-    try {
-      for (WaterMonthUseData waterMonthUseData1 : waterMonthUseData) {
-        waterMonthUseData1.setUseWaterUnitId(null);
-        b = this.baseMapper.updateById(waterMonthUseData1);
-      }
-    } catch (Exception e) {
-      log.error("删除单位时删除关联的水使用量月数据的部门id出错");
-      e.printStackTrace();
+  public boolean deletedUnit(String id) {
+    List<WaterMonthUseData> dataList = this.baseMapper.selectWaterMonthUseDataId(id);
+    List<String> ids = new ArrayList<>();
+    for (WaterMonthUseData waterMonthUseData : dataList){
+      ids.add(waterMonthUseData.getId());
     }
-    if (b > 0) {
-      return true;
-    } else {
+    return this.baseMapper.updateWaterMonthUseData(ids);
+  }
+
+  @Override
+  public boolean deletedUnit(List<String> ids) {
+    if (ids.isEmpty()){
       return false;
     }
+    for (String id : ids){
+      this.deletedUnit(id);
+    }
+    return true;
   }
 
   @Override

@@ -2,6 +2,7 @@ package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.base.util.StringUtil;
 import com.zjtc.mapper.BankMapper;
 import com.zjtc.model.Bank;
 import com.zjtc.service.BankService;
@@ -12,8 +13,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @Author: ZhouDaBo
- * @Date: 2020/12/23
- * 银行信息表
+ * @Date: 2020/12/23 银行信息表
  */
 @Service
 public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
@@ -21,44 +21,27 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
 
   @Override
   public boolean deletedBank(String id) {
-    EntityWrapper<Bank> wrapper = new EntityWrapper<>();
-    wrapper.eq("use_water_unit_Id", id);
-    List<Bank> banks = this.selectList(wrapper);
-    Bank bank = new Bank();
-    int result = 0;
-    for (Bank bankss : banks) {
-      bank.setId(bankss.getId());
-      bank.setUseWaterUnitId(null);
-      result = this.baseMapper.updateById(bank);
-    }
-    if (result > 0) {
-      return true;
-    } else {
+    if (StringUtils.isBlank(id)) {
       return false;
     }
+    List<Bank> banks = this.baseMapper.queryByUnitId(id);
+    List<String> ids = new ArrayList<>();
+    for (Bank bank : banks) {
+      ids.add(bank.getId());
+    }
+    return this.baseMapper.deletedBank(ids);
   }
 
   @Override
-  public boolean batchDeletedBank(List<String> id) {
-    EntityWrapper<Bank> wrapper = new EntityWrapper<>();
-    wrapper.in("use_water_unit_Id", id);
-    List<Bank> banks = this.selectList(wrapper);
-    Bank bank = new Bank();
-    List<Bank> list = new ArrayList<>();
-    boolean b = false;
-    for (Bank bankss : banks) {
-      bank.setId(bankss.getId());
-      bank.setUseWaterUnitId(null);
-      list.add(bank);
-      b  = this.updateBatchById(list);
-    }
-    if (b) {
-      return true;
-    } else {
+  public boolean deletedBank(List<String> ids) {
+    if (ids.isEmpty()) {
       return false;
     }
+    for (String id : ids) {
+      this.deletedBank(id);
+    }
+    return true;
   }
-
 
 
   @Override

@@ -23,14 +23,17 @@ public interface UseWaterUnitMeterService extends IService<UseWaterUnitMeter> {
    * @param id 部门id
    * @return 是否删除成功
    */
+  boolean deletedUseWaterUnitMeter(String id);
+
+  /**
+   * 删除部门时删除关联的水表
+   * @param id 部门id
+   * @return 是否删除成功
+   */
  boolean deletedUseWaterUnitMeter(List<String> id);
 
-//  /**
-//   * 删除关联的水表
-//   * @param id 部门id
-//   * @return 是否删除成功
-//   */
-//  boolean batchDeletedUseWaterUnitMeter(String id);
+
+
 
   /**
    * 查询水表信息

@@ -54,11 +54,11 @@ public class Bank extends Model<Bank> {
 
   @ApiModelProperty(value = "是否他行")
   @TableField(value = "other_bank", exist = true)
-  private char otherBank;
+  private String otherBank;
 
   @ApiModelProperty(value = "签约是否成功")
   @TableField(value = "signed", exist = true)
-  private char signed;
+  private String signed;
 
   @ApiModelProperty(value = "是否主账号")
   @TableField(value = "main", exist = true)

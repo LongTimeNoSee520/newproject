@@ -22,4 +22,18 @@ public interface WaterMonthUseDataMapper extends BaseMapper<WaterMonthUseData> {
    * @return 水表集合
    */
   List<WaterMonthUseData> selectWaterMonthUseData(@Param("useWaterUnitId") String useWaterUnitId,@Param("nodeCode") String nodeCode);
+
+  /**
+   * 根据单位id查询水使用量月数据相关数据
+   * @param id 单位id
+   * @return 水使用量月数据数据集
+   */
+  List<WaterMonthUseData> selectWaterMonthUseDataId(@Param("id") String id);
+
+  /**
+   * 删除
+   * @param ids 删除单位(将水使用量月数据的部门id清空)
+   * @return 删除结果
+   */
+ boolean updateWaterMonthUseData(@Param("ids") List<String> ids);
 }

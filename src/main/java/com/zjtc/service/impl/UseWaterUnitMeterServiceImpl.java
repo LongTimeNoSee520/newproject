@@ -5,10 +5,10 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.mapper.UseWaterUnitMeterMapper;
 import com.zjtc.model.UseWaterUnitMeter;
 import com.zjtc.service.UseWaterUnitMeterService;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @Author: ZhouDaBo
@@ -45,20 +45,31 @@ public class UseWaterUnitMeterServiceImpl extends
   }
 
   @Override
-  @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
-  public boolean deletedUseWaterUnitMeter(List<String> id) {
-    EntityWrapper<UseWaterUnitMeter> wrapper = new EntityWrapper<>();
-    wrapper.in("use_water_unitId", id);
-    List<UseWaterUnitMeter> meters = this.selectList(wrapper);
-    int integer = 0;
-    for (UseWaterUnitMeter unitMeter : meters) {
-      integer = this.baseMapper.deleteById(unitMeter.getId());
+  public boolean deletedUseWaterUnitMeter(String id) {
+    List<UseWaterUnitMeter> meters = this.baseMapper.selectUseWaterUnitMeter(id);
+    List<String> ids = new ArrayList<>();
+    for (UseWaterUnitMeter useWaterUnitMeter : meters) {
+      ids.add(useWaterUnitMeter.getId());
     }
-    if (integer > 0) {
+    int integer = this.baseMapper.deleteBatchIds(ids);
+    if (integer > 0){
       return true;
-    } else {
+    }else{
       return false;
     }
+  }
+
+  @Override
+  public boolean deletedUseWaterUnitMeter(List<String> ids) {
+    if (ids.isEmpty()) {
+      return false;
+    }
+    for (String id : ids) {
+      this.deletedUseWaterUnitMeter(id);
+    }
+    return true;
+
+
   }
 
 

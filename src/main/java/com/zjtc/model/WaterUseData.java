@@ -41,7 +41,7 @@ public class WaterUseData extends Model<WaterUseData> {
 
   @ApiModelProperty(value = "单位地址")
   @TableField(value = "unit_addresss", exist = true)
-  private String unitAddress;//单位地址
+  private String unitAddresss;//单位地址
 
   @ApiModelProperty(value = "使用年份")
   @TableField(value = "use_year", exist = true)

@@ -25,7 +25,7 @@ public interface BankService extends IService<Bank> {
    * @param ids 部门id
    * @return 是否删除成功
    */
-  boolean batchDeletedBank(List<String> ids);
+  boolean deletedBank(List<String> ids);
 
 
   /**

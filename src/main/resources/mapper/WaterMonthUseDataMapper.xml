@@ -68,4 +68,17 @@
     ORDER BY
     waterNumber DESC;
   </select>
+
+
+  <select id="selectWaterMonthUseDataId" resultMap="WaterMonthUseDataModel">
+    select * from t_w_water_month_use_data where use_water_unit_id = #{id}
+  </select>
+
+  <update id="updateWaterMonthUseData">
+      update t_w_water_month_use_data set use_water_unit_id = null
+      WHERE id IN
+      <foreach collection="ids" item="id" separator="," open="(" close=")">
+        #{id}
+      </foreach>
+  </update>
 </mapper>
