@@ -95,6 +95,10 @@ public class WaterUseData extends Model<WaterUseData> {
   @TableField(value = "type", exist = true)
   private String type;//类型
 
+  @ApiModelProperty(value = "备注")
+  @TableField(value = "remarks", exist = true)
+  private String remarks;//类型
+
   @Override
   protected Serializable pkVal() {
     return null;
