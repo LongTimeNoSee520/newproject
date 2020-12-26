@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -32,17 +33,17 @@ public class UseWaterUnitRef extends Model<UseWaterUnitRef> {
   @TableField(value = "node_code", exist = true)
   private String nodeCode;
 
-  @ApiModelProperty(value = "单位id")
+  @ApiModelProperty(value = "父级单位编号")
   @TableField(value = "use_water_unit_id", exist = true)
   private String useWaterUnitId;
 
-  @ApiModelProperty(value = "关联单位id")
+  @ApiModelProperty(value = "单位编号")
   @TableField(value = "use_water_unit_id_ref", exist = true)
   private String useWaterUnitIdRef;
 
   @ApiModelProperty(value = "创建时间")
   @TableField(value = "create_time", exist = true)
-  private String createTime;
+  private Date createTime;
 
   @ApiModelProperty(value = "预留字段1")
   @TableField(value = "exp1", exist = true)

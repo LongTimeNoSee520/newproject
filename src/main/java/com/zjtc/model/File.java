@@ -22,7 +22,7 @@ import lombok.experimental.Accessors;
 @Data
 @TableName(value = "t_file")
 @Accessors(chain = true)
-@ApiModel(value = "数据字典项", description = "数据字典项")
+@ApiModel(value = "附件", description = "附件")
 @EqualsAndHashCode(callSuper = true)
 public class File extends Model<File> {
 

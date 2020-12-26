@@ -117,6 +117,26 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     return result;
   }
 
+  @Override
+  public boolean removeByBusinessId(String businessId) {
+    EntityWrapper entityWrapper=new EntityWrapper();
+    entityWrapper.eq("business_id",businessId);
+    File file=new File();
+    file.setDeleted("1");
+    file.setBusinessId("");
+    return update(file,entityWrapper);
+  }
+
+  @Override
+  public boolean removeByBusinessIds(List<String> businessIds) {
+    EntityWrapper entityWrapper=new EntityWrapper();
+    entityWrapper.eq("business_id",businessIds);
+    File file=new File();
+    file.setDeleted("1");
+    file.setBusinessId("");
+    return update(file,entityWrapper);
+  }
+
 
   @Override
   public boolean removeBusinessId(String fileId) {

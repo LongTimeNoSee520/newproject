@@ -7,6 +7,8 @@ import com.zjtc.mapper.UseWaterUnitRefMapper;
 import com.zjtc.model.UseWaterUnitRef;
 import com.zjtc.service.UseWaterUnitRefService;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,33 +28,43 @@ public class UseWaterUnitRefServiceImpl extends
   private List<String> sum;
 
   @Override
-  public List<String> findIdList(String id) {
+  public List<String> findIdList(String id, String nodeCode) {
+    /**1.先根据当前单位id，查询出当前的根节点*/
+    findPrent(id, nodeCode);
     sum = new ArrayList<>();
-    sum.add(id);
+    sum.add(rootId);
+    //根据根节点遍历树
     //查询当前单位id得所有关联单位id
     Wrapper entityWrapper = new EntityWrapper();
     entityWrapper.eq("use_water_unit_id", id);
-    entityWrapper.setSqlSelect("use_water_unit_id_ref");
-    List<String> result = this.selectList(entityWrapper);
-    if (!result.isEmpty()) {
+    List<UseWaterUnitRef> useWaterUnitRefs = this.selectList(entityWrapper);
+    List<String> result =new ArrayList<>();
+    if (!useWaterUnitRefs.isEmpty()) {
+      for(UseWaterUnitRef item:useWaterUnitRefs ){
+        result.add(item.getUseWaterUnitIdRef());
+      }
       //递归查询出所有关联单位id
       recursion(result);
-      }
+    }
     //去重
-    ArrayList<String> numbersList = new ArrayList<>(sum);
-    List<String> ids = numbersList.stream().distinct().collect(Collectors.toList());
-    return ids;
+//    ArrayList<String> numbersList = new ArrayList<>(sum);
+//    List<String> ids = numbersList.stream().distinct().collect(Collectors.toList());
+    return sum;
   }
 
   @Override
-  public List<Map<String, Object>> findAll(String id) {
-    /**先查出所有的单位id*/
-   List<String> ids= findIdList(id);
-   //排己
-    ids.remove(id);
-    /**查询相关编号信息*/
-    /**todo:水表档案号显示多个？*/
-    return null;
+  public boolean save(String useWaterUnitId, String useWaterUnitIdRef, String nodeCode) {
+    UseWaterUnitRef useWaterUnitRef = new UseWaterUnitRef();
+    useWaterUnitRef.setNodeCode(nodeCode);
+    useWaterUnitRef.setCreateTime(new Date());
+    useWaterUnitRef.setUseWaterUnitId(useWaterUnitId);
+    useWaterUnitRef.setUseWaterUnitIdRef(useWaterUnitIdRef);
+    return this.insert(useWaterUnitRef);
+  }
+
+  @Override
+  public boolean deleteBatch(List<String> ids) {
+    return false;
   }
 
   private void recursion(List<String> param) {
@@ -62,16 +74,33 @@ public class UseWaterUnitRefServiceImpl extends
     for (String item : param) {
       sum.add(item);
       entityWrapper.eq("use_water_unit_id", item);
-      entityWrapper.setSqlSelect("use_water_unit_id_ref");
-      List<String> result = this.selectList(entityWrapper);
-      if (result.size() > 0 && null !=refList) {
-        refList.addAll(result);
+      List<UseWaterUnitRef> result = this.selectList(entityWrapper);
+      if (result.size() > 0 && StringUtils.isNotBlank(result.get(0).getUseWaterUnitIdRef())) {
+        refList.add(result.get(0).getUseWaterUnitIdRef());
       }
     }
     if (refList.isEmpty()) {
       return;
     } else {
       recursion(refList);
+    }
+  }
+
+  private String rootId=null;
+  /**
+   * 逆向递归查询当前单位id在编号关联数据中的根节点
+   */
+  private void findPrent(String id, String nodeCode) {
+    String param=null;
+    Wrapper wrapper = new EntityWrapper();
+    wrapper.eq("node_code", nodeCode);
+    wrapper.eq("use_water_unit_id_ref", id);
+    List<UseWaterUnitRef> result = this.selectList(wrapper);
+    if (!result.isEmpty()) {
+      findPrent(result.get(0).getUseWaterUnitId(), nodeCode);
+    }else{
+      rootId=id;
+     return;
     }
   }
 

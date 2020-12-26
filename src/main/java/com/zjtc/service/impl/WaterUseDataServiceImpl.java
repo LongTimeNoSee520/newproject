@@ -49,4 +49,9 @@ public class WaterUseDataServiceImpl extends
     }
     return true;
   }
+
+  @Override
+  public List<Integer> queryYear(String nodeCode) {
+    return  this.baseMapper.queryYear(nodeCode);
+  }
 }

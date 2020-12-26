@@ -124,7 +124,7 @@ public class UseWaterBasePlanController {
   }
 
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  @ApiOperation(value = "短信分页条件查询")
+  @ApiOperation(value = "用水基建计划分页条件查询")
   public ApiResponse queryPage(@RequestHeader("token") String token,
       @ApiParam("{\"current\":\"当前页,数字类型\",\n"
           + "\"size\":\"每页条数,数字类型\",\n"
@@ -133,13 +133,13 @@ public class UseWaterBasePlanController {
           + "\"planYear\":\"查询年份,数字类型\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
-    log.debug("短信分页条件查询，参数param==={" + jsonObject.toString() + "}");
+    log.debug("用水基建计划分页条件查询，参数param==={" + jsonObject.toString() + "}");
     try {
       User user =  jwtUtil.getUserByToken(token);
       Map<String, Object> result = useWaterBasePlanService.queryPage(user,jsonObject);
       response.setData(result);
     } catch (Exception e) {
-      log.error("短信分页条件查询失败,errMsg==={}" + e.getMessage());
+      log.error("用水基建计划分页条件查询失败,errMsg==={}" + e.getMessage());
       response.recordError(500);
     }
     return response;

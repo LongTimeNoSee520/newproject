@@ -40,8 +40,8 @@ public class WaterUseData extends Model<WaterUseData> {
   private String unitNames;//单位名称
 
   @ApiModelProperty(value = "单位地址")
-  @TableField(value = "unit_addresss", exist = true)
-  private String unitAddresss;//单位地址
+  @TableField(value = "unit_address", exist = true)
+  private String unitAddress;//单位地址
 
   @ApiModelProperty(value = "使用年份")
   @TableField(value = "use_year", exist = true)
@@ -94,6 +94,10 @@ public class WaterUseData extends Model<WaterUseData> {
   @ApiModelProperty(value = "类型")
   @TableField(value = "type", exist = true)
   private String type;//类型
+
+  @ApiModelProperty(value = "备注")
+  @TableField(value = "remarks", exist = true)
+  private String remarks;//类型
 
   @Override
   protected Serializable pkVal() {
