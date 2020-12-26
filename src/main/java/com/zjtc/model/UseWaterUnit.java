@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -47,17 +46,25 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
   @TableField(value = "unit_address", exist = true)
   private String unitAddress;
 
-  @ApiModelProperty(value = "所属行业")
+  @ApiModelProperty(value = "所属行业id")
   @TableField(value = "industry", exist = true)
   private String industry;
 
   @ApiModelProperty(value = "所属行业名称")
-  @TableField( exist = true)
+  @TableField( exist = false)
   private String industryName;
 
-  @ApiModelProperty(value = "邮编")
-  @TableField(value = "zip_code", exist = true)
-  private String zipCode;
+  @ApiModelProperty(value = "邮寄名称")
+  @TableField(value = "zip_name", exist = true)
+  private String zipName;
+
+  @ApiModelProperty(value = "邮寄地址")
+  @TableField(value = "zip_address", exist = true)
+  private String zipAddress;
+
+  @ApiModelProperty(value = "开票单位")
+  @TableField(value = "invoice_unit_name", exist = true)
+  private String invoiceUnitName;
 
   @ApiModelProperty(value = "是否是节水型单位,0:否，1是")
   @TableField(value = "save_unit_type", exist = true)
@@ -65,7 +72,7 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
 
   @ApiModelProperty(value = "是否已删除,0：否，1：是")
   @TableField(value = "deleted", exist = true)
-  private String deleted;
+  private String deleted ;
 
   @ApiModelProperty(value = "删除时间")
   @TableField(value = "delete_time", exist = true)
@@ -132,15 +139,23 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
 
   @ApiModelProperty(value = "联系人信息")
   @TableField( exist = false)
-  private List<User> userList;
+  private List<Contacts> contactsList;
 
   @ApiModelProperty(value = "责任书信息")
   @TableField( exist = false)
   private List<File> sysFile;
 
-//  @ApiModelProperty(value = "用水定额信息")
-//  @TableField( exist = false)
-//  private List<quota> quotaFile;
+  @ApiModelProperty(value = "用水定额信息")
+  @TableField( exist = false)
+  private List<UseWaterQuota> quotaFile;
+
+  @ApiModelProperty(value = "相关编号信息")
+  @TableField( exist = false)
+  private List<UseWaterUnitRef> useWaterUnitRefList;
+
+  @ApiModelProperty(value = "相关编号")
+  @TableField( exist = false)
+  private String  useWaterUnitIdRef;
 
   @Override
   protected Serializable pkVal() {

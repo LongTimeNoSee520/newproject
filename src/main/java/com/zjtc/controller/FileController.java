@@ -88,7 +88,7 @@ public class FileController {
           sysAttrFile.setCreaterId(user.getId());
           sysAttrFile.setDeleted("0");
           /**Todo: node从token中获取*/
-          //sysAttrFile.setNodeCode();
+          sysAttrFile.setNodeCode(user.getNodeCode());
           /**附件表新增数据*/
           fileService.insert(sysAttrFile);
           Map<String, Object> result = new HashMap<>();

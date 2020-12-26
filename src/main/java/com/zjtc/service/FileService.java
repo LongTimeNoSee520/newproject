@@ -50,4 +50,12 @@ public interface FileService extends IService<File> {
    * 更新附件业务ID
    */
   boolean updateBusinessId(String businessId, List<File> sysAttrFiles);
+  /**
+   * 根据单个业务id批量删除附件
+   */
+  boolean removeByBusinessId(String businessId);
+  /**
+   * 根据多个业务id批量删除附件
+   */
+  boolean removeByBusinessIds(List<String> businessId);
 }
