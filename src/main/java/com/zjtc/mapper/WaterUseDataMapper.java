@@ -27,4 +27,12 @@ public interface WaterUseDataMapper extends BaseMapper<WaterUseData> {
    * @return 删除结果
    */
   boolean deletedUnit(@Param("ids") List<String> ids);
+
+  /**
+   * 查询当前nodeCode下可以选择的年份
+   * @param nodeCode 节点编码
+   * @return 结果集
+   */
+  List<Integer> queryYear(@Param("nodeCode") String nodeCode);
+
 }

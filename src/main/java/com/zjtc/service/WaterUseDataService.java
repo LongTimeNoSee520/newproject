@@ -25,4 +25,11 @@ public interface WaterUseDataService extends IService<WaterUseData> {
    * @return 删除是否成功
    */
   boolean deletedUnit(List<String> ids);
+
+  /**
+   * 查询当前nodeCode下可以选择的年份
+   * @param nodeCode 节点编码
+   * @return 结果集
+   */
+  List<Integer> queryYear( String nodeCode);
 }

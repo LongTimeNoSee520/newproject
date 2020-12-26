@@ -8,7 +8,7 @@
     <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
     <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
     <result column="unit_names" property="unitNames" jdbcType="VARCHAR"/>
-    <result column="unit_addresss" property="unitAddresss" jdbcType="VARCHAR"/>
+    <result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
     <result column="use_year" property="useYear" jdbcType="INTEGER"/>
     <result column="use_month" property="useMonth" jdbcType="INTEGER"/>
     <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
@@ -36,4 +36,21 @@
       #{id}
     </foreach>
   </update>
+
+
+  <select id="queryYear" resultType="int">
+    SELECT DISTINCT
+    t1.use_year AS useYear
+    FROM
+    (
+    SELECT
+    use_year
+    FROM
+    t_w_water_use_data
+    WHERE
+    node_code = #{nodeCode}
+    ) t1
+    ORDER BY
+    t1.use_year ASC
+  </select>
 </mapper>

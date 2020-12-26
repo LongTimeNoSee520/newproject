@@ -26,7 +26,7 @@
     <result column="sector" property="sector" jdbcType="VARCHAR"/>
     <result column="water_use_kinds" property="waterUseKinds" jdbcType="VARCHAR"/>
     <result column="unit_names" property="unitNames" jdbcType="VARCHAR"/>
-    <result column="unitAddresss" property="unit_addresss" jdbcType="VARCHAR"/>
+    <result column="unitAddress" property="unit_address" jdbcType="VARCHAR"/>
     <result column="waterNumber" property="waterNumber" jdbcType="VARCHAR"/>
   </resultMap>
 
@@ -55,7 +55,7 @@
     sector,
     water_use_kinds,
     unit_names,
-    unit_addresss,
+    unit_address,
     ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + october_count + november_count + december_count ) AS waterNumber
     FROM
     t_w_water_month_use_data
