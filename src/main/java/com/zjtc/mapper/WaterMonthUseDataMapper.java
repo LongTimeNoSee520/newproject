@@ -1,9 +1,11 @@
 package com.zjtc.mapper;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.WaterMonthUseData;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -36,4 +38,16 @@ public interface WaterMonthUseDataMapper extends BaseMapper<WaterMonthUseData> {
    * @return 删除结果
    */
  boolean updateWaterMonthUseData(@Param("ids") List<String> ids);
+
+  /**
+   * 分页
+   */
+  List<Map<String,Object>> queryPage(JSONObject jsonObject);
+
+  /**
+   * 分页查询出的数据总条数
+   * @param jsonObject
+   * @return
+   */
+  long queryListTotal(JSONObject jsonObject);
 }

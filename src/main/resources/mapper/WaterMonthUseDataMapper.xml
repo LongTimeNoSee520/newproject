@@ -9,24 +9,24 @@
     <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
     <result column="use_year" property="useYear" jdbcType="VARCHAR"/>
     <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
-    <result column="january_count" property="januaryCount" jdbcType="VARCHAR"/>
-    <result column="february_count" property="februaryCount" jdbcType="VARCHAR"/>
-    <result column="march_count" property="marchCount" jdbcType="VARCHAR"/>
-    <result column="may_count" property="mayCount" jdbcType="VARCHAR"/>
-    <result column="june_count" property="juneCount" jdbcType="VARCHAR"/>
-    <result column="july_count" property="julyCount" jdbcType="VARCHAR"/>
-    <result column="august_count" property="augustCount" jdbcType="VARCHAR"/>
-    <result column="september_count" property="septemberCount" jdbcType="VARCHAR"/>
-    <result column="october_count" property="octoberCount" jdbcType="VARCHAR"/>
-    <result column="november_count" property="novemberCount" jdbcType="VARCHAR"/>
-    <result column="december_count" property="decemberCount" jdbcType="VARCHAR"/>
-    <result column="now_price" property="nowPrice" jdbcType="VARCHAR"/>
+    <result column="january_count" property="januaryCount" jdbcType="DOUBLE"/>
+    <result column="february_count" property="februaryCount" jdbcType="DOUBLE"/>
+    <result column="march_count" property="marchCount" jdbcType="DOUBLE"/>
+    <result column="may_count" property="mayCount" jdbcType="DOUBLE"/>
+    <result column="june_count" property="juneCount" jdbcType="DOUBLE"/>
+    <result column="july_count" property="julyCount" jdbcType="DOUBLE"/>
+    <result column="august_count" property="augustCount" jdbcType="DOUBLE"/>
+    <result column="september_count" property="septemberCount" jdbcType="DOUBLE"/>
+    <result column="october_count" property="octoberCount" jdbcType="DOUBLE"/>
+    <result column="november_count" property="novemberCount" jdbcType="DOUBLE"/>
+    <result column="december_count" property="decemberCount" jdbcType="DOUBLE"/>
+    <result column="now_price" property="nowPrice" jdbcType="DOUBLE"/>
     <result column="is_warning" property="isWarning" jdbcType="INTEGER"/>
-    <result column="caliber" property="caliber" jdbcType="INTEGER"/>
+    <result column="caliber" property="caliber" jdbcType="DOUBLE"/>
     <result column="sector" property="sector" jdbcType="VARCHAR"/>
     <result column="water_use_kinds" property="waterUseKinds" jdbcType="VARCHAR"/>
     <result column="unit_names" property="unitNames" jdbcType="VARCHAR"/>
-    <result column="unitAddress" property="unit_address" jdbcType="VARCHAR"/>
+    <result column="unitAddresss" property="unit_addresss" jdbcType="VARCHAR"/>
     <result column="waterNumber" property="waterNumber" jdbcType="VARCHAR"/>
   </resultMap>
 
@@ -55,8 +55,10 @@
     sector,
     water_use_kinds,
     unit_names,
-    unit_address,
-    ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + october_count + november_count + december_count ) AS waterNumber
+    unit_addresss,
+    ( january_count + february_count + march_count + april_count + may_count + june_count +
+    july_count + august_count + september_count + october_count + october_count + november_count +
+    december_count ) AS waterNumber
     FROM
     t_w_water_month_use_data
     WHERE
@@ -75,10 +77,153 @@
   </select>
 
   <update id="updateWaterMonthUseData">
-      update t_w_water_month_use_data set use_water_unit_id = null
-      WHERE id IN
-      <foreach collection="ids" item="id" separator="," open="(" close=")">
-        #{id}
-      </foreach>
+    update t_w_water_month_use_data set use_water_unit_id = null
+    WHERE id IN
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
   </update>
+
+  <select id="queryPage" resultType="java.util.LinkedHashMap">
+    SELECT
+    top ${size}
+    *
+    FROM
+    (
+    select
+    row_number ( ) over ( ORDER BY use_year desc ) AS rownumber,
+    *
+    from
+    (
+    SELECT
+    a.*,
+    b.unit_name,
+    b.unit_code,
+    ( a.january_count + a.february_count + a.march_count + a.april_count
+    + a.may_count + a.june_count + a.july_count + a.august_count + a.september_count
+    + a.october_count + a.october_count + a.november_count + a.december_count ) AS waterNumber
+    FROM
+    t_w_water_month_use_data as a
+    left join t_w_use_water_unit as b on a.use_water_unit_id=b.id
+    WHERE
+    a.node_code=#{nodeCode}
+    )t1
+    where 1=1
+    <!--单位名称-->
+    <if test="null !=unitName">
+      and unit_name like '%${unitName}%'
+    </if>
+    <!--水表档案号-->
+    <if test=" null !=waterMeterCode">
+      and water_meter_code like '%${waterMeterCode}%'
+    </if>
+    <!--水量开始-->
+    <if test=" null !=waterNumberStart">
+      and waterNumber &gt;= #{waterNumberStart}
+    </if>
+    <!--水量结束-->
+    <if test=" null !=waterNumberEnd">
+      and waterNumber &lt;= #{waterNumberEnd}
+    </if>
+    <!--水价开始-->
+    <if test=" null !=nowPriceStart">
+      and now_price &gt;= #{nowPriceStart}
+    </if>
+    <!--水价结束-->
+    <if test=" null !=nowPriceEnd">
+      and now_price &lt;= #{nowPriceEnd}
+    </if>
+    <!--口径开始-->
+    <if test=" null !=caliberStart">
+      and caliber &gt;= #{caliberStart}
+    </if>
+    <!--口径结束-->
+    <if test=" null !=caliberEnd">
+      and caliber &lt;= #{caliberEnd}
+    </if>
+    <!--区段开始-->
+    <if test=" null !=sectorStart">
+      and sector &gt;= #{sectorStart}
+    </if>
+    <!--区段结束-->
+    <if test=" null !=sectorEnd">
+      and sector &lt;= #{sectorEnd}
+    </if>
+    <!--年份-->
+    <if test=" null !=useYear">
+      and use_year = #{useYear}
+    </if>
+    ) temp_row
+    WHERE
+    rownumber > ( ( #{current}- 1 ) * #{size} );
+  </select>
+
+
+  <select id="queryListTotal" resultType="java.lang.Long">
+    select
+    count(*)
+    from
+    (
+    SELECT
+    a.*,
+    b.unit_name,
+    b.unit_code,
+    ( a.january_count + a.february_count + a.march_count + a.april_count
+    + a.may_count + a.june_count + a.july_count + a.august_count + a.september_count
+    + a.october_count + a.october_count + a.november_count + a.december_count ) AS waterNumber
+    FROM
+    t_w_water_month_use_data as a
+    left join t_w_use_water_unit as b on a.use_water_unit_id=b.id
+    WHERE
+    a.node_code=#{nodeCode}
+    ) t1
+    where 1=1
+    <!--单位名称-->
+    <if test="null !=unitName">
+      and unit_name like '%${unitName}%'
+    </if>
+    <!--水表档案号-->
+    <if test=" null !=waterMeterCode">
+      and water_meter_code like '%${waterMeterCode}%'
+    </if>
+    <!--水量开始-->
+    <if test=" null !=waterNumberStart">
+      and waterNumber &gt;= #{waterNumberStart}
+    </if>
+    <!--水量结束-->
+    <if test=" null !=waterNumberEnd">
+      and waterNumber &lt;= #{waterNumberEnd}
+    </if>
+    <!--水价开始-->
+    <if test=" null !=nowPriceStart">
+      and now_price &gt;= #{nowPriceStart}
+    </if>
+    <!--水价结束-->
+    <if test=" null !=nowPriceEnd">
+      and now_price &lt;= #{nowPriceEnd}
+    </if>
+    <!--口径开始-->
+    <if test=" null !=caliberStart">
+      and caliber &gt;= #{caliberStart}
+    </if>
+    <!--口径结束-->
+    <if test=" null !=caliberEnd">
+      and caliber &lt;= #{caliberEnd}
+    </if>
+    <!--区段开始-->
+    <if test=" null !=sectorStart">
+      and sector &gt;= #{sectorStart}
+    </if>
+    <!--区段结束-->
+    <if test=" null !=sectorEnd">
+      and sector &lt;= #{sectorEnd}
+    </if>
+    <!--年份-->
+    <if test=" null !=useYear">
+      and use_year = #{useYear}
+    </if>
+  ;
+
+  </select>
+
 </mapper>

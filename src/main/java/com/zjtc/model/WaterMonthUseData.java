@@ -47,55 +47,55 @@ public class WaterMonthUseData extends Model<WaterMonthUseData> {
 
   @ApiModelProperty(value = "一月水量")
   @TableField(value = "january_count", exist = true)
-  private String januaryCount;
+  private double januaryCount;
 
   @ApiModelProperty(value = "二月水量")
   @TableField(value = "february_count", exist = true)
-  private String februaryCount;
+  private double februaryCount;
 
   @ApiModelProperty(value = "三月水量")
   @TableField(value = "march_count", exist = true)
-  private String marchCount;
+  private double marchCount;
 
   @ApiModelProperty(value = "四月水量")
   @TableField(value = "april_count", exist = true)
-  private String aprilCount;
+  private double aprilCount;
 
   @ApiModelProperty(value = "五月水量")
   @TableField(value = "may_count", exist = true)
-  private String mayCount;
+  private double mayCount;
 
   @ApiModelProperty(value = "六月水量")
   @TableField(value = "june_count", exist = true)
-  private String juneCount;
+  private double juneCount;
 
   @ApiModelProperty(value = "七月水量")
   @TableField(value = "july_count", exist = true)
-  private String julyCount;
+  private double julyCount;
 
   @ApiModelProperty(value = "八月水量")
   @TableField(value = "august_count", exist = true)
-  private String augustCount;
+  private double augustCount;
 
   @ApiModelProperty(value = "九月水量")
   @TableField(value = "september_count", exist = true)
-  private String septemberCount;
+  private double septemberCount;
 
   @ApiModelProperty(value = "十月水量")
   @TableField(value = "october_count", exist = true)
-  private String octoberCount;
+  private double octoberCount;
 
   @ApiModelProperty(value = "十一月水量")
   @TableField(value = "november_count", exist = true)
-  private String novemberCount;
+  private double novemberCount;
 
   @ApiModelProperty(value = "十二月水量")
   @TableField(value = "december_count", exist = true)
-  private String decemberCount;
+  private double decemberCount;
 
   @ApiModelProperty(value = "当前水价")
   @TableField(value = "now_price", exist = true)
-  private String nowPrice;
+  private double nowPrice;
 
   @ApiModelProperty(value = "是否警告")
   @TableField(value = "is_warning", exist = true)
