@@ -2,44 +2,136 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zjtc.mapper.UseWaterUnitMapper">
-  <resultMap id="useWaterUnit_map" type="com.zjtc.model.vo.UseWaterUnitVo">
+  <resultMap id="useWaterUnit_map" type="com.zjtc.model.UseWaterUnit">
     <id column="id" property="id" jdbcType="VARCHAR"/>
-    <result column="nodeCode" property="nodeCode" jdbcType="VARCHAR"/>
-    <result column="unitCode" property="unitCode" jdbcType="VARCHAR"/>
-    <result column="unitName" property="unitName" jdbcType="VARCHAR"/>
-    <result column="unitAddress" property="unitAddress" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
     <result column="industry" property="industry" jdbcType="VARCHAR"/>
-    <result column="zipName" property="zipName" jdbcType="VARCHAR"/>
-    <result column="zipAddress" property="zipAddress" jdbcType="VARCHAR"/>
-    <result column="invoiceUnitName" property="invoiceUnitName" jdbcType="VARCHAR"/>
-    <result column="saveUnitType" property="saveUnitType" jdbcType="VARCHAR"/>
+    <result column="zip_name" property="zipName" jdbcType="VARCHAR"/>
+    <result column="zip_address" property="zipAddress" jdbcType="VARCHAR"/>
+    <result column="invoice_unit_name" property="invoiceUnitName" jdbcType="VARCHAR"/>
+    <result column="save_unit_type" property="saveUnitType" jdbcType="VARCHAR"/>
     <result column="gisX" property="gisX" jdbcType="DOUBLE"/>
     <result column="gisY" property="gisY" jdbcType="DOUBLE"/>
     <result column="imain" property="imain" jdbcType="VARCHAR"/>
     <result column="department" property="department" jdbcType="VARCHAR"/>
-    <result column="areaCountry" property="areaCountry" jdbcType="VARCHAR"/>
+    <result column="area_country" property="areaCountry" jdbcType="VARCHAR"/>
     <result column="abnormal" property="abnormal" jdbcType="VARCHAR"/>
-    <result column="abnormalCause" property="abnormalCause" jdbcType="VARCHAR"/>
-    <collection property="meterList" column="{id=id,nodeCode=nodeCode}"
+    <result column="abnormal_cause" property="abnormalCause" jdbcType="VARCHAR"/>
+    <collection property="meterList" column="{id=id,nodeCode=node_code}"
       select="selectUseWaterUnitMeter"
-      ofType="com.zjtc.model.UseWaterUnitMeter">
+      ofType="com.zjtc.model.WaterMonthUseData">
     </collection>
-    <collection property="bankList" column="{id=id,nodeCode=nodeCode}" select="selectBank"
+    <collection property="bankList" column="{id=id,nodeCode=node_code}" select="selectBank"
       ofType="com.zjtc.model.Bank">
     </collection>
-    <collection property="contactsList" column="{id=id,nodeCode=nodeCode}" select="selectContacts"
+    <collection property="contactsList" column="{id=id,nodeCode=node_code}" select="selectContacts"
       ofType="com.zjtc.model.Contacts">
     </collection>
-    <collection property="sysFile" column="{id=id,nodeCode=nodeCode}" select="selectsysFile"
+    <collection property="sysFile" column="{id=id,nodeCode=node_code}" select="selectsysFile"
       ofType="com.zjtc.model.File">
     </collection>
-    <collection property="quotaFile" column="{id=id,nodeCode=nodeCode}" select="selectUseWaterQuota"
+    <collection property="quotaFile" column="{id=id,nodeCode=node_code}" select="selectUseWaterQuota"
+      ofType="com.zjtc.model.UseWaterQuota">
+    </collection>
+    <collection property="ModifyList" column="{id=id,nodeCode=node_code}" select="selectModifyList"
       ofType="com.zjtc.model.UseWaterQuota">
     </collection>
     <!--<collection property="useWaterUnitRefList" column="{id=id,nodeCode=nodeCode}"
       select="selectuseWaterUnitRef"
       ofType="com.zjtc.model.UseWaterUnitRef">
     </collection>-->
+  </resultMap>
+  <resultMap id="WaterMonthUseDataModel" type="com.zjtc.model.WaterMonthUseData">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="use_year" property="useYear" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="january_count" property="januaryCount" jdbcType="VARCHAR"/>
+    <result column="february_count" property="februaryCount" jdbcType="VARCHAR"/>
+    <result column="march_count" property="marchCount" jdbcType="VARCHAR"/>
+    <result column="may_count" property="mayCount" jdbcType="VARCHAR"/>
+    <result column="june_count" property="juneCount" jdbcType="VARCHAR"/>
+    <result column="july_count" property="julyCount" jdbcType="VARCHAR"/>
+    <result column="august_count" property="augustCount" jdbcType="VARCHAR"/>
+    <result column="september_count" property="septemberCount" jdbcType="VARCHAR"/>
+    <result column="october_count" property="octoberCount" jdbcType="VARCHAR"/>
+    <result column="november_count" property="novemberCount" jdbcType="VARCHAR"/>
+    <result column="december_count" property="decemberCount" jdbcType="VARCHAR"/>
+    <result column="now_price" property="nowPrice" jdbcType="VARCHAR"/>
+    <result column="is_warning" property="isWarning" jdbcType="INTEGER"/>
+    <result column="caliber" property="caliber" jdbcType="INTEGER"/>
+    <result column="sector" property="sector" jdbcType="VARCHAR"/>
+    <result column="water_use_kinds" property="waterUseKinds" jdbcType="VARCHAR"/>
+    <result column="unit_names" property="unitNames" jdbcType="VARCHAR"/>
+    <result column="unitAddresss" property="unit_addresss" jdbcType="VARCHAR"/>
+    <result column="waterNumber" property="waterNumber" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <resultMap id="BaseResultMap_Contacts" type="com.zjtc.model.Contacts">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="contacts" property="contacts" jdbcType="VARCHAR"/>
+    <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
+    <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
+    <result column="main" property="main" jdbcType="VARCHAR"/>
+    <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+    <result column="locked" property="locked" jdbcType="VARCHAR"/>
+    <result column="wrong_times" property="wrongTimes" jdbcType="INTEGER"/>
+  </resultMap>
+
+  <resultMap id="BaseResultMap_UseWaterQuota" type="com.zjtc.model.UseWaterQuota">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="industry" property="industry" jdbcType="VARCHAR"/>
+    <result column="sub_industry" property="subIndustry" jdbcType="VARCHAR"/>
+    <result column="product" property="product" jdbcType="VARCHAR"/>
+    <result column="quota_unit" property="quotaUnit" jdbcType="VARCHAR"/>
+    <result column="quota_value" property="quotaValue" jdbcType="FLOAT"/>
+    <result column="amount" property="amount" jdbcType="FLOAT"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+
+  <resultMap id="bankMapper" type="com.zjtc.model.Bank">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="entrust_unit_name" property="entrustUnitName" jdbcType="VARCHAR"/>
+    <result column="bank_of_deposit" property="bankOfDeposit" jdbcType="VARCHAR"/>
+    <result column="bank_account" property="bankAccount" jdbcType="VARCHAR"/>
+    <result column="people_bank_pay_sys_number" property="peopleBankPaySysNumber" jdbcType="VARCHAR"/>
+    <result column="agreement_number" property="agreementNumber" jdbcType="VARCHAR"/>
+    <result column="other_bank" property="otherBank" jdbcType="VARCHAR"/>
+    <result column="signed" property="signed" jdbcType="VARCHAR"/>
+    <result column="main" property="main" jdbcType="VARCHAR"/>
+    <result column="revocation_date" property="revocationDate" jdbcType="TIMESTAMP"/>
+    <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_Id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <resultMap id="UseWaterUnitModify_map" type="com.zjtc.model.UseWaterUnitModify">
+  <result column="id" property="id" jdbcType="VARCHAR"/>
+  <result column="before_name" property="beforeName" jdbcType="VARCHAR"/>
+  <result column="after_name" property="afterName" jdbcType="VARCHAR"/>
+  <result column="modify_time" property="modifyTime" jdbcType="VARCHAR"/>
+  <result column="modify_person" property="modifyPerson" jdbcType="VARCHAR"/>
+
+  </resultMap>
+
+  <resultMap id="sysAttrFileMap" type="com.zjtc.model.File">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+    <result column="business_id" property="businessId" jdbcType="VARCHAR"/>
+    <result column="FILE_NAME" property="fileName" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
   </resultMap>
 
   <resultMap id="useWaterUnitRefVo_map" type="com.zjtc.model.vo.UseWaterUnitRefVo">
@@ -97,7 +189,13 @@
     FOR XML PATH('')), 1, 1, ''
     ) as water_meter_code,
     <!--责任书编号-->
-    a.responsibility_code,
+    STUFF((
+    SELECT ',' + remark
+    FROM t_file
+    WHERE business_id=a.id
+    and deleted='0'
+    FOR XML PATH('')), 1, 1, ''
+    ) as responsibility_code,
     <!--单位名称-->
     a.unit_name,
     <!--所属行业-->
@@ -170,7 +268,7 @@
     </if>
     <!--责任书编号-->
     <if test=" null !=responsibilityCode">
-    and a.responsibility_code like '%${responsibilityCode}%'
+    and a.id in(select business_id as id from t_file where remark like '%${responsibilityCode}%')
     </if>
     ) temp_row
     WHERE
@@ -236,7 +334,7 @@
     </if>
     <!--责任书编号-->
     <if test=" null !=responsibilityCode">
-      and a.responsibility_code like '%${responsibilityCode}%'
+      and a.id in(select business_id as id from t_file where remark like '%${responsibilityCode}%')
     </if>
   </select>
 
@@ -244,34 +342,48 @@
   <select id="selectById" resultMap="useWaterUnit_map">
     select
     id,
-    node_code as nodeCode,
-    node_code as nodeCode,
-    unit_code as unitCode,
-    unit_name as unitName,
-    unit_address as unitAddress,
-    industry as industry,
-    zip_name as zipName,
-    zip_address as zipAddress,
-    invoice_unit_name as invoiceUnitName,
-    save_unit_type as saveUnitType,
-    gisX as gisX,
-    gisY as gisY,
-    imain as imain,
-    department as department,
-    area_country as areaCountry,
-    abnormal as abnormal,
-    abnormal_cause as abnormalCause
+    node_code ,
+    unit_code ,
+    unit_name ,
+    unit_address ,
+    industry ,
+    zip_name ,
+    zip_address ,
+    invoice_unit_name ,
+    save_unit_type ,
+    gisX ,
+    gisY ,
+    imain ,
+    department ,
+    area_country ,
+    abnormal ,
+    abnormal_cause
     from t_w_use_water_unit
     where id=#{id}
     and node_code=#{nodeCode}
   </select>
-  <select id="selectUseWaterUnitMeter" resultType="com.zjtc.model.UseWaterUnitMeter">
-    select *
-    from t_w_use_water_unit_meter
-    where use_water_unitId =#{id}
-    and node_code=#{nodeCode}
+  <select id="selectUseWaterUnitMeter" resultMap="WaterMonthUseDataModel">
+    SELECT
+    id,
+    use_water_unit_id,
+    use_year,
+    water_meter_code,
+    now_price,
+    node_code,
+    is_warning,
+    caliber,
+    sector,
+    ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + october_count + november_count + december_count ) AS waterNumber
+    FROM
+    t_w_water_month_use_data
+    WHERE
+    node_code = #{nodeCode}
+      AND use_water_unit_id = #{id}
+    AND use_year = DateName(YEAR,GetDate())
+    ORDER BY
+    waterNumber DESC;
   </select>
-  <select id="selectBank" resultType="com.zjtc.model.Bank">
+  <select id="selectBank" resultMap="bankMapper">
     select *
     from t_w_bank
     where use_water_unit_id =#{id}
@@ -279,7 +391,7 @@
     and node_code=#{nodeCode}
     order By main desc
   </select>
-  <select id="selectContacts" resultType="com.zjtc.model.Contacts">
+  <select id="selectContacts" resultMap="BaseResultMap_Contacts">
     select *
     from t_w_use_water_unit_contacts
     where use_water_unit_id =#{id}
@@ -287,7 +399,7 @@
     and node_code=#{nodeCode}
     order by main desc
   </select>
-  <select id="selectsysFile" resultType="com.zjtc.model.File">
+  <select id="selectsysFile" resultMap="sysAttrFileMap">
     select *
     from t_file
     where business_id =#{id}
@@ -295,12 +407,18 @@
     and node_code=#{nodeCode}
     order by create_time desc
   </select>
-  <select id="selectUseWaterQuota" resultType="com.zjtc.model.UseWaterQuota">
+  <select id="selectUseWaterQuota" resultMap="BaseResultMap_UseWaterQuota">
     SELECT  *
     FROM t_w_use_water_quota
     WHERE use_water_unit_id = #{id}
     and node_code=#{nodeCode}
     ORDER BY create_time desc
+  </select>
+  <select id="selectModifyList" resultMap="UseWaterUnitModify_map">
+    select *
+    from t_w_use_water_unit_modify
+    where node_code=#{nodeCode}
+    and use_water_unitId=#{id}
   </select>
   <select id="queryUnitRef" resultMap="useWaterUnitRefVo_map">
     select
@@ -321,6 +439,18 @@
     <foreach item="item" collection="ids" index="index" open="(" separator="," close=")">
       #{item}
     </foreach>
-
+    and id != #{notIn}
   </select>
+
+  <!--同步用水单位信息-->
+  <update id="updateUseWaterUnit">
+    update t_w_use_water_unit
+    set ${sql}
+    where id
+    in
+    <foreach item="id" collection="refs" index="index" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+
+  </update>
 </mapper>

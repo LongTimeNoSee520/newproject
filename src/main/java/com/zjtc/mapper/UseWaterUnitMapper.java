@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
-import com.zjtc.model.vo.UseWaterUnitVo;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -36,12 +35,36 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   long queryListTotal(JSONObject jsonObject);
 
   /**
-   * 详情查询
+   * 详情界面：关联单位查询
+   *
    * @param jsonObject 单位id
-   * @return
    */
-  UseWaterUnitVo selectById(JSONObject jsonObject);
+  UseWaterUnit selectById(JSONObject jsonObject);
 
-  UseWaterUnitRefVo queryUnitRef(@Param("ids") List<String > ids, @Param("nodeCode") String nodeCode,@Param("userId")String UserId);
+  List<UseWaterUnitRefVo> queryUnitRef(@Param("ids") List<String> ids,
+      @Param("nodeCode") String nodeCode, @Param("userId") String UserId,
+      @Param("notIn") String id
+  );
 
+  /**
+   * 用水单位批量
+   *
+   * @param ids 关联的单位编号
+   * @param updateSql 修改sql
+   */
+  boolean updateUseWaterUnit(
+      @Param("refs") List<String> ids,
+      @Param("sql") String updateSql
+  );
+
+  /**
+   * 用水单位批量
+   *
+   * @param ids 关联的单位编号
+   * @param updateSql 修改sql
+   */
+  boolean updateMen(
+      @Param("refs") List<String> ids,
+      @Param("sql") String updateSql
+  );
 }

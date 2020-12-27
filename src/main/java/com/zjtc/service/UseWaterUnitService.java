@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.User;
-import com.zjtc.model.vo.UseWaterUnitVo;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
   /**
    * 根据单位id查询详情
    */
-  UseWaterUnitVo selectById(JSONObject jsonObject,User user);
+  UseWaterUnit selectById(JSONObject jsonObject,User user);
 
   /**
    * 新增用水单位时，查询相关编号
@@ -70,9 +69,8 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @return
    */
   List<Map<String ,Object>> addUnitCodeList(User user);
-  /**
-   * 关联修改(数据同步)
-   * todo:是当前当前单位编码下，修改其他单位编码数据
-   */
-  boolean synData(JSONObject jsonObject);
+
+
+
+
 }

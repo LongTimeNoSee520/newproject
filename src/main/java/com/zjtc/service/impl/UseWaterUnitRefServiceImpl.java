@@ -36,7 +36,7 @@ public class UseWaterUnitRefServiceImpl extends
     //根据根节点遍历树
     //查询当前单位id得所有关联单位id
     Wrapper entityWrapper = new EntityWrapper();
-    entityWrapper.eq("use_water_unit_id", id);
+    entityWrapper.eq("use_water_unit_id", rootId);
     List<UseWaterUnitRef> useWaterUnitRefs = this.selectList(entityWrapper);
     List<String> result =new ArrayList<>();
     if (!useWaterUnitRefs.isEmpty()) {

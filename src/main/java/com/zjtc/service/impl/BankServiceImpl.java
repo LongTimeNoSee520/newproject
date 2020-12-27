@@ -58,6 +58,7 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
       if (i > 0) {
         return false;
       }
+      bank1.setId("");
       bank1.setUseWaterUnitId(useWaterUnitId);
       bank1.setDeleted("0");
       bank1.setNodeCode(nodeCode);

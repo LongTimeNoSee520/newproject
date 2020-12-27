@@ -65,6 +65,10 @@ public class File extends Model<File> {
   @ApiModelProperty(value = "是否删除")
   @TableField(value = "deleted", exist = true)
   private String deleted;
+
+  @ApiModelProperty(value = "备注，保存责任书编号")
+  @TableField(value = "remark", exist = true)
+  private String remark;
   /**
    * 附件加载地址，用于前端回现图片的情况
    */

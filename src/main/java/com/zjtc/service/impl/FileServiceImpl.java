@@ -130,7 +130,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
   @Override
   public boolean removeByBusinessIds(List<String> businessIds) {
     EntityWrapper entityWrapper=new EntityWrapper();
-    entityWrapper.eq("business_id",businessIds);
+    entityWrapper.in("business_id",businessIds);
     File file=new File();
     file.setDeleted("1");
     file.setBusinessId("");

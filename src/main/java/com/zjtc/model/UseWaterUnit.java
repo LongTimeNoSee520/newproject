@@ -5,11 +5,14 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.zjtc.model.vo.RefEditData;
+import com.zjtc.model.vo.UseWaterUnitRefVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -151,11 +154,19 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
 
   @ApiModelProperty(value = "相关编号信息")
   @TableField( exist = false)
-  private List<UseWaterUnitRef> useWaterUnitRefList;
+  private List<UseWaterUnitRefVo> useWaterUnitRefList;
 
   @ApiModelProperty(value = "相关编号")
   @TableField( exist = false)
   private String  useWaterUnitIdRef;
+
+  @ApiModelProperty(value = "关联修改数据")
+  @TableField( exist = false)
+  private RefEditData refEditData;
+
+  @ApiModelProperty(value = "单位名称修改日志")
+  @TableField( exist = false)
+  private List<UseWaterUnitModify> ModifyList;
 
   @Override
   protected Serializable pkVal() {
