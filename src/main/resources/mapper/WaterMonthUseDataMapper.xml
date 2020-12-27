@@ -73,7 +73,32 @@
 
 
   <select id="selectWaterMonthUseDataId" resultMap="WaterMonthUseDataModel">
-    select * from t_w_water_month_use_data where use_water_unit_id = #{id}
+    select
+    id,
+    use_water_unit_id,
+    use_year,
+    water_meter_code,
+    january_count,
+    february_count,
+    march_count,
+    april_count,
+    may_count,
+    june_count,
+    july_count,
+    august_count,
+    september_count,
+    october_count,
+    november_count,
+    december_count,
+    now_price,
+    node_code,
+    is_warning,
+    caliber,
+    sector,
+    water_use_kinds,
+    unit_names,
+    unit_address
+    from t_w_water_month_use_data where use_water_unit_id = #{id}
   </select>
 
   <update id="updateWaterMonthUseData">
