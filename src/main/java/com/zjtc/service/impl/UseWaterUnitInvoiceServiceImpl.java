@@ -51,6 +51,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
       } else {
         unitInvoice.setCreateTime(new Date());
         unitInvoice.setNodeCode(nodeCode);
+        unitInvoice.setDeleted("0");
         unitInvoiceList.add(unitInvoice);
       }
     }
@@ -76,6 +77,8 @@ public class UseWaterUnitInvoiceServiceImpl extends
     }
 //    经手人
     unitInvoice.setDrawer(userName);
+    unitInvoice.setEnabled("0");
+    unitInvoice.setReceived("0");
     boolean b = this.updateById(unitInvoice);
     if (b) {
       response.setCode(200);
@@ -218,6 +221,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
     }
     ArrayList<UseWaterUnitInvoice> list = new ArrayList<>();
     UseWaterUnitInvoice invoice;
+    boolean b = false;
     for (String id : ids) {
       invoice = new UseWaterUnitInvoice();
       invoice.setId(id);
@@ -225,7 +229,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
       invoice.setReceiveTime(new Date());
       list.add(invoice);
     }
-    boolean b = this.updateBatchById(list);
+    b = this.updateBatchById(list);
     if (b) {
       response.setCode(200);
       return response;

@@ -269,7 +269,7 @@ public class UseWaterUnitInvoiceController {
    * @return
    */
   @ResponseBody
-  @ApiOperation(value = "移交票段")
+  @ApiOperation(value = "发票标记")
   @RequestMapping(value = "sign", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse sign(@RequestHeader("token") String token,
       @ApiParam(""
