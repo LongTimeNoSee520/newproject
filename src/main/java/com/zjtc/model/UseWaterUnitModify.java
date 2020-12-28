@@ -29,7 +29,7 @@ public class UseWaterUnitModify extends Model<UseWaterUnitModify> {
   private String id;
 
   @ApiModelProperty(value = "单位id")
-  @TableField(value = "use_water_unitId", exist = true)
+  @TableField(value = "use_water_unit_id", exist = true)
   private String useWaterUnitId;
 
   @ApiModelProperty(value = "节点编码")

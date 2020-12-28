@@ -178,7 +178,12 @@
     FROM
     (
     SELECT
-    row_number ( ) over ( ORDER BY a.create_time asc ) AS rownumber,
+    row_number ( ) over (
+    ORDER BY a.create_time desc
+    <if test="null !=unitCodeRank">
+      ,a.unit_code ${unitCodeRank}
+    </if>
+     ) AS rownumber,
     a.id,
     <!--单位编号-->
     a.unit_code,
@@ -187,6 +192,7 @@
     SELECT ',' + water_meter_code
     FROM t_w_use_water_unit_meter
     WHERE use_water_unit_id=a.id
+    and node_code=#{nodeCode}
     FOR XML PATH('')), 1, 1, ''
     ) as water_meter_code,
     <!--责任书编号-->
@@ -413,7 +419,7 @@
     select *
     from t_w_use_water_unit_modify
     where node_code=#{nodeCode}
-    and use_water_unitId=#{id}
+    and use_water_unit_id=#{id}
   </select>
   <select id="queryUnitRef" resultMap="useWaterUnitRefVo_map">
     select
@@ -423,7 +429,7 @@
     STUFF((
     SELECT ',' + water_meter_code
     FROM t_w_use_water_unit_meter
-    WHERE use_water_unitId=a.id
+    WHERE use_water_unit_id=a.id
     FOR XML PATH('')), 1, 1, ''
     ) as waterMeterCode
     from t_w_use_water_unit as a

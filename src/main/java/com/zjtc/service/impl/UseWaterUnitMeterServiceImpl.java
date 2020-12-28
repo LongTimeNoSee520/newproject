@@ -105,7 +105,7 @@ public class UseWaterUnitMeterServiceImpl extends
   @Override
   public List<UseWaterUnitMeter> selectUseWaterUnitMeter(String useWaterUnitId, String nodeCode) {
     EntityWrapper<UseWaterUnitMeter> wrapper = new EntityWrapper<>();
-    wrapper.eq("use_water_unitId", useWaterUnitId);
+    wrapper.eq("use_water_unit_id", useWaterUnitId);
     wrapper.eq("node_code", nodeCode);
     return this.baseMapper.selectList(wrapper);
   }
