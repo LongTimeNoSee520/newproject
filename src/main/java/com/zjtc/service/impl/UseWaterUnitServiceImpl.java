@@ -132,14 +132,6 @@ public class UseWaterUnitServiceImpl extends
     if (!entity.getMeterList().isEmpty()) {
       useWaterUnitMeterService
           .insertUseWaterUnitMeter(entity.getMeterList(), entity.getId(), user.getNodeCode());
-      //绑定月使用水量表单位水表
-      for (UseWaterUnitMeter item : entity.getMeterList()) {
-        Wrapper entity1 = new EntityWrapper<>();
-        entity1.eq("node_code", user.getNodeCode());
-        entity1.eq("water_meter_code", item.getWaterMeterCode());
-        List<WaterMonthUseData> waterMonthUseData = waterMonthUseDataService.selectList(entity1);
-        waterMonthUseData.get(0).setUseWaterUnitId(entity.getId());
-      }
     }
     /**新增银行数据*/
     if (!entity.getBankList().isEmpty()) {

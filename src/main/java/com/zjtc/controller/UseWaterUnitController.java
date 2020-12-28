@@ -43,7 +43,71 @@ public class UseWaterUnitController {
 
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "用水单位新增")
-  public ApiResponse save(@RequestBody UseWaterUnit useWaterUnit,
+  public ApiResponse save(
+      @ApiParam("{\n"
+          + "    \"unitCode\":\"单位编号，区域码：createAreaCode()接口，序号：createUnitCode()接口\",\n"
+          + "    \"unitName\":\"单位名称\",\n"
+          + "    \"industry\":\"所属行业id，下拉框：\",\n"
+          + "    \"useWaterUnitIdRef\":\"相关编号：下拉框：addUnitCodeList()接口\",\n"
+          + "    \"areaCountry\":\"所属区域，字典码：area_country_code\",\n"
+          + "    \"unitAddress\":\"地址\",\n"
+          + "    \"zipAddress\":\"邮寄地址\",\n"
+          + "    \"zipName\":\"邮寄名称\",\n"
+          + "    \"department\":\"部门\",\n"
+          + "    \"invoiceUnitName\":\"开票单位名称\",\n"
+          + "    \"gisX\":\"坐标X轴\",\n"
+          + "    \"gisY\":\"坐标Y轴\",\n"
+          + "    \"saveUnitType\":\"是否节水单位,0否，1是\",\n"
+          + "    \"meterList\":[\n"
+          + "        {\n"
+          + "            \"waterMeterCode\":\"水表档案号\"\n"
+          + "        }\n"
+          + "    ],\n"
+          + "    \"bankList\":[\n"
+          + "        {\n"
+          + "            \"bankOfDeposit\":\"具体支行\",\n"
+          + "            \"peopleBankPaySysNumber\":\"开户行号\",\n"
+          + "            \"bankAccount\":\"银行帐号\",\n"
+          + "            \"agreementNumber\":\"协议号\",\n"
+          + "            \"entrustUnitName\":\"托收单位名称\",\n"
+          + "            \"focusUserRemark\":\"集中户备注\",\n"
+          + "            \"main\":\"是否是主账号：0否，1是\",\n"
+          + "            \"otherBank\":\"是否他行，0否，1是\",\n"
+          + "            \"signed\":\"是否签约，0否，1是\"\n"
+          + "            \"bankCode\":\"银行代码\"\n"
+          + "        }\n"
+          + "    ],\n"
+          + "    \"contactsList\":[\n"
+          + "        {\n"
+          + "            \"contacts\":\"联系人\",\n"
+          + "            \"main\":\"是否主联系人：0否，1是\",\n"
+          + "            \"mobileNumber\":\"手机号码\",\n"
+          + "            \"phoneNumber\":\"座机电话\"\n"
+          + "        }\n"
+          + "    ],\n"
+          + "    \"quotaFile\":[\n"
+          + "        {\n"
+          + "            \"industry\":\"所属行业id\",\n"
+          + "            \"sub_industry\":\"行业名称\",\n"
+          + "            \"product\":\"产品\",\n"
+          + "            \"quota_unit\":\"定额单位\",\n"
+          + "            \"quota_value\":\"定额值\",\n"
+          + "            \"amount\":\"数量\"\n"
+          + "        }\n"
+          + "    ],\n"
+          + "    \"responsibility_code\":\"责任书编号，取上传附件时输入的责任书编号，多个责任书编号分号隔开\",\n"
+          + "    \"sysFile\":[\n"
+          + "        {\n"
+          + "            \"id\":\"附件id\",\n"
+          + "            \"fileType\":\"文件类型\",\n"
+          + "            \"size\":\"大小\",\n"
+          + "            \"filePath\":\"文件保存路径\",\n"
+          + "            \"fileName\":\"文件名称\",\n"
+          + "            \"deleted\":\"是否删除，0否，1是\"\n"
+          + "        }\n"
+          + "    ]\n"
+          + "}")
+      @RequestBody UseWaterUnit useWaterUnit,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -82,6 +146,7 @@ public class UseWaterUnitController {
 
     return response;
   }
+
   @RequestMapping(value = "delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "用水单位删除")
   public ApiResponse edit(@RequestBody JSONObject jsonObject,
@@ -106,7 +171,7 @@ public class UseWaterUnitController {
 
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "分页")
-  public ApiResponse queryPage(@Param ("{\n"
+  public ApiResponse queryPage(@Param("{\n"
       + "  \"current\":\"1\",\n"
       + "  \"size\":\"2\",\n"
       + "  \"unitCode\":\"单位编号\",\n"
@@ -118,7 +183,7 @@ public class UseWaterUnitController {
       + "  \"mobileMumber\":\"电话号码\",\n"
       + "  \"signed\":\"是否签约：0，否，1是\",\n"
       + "  \"abnormal\":\"是否异常：0，否，1是\"\n"
-      + "}")@RequestBody JSONObject jsonObject,
+      + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -134,15 +199,16 @@ public class UseWaterUnitController {
 
     return response;
   }
+
   @RequestMapping(value = "selectById", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "查询详情")
-  public ApiResponse selectById(@Param("  \"id\":\"单位id\" ")@RequestBody JSONObject jsonObject,
+  public ApiResponse selectById(@Param("  \"id\":\"单位id\" ") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     log.debug("用水单位新增，参数param==={" + jsonObject.toString() + "}");
     if (null != jsonObject && null != user) {
-      UseWaterUnit result = useWaterUnitService.selectById(jsonObject,user);
+      UseWaterUnit result = useWaterUnitService.selectById(jsonObject, user);
       response.setData(result);
     } else {
       response.recordError(500);
@@ -170,9 +236,10 @@ public class UseWaterUnitController {
     return response;
   }
 
-  @RequestMapping(value = "createunitCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  @RequestMapping(value = "createRank", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "新增界面：新增用水单位编号需要的排序号")
-  public ApiResponse createunitCode(@Param("  \"unitCode\":\"单位编号\", ")@RequestBody JSONObject jsonObject,
+  public ApiResponse createRank(
+      @Param("  \"unitCode\":\"单位编号\", ") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -189,7 +256,7 @@ public class UseWaterUnitController {
   }
 
   /**
-   *生成新增用水单位编号需要的区域码
+   * 生成新增用水单位编号需要的区域码
    */
   @RequestMapping(value = "createAreaCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "新增界面：生成新增用水单位编号需要的区域码")
@@ -211,7 +278,7 @@ public class UseWaterUnitController {
   }
 
   /**
-   *根据单位编号查询单位信息
+   * 根据单位编号查询单位信息
    */
   @RequestMapping(value = "selectByUnitCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "根据单位编号查询单位信息")
@@ -222,7 +289,7 @@ public class UseWaterUnitController {
     log.debug("根据单位编号查询单位信息");
     if (null != user) {
       UseWaterUnit result = useWaterUnitService
-          .selectByUnitCode(jsonObject.getString("unitCode"),user);
+          .selectByUnitCode(jsonObject.getString("unitCode"), user);
       response.setData(result);
     } else {
       response.recordError(500);

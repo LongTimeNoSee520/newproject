@@ -80,6 +80,10 @@ public class Bank extends Model<Bank> {
   @TableField(value = "deleted", exist = true)
   private String deleted;
 
+  @ApiModelProperty(value = "银行代码")
+  @TableField(value = "bank_code", exist = true)
+  private String bankCode;
+
   @Override
   protected Serializable pkVal() {
     return null;

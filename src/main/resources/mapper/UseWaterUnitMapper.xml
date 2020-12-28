@@ -114,6 +114,7 @@
     <result column="revocation_date" property="revocationDate" jdbcType="TIMESTAMP"/>
     <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
     <result column="use_water_unit_Id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="bank_code" property="bankCode" jdbcType="VARCHAR"/>
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
   </resultMap>
 
