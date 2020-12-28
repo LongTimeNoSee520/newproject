@@ -195,12 +195,6 @@ public class UseWaterUnitServiceImpl extends
     //类型
     entity.setUnitCodeType(entity.getUnitCode().substring(4, 6));
     this.updateById(entity);
-    //修改水表数据
-    useWaterUnitMeterService.deletedUseWaterUnitMeter(entity.getId());
-    if (!entity.getMeterList().isEmpty()) {
-      useWaterUnitMeterService
-          .insertUseWaterUnitMeter(entity.getMeterList(), entity.getId(), user.getNodeCode());
-    }
     /**修改银行数据*/
     bankService.deletedBank(entity.getId());
     if (!entity.getBankList().isEmpty()) {
@@ -532,7 +526,6 @@ public class UseWaterUnitServiceImpl extends
     }
     return null;
   }
-
   /**
    * 验证单位编号是否重复
    */
