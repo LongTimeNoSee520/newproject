@@ -1,9 +1,11 @@
 package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.UseWaterUnitMeterMapper;
+import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.UseWaterUnitMeter;
 import com.zjtc.model.WaterUseData;
 import com.zjtc.service.UseWaterUnitMeterService;
@@ -11,7 +13,9 @@ import com.zjtc.service.WaterMonthUseDataService;
 import com.zjtc.model.WaterMonthUseData;
 import com.zjtc.service.WaterUseDataService;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -130,5 +134,20 @@ public class UseWaterUnitMeterServiceImpl extends
         .selectWaterUseData(waterMeterCodes);
     response.setData(waterMonthUseDataList);
     return response;
+  }
+
+  @Override
+  public Map<String, String> getMeterMap(String nodeCode) {
+    Map<String,String> result=new HashMap<>();
+    Wrapper wrapper=new EntityWrapper();
+    wrapper.eq("node_code",nodeCode);
+    List<UseWaterUnitMeter> list= this.selectList(wrapper);
+    if(!list.isEmpty()){
+      for(UseWaterUnitMeter item: list){
+        result.put(item.getWaterMeterCode(),item.getUseWaterUnitId());
+      }
+      return result;
+    }
+    return null;
   }
 }
