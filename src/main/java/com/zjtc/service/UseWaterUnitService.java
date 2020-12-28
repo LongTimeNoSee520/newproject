@@ -71,6 +71,12 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
   List<Map<String ,Object>> addUnitCodeList(User user);
 
 
-
+  /**
+   * 通过单位编号查询单位信息
+   * @param unitCode  单位编号
+   * @param user
+   * @return
+   */
+  UseWaterUnit selectByUnitCode(String unitCode,User user);
 
 }

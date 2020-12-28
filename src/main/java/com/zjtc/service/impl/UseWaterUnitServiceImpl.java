@@ -348,7 +348,7 @@ public class UseWaterUnitServiceImpl extends
           useWaterQuotaService.deleteQuotas(idsList);
           for (String item : idsList) {
             useWaterQuotaService
-                .add(entity.getQuotaFile(),item, user.getNodeCode());
+                .add(entity.getQuotaFile(), item, user.getNodeCode());
           }
         }
       }
@@ -445,14 +445,15 @@ public class UseWaterUnitServiceImpl extends
     jsonObject.put("dictCode", AREA_COUNTRY_CODE);
     jsonObject.put("nodeCode", user.getNodeCode());
     jsonObject.put("userId", user.getId());
-    UseWaterUnit useWaterUnit= baseMapper.selectById(jsonObject);
+    UseWaterUnit useWaterUnit = baseMapper.selectById(jsonObject);
     /**查询相关编号信息*/
     if (null != useWaterUnit) {
       List<String> idList = useWaterUnitRefService
           .findIdList(useWaterUnit.getId(), user.getNodeCode());
       if (!idList.isEmpty()) {
         useWaterUnit.setUseWaterUnitRefList(
-            baseMapper.queryUnitRef(idList, user.getNodeCode(), user.getId(),jsonObject.getString("id")));
+            baseMapper.queryUnitRef(idList, user.getNodeCode(), user.getId(),
+                jsonObject.getString("id")));
       }
     }
     return useWaterUnit;
@@ -525,6 +526,19 @@ public class UseWaterUnitServiceImpl extends
     wrapper.in("unit_code_group", param);
     wrapper.setSqlSelect("id,unit_code as unitCode,unit_name as unitName");
     return this.selectList(wrapper);
+  }
+
+  @Override
+  public UseWaterUnit selectByUnitCode(String unitCode, User user) {
+    Wrapper wrapper = new EntityWrapper();
+    wrapper.eq("deleted", "0");
+    wrapper.eq("node_code", user.getNodeCode());
+    wrapper.eq("unit_code", unitCode);
+    List<UseWaterUnit> result = this.selectList(wrapper);
+    if (!result.isEmpty()) {
+      return result.get(0);
+    }
+    return null;
   }
 
   /**

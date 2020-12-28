@@ -12,6 +12,7 @@ import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.service.UseWaterUnitService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -193,6 +194,7 @@ public class UseWaterUnitController {
   @RequestMapping(value = "createAreaCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "新增界面：生成新增用水单位编号需要的区域码")
   public ApiResponse createunitCode(
+      @ApiParam("\"unitCode\":\"单位编号\"")
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -200,7 +202,28 @@ public class UseWaterUnitController {
     if (null != user) {
       String result = useWaterUnitService
           .createAreaCode(user.getNodeCode());
-      response.setData(response);
+      response.setData(result);
+    } else {
+      response.recordError(500);
+    }
+
+    return response;
+  }
+
+  /**
+   *根据单位编号查询单位信息
+   */
+  @RequestMapping(value = "selectByUnitCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  @ApiOperation(value = "根据单位编号查询单位信息")
+  public ApiResponse selectByUnitCode(@RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
+    ApiResponse response = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    log.debug("根据单位编号查询单位信息");
+    if (null != user) {
+      UseWaterUnit result = useWaterUnitService
+          .selectByUnitCode(jsonObject.getString("unitCode"),user);
+      response.setData(result);
     } else {
       response.recordError(500);
     }

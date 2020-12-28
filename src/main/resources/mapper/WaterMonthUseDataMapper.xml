@@ -116,7 +116,14 @@
     FROM
     (
     select
-    row_number ( ) over ( ORDER BY use_year desc ) AS rownumber,
+    row_number ( ) over ( ORDER BY use_year desc
+     <if test="unitCodeRank">
+      ,unit_code ${unitCodeRank}
+     </if>
+     <if test="unitNameRank">
+      ,unit_name ${unitNameRank}
+     </if>
+     ) AS rownumber,
     *
     from
     (
