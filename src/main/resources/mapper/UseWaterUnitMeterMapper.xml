@@ -14,8 +14,8 @@
     SELECT
     unit_name
     FROM
-    t_w_use_water_unit_meter t1
-    INNER JOIN t_w_use_water_unit t2 ON t1.use_water_unitId = t2.id
+    t_w_water_month_use_data t1
+    INNER JOIN t_w_use_water_unit t2 ON t1.use_water_unit_id = t2.id
     WHERE 1 = 1
     <if test="waterMeterCode != null and waterMeterCode != ''">
       and t1.water_meter_code = #{waterMeterCode}
