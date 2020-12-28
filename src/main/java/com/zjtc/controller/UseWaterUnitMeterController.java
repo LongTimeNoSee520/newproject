@@ -64,4 +64,37 @@ public class UseWaterUnitMeterController {
     }
     return response;
   }
+
+  @RequestMapping(value = "backfillData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation("新增时回填水表信息")
+  public ApiResponse selectUseWaterUnitMeterAll(
+      @ApiParam("{\"id\":\n"
+          + "\"当前单位id\"\n"
+          + "\n"
+          + "}")
+      @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
+    ApiResponse response = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    log.info("删除部门,参数param==={" + jsonObject.toJSONString() + "}");
+    if (user == null) {
+      response.recordError("系统异常");
+      return response;
+    }
+    List<String> list = jsonObject.getJSONArray("waterMeterCodes").toJavaList(String.class);
+    if (list.isEmpty()){
+      response.recordError("系统异常");
+      return response;
+    }
+    try {
+      response = unitMeterService.selectUseWaterUnitMeterAll(list, user.getNodeCode());
+      response.setCode(200);
+      return response;
+    } catch (Exception e) {
+      response.setCode(500);
+      response.setMessage("查看用水单位水表信息异常");
+      log.error("查看用水单位水表信息失败,errMsg==={}" + e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
 }

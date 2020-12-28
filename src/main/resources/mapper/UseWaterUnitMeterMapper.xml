@@ -10,8 +10,12 @@
   </resultMap>
 
 
-  <select id="selectWaterMeterCodeWhetherOccupy" resultType="int">
-    select count(1) from t_w_use_water_unit_meter t1
+  <select id="selectWaterMeterCodeWhetherOccupy" resultType="String">
+    SELECT
+    unit_name
+    FROM
+    t_w_use_water_unit_meter t1
+    INNER JOIN t_w_use_water_unit t2 ON t1.use_water_unitId = t2.id
     WHERE 1 = 1
     <if test="waterMeterCode != null and waterMeterCode != ''">
       and t1.water_meter_code = #{waterMeterCode}

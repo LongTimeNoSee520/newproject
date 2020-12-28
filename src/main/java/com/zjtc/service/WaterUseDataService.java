@@ -32,4 +32,11 @@ public interface WaterUseDataService extends IService<WaterUseData> {
    * @return 结果集
    */
   List<Integer> queryYear( String nodeCode);
+
+  /**
+   * 根据水表档案号回填水表信息
+   * @param waterMeterCode 水表档案号集
+   * @return 水表使用量信息
+   */
+  List<WaterUseData> selectWaterUseData(List<String> waterMeterCode);
 }

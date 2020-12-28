@@ -54,4 +54,28 @@
     ORDER BY
     t1.use_year ASC
   </select>
+
+  <select id="selectWaterUseData" resultMap="WaterUseDataModel">
+    select
+    id,
+    use_water_unit_id,
+    use_year,
+    use_month,
+    water_meter_code,
+    water_begin,
+    water_end,
+    water_number,
+    price,
+    caliber,
+    sector,
+    uid,
+    water_use_kinds,
+    unit_address,
+    unit_names,
+    node_code,
+    type,
+    unit_code,
+    remarks
+    from t_w_water_use_data
+  </select>
 </mapper>

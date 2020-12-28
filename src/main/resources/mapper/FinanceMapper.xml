@@ -17,7 +17,7 @@
     <result column="print_time" property="printTime" jdbcType="TIMESTAMP"/>
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
     <result column="invoice_number" property="invoiceNumber" jdbcType="VARCHAR"/>
-    <result column="user_type" property="usertype" jdbcType="VARCHAR"/>
+    <result column="user_type" property="userType" jdbcType="VARCHAR"/>
   </resultMap>
 
 
@@ -28,7 +28,7 @@
     </set>
     WHERE id=#{id}
   </update>
-
+<!--  convert(char(10), GETDATE()-6, 120)-->
   <select id="queryList" parameterType="java.util.Map" resultMap="FinanceModel">
     SELECT TOP
     ${pageSize} c.*
@@ -36,7 +36,20 @@
     (
     SELECT
     row_number () OVER ( ORDER BY [id] ) AS rownumber,
-    *
+    id,
+    node_code,
+    unit_name,
+    money,
+    payment_date,
+    invoice_state,
+    drawer,
+    type,
+    unit_code,
+    print_person,
+    print_time,
+    deleted,
+    invoice_number,
+    user_type
     FROM
     t_w_finance t1 where deleted = '0'
     and t1.node_code = #{nodeCode}
@@ -44,7 +57,7 @@
       and unit_name like '%${unitName}%'
     </if>
     <if test="paymentDateBegin != null and paymentDateFinish != null">
-      and (payment_date &gt; #{paymentDateBegin} and payment_date &lt; paymentDateFinish)
+      and (payment_date &gt;= #{paymentDateBegin} and payment_date  &lt;= #{paymentDateFinish})
     </if>
     <if test="money != null and money != ''">
       and money = #{money}
@@ -70,7 +83,7 @@
       and unit_name like '%${unitName}%'
     </if>
     <if test="paymentDateBegin != null and paymentDateFinish != null">
-      and (payment_date &gt; #{paymentDateBegin} and payment_date &lt; paymentDateFinish)
+      and (payment_date &gt;= #{paymentDateBegin} and payment_date  &lt;= #{paymentDateFinish})
     </if>
     <if test="money != null and money != ''">
       and money = #{money}
@@ -91,7 +104,7 @@
       and unit_name like '%${unitName}%'
     </if>
     <if test="paymentDateBegin != null and paymentDateFinish != null">
-      and (payment_date &gt; #{paymentDateBegin} and payment_date &lt; paymentDateFinish)
+      and (payment_date &gt;= #{paymentDateBegin} and payment_date  &lt;= #{paymentDateFinish})
     </if>
     <if test="drawer != null and drawer != ''">
       and drawer like '%${drawer}%'
@@ -102,14 +115,15 @@
       and unit_name like '%${unitName}%'
     </if>
     <if test="paymentDateBegin != null and paymentDateFinish != null">
-      and (payment_date &gt; #{paymentDateBegin} and payment_date &lt; paymentDateFinish)
+      and (payment_date &gt; #{paymentDateBegin} and payment_date  &lt; #{paymentDateFinish})
     </if>
     <if test="drawer != null and drawer != ''">
       and drawer like '%${drawer}%'
     </if>
-    ) as yey
+    ) as yes
     FROM t_w_finance WHERE deleted = '0' AND node_code = #{nodeCode}
     GROUP BY money
   </select>
+
 
 </mapper>

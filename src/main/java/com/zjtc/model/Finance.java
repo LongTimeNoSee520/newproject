@@ -79,7 +79,7 @@ public class Finance extends Model<Finance> {
 
   @ApiModelProperty(value = "用户类型")
   @TableField(value = "user_type", exist = true)
-  private String usertype;
+  private String userType;
 
 
   @Override

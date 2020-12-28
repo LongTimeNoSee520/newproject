@@ -1,6 +1,7 @@
 package com.zjtc.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterUnitMeter;
 import java.util.List;
 
@@ -32,9 +33,6 @@ public interface UseWaterUnitMeterService extends IService<UseWaterUnitMeter> {
    */
  boolean deletedUseWaterUnitMeter(List<String> id);
 
-
-
-
   /**
    * 查询水表信息
    * @param useWaterUnitId 单位id
@@ -43,5 +41,11 @@ public interface UseWaterUnitMeterService extends IService<UseWaterUnitMeter> {
    */
  List<UseWaterUnitMeter> selectUseWaterUnitMeter(String useWaterUnitId,String nodeCode);
 
-
+  /**
+   * 查询水表信息
+   * @param waterMeterCodes 水表档案号
+   * @param nodeCode 区域编码
+   * @return 水表信息集
+   */
+  ApiResponse selectUseWaterUnitMeterAll(List<String> waterMeterCodes,String nodeCode);
 }

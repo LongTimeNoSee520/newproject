@@ -305,8 +305,8 @@ public class UseWaterUnitInvoiceController {
       + "    \"current\":\"页数\",\n"
       + "    \"size\":\"条数\",\n"
       + "    \"invoiceNumber\":\"发票号\",\n"
-      + "    \"begin\":\"开始票段(Integer(类型)\",\n"
-      + "    \"end\":\"结束票段(Integer(类型)\"\n"
+      + "    \"begin\":\"开始票段(Integer类型)\",\n"
+      + "    \"end\":\"结束票段(Integer类型)\"\n"
       + "    \"enabled\":\"是否作废(0代表否)\",\n"
       + "    \"received\":\"是否领取(0代表否)\",\n"
       + "}\n") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {

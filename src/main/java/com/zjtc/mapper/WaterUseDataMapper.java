@@ -35,4 +35,11 @@ public interface WaterUseDataMapper extends BaseMapper<WaterUseData> {
    */
   List<Integer> queryYear(@Param("nodeCode") String nodeCode);
 
+  /**
+   * 根据水表档案号回填水表信息
+   * @param waterMeterCode 水表档案号集
+   * @return 水表使用量信息
+   */
+  List<WaterUseData> selectWaterUseData(List<String> waterMeterCode);
+
 }

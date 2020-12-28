@@ -2,7 +2,6 @@ package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.zjtc.base.util.StringUtil;
 import com.zjtc.mapper.WaterUseDataMapper;
 import com.zjtc.model.WaterUseData;
 import com.zjtc.service.WaterUseDataService;
@@ -53,5 +52,13 @@ public class WaterUseDataServiceImpl extends
   @Override
   public List<Integer> queryYear(String nodeCode) {
     return  this.baseMapper.queryYear(nodeCode);
+  }
+
+
+  @Override
+  public List<WaterUseData> selectWaterUseData(List<String> waterMeterCode) {
+    EntityWrapper<WaterUseData> wrapper = new EntityWrapper<>();
+    wrapper.in("water_meter_code",waterMeterCode);
+    return this.selectList(wrapper);
   }
 }

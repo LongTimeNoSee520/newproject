@@ -4,9 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.FinanceMapper;
 import com.zjtc.model.Finance;
+import com.zjtc.model.UseWaterUnit;
 import com.zjtc.service.FinanceService;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,7 +36,11 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
       response.setMessage("系统错误");
       return response;
     }
+//    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     for (Finance finance : finances) {
+//      Date paymentDate = finance.getPaymentDate();
+//      Date date = TimeUtil.formatTimeToDate(dateFormat.format(paymentDate));
+//      finance.setPaymentDate(date);
       finance.setDeleted("0");
       finance.setNodeCode(nodeCode);
     }
@@ -159,6 +167,12 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
     List<Finance> templates = this.baseMapper
         .queryList(currPage, pageSize, nodeCode, unitName, paymentDateBegin, paymentDateFinish,
             money, invoiceState, drawer);
+//    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//    for (Finance finance : templates) {
+//      Date paymentDate = finance.getPaymentDate();
+//      Date date = TimeUtil.formatTimeToDate(dateFormat.format(paymentDate));
+//      finance.setPaymentDate(date);
+//    }
 //    查询未开票金额和已开票金额
     List<String> sumMoney = this.baseMapper
         .countMoney(unitName, paymentDateBegin, paymentDateFinish, drawer, nodeCode);

@@ -2,6 +2,7 @@ package com.zjtc.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.Finance;
+import com.zjtc.model.UseWaterUnit;
 import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;

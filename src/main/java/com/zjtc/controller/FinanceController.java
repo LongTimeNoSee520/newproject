@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Author: ZhouDaBo
  * @Date: 2020/12/24
  */
-@Api(tags = "加价费开票记录")
+@Api(tags = "加价费管理")
 @RestController
 @RequestMapping("finance/")
 @Slf4j
@@ -37,12 +37,12 @@ public class FinanceController {
 
 
   @RequestMapping(value = "insertFinance", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation("新增加价费开票记录")
+  @ApiOperation("新增加价费管理")
   public ApiResponse insertPerson(@ApiParam("{\n"
       + "    \"finance\":[\n"
       + "        {\n"
       + "            \"unitName\":\"单位名称\",\n"
-      + "            \"money\":\"缴费金额\",\n"
+      + "            \"money\":\"缴费金额(float类型)\",\n"
       + "            \"paymentDate\":\"十三位时间戳:入账时间\",\n"
       + "            \"invoiceState\":\"开票状态(0:否,1:是)\",\n"
       + "            \"drawer\":\"开票人\",\n"
@@ -134,10 +134,10 @@ public class FinanceController {
   public ApiResponse queryPage(@ApiParam("{\n"
       + "    \"current\":\"页数\",\n"
       + "    \"size\":\"条数\",\n"
-      + "    \"unitName\":\"unitName\",\n"
+      + "    \"unitName\":\"部门名称\",\n"
       + "    \"paymentDateBegin\":\"十三位时间戳:到账时间开始\",\n"
       + "    \"paymentDateFinish\":\"十三位时间戳:到账时间结束\",\n"
-      + "    \"money\":\"金额\",\n"
+      + "    \"money\":\"金额(float类型)\",\n"
       + "    \"invoiceState\":\"是否开票\",\n"
       + "    \"drawer\":\"开票人\"\n"
       + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
