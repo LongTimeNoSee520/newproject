@@ -42,7 +42,7 @@ public interface UseWaterUnitMeterService extends IService<UseWaterUnitMeter> {
  List<UseWaterUnitMeter> selectUseWaterUnitMeter(String useWaterUnitId,String nodeCode);
 
   /**
-   * 查询水表信息
+   * 回填水表信息
    * @param waterMeterCodes 水表档案号
    * @param nodeCode 区域编码
    * @return 水表信息集

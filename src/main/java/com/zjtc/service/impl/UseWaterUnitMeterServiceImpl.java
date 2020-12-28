@@ -29,8 +29,8 @@ public class UseWaterUnitMeterServiceImpl extends
   @Autowired
   private WaterMonthUseDataService waterMonthUseDataService;
 
-  @Autowired
-  private WaterUseDataService waterUseDataService;
+//  @Autowired
+//  private WaterUseDataService waterUseDataService;
 
 
   @Override
@@ -83,9 +83,9 @@ public class UseWaterUnitMeterServiceImpl extends
     int integer = this.baseMapper.deleteBatchIds(ids);
 //    同时清空水使用量月数据表对应的部门id
     boolean b = waterMonthUseDataService.deletedUnit(ids);
-//    同时清空水使用量数据表对应的部门id
-    boolean b1 = waterUseDataService.deletedUnit(ids);
-    return integer > 0 && b && b1;
+////    同时清空水使用量数据表对应的部门id
+//    boolean b1 = waterUseDataService.deletedUnit(ids);
+    return integer > 0 && b;
   }
 
   @Override
@@ -122,12 +122,13 @@ public class UseWaterUnitMeterServiceImpl extends
     for (String waterMeterCode : waterMeterCodes) {
       unitName = this.baseMapper.selectWaterMeterCodeWhetherOccupy(waterMeterCode);
       if (!StringUtils.isBlank(unitName)) {
-        response.recordError(unitName + "正在使用档案号为"+waterMeterCode+"的水表");
+        response.recordError(unitName + "正在使用档案号为" + waterMeterCode + "的水表");
         return response;
       }
     }
-    List<WaterUseData> waterUseData = waterUseDataService.selectWaterUseData(waterMeterCodes);
-    response.setData(waterUseData);
+    List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
+        .selectWaterUseData(waterMeterCodes);
+    response.setData(waterMonthUseDataList);
     return response;
   }
 }

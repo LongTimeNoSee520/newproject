@@ -3,6 +3,7 @@ package com.zjtc.service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.WaterMonthUseData;
+import com.zjtc.model.WaterUseData;
 import java.util.List;
 import java.util.Map;
 
@@ -44,4 +45,11 @@ public interface WaterMonthUseDataService extends IService<WaterMonthUseData> {
    * @return
    */
   Map<String,Object> queryPage(JSONObject jsonObject);
+
+  /**
+   * 根据水表档案号回填水表信息
+   * @param waterMeterCode 水表档案号集
+   * @return 水表使用量信息
+   */
+  List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCode);
 }

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.WaterMonthUseDataMapper;
 import com.zjtc.model.WaterMonthUseData;
+import com.zjtc.model.WaterUseData;
 import com.zjtc.service.WaterMonthUseDataService;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -78,5 +79,12 @@ public class WaterMonthUseDataServiceImpl extends
     long pageSize = jsonObject.getInteger("size");
     page.put("page", total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
     return page;
+  }
+
+  @Override
+  public List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCode) {
+    EntityWrapper<WaterMonthUseData> wrapper = new EntityWrapper<>();
+    wrapper.in("water_meter_code",waterMeterCode);
+    return this.selectList(wrapper);
   }
 }
