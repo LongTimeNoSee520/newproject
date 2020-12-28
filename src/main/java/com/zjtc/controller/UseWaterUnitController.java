@@ -95,7 +95,7 @@ public class UseWaterUnitController {
           + "            \"amount\":\"数量\"\n"
           + "        }\n"
           + "    ],\n"
-          + "    \"responsibility_code\":\"责任书编号，取上传附件时输入的责任书编号，多个责任书编号分号隔开\",\n"
+          + "    \"responsibilityCode\":\"责任书编号，取上传附件时输入的责任书编号，多个责任书编号分号隔开\",\n"
           + "    \"sysFile\":[\n"
           + "        {\n"
           + "            \"id\":\"附件id\",\n"
@@ -149,7 +149,11 @@ public class UseWaterUnitController {
 
   @RequestMapping(value = "delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "用水单位删除")
-  public ApiResponse edit(@RequestBody JSONObject jsonObject,
+  public ApiResponse edit(
+      @ApiParam("{\n"
+          + "\"ids\":[\"单位id数组\"]\n"
+          + "}")
+      @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -171,7 +175,7 @@ public class UseWaterUnitController {
 
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "分页")
-  public ApiResponse queryPage(@Param("{\n"
+  public ApiResponse queryPage(@ApiParam("{\n"
       + "  \"current\":\"1\",\n"
       + "  \"size\":\"2\",\n"
       + "  \"unitCode\":\"单位编号\",\n"
@@ -183,6 +187,7 @@ public class UseWaterUnitController {
       + "  \"mobileMumber\":\"电话号码\",\n"
       + "  \"signed\":\"是否签约：0，否，1是\",\n"
       + "  \"abnormal\":\"是否异常：0，否，1是\"\n"
+      + "  \"unitCodeRank\":\"单位编号排序，asc：升序，desc：降序\"\n"
       + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
@@ -202,7 +207,11 @@ public class UseWaterUnitController {
 
   @RequestMapping(value = "selectById", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "查询详情")
-  public ApiResponse selectById(@Param("  \"id\":\"单位id\" ") @RequestBody JSONObject jsonObject,
+  public ApiResponse selectById(
+      @ApiParam("{\\n\"\n"
+          + "          + \"\\\"id\\\":\\\"单位id\\\"\\n\"\n"
+          + "          + \"} ")
+      @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -239,7 +248,9 @@ public class UseWaterUnitController {
   @RequestMapping(value = "createRank", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "新增界面：新增用水单位编号需要的排序号")
   public ApiResponse createRank(
-      @Param("  \"unitCode\":\"单位编号\", ") @RequestBody JSONObject jsonObject,
+      @ApiParam(" {\n"
+          + "\"unitCode\":\"单位编号\"\n"
+          + "} ") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -261,7 +272,6 @@ public class UseWaterUnitController {
   @RequestMapping(value = "createAreaCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "新增界面：生成新增用水单位编号需要的区域码")
   public ApiResponse createunitCode(
-      @ApiParam("\"unitCode\":\"单位编号\"")
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -297,4 +307,5 @@ public class UseWaterUnitController {
 
     return response;
   }
+
 }

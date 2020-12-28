@@ -41,7 +41,7 @@ public class WaterMonthUseDataController {
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("水使用量月数据分页")
   public ApiResponse queryPage(
-      @Param("{\n"
+      @ApiParam("{\n"
           + "  \"current\":\"页码，必填\",\n"
           + "  \"size\":\"显示数据条数，必填\",\n"
           + "  \"unitName\":\"单位名称\",\n"
@@ -55,6 +55,8 @@ public class WaterMonthUseDataController {
           + "  \"sectorStart\":\"区段开始\",\n"
           + "  \"sectorEnd\":\"区段结束\",\n"
           + "  \"useYear\":\"选择年份\"\n"
+          + "  \"unitCodeRank\":\"单位编号排序，asc：升序，desc：降序\"\n"
+          + "  \"unitNameRank\":\"单位名称排序，asc：升序，desc：降序\"\n"
           + "  \n"
           + "  \n"
           + "}")

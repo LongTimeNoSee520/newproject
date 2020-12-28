@@ -4,7 +4,7 @@
 <mapper namespace="com.zjtc.mapper.UseWaterUnitMeterMapper">
   <resultMap id="UseWaterUnitMeterModel" type="com.zjtc.model.UseWaterUnitMeter">
     <result column="id" property="id" jdbcType="VARCHAR"/>
-    <result column="use_water_unitId" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
     <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
     <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
   </resultMap>
@@ -25,10 +25,10 @@
   <select id="selectUseWaterUnitMeter" resultMap="UseWaterUnitMeterModel">
     select
     id,
-    use_water_unitId,
+    use_water_unit_id,
     water_meter_code,
     node_code
-    from t_w_use_water_unit_meter where use_water_unitId = #{id}
+    from t_w_use_water_unit_meter where use_water_unit_id = #{id}
   </select>
 
 </mapper>

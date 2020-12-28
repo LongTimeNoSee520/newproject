@@ -2,8 +2,11 @@ package com.zjtc.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.UseWaterUnitMeter;
+import com.zjtc.model.User;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: ZhouDaBo
@@ -48,4 +51,9 @@ public interface UseWaterUnitMeterService extends IService<UseWaterUnitMeter> {
    * @return 水表信息集
    */
   ApiResponse selectUseWaterUnitMeterAll(List<String> waterMeterCodes,String nodeCode);
+
+ /**
+  * 查询所有档案号对应的单位id
+  */
+ public Map<String ,String> getMeterMap(String nodeCode);
 }
