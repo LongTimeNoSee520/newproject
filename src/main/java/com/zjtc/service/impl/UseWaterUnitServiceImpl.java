@@ -197,6 +197,12 @@ public class UseWaterUnitServiceImpl extends
       apiResponse.setData(maxCount);
       return apiResponse;
     }
+    /**修改用水单位信息*/
+    //批次
+    entity.setUnitCodeGroup(entity.getUnitCode().substring(2, 4));
+    //类型
+    entity.setUnitCodeType(entity.getUnitCode().substring(4, 6));
+    this.updateById(entity);
     //修改水表数据
     useWaterUnitMeterService.deletedUseWaterUnitMeter(entity.getId());
     if (!entity.getMeterList().isEmpty()) {
@@ -241,16 +247,17 @@ public class UseWaterUnitServiceImpl extends
       }
       //批量修改住户字段
       this.updateBatchById(useWaterUnitsList);
-      //新增主户
-      UseWaterUnit useWaterUnitAdd = new UseWaterUnit();
-      useWaterUnitAdd.setId(userWaterUnitId);
-      useWaterUnitAdd.setImain("1");
-      this.updateById(useWaterUnitAdd);
+
     } else {
       /**1.2.如果是之前没有关联关系的数据，加入关联关系,这是选择关联的账户，为下级单位*/
       useWaterUnitRefService
           .save(entity.getId(), userWaterUnitId, user.getNodeCode());
     }
+    //新增主户
+    UseWaterUnit useWaterUnitAdd = new UseWaterUnit();
+    useWaterUnitAdd.setId(userWaterUnitId);
+    useWaterUnitAdd.setImain("1");
+    this.updateById(useWaterUnitAdd);
     /**2.删除关联关表数据*/
     if (!entity.getUseWaterUnitRefList().isEmpty()) {
       //1.原则就是传入的关联单位id,当前节点的子节点跟当前节点的父节点关联

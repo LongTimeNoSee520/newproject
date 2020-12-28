@@ -189,13 +189,7 @@
     FOR XML PATH('')), 1, 1, ''
     ) as water_meter_code,
     <!--责任书编号-->
-    STUFF((
-    SELECT ',' + remark
-    FROM t_file
-    WHERE business_id=a.id
-    and deleted='0'
-    FOR XML PATH('')), 1, 1, ''
-    ) as responsibility_code,
+    a.responsibility_code,
     <!--单位名称-->
     a.unit_name,
     <!--所属行业-->
@@ -268,7 +262,7 @@
     </if>
     <!--责任书编号-->
     <if test=" null !=responsibilityCode">
-    and a.id in(select business_id as id from t_file where remark like '%${responsibilityCode}%')
+    and a.responsibility_code like '%${responsibilityCode}%'
     </if>
     ) temp_row
     WHERE
@@ -334,7 +328,7 @@
     </if>
     <!--责任书编号-->
     <if test=" null !=responsibilityCode">
-      and a.id in(select business_id as id from t_file where remark like '%${responsibilityCode}%')
+      and a.responsibility_code like '%${responsibilityCode}%'
     </if>
   </select>
 
