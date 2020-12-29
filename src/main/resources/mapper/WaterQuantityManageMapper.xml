@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.WaterQuantityManageMapper">
+
+  <resultMap id="BaseResultMap" type="com.zjtc.model.WaterUseData">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="unit_names" property="unitNames" jdbcType="VARCHAR"/>
+    <result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
+    <result column="use_year" property="useYear" jdbcType="INTEGER"/>
+    <result column="use_month" property="useMonth" jdbcType="INTEGER"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="water_begin" property="waterBegin" jdbcType="VARCHAR"/>
+    <result column="water_end" property="waterEnd" jdbcType="VARCHAR"/>
+    <result column="water_number" property="waterNumber" jdbcType="VARCHAR"/>
+    <result column="price" property="price" jdbcType="VARCHAR"/>
+    <result column="caliber" property="caliber" jdbcType="INTEGER"/>
+    <result column="sector" property="sector" jdbcType="VARCHAR"/>
+    <result column="water_use_kinds" property="waterUseKinds" jdbcType="VARCHAR"/>
+    <result column="uid" property="uid" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="type" property="type" jdbcType="VARCHAR"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <select id="queryNum" resultType="int">
+    SELECT COUNT (id)
+    FROM t_w_water_use_data
+    WHERE node_code = #{nodeCode}
+    <if test="unitName != null and unitName != ''">
+      and unit_name like '%${unitName}%'
+    </if>
+    <if test="waterMeterCode != null and waterMeterCode != ''">
+      and water_meter_code like '%${waterMeterCode}%'
+    </if>
+    <if test="waterMeterCode != null and waterMeterCode != ''">
+      and water_meter_code like '%${waterMeterCode}%'
+    </if>
+    <if test="waterNumberStart != null">
+      and water_number &gt; #{waterNumberStart}
+    </if>
+    <if test="waterNumberEnd != null">
+      and water_number &lt; #{waterNumberEnd}
+    </if>
+    <if test="priceStart != null">
+      and price &gt; #{priceStart}
+    </if>
+    <if test="priceEnd != null">
+      and price &lt; #{priceEnd}
+    </if>
+    <if test="caliberStart != null">
+      and caliber &gt; #{caliberStart}
+    </if>
+    <if test="caliberEnd != null">
+      and caliber &lt; #{caliberEnd}
+    </if>
+    <if test="sectorStart != null">
+      and convert(int,sector) &gt; #{sectorStart}
+    </if>
+    <if test="priceEnd != null">
+      and convert(int,sector) &lt; #{sectorEnd}
+    </if>
+    <if test="useYear != null">
+      and use_year = #{useYear}
+    </if>
+  </select>
+  <select id="queryPage" resultType="java.util.LinkedHashMap">
+    SELECT t.id AS id, t.use_water_unit_id AS useWaterUnitId,t.unit_code AS unitCode,t.unit_names AS unitNames,
+    convert(varchar(50),t.use_year)+'年' + convert(varchar(50),t.use_month) +'月' AS yearAndMonth,
+    t.water_meter_code AS waterMeterCode,t.water_begin AS waterBegin,t.water_end AS waterEnd,
+    t.water_number AS waterNumber,t.price AS price,t.caliber AS caliber,t.sector AS sector,
+    t.water_use_kinds AS waterUseKinds,t.uid AS uid,t.node_code AS nodeCode,t.type AS type,
+    t.remarks AS remarks
+    FROM
+    (SELECT TOP ${size} t1.*
+      FROM(SELECT row_number () OVER ( ORDER BY [id]) AS rownumber,*
+            FROM
+            t_w_water_use_data
+            WHERE
+            node_code = #{nodeCode}
+            <if test="unitName != null and unitName != ''">
+               and unit_name like '%${unitName}%'
+            </if>
+            <if test="waterMeterCode != null and waterMeterCode != ''">
+             and water_meter_code like '%${waterMeterCode}%'
+            </if>
+            <if test="waterMeterCode != null and waterMeterCode != ''">
+              and water_meter_code like '%${waterMeterCode}%'
+            </if>
+            <if test="waterNumberStart != null">
+              and water_number &gt; #{waterNumberStart}
+            </if>
+            <if test="waterNumberEnd != null">
+              and water_number &lt; #{waterNumberEnd}
+            </if>
+            <if test="priceStart != null">
+              and price &gt; #{priceStart}
+            </if>
+            <if test="priceEnd != null">
+              and price &lt; #{priceEnd}
+            </if>
+            <if test="caliberStart != null">
+              and caliber &gt; #{caliberStart}
+            </if>
+            <if test="caliberEnd != null">
+              and caliber &lt; #{caliberEnd}
+            </if>
+            <if test="sectorStart != null">
+              and convert(int,sector) &gt; #{sectorStart}
+            </if>
+            <if test="priceEnd != null">
+              and convert(int,sector) &lt; #{sectorEnd}
+            </if>
+            <if test="useYear != null">
+              and use_year = #{useYear}
+            </if>
+      )t1
+      WHERE  rownumber > (#{current}-1)* #{size}
+      ORDER BY use_year DESC ,use_month DESC
+    )t
+  </select>
+
+</mapper>

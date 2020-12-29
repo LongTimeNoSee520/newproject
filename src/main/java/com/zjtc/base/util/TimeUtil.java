@@ -240,6 +240,21 @@ public class TimeUtil {
   }
 
   /**
+   * 时间字符串转时间
+   *
+   * @param dateStr yyyy/MM/dd
+   */
+  public static Date excelformatDate(String dateStr) {
+    Date date = null;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+    try {
+      date = sdf.parse(dateStr);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return date;
+  }
+  /**
    * 日期转换成时间字符串
    * yyyyMMddHHmmss
    */

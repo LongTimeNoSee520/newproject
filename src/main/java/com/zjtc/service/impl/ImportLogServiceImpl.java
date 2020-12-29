@@ -23,7 +23,7 @@ public class ImportLogServiceImpl extends ServiceImpl<ImportLogMapper, ImportLog
 		ImportLogService {
 
 	@Override
-	public boolean saveModel(ImportLog importLog) {
+	public boolean add(ImportLog importLog) {
 		boolean result=this.insert(importLog);
 		return result;
 	}

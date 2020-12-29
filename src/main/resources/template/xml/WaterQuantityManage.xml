@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workbook>
+  <worksheet name="SQL Results">
+    <section startRow="0" endRow="0"/>
+    <loop startRow="1" endRow="1" items="infos" var="info"
+      varType="com.zjtc.model.vo.WaterUseDataVO">
+      <section startRow="1" endRow="1">
+        <mapping row="1" col="1">info.sector</mapping>
+        <mapping row="1" col="2">info.date</mapping>
+        <mapping row="1" col="3">info.waterMeterCode</mapping>
+        <mapping row="1" col="4">info.userName</mapping>
+        <mapping row="1" col="5">info.address</mapping>
+        <mapping row="1" col="6">info.caliber</mapping>
+        <mapping row="1" col="7">info.waterBegin</mapping>
+        <mapping row="1" col="8">info.waterEnd</mapping>
+        <mapping row="1" col="9">info.waterNumber</mapping>
+        <mapping row="1" col="10">info.waterUseKinds</mapping>
+        <mapping row="1" col="11">info.price</mapping>
+      </section>
+      <loopbreakcondition>
+        <rowcheck offset="0">
+          <cellcheck offset="0"></cellcheck>
+        </rowcheck>
+        <!--循环到值为空的时候结束 -->
+      </loopbreakcondition>
+    </loop>
+  </worksheet>
+
+</workbook>

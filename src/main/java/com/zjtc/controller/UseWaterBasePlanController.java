@@ -39,7 +39,19 @@ public class UseWaterBasePlanController {
 
   @ApiOperation(value = "新增")
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse add(@RequestHeader("token") String token, @ApiParam("")@RequestBody UseWaterBasePlan useWaterBasePlan) {
+  public ApiResponse add(@RequestHeader("token") String token, @ApiParam("{\n"
+      + "  \"oneQuarter\":\"第一季度计划(小数Float)\",\n"
+      + "  \"twoQuarter\": \"第二季度计划(小数Float)\",\n"
+      + "  \"threeQuarter\": \"第三季度计划(小数Float)\",\n"
+      + "  \"fourQuarter\": \"第四季度计划(小数Float)\",\n"
+      + "  \"curYearPlan\": \"当前年基础计划(小数Float)\",\n"
+      + "  \"planYear\":\"计划年度 数字类型\",\n"
+      + "  \"remarks\": \"备注\",\n"
+      + "  \"nature\": \"用水性质\",\n"
+      + "  \"unitCode\": \"单位编号\",\n"
+      + "  \"unitName\": \"单位名称\",\n"
+      + "  \"useWaterUnitId\": \"单位id\"\n"
+      + "}")@RequestBody UseWaterBasePlan useWaterBasePlan) {
     log.info("用水基建计划参数{" + useWaterBasePlan != null ? useWaterBasePlan.toString() : "null" + "}");
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);//通过token取节点编码
@@ -60,7 +72,23 @@ public class UseWaterBasePlanController {
   @ApiOperation(value = "修改")
   @RequestMapping(value = "edit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse edit(@RequestHeader("token") String token,
-      @ApiParam("")@RequestBody UseWaterBasePlan useWaterBasePlan) {
+      @ApiParam("{ \n"
+          + "  \"id\":\"基建计划id\",\n"
+          + "  \"createTime\":\"创建时间 timestamp\"\t\n"
+          + "  \"oneQuarter\":\"第一季度计划(小数Float)\",\n"
+          + "  \"twoQuarter\": \"第二季度计划(小数Float)\",\n"
+          + "  \"threeQuarter\": \"第三季度计划(小数Float)\",\n"
+          + "  \"fourQuarter\": \"第四季度计划(小数Float)\",\n"
+          + "  \"curYearPlan\": \"当前年基础计划(小数Float)\",\n"
+          + "  \"planYear\":\"计划年度 数字类型\",\n"
+          + "  \"remarks\": \"备注\",\n"
+          + "  \"nature\": \"用水性质\",\n"
+          + "  \"unitCode\": \"单位编号\",\n"
+          + "  \"unitName\": \"单位名称\",\n"
+          + "  \"useWaterUnitId\": \"单位id\",\n"
+          + "  \"deleted\": \"是否删除\",\n"
+          + "  \"nodeCode\": \"节点编码\"\n"
+          + "}")@RequestBody UseWaterBasePlan useWaterBasePlan) {
     log.info("修改==== 参数{" + useWaterBasePlan != null ? useWaterBasePlan.toString() : "null" + "}");
     ApiResponse response = new ApiResponse();
     if (null != useWaterBasePlan) {
@@ -102,7 +130,7 @@ public class UseWaterBasePlanController {
         response.recordError(500);
       }
     } else {
-      response.recordError("角色id不能为空");
+      response.recordError("基建计划id不能为空");
     }
     return response;
   }

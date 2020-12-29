@@ -69,3 +69,5 @@ file:
   #附件上传目录
   #    fileUploadPath : Desktop/file
   fileUploadPath : upload
+  #导入错误日志文件目录
+  importErrorFilePath : importError

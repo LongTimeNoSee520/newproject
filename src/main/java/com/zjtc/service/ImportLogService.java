@@ -8,18 +8,17 @@ import java.util.Map;
 
 /**
  * 文件导入日志接口
- * 
- * @author 
- *
+ * @author lianghao
+ * @date 2020/12/23
  */
 public interface ImportLogService extends IService<ImportLog> {
 
 	/**
-	* 保存
+	* 新增
 	* @param importLog
 	* @return
 	*/
-	boolean saveModel(ImportLog importLog);
+	boolean add(ImportLog importLog);
 
 	/**
 	 * 分页查询
