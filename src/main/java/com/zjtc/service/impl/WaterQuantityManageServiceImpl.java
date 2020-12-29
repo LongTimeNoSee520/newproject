@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -239,12 +240,24 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     /**excel数据解析写入bean*/
     result = this.importExcel(beans, xmlConfig, fileRealPath, fileName, nodeCode, true);
     infos = (List<WaterUseDataVO>) result.get("infos");
+    /**计算发送webSocket消息的时机(按比例一共推10次给前端)*/
+    int size = (int) Math.ceil((double) infos.size() / 10);
+    List<Integer> sendSocketIndex = new LinkedList<>();
+    /**将要发送的下标有序存入list*/
+    for (int i =1; i<10; i++){
+      sendSocketIndex.add(i*size);
+    }
     /**解析完后,逐条解析数据，检查是否存在数据格式问题*/
       /**查询所有水表号对应单位编号*/
     Map<String, String> meterMap = useWaterUnitMeterService.getMeterMap(nodeCode);
     List<WaterUseData> waterUseDataList = new ArrayList<>();
     boolean rowSuccess = true;
     for (int i = 1; i <= infos.size(); i++) {
+      if (sendSocketIndex.contains(i)){
+        double percent = (double)(sendSocketIndex.indexOf(i)+1)/10;
+        /**TODO 将完成百分比通过webSocket推送给前端(最后一次在接口代码最后发送)*/
+      }
+
       WaterUseDataVO waterUseDataVO = infos.get(i - 1);
       WaterUseData waterUseData = new WaterUseData();
       waterUseData.setNodeCode(nodeCode);
@@ -332,7 +345,11 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     }
     /**日志入数据库*/
     importLogService.add(importLog);
+
+    /**TODO 将完成百分比(100%)通过webSocket推送给前端(最后一次)*/
   }
+
+  /**解析excel数据到bean*/
   public  Map<String, List> importExcel(Map<String, List> beans, String xmlConfig,
       String fileRealPath, String uploadFileName,String nodeCode,boolean isThrowException) throws Exception {
     File file = new File(fileRealPath);
