@@ -110,7 +110,11 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         result = this.updateBatchById(updatelist);
       }
       if (deleteList.size() > 0) {
-        result = this.deleteBatchIds(deleteList);
+        File file=new File();
+        file.setDeleted("1");
+        Wrapper wrapper=new EntityWrapper();
+        wrapper.in("id",deleteList);
+        result = this.update(file,wrapper);
       }
 
     }
@@ -123,7 +127,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     entityWrapper.eq("business_id",businessId);
     File file=new File();
     file.setDeleted("1");
-    file.setBusinessId("");
     return update(file,entityWrapper);
   }
 
@@ -133,7 +136,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     entityWrapper.in("business_id",businessIds);
     File file=new File();
     file.setDeleted("1");
-    file.setBusinessId("");
     return update(file,entityWrapper);
   }
 

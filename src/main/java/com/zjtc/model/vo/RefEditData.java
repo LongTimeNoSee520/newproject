@@ -24,10 +24,6 @@ public class RefEditData extends Model<RefEditData> {
    */
   private List<String> useWaterUnitColumn;
 
-  /**
-   * 水表信息
-   */
-  private String meterColumn;
 
   /**
    * 银行信息

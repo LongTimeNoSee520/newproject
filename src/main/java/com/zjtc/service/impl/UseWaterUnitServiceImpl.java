@@ -59,7 +59,7 @@ public class UseWaterUnitServiceImpl extends
     DANWEI_MAPPER = new HashMap<>();
     DANWEI_MAPPER.put("industry", "industry");
     DANWEI_MAPPER.put("area_country", "areaCountry");
-    DANWEI_MAPPER.put("unitAddress", "unitAddress");
+    DANWEI_MAPPER.put("unit_address", "unitAddress");
     DANWEI_MAPPER.put("zip_address", "zipAddress");
     DANWEI_MAPPER.put("zip_name", "zipName");
     DANWEI_MAPPER.put("department", "department");
@@ -166,11 +166,7 @@ public class UseWaterUnitServiceImpl extends
   @Override
   @Transactional(rollbackFor = Exception.class)
   public ApiResponse update(UseWaterUnit entity, User user) {
-    /*********************************************************/
-    /**一：修改数据*/
     ApiResponse apiResponse = new ApiResponse();
-    //当前序号，取unitCode 7-9位
-    String rank = entity.getUnitCode().substring(7, 9);
     /**验证当前用户是否有操作当前批次的权限*/
     boolean flag = useWaterUnitRoleService
         .checkUserRight(user.getId(), entity.getUnitCode(), user.getNodeCode());
@@ -189,65 +185,70 @@ public class UseWaterUnitServiceImpl extends
       apiResponse.setData(maxCount);
       return apiResponse;
     }
-    /**修改用水单位信息*/
+    /*********************************************************/
+    /**1.修改数据*/
+    /**1.1 修改用水单位信息*/
     //批次
     entity.setUnitCodeGroup(entity.getUnitCode().substring(2, 4));
     //类型
     entity.setUnitCodeType(entity.getUnitCode().substring(4, 6));
     this.updateById(entity);
-    /**修改银行数据*/
+    /**1.2选择主户*/
+    String userWaterUnitId = entity.getUseWaterUnitIdRef(); //选择的主户
+    if (StringUtils.isNotBlank(userWaterUnitId)) {
+      /**1.2.1如果选择主户，是相关联的数据，只修改主户字段*/
+      List<String> redIds = useWaterUnitRefService.findIdList(entity.getId(), user.getNodeCode());
+      if (isEmptyId(userWaterUnitId, redIds)) {
+        //所有关联单位(不排己)，全部初始化为非主户
+        List<UseWaterUnit> useWaterUnitsList = new ArrayList<>();
+        for (String id : redIds) {
+          UseWaterUnit param = new UseWaterUnit();
+          param.setId(id);
+          //是否是主户字段为否
+          param.setImain("0");
+          useWaterUnitsList.add(param);
+        }
+        this.updateBatchById(useWaterUnitsList);
+
+      } else {
+        /**1.2.2.如果是之前没有关联关系的数据，加入关联关系,这是选择关联的账户，为下级单位*/
+        useWaterUnitRefService
+            .save(entity.getId(), userWaterUnitId, user.getNodeCode());
+      }
+    }
+
+    /**更改指定的单位为主户*/
+    UseWaterUnit useWaterUnitAdd = new UseWaterUnit();
+    useWaterUnitAdd.setId(userWaterUnitId);
+    useWaterUnitAdd.setImain("1");
+    this.updateById(useWaterUnitAdd);
+
+    /**1.3. 修改水表数据*/
+    useWaterUnitMeterService.deletedUseWaterUnitMeter(entity.getId());
+    if (!entity.getMeterList().isEmpty()) {
+      useWaterUnitMeterService
+          .insertUseWaterUnitMeter(entity.getMeterList(), entity.getId(), user.getNodeCode());
+    }
+    /**1.4. 修改银行数据*/
     bankService.deletedBank(entity.getId());
     if (!entity.getBankList().isEmpty()) {
       bankService.insertBank(entity.getBankList(), entity.getId(), user.getNodeCode());
     }
-    /**修改联系人数据*/
+    /**1.5. 修改联系人数据*/
     contactsService.deleteContacts(entity.getId());
     if (!entity.getContactsList().isEmpty()) {
       contactsService
           .add(entity.getContactsList(), entity.getId(), entity.getUnitCode(),
               user.getNodeCode());
     }
-    /**修改责任书数据,如果传入的附件删除状态为:1,删除附件,为0，绑定业务id*/
+    /**1.6. 修改责任书数据,如果传入的附件删除状态为:1,删除附件,为0，绑定业务id*/
     if (!entity.getSysFile().isEmpty()) {
       fileService.updateBusinessId(entity.getId(), entity.getSysFile());
     }
-    /**修改用水定额数据*/
-    useWaterQuotaService.deleteQuotas(entity.getId());
-    if (!entity.getQuotaFile().isEmpty()) {
-      useWaterQuotaService
-          .add(entity.getQuotaFile(), entity.getId(), user.getNodeCode());
-    }
-    /**操作相关编号信息数据 */
-    /**1.选择主户*/
-    String userWaterUnitId = entity.getUseWaterUnitIdRef(); //选择的主户
-    /**1.1如果选择主户，是相关联的数据，只修改主户字段*/
-    List<String> redIds = useWaterUnitRefService.findIdList(entity.getId(), user.getNodeCode());
-    if (isEmptyId(userWaterUnitId, redIds)) {
-      List<UseWaterUnit> useWaterUnitsList = new ArrayList<>();
-      for (String id : redIds) {
-        UseWaterUnit param = new UseWaterUnit();
-        param.setId(id);
-        //是否是主户字段为否
-        param.setImain("0");
-        useWaterUnitsList.add(param);
-      }
-      //批量修改住户字段
-      this.updateBatchById(useWaterUnitsList);
-
-    } else {
-      /**1.2.如果是之前没有关联关系的数据，加入关联关系,这是选择关联的账户，为下级单位*/
-      useWaterUnitRefService
-          .save(entity.getId(), userWaterUnitId, user.getNodeCode());
-    }
-    //新增主户
-    UseWaterUnit useWaterUnitAdd = new UseWaterUnit();
-    useWaterUnitAdd.setId(userWaterUnitId);
-    useWaterUnitAdd.setImain("1");
-    this.updateById(useWaterUnitAdd);
-    /**2.删除关联关表数据*/
+    /**1.7.删除关联关表数据*/
     if (!entity.getUseWaterUnitRefList().isEmpty()) {
-      //1.原则就是传入的关联单位id,当前节点的子节点跟当前节点的父节点关联
-      //2.如果没有子节点或没有父节点，只删除
+      //1.1传入的关联单位id,删除当前的关联关系，当前节点的子节点跟当前节点的父节点关联,
+      //1.1.如果没有子节点或没有父节点，只删除自身
       List<UseWaterUnitRefVo> useWaterUnitRefs = entity.getUseWaterUnitRefList();
       for (UseWaterUnitRefVo item : useWaterUnitRefs) {
         //查询当前节点的下级节点
@@ -255,6 +256,7 @@ public class UseWaterUnitServiceImpl extends
         sonWrapper.eq("node_code", user.getNodeCode());
         sonWrapper.eq("use_water_unit_id", item.getId());
         List<UseWaterUnitRef> sonList = useWaterUnitRefService.selectList(sonWrapper);
+        List<String> sonIds = new ArrayList<>();
         //查询当前节点的上级节点
         Wrapper parWrapper = new EntityWrapper();
         parWrapper.eq("node_code", user.getNodeCode());
@@ -264,53 +266,56 @@ public class UseWaterUnitServiceImpl extends
           //当前节点的子节点跟当前节点的父节点关联
           for (UseWaterUnitRef ref : sonList) {
             ref.setUseWaterUnitId(parList.get(0).getUseWaterUnitId());
+            sonIds.add(ref.getId());
           }
           //删除当前节点与父节点的关联
           useWaterUnitRefService.deleteById(parList.get(0).getId());
           //当前节点的子节点与当前节点的父节点重新建立关联
           useWaterUnitRefService.updateBatchById(sonList);
-        } else if (parList.isEmpty()) {
-          useWaterUnitRefService.deleteById(sonList.get(0).getId());
-        } else if (sonList.isEmpty()) {
+        }
+        if (parList.isEmpty() && !sonList.isEmpty()) {
+          useWaterUnitRefService.deleteBatch(sonIds);
+        }
+        if (sonList.isEmpty() && !parList.isEmpty()) {
           useWaterUnitRefService.deleteById(parList.get(0).getId());
         }
       }
     }
-    /**判断名称是否被修改，新增单位名称修改日志信息数据*/
+
+    /**1.8.修改用水定额数据*/
+    useWaterQuotaService.deleteQuotas(entity.getId());
+    if (!entity.getQuotaFile().isEmpty()) {
+      useWaterQuotaService
+          .add(entity.getQuotaFile(), entity.getId(), user.getNodeCode());
+    }
+
+    /**1.9.判断名称是否被修改，新增单位名称修改日志信息数据*/
     useWaterUnitModifyService
         .insertUnitName(entity.getId(), user.getNodeCode(), entity.getUnitName(),
             user.getUsername(), user.getId());
     /************************************************************************/
     /*****************************关联修改************************************/
     /************************************************************************/
-    /**二：关联修改信息*/
+    /**2.关联修改信息*/
     if (null != entity.getRefEditData()) {
       List<String> idsList = entity.getRefEditData().getRefIds();
       if (!idsList.isEmpty()) {
         RefEditData refEditData = entity.getRefEditData();
-        /**基本信息同步*/
+        /**2.1.基本信息同步*/
         List<String> useWaterUnitColumn = refEditData.getUseWaterUnitColumn();
         if (!useWaterUnitColumn.isEmpty()) {
           String sql1 = updateSql(useWaterUnitColumn, entity);
           baseMapper.updateUseWaterUnit(idsList, sql1);
         }
-        /**水表信息同步*/
-        if ("true".equals(refEditData.getMeterColumn())) {
-          useWaterUnitMeterService.deletedUseWaterUnitMeter(idsList);
-          for (String item : idsList) {
-            useWaterUnitMeterService
-                .insertUseWaterUnitMeter(entity.getMeterList(), item, user.getNodeCode());
-          }
-        }
-        /**银行信息同步*/
-        if ("true".equals(refEditData.getBankColumn())) {
+        /**2.2.银行信息同步*/
+        if ("true".equals(refEditData.getBankColumn()) && !entity.getBankList().isEmpty()) {
           bankService.deletedBank(idsList);
           for (String item : idsList) {
             bankService.insertBank(entity.getBankList(), item, user.getNodeCode());
           }
         }
-        /**联系人信息同步*/
-        if ("true".equals(refEditData.getContactsColumn())) {
+        /**2.3.联系人信息同步*/
+        if ("true".equals(refEditData.getContactsColumn()) && !entity.getContactsList().isEmpty()) {
           contactsService.deleteContacts(idsList);
           for (String item : idsList) {
             contactsService
@@ -318,19 +323,26 @@ public class UseWaterUnitServiceImpl extends
                     user.getNodeCode());
           }
         }
-        /**责任书信息同步*/
-        if ("true".equals(refEditData.getFileColumn())) {
+        /**2.4.责任书信息同步*/
+        if ("true".equals(refEditData.getFileColumn()) && !entity.getSysFile().isEmpty()) {
+          //删除之前的责任书
           List<File> file = entity.getSysFile();
-          for (String item : idsList) {
+          for (String id : idsList) {
+            fileService.removeByBusinessId(id);
+            //同步责任书编号
+            UseWaterUnit updateParam = new UseWaterUnit();
+            updateParam.setId(id);
+            updateParam.setResponsibilityCode(entity.getResponsibilityCode());
+            this.updateById(updateParam);
             for (File items : file) {
               items.setId("");
-              items.setBusinessId(item);
+              items.setBusinessId(id);
             }
           }
           fileService.insertBatch(file);
         }
-        /**用水定额信息同步*/
-        if ("true".equals(refEditData.getQuotaFileColumn())) {
+        /**2.5.用水定额信息同步*/
+        if ("true".equals(refEditData.getQuotaFileColumn()) && !entity.getQuotaFile().isEmpty()) {
           useWaterQuotaService.deleteQuotas(idsList);
           for (String item : idsList) {
             useWaterQuotaService
@@ -357,12 +369,6 @@ public class UseWaterUnitServiceImpl extends
     this.update(useWaterUnit, wrapper);
     /**删除水表数据*/
     useWaterUnitMeterService.deletedUseWaterUnitMeter(ids);
-    //清除绑定月使用水量表单位水表
-    Wrapper wrapper1 = new EntityWrapper();
-    wrapper1.in("id", ids);
-    WaterMonthUseData waterMonthUseData = new WaterMonthUseData();
-    waterMonthUseData.setUseWaterUnitId("");
-    waterMonthUseDataService.update(waterMonthUseData, wrapper);
     /**删除银行数据，逻辑删除*/
     bankService.deletedBank(ids);
     /**删除联系人数据，逻辑删除*/
@@ -378,6 +384,7 @@ public class UseWaterUnitServiceImpl extends
       sonWrapper.eq("node_code", user.getNodeCode());
       sonWrapper.eq("use_water_unit_id", id);
       List<UseWaterUnitRef> sonList = useWaterUnitRefService.selectList(sonWrapper);
+      List<String> sonIds = new ArrayList<>();
       //查询当前节点的上级节点
       Wrapper parWrapper = new EntityWrapper();
       parWrapper.eq("node_code", user.getNodeCode());
@@ -387,19 +394,20 @@ public class UseWaterUnitServiceImpl extends
         //当前节点的子节点跟当前节点的父节点关联
         for (UseWaterUnitRef ref : sonList) {
           ref.setUseWaterUnitId(parList.get(0).getUseWaterUnitId());
+          sonIds.add(ref.getId());
         }
         //删除当前节点与父节点的关联
         useWaterUnitRefService.deleteById(parList.get(0).getId());
         //当前节点的子节点与当前节点的父节点重新建立关联
         useWaterUnitRefService.updateBatchById(sonList);
-      } else if (parList.isEmpty()) {
-        useWaterUnitRefService.deleteById(sonList.get(0).getId());
-      } else if (sonList.isEmpty()) {
+      }
+      if (parList.isEmpty() && !sonList.isEmpty()) {
+        useWaterUnitRefService.deleteBatch(sonIds);
+      }
+      if (sonList.isEmpty() && !parList.isEmpty()) {
         useWaterUnitRefService.deleteById(parList.get(0).getId());
       }
     }
-
-    /**删除单位名称修改日志数据*/
     return true;
   }
 
@@ -526,6 +534,7 @@ public class UseWaterUnitServiceImpl extends
     }
     return null;
   }
+
   /**
    * 验证单位编号是否重复
    */
@@ -570,7 +579,6 @@ public class UseWaterUnitServiceImpl extends
     }
     sql = builder.toString();
     sql = sql.substring(0, sql.length() - 1);
-    System.out.println(sql);
     return sql;
   }
 

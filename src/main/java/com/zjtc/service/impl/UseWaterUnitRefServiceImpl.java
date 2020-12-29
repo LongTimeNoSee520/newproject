@@ -75,8 +75,9 @@ public class UseWaterUnitRefServiceImpl extends
       sum.add(item);
       entityWrapper.eq("use_water_unit_id", item);
       List<UseWaterUnitRef> result = this.selectList(entityWrapper);
-      if (result.size() > 0 && StringUtils.isNotBlank(result.get(0).getUseWaterUnitIdRef())) {
-        refList.add(result.get(0).getUseWaterUnitIdRef());
+      if (result.size() > 0 ) {
+        for(UseWaterUnitRef items:result)
+        refList.add(items.getUseWaterUnitIdRef());
       }
     }
     if (refList.isEmpty()) {
