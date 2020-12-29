@@ -65,7 +65,7 @@ public class UseWaterUnitMeterController {
     return response;
   }
 
-  @RequestMapping(value = "backfillData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "backFillData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("新增时回填水表信息")
   public ApiResponse selectUseWaterUnitMeterAll(
       @ApiParam("{\"id\":\n"

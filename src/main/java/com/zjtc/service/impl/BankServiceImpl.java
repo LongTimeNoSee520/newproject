@@ -88,9 +88,12 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
   @Override
   public List<Bank> selectBank(String useWaterUnitId, String nodeCode) {
     EntityWrapper<Bank> wrapper = new EntityWrapper<>();
+    ArrayList<String> list = new ArrayList<>();
     wrapper.eq("deleted", 0);
     wrapper.eq("use_water_unit_Id", useWaterUnitId);
     wrapper.eq("node_code", nodeCode);
+    list.add("otherBank");
+    wrapper.orderDesc(list);
     return this.selectList(wrapper);
   }
 
