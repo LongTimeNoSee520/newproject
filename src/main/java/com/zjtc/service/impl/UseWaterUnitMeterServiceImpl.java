@@ -90,8 +90,10 @@ public class UseWaterUnitMeterServiceImpl extends
   public boolean deletedUseWaterUnitMeter(String id) {
     List<UseWaterUnitMeter> meters = this.baseMapper.selectUseWaterUnitMeter(id);
     List<String> ids = new ArrayList<>();
+    List<String> monthUseDatas=new ArrayList<>();
     for (UseWaterUnitMeter useWaterUnitMeter : meters) {
       ids.add(useWaterUnitMeter.getId());
+      monthUseDatas.add(useWaterUnitMeter.getWaterMeterCode());
     }
     if (ids.isEmpty()) {
       return false;
@@ -99,7 +101,15 @@ public class UseWaterUnitMeterServiceImpl extends
 //    删除关联表的数据
     int integer = this.baseMapper.deleteBatchIds(ids);
 //    同时清空水使用量月数据表对应的部门id
-    boolean b = waterMonthUseDataService.deletedUnit(ids);
+    boolean b=false;
+    if(!monthUseDatas.isEmpty()){
+      Wrapper wrapper=new EntityWrapper();
+      wrapper.in("water_meter_code",monthUseDatas);
+      WaterMonthUseData param=new WaterMonthUseData();
+      param.setUseWaterUnitId("");
+      b=waterMonthUseDataService.update(param,wrapper);
+    }
+ //   boolean b = waterMonthUseDataService.deletedUnit(ids);
 ////    同时清空水使用量数据表对应的部门id
 //    boolean b1 = waterUseDataService.deletedUnit(ids);
     return integer > 0 && b;
