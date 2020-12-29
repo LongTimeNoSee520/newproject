@@ -31,4 +31,11 @@
     from t_w_use_water_unit_meter where use_water_unit_id = #{id}
   </select>
 
+  <select id="selectWaterMeterCodeMyId" resultType="String">
+    select id from t_w_water_month_use_data where 1=1
+    <if test="waterMeterCode != null and waterMeterCode != ''">
+      and water_meter_code = #{waterMeterCode}
+    </if>
+  </select>
+
 </mapper>

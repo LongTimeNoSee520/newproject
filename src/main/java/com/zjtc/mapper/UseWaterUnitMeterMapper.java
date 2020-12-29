@@ -37,4 +37,10 @@ public interface UseWaterUnitMeterMapper extends BaseMapper<UseWaterUnitMeter> {
    */
   List<UseWaterUnitMeter> selectUseWaterUnitMeter(@Param("id") String id);
 
+  /**
+   * 通过水表档案号查询对应数据的id
+   * @param waterMeterCode 水表档案号
+   * @return 对应数据的id
+   */
+  String selectWaterMeterCodeMyId(@Param("waterMeterCode") String waterMeterCode);
 }

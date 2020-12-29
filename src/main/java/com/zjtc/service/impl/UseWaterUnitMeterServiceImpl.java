@@ -48,7 +48,8 @@ public class UseWaterUnitMeterServiceImpl extends
 //    水使用量月数据
     WaterMonthUseData waterMonthUseData = new WaterMonthUseData();
     List<WaterMonthUseData> waterMonthUseDataList = new ArrayList<>();
-    //    判断水表档案号是否已被其他部门所关联
+    boolean b1 = false;
+    //    遍历水表信息
     for (UseWaterUnitMeter useWaterUnitMeter1 : useWaterUnitMeter) {
 //      单位id
       useWaterUnitMeter1.setUseWaterUnitId(useWaterUnitId);
@@ -58,16 +59,28 @@ public class UseWaterUnitMeterServiceImpl extends
       if (StringUtils.isBlank(waterMeterCode)) {
         return false;
       }
-//      同时新增水使用量月数据数据
-      waterMonthUseData.setNodeCode(nodeCode);
-//      单位id
-      waterMonthUseData.setUseWaterUnitId(useWaterUnitId);
-//      水表档案号
-      waterMonthUseData.setWaterMeterCode(useWaterUnitMeter1.getWaterMeterCode());
+      try {
+//      通过水表档案号查询对应数据的id
+        String id = this.baseMapper.selectWaterMeterCodeMyId(waterMeterCode);
+        if (StringUtils.isBlank(id)) {
+          return false;
+        }
+        waterMonthUseData.setId(id);
+////      同时更新月水使用量月数据数据
+        waterMonthUseData.setNodeCode(nodeCode);
+////      单位id
+        waterMonthUseData.setUseWaterUnitId(useWaterUnitId);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
       waterMonthUseDataList.add(waterMonthUseData);
+//      更新月使用量数据
+      b1 = waterMonthUseDataService.updateBatchById(waterMonthUseDataList);
+      if (!b1) {
+        return false;
+      }
     }
     boolean b = this.insertBatch(useWaterUnitMeter);
-    boolean b1 = waterMonthUseDataService.insertBatch(waterMonthUseDataList);
     return b && b1;
 
   }
@@ -138,13 +151,13 @@ public class UseWaterUnitMeterServiceImpl extends
 
   @Override
   public Map<String, String> getMeterMap(String nodeCode) {
-    Map<String,String> result=new HashMap<>();
-    Wrapper wrapper=new EntityWrapper();
-    wrapper.eq("node_code",nodeCode);
-    List<UseWaterUnitMeter> list= this.selectList(wrapper);
-    if(!list.isEmpty()){
-      for(UseWaterUnitMeter item: list){
-        result.put(item.getWaterMeterCode(),item.getUseWaterUnitId());
+    Map<String, String> result = new HashMap<>();
+    Wrapper wrapper = new EntityWrapper();
+    wrapper.eq("node_code", nodeCode);
+    List<UseWaterUnitMeter> list = this.selectList(wrapper);
+    if (!list.isEmpty()) {
+      for (UseWaterUnitMeter item : list) {
+        result.put(item.getWaterMeterCode(), item.getUseWaterUnitId());
       }
       return result;
     }
