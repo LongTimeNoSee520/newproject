@@ -19,7 +19,7 @@
       </section>
       <loopbreakcondition>
         <rowcheck offset="0">
-          <cellcheck offset="0"></cellcheck>
+          <cellcheck offset="1"></cellcheck>
         </rowcheck>
         <!--循环到值为空的时候结束 -->
       </loopbreakcondition>

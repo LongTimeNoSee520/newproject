@@ -4,6 +4,7 @@ package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.FileUtil;
 import com.zjtc.base.util.RedisUtil;
 import com.zjtc.base.util.TimeUtil;
@@ -26,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -221,15 +223,16 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
   }
 
   @Override
-  public void checkAndInsertData(User user,String fileProcessId,String fileName) throws Exception {
+  public ApiResponse checkAndInsertData(User user,String fileProcessId,String fileName) throws Exception {
+	  ApiResponse response =new ApiResponse();
     Map beans = new HashMap<String, List>();
     List<WaterUseDataVO> infos = new ArrayList<>();
     beans.put("infos", infos);
 
     String xmlConfig = "template/xml/WaterQuantityManage.xml";
     Map result = new HashMap();
-    String fileRealPath = "C:\\Users\\LH\\Desktop\\导入测试.xlsx";
-    //fileUploadRootPath + fileUploadPath + fileProcessId + ".xlsx";
+    String fileRealPath = fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx";
+    //"C:\\Users\\LH\\Desktop\\导入测试.xlsx";
     errorMsgs = new StringBuffer();//错误信息
     String nodeCode = user.getNodeCode();
     /**日志*/
@@ -247,11 +250,14 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     for (int i =1; i<10; i++){
       sendSocketIndex.add(i*size);
     }
-    /**解析完后,逐条解析数据，检查是否存在数据格式问题*/
+    /**解析完后,逐条检查数据，检查是否存在数据格式问题，和相同水表档案号在相同月份是否有多条数据*/
       /**查询所有水表号对应单位编号*/
     Map<String, String> meterMap = useWaterUnitMeterService.getMeterMap(nodeCode);
     List<WaterUseData> waterUseDataList = new ArrayList<>();
-    boolean rowSuccess = true;
+    /**existMap用于判断相同年份+月份是否已经有该水表档案号的信息,
+     * key:水表档案号+年份+月份
+     * value：保存重复数据出现在excel中的第几行，有几条相同的就把他们出现的位置存入list*/
+    Map<String,List<Integer>> existMap = new HashMap<>();
     for (int i = 1; i <= infos.size(); i++) {
       if (sendSocketIndex.contains(i)){
         double percent = (double)(sendSocketIndex.indexOf(i)+1)/10;
@@ -267,75 +273,52 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
       waterUseData.setUnitAddress(waterUseDataVO.getAddress());
       waterUseData.setWaterMeterCode(waterUseDataVO.getWaterMeterCode());
       waterUseData.setWaterUseKinds(waterUseDataVO.getWaterUseKinds());
-      try {
-        Integer year = Integer.parseInt(
-            TimeUtil.formatTimeStr(TimeUtil.excelformatDate(waterUseDataVO.getDate()))
-                .substring(0, 4));
-        waterUseData.setUseYear(year);
-        Integer month = Integer.parseInt(
-            TimeUtil.formatTimeStr(TimeUtil.excelformatDate(waterUseDataVO.getDate()))
-                .substring(5, 7));
-        waterUseData.setUseMonth(month);
-      } catch (Exception e) {
-        String errorMsg = e.getCause().toString();
-//        switch (errorMsg) {
-//          case "Unparseable date":
-//            errorMsg ="第"+ i+ "行的日期格式不正确";
-//            break;
-//          default:
-//            errorMsg="第"+ i+ "行日期填写错误";
-//        }
-        errorMsgs.append("\n第"+ i+ "行日期填写错误");
-        continue;
+      waterUseData.setSector(waterUseDataVO.getSector());
+      /**调用formatVoToBean方法,每个格式转换的地方都调用该方法一次，
+       * 这样不会在第一个异常时就停止执行检查数据。
+       * 可以把导入的文件所有不满足格式的数据都找到，
+       * 并记录到errorMsgs，写入文件*/
+      formatVoToBean(waterUseDataVO,waterUseData,"date",i);
+      formatVoToBean(waterUseDataVO,waterUseData,"caliberInt",i);
+      formatVoToBean(waterUseDataVO,waterUseData,"waterBeginFloat",i);
+      formatVoToBean(waterUseDataVO,waterUseData,"waterEndFloat",i);
+      formatVoToBean(waterUseDataVO,waterUseData,"waterNumberFloat",i);
+      formatVoToBean(waterUseDataVO,waterUseData,"priceFloat",i);
+      /**判断相同年份+月份是否已经有该水表档案号的信息*/
+      String meterCodeAndYearMonth =
+          waterUseData.getWaterMeterCode() + waterUseData.getUseYear() + waterUseData.getUseMonth();
+       if(null != existMap.get(meterCodeAndYearMonth)){
+         List<Integer> dataIndex =  existMap.get(meterCodeAndYearMonth);
+         StringJoiner stringJoiner = new StringJoiner(",", "水表档案号"+waterUseData.getWaterMeterCode()+"在",
+             "行是相同月份的数据，同一个水表号在相同的月份不能有多条数据");
+         for (Integer integer :dataIndex){
+             stringJoiner.add(integer+"");//将excel前面出现位置拼接
+         }
+         stringJoiner.add(i+"");//将本条数据的位置也拼接
+         errorMsgs.append("\n"+stringJoiner.toString());
+       }
+      if (null != waterUseData){
+        /**记录existMap*/
+        List<Integer> existIndex = new ArrayList<>();
+        if (null != existMap.get(meterCodeAndYearMonth)){
+         existIndex = existMap.get(meterCodeAndYearMonth);
+         existIndex.add(Integer.valueOf(i));
+        }else {
+         existIndex.add(Integer.valueOf(i));
+        }
+        existMap.put(meterCodeAndYearMonth,existIndex);
+        waterUseDataList.add(waterUseData);
       }
-
-      //调用最下面的方法
-      rowSuccess = false;
-      try {
-        Integer caliber = Integer.parseInt(waterUseDataVO.getCaliber());
-        waterUseData.setCaliber(caliber);
-      } catch (Exception e) {
-        errorMsgs.append("\n第"+ i+ "行口径格式填写错误");
-        continue;
-      }
-      try {
-        Float waterBegin = Float.parseFloat(waterUseDataVO.getWaterBegin());
-        waterUseData.setWaterBegin(waterBegin);
-      } catch (Exception e) {
-        errorMsgs.append("\n第"+ i+ "行,起度格式填写错误");
-        continue;
-      }
-      try {
-        Float waterEnd = Float.parseFloat(waterUseDataVO.getWaterEnd());
-        waterUseData.setWaterEnd(waterEnd);
-      } catch (Exception e) {
-        errorMsgs.append("\n第"+ i+ ",止度格式填写错误");
-        continue;
-      }
-      try {
-        Float waterNumber = Float.parseFloat(waterUseDataVO.getWaterNumber());
-        waterUseData.setWaterNumber(waterNumber);
-      } catch (Exception e) {
-        errorMsgs.append("\n第"+ i+ ",水量格式填写错误");
-        continue;
-      }
-      try {
-        Float price = Float.parseFloat(waterUseDataVO.getPrice());
-        waterUseData.setPrice(price);
-      } catch (Exception e) {
-        errorMsgs.append("\n第"+ i+ ",单价格式填写错误");
-        continue;
-      }
-      waterUseDataList.add(waterUseData);
     }
     if (errorMsgs.length()>0){
       /**将所有错误写到txt文件*/
-      String filePath =fileRealPath + importErrorFilePath + java.io.File.separator + TimeUtil
+      String filePath =fileUploadRootPath + importErrorFilePath + java.io.File.separator + TimeUtil
           .formatTimeyyyyMMddHHmmss(new Date()) + ".txt";
       fileUtil.saveAsFileWriter(errorMsgs.toString(), filePath);
       /**记录日志*/
       importLog.setImportStatus("0");
       importLog.setImportDetail(filePath);
+      response.recordError("本次导入数据存在错误，请查看错误日志文件");
     }else {
       /**数据插入数据库*/
       this.insertBatch(waterUseDataList);
@@ -343,10 +326,12 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
       importLog.setImportStatus("1");
       importLog.setImportDetail("导入成功："+infos.size()+"条；失败0条");
     }
-    /**日志入数据库*/
+    /**日志写入数据库*/
     importLogService.add(importLog);
-
     /**TODO 将完成百分比(100%)通过webSocket推送给前端(最后一次)*/
+    /**删除上传的excel文件*/
+    FileUtil.deleteDir(fileRealPath);
+    return response;
   }
 
   /**解析excel数据到bean*/
@@ -421,15 +406,68 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     }
   }
 
-  private WaterUseData formatXlsToVo(WaterUseDataVO waterUseDataVO,WaterUseData importWaterUseData){
-    try{
-      //格式转换 vo
-
-      //给waterUseData进行赋值
-
-    }catch (Exception e){
-      //读取错误信息，放到stringbuffer中
-      importWaterUseData = null;
+  private WaterUseData formatVoToBean(WaterUseDataVO waterUseDataVO,WaterUseData importWaterUseData,String formatType,int i){
+    switch (formatType) {
+      case "date":
+        try {
+          Integer year = Integer.parseInt(
+              TimeUtil.formatTimeStr(TimeUtil.excelformatDate(waterUseDataVO.getDate()))
+                  .substring(0, 4));
+          importWaterUseData.setUseYear(year);
+          Integer month = Integer.parseInt(
+              TimeUtil.formatTimeStr(TimeUtil.excelformatDate(waterUseDataVO.getDate()))
+                  .substring(5, 7));
+          importWaterUseData.setUseMonth(month);
+        } catch (Exception e) {
+          errorMsgs.append("\n第" + i + "行,日期填写错误");
+          importWaterUseData = null;
+        }
+        break;
+      case "caliberInt":
+        try {
+          Integer caliber = Integer.parseInt(waterUseDataVO.getCaliber());
+          importWaterUseData.setCaliber(caliber);
+        } catch (Exception e) {
+          errorMsgs.append("\n第"+ i+ "行口径格式填写错误");
+          importWaterUseData = null;
+        }
+        break;
+      case "waterBeginFloat":
+        try {
+          Float waterBegin = Float.parseFloat(waterUseDataVO.getWaterBegin());
+          importWaterUseData.setWaterBegin(waterBegin);
+        } catch (Exception e) {
+          errorMsgs.append("\n第"+ i+ "行,起度格式填写错误");
+          importWaterUseData = null;
+        }
+        break;
+      case "waterEndFloat":
+        try {
+          Float waterEnd = Float.parseFloat(waterUseDataVO.getWaterEnd());
+          importWaterUseData.setWaterEnd(waterEnd);
+        } catch (Exception e) {
+          errorMsgs.append("\n第"+ i+ ",止度格式填写错误");
+          importWaterUseData = null;
+        }
+        break;
+      case "waterNumberFloat":
+        try {
+          Float waterNumber = Float.parseFloat(waterUseDataVO.getWaterNumber());
+          importWaterUseData.setWaterNumber(waterNumber);
+        } catch (Exception e) {
+          errorMsgs.append("\n第"+ i+ ",水量格式填写错误");
+          importWaterUseData = null;
+        }
+        break;
+      case "priceFloat":
+        try {
+          Float price = Float.parseFloat(waterUseDataVO.getPrice());
+          importWaterUseData.setPrice(price);
+        } catch (Exception e) {
+          errorMsgs.append("\n第"+ i+ ",单价格式填写错误");
+          importWaterUseData = null;
+        }
+        break;
     }
     return importWaterUseData;
   }

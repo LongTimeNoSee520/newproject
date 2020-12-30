@@ -2,7 +2,7 @@ package com.zjtc.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.IService;
-import com.zjtc.model.ImportLog;
+import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUseData;
 import java.util.Map;
@@ -48,5 +48,5 @@ public interface WaterQuantityManageService extends IService<WaterUseData> {
 	 * @param fileProcessId
 	 * @return
 	 */
-	void checkAndInsertData(User user,String fileProcessId,String fileName) throws Exception;
+	ApiResponse checkAndInsertData(User user,String fileProcessId,String fileName) throws Exception;
 }

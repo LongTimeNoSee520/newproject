@@ -4,17 +4,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
-import com.zjtc.service.ImportLogService;
 import com.zjtc.service.WaterQuantityManageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.io.IOException;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,10 +21,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.BASE64Decoder;
+
 
 /**
  * @author lianghao
@@ -117,10 +115,10 @@ public class WaterQuantityManageController {
   @ApiOperation("合并")
   @RequestMapping(value = "merge", method = RequestMethod.POST)
   public ApiResponse merge(@RequestHeader("token") String token,
-      @RequestBody JSONObject jsonObject) {
+      @Param("{ \"fileProcessId\":\"文件上传的UUID\"}")@RequestBody JSONObject jsonObject) {
     ApiResponse apiResponse = new ApiResponse();
     String fileProcessId = jsonObject.getString("fileProcessId");
-    String fileName = jsonObject.getString("fileName");
+  //  String fileName = jsonObject.getString("fileName");
     if (StringUtils.isBlank(fileProcessId) || StringUtils.isBlank(fileProcessId)  ) {
       apiResponse.recordError("合并失败，上传文件id和文件名不能为空");
       return apiResponse;
@@ -135,7 +133,7 @@ public class WaterQuantityManageController {
     return apiResponse;
   }
   @RequestMapping(value = "checkAndInsertData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation(value = "数据检查")
+  @ApiOperation(value = "数据检查和入库")
   public ApiResponse checkAndInsertData(@RequestHeader("token") String token,
       @ApiParam("{ \n"
           + "  \"fileProcessId\":\"文件上传的UUID\",\n"
@@ -148,7 +146,7 @@ public class WaterQuantityManageController {
         User user = jwtUtil.getUserByToken(token);
         String fileProcessId = jsonObject.getString("fileProcessId");
         String fileName = jsonObject.getString("fileName");
-        waterQuantityManageService.checkAndInsertData(user,fileProcessId,fileName);
+        response = waterQuantityManageService.checkAndInsertData(user,fileProcessId,fileName);
       } catch (Exception e) {
         log.error("检查到错误:errMsg==={}" + e.getMessage());
         response.recordError(500);
