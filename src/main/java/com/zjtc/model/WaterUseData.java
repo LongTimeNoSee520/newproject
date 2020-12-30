@@ -99,6 +99,8 @@ public class WaterUseData extends Model<WaterUseData> {
   @TableField(value = "remarks", exist = true)
   private String remarks;//类型
 
+  private Integer num;//mybatis mapping中用到的keyproperty 需要有setter方法
+
   @Override
   protected Serializable pkVal() {
     return null;

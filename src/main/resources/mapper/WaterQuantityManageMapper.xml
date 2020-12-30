@@ -122,4 +122,49 @@
     )t
   </select>
 
+  <insert id="insertOrUpdate" parameterType="com.zjtc.model.WaterUseData" useGeneratedKeys="true" keyProperty="id">
+    <selectKey keyProperty="num" order="BEFORE" resultType="int">
+      SELECT
+      COUNT(id)
+      AS num
+      FROM t_w_water_use_data
+      WHERE water_meter_code=#{waterUseData.waterMeterCode}
+      AND use_year=#{waterUseData.useYear}
+      AND use_month =#{waterUseData.useMonth}
+    </selectKey>
+    <if test="num==0">
+      INSERT INTO t_w_water_use_data(id,use_water_unit_id,use_year,use_month,water_meter_code,water_begin,water_end,water_number,price,caliber
+      ,sector,uid,water_use_kinds,unit_address,unit_names,node_code,type,unit_code,remarks)
+      VALUES (#{waterUseData.id},#{waterUseData.useWaterUnitId},#{waterUseData.useYear},#{waterUseData.useMonth},#{waterUseData.waterMeterCode}
+      ,#{waterUseData.waterBegin},#{waterUseData.waterEnd},#{waterUseData.waterNumber},#{waterUseData.price}, #{waterUseData.caliber}
+      ,#{waterUseData.sector},#{waterUseData.uid},#{waterUseData.waterUseKinds},#{waterUseData.unitAddress},#{waterUseData.unitNames}
+      ,#{waterUseData.nodeCode},#{waterUseData.type},#{waterUseData.unitCode},#{waterUseData.remarks})
+    </if>
+    <if test="num>0">
+      UPDATE t_w_water_use_data
+      SET
+      use_water_unit_id=#{waterUseData.useWaterUnitId},
+      use_year =#{waterUseData.useYear},
+      use_month =#{waterUseData.useMonth},
+      water_meter_code=#{waterUseData.waterMeterCode},
+      water_begin= #{waterUseData.waterBegin},
+      water_end=#{waterUseData.waterEnd},
+      water_number=#{waterUseData.waterNumber},
+      price=#{waterUseData.price},
+      caliber=#{waterUseData.caliber},
+      sector =#{waterUseData.sector},
+      uid=#{waterUseData.uid},
+      water_use_kinds=#{waterUseData.waterUseKinds},
+      unit_address=#{waterUseData.unitAddress},
+      unit_names=#{waterUseData.unitNames},
+      node_code=#{waterUseData.nodeCode},
+      type=#{waterUseData.type},
+      unit_code=#{waterUseData.unitCode},
+      remarks=#{waterUseData.remarks}
+      WHERE
+      use_year= #{waterUseData.useYear}
+      AND use_month =#{waterUseData.useMonth}
+      AND water_meter_code=#{waterUseData.waterMeterCode}
+    </if>
+  </insert>
 </mapper>

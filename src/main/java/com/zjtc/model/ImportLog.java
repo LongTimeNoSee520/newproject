@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -43,6 +45,10 @@ public class ImportLog extends Model<ImportLog>{
     @ApiModelProperty("导入详情")
     @TableField(value = "import_detail",exist = true)
     private String importDetail;
+
+    @ApiModelProperty("相关附件")
+    @TableField(value = "files",exist = false)
+    private List<Map<String,Object>> files;
 
 	@Override
 	protected Serializable pkVal() {

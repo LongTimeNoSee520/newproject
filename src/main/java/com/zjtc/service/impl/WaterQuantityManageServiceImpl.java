@@ -13,6 +13,7 @@ import com.zjtc.model.ImportLog;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUseData;
 import com.zjtc.model.vo.WaterUseDataVO;
+import com.zjtc.service.FileService;
 import com.zjtc.service.ImportLogService;
 import com.zjtc.service.UseWaterUnitMeterService;
 import com.zjtc.service.WaterQuantityManageService;
@@ -28,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -80,6 +82,9 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 
   @Autowired
   private UseWaterUnitMeterService useWaterUnitMeterService;
+
+  @Autowired
+  private FileService fileService;
 
   /**
    * 错误文件信息
@@ -231,15 +236,29 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 
     String xmlConfig = "template/xml/WaterQuantityManage.xml";
     Map result = new HashMap();
-    String fileRealPath = fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx";
+    String fileRealPath = "C:\\Users\\LH\\Desktop\\WaterQuantityManageTemplate.xlsx";
+        //fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx";
     //"C:\\Users\\LH\\Desktop\\导入测试.xlsx";
+    //WaterQuantityManageTemplate.xlsx;
     errorMsgs = new StringBuffer();//错误信息
     String nodeCode = user.getNodeCode();
     /**日志*/
     ImportLog importLog =new ImportLog();
+    importLog.setId(UUID.randomUUID().toString().replace("-", ""));
     importLog.setImportFileName(fileName);
     importLog.setImportTime(new Date());
     importLog.setNodeCode(nodeCode);
+    /**记录附件信息*/
+    com.zjtc.model.File file1 = new com.zjtc.model.File();//上传的excel信息
+    file1.setDeleted("0");
+    file1.setBusinessId(importLog.getId());
+    file1.setCreaterId(user.getId());
+    file1.setCreateTime(new Date());
+    file1.setFileName(fileProcessId + ".xlsx");
+    file1.setNodeCode(user.getNodeCode());
+    file1.setFilePath(fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx");
+    List<com.zjtc.model.File> files = new ArrayList<>();
+    files.add(file1);
     /**excel数据解析写入bean*/
     result = this.importExcel(beans, xmlConfig, fileRealPath, fileName, nodeCode, true);
     infos = (List<WaterUseDataVO>) result.get("infos");
@@ -266,6 +285,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 
       WaterUseDataVO waterUseDataVO = infos.get(i - 1);
       WaterUseData waterUseData = new WaterUseData();
+      waterUseData.setId(UUID.randomUUID().toString().replace("-", ""));
       waterUseData.setNodeCode(nodeCode);
       waterUseData.setUseWaterUnitId(meterMap.get(waterUseDataVO.getWaterMeterCode()));
       waterUseData.setUnitCode(waterUseDataVO.getWaterMeterCode());//水表档案号作原始数据的单位编号
@@ -317,20 +337,31 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
       fileUtil.saveAsFileWriter(errorMsgs.toString(), filePath);
       /**记录日志*/
       importLog.setImportStatus("0");
-      importLog.setImportDetail(filePath);
+//      importLog.setImportDetail(filePath);
+      com.zjtc.model.File file2 = new com.zjtc.model.File();//错误信息txt文件
+      file2.setDeleted("0");
+      file2.setBusinessId(importLog.getId());
+      file2.setCreaterId(user.getId());
+      file2.setCreateTime(new Date());
+      file2.setFileName(filePath.substring(15,filePath.length()));
+      file2.setNodeCode(user.getNodeCode());
+      file2.setFilePath(filePath.substring(3,filePath.length()));
+      files.add(file2);
+      fileService.insertBatch(files);
       response.recordError("本次导入数据存在错误，请查看错误日志文件");
     }else {
-      /**数据插入数据库*/
-      this.insertBatch(waterUseDataList);
+      /**数据插入数据库,有则更新，无则新增*/
+      for (WaterUseData waterUseData:waterUseDataList) {
+        this.baseMapper.insertOrUpdate(waterUseData);
+      }
       /**日志*/
       importLog.setImportStatus("1");
-      importLog.setImportDetail("导入成功："+infos.size()+"条；失败0条");
+      /**附件信息*/
+      fileService.insertBatch(files);
     }
     /**日志写入数据库*/
     importLogService.add(importLog);
     /**TODO 将完成百分比(100%)通过webSocket推送给前端(最后一次)*/
-    /**删除上传的excel文件*/
-    FileUtil.deleteDir(fileRealPath);
     return response;
   }
 
