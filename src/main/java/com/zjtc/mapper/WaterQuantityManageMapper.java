@@ -21,4 +21,6 @@ public interface WaterQuantityManageMapper extends BaseMapper<WaterUseData> {
   List<Map<String,Object>> queryPage(Map<String, Object> map);
 
   void insertOrUpdate(@Param("waterUseData") WaterUseData waterUseData);
+
+  void insertOrUpdateToMonthData(@Param("year") Integer year);
 }

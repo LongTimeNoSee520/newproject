@@ -49,4 +49,9 @@ public interface WaterQuantityManageService extends IService<WaterUseData> {
 	 * @return
 	 */
 	ApiResponse checkAndInsertData(User user,String fileProcessId,String fileName) throws Exception;
+
+	/**
+	 *原始数据导入完后，将导入的数据写入水量月使用数据表中
+	 *  */
+  void importEnd();
 }

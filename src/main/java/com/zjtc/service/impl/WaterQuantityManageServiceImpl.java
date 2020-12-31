@@ -365,6 +365,12 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     return response;
   }
 
+  @Override
+  public void importEnd() {
+	 Integer year =Integer.parseInt(TimeUtil.formatTimeStr(new Date()).substring(0,4)) ;
+    this.baseMapper.insertOrUpdateToMonthData(year);
+  }
+
   /**解析excel数据到bean*/
   public  Map<String, List> importExcel(Map<String, List> beans, String xmlConfig,
       String fileRealPath, String uploadFileName,String nodeCode,boolean isThrowException) throws Exception {

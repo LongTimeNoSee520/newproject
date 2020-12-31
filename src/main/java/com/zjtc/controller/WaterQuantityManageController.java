@@ -156,5 +156,20 @@ public class WaterQuantityManageController {
     }
     return response;
   }
+  @RequestMapping(value = "importEnd", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "导入完毕后往月使用表更新或者插入数据")
+  public ApiResponse importEnd(@RequestHeader("token") String token,
+      @ApiParam("{}") @RequestBody JSONObject jsonObject) {
+    log.info("数据检查 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+      try {
+       // User user = jwtUtil.getUserByToken(token);
+         waterQuantityManageService.importEnd();
+      } catch (Exception e) {
+        log.error("数据错误:errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    return response;
+  }
 
 }
