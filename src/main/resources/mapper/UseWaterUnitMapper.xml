@@ -18,6 +18,7 @@
     <result column="imain" property="imain" jdbcType="VARCHAR"/>
     <result column="department" property="department" jdbcType="VARCHAR"/>
     <result column="area_country" property="areaCountry" jdbcType="VARCHAR"/>
+    <result column="areaCountryName" property="areaCountryName" jdbcType="VARCHAR"/>
     <result column="abnormal" property="abnormal" jdbcType="VARCHAR"/>
     <result column="abnormal_cause" property="abnormalCause" jdbcType="VARCHAR"/>
     <collection property="meterList" column="{id=id,nodeCode=node_code}"
@@ -362,6 +363,9 @@
     imain ,
     department ,
     area_country ,
+    (select dict_item_name from t_dict_item where dict_id in(select id from t_dict where
+    dict_code=#{dictCode} and node_code=#{nodeCode}) and dict_item_code=area_country
+    and  node_code=#{nodeCode}) as areaCountryName,
     abnormal ,
     abnormal_cause
     from t_w_use_water_unit

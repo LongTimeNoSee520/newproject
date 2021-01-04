@@ -71,3 +71,5 @@ file:
   fileUploadPath : upload
   #导入错误日志文件目录
   importErrorFilePath : importError
+  #文件上下文
+  preViewRealPath: http://120.79.162.253:8082
