@@ -1,5 +1,6 @@
 package com.zjtc.model;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -30,5 +31,8 @@ public class User {
 
   @ApiModelProperty(value = "密码输入错误次数")
   private int wrongTimes;
+
+  @ApiModelProperty(value = "是否修改")
+  private String isUpdate;
 
 }

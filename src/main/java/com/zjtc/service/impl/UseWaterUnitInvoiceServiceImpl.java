@@ -33,6 +33,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
       response.recordError("系统错误");
       return response;
     }
+    assert jsonObject != null;
     List<UseWaterUnitInvoice> unitInvoices = jsonObject.getJSONArray("unitInvoices")
         .toJavaList(UseWaterUnitInvoice.class);
     List<UseWaterUnitInvoice> unitInvoiceList = new ArrayList<>();
