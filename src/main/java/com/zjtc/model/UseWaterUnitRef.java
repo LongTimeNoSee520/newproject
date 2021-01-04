@@ -33,11 +33,11 @@ public class UseWaterUnitRef extends Model<UseWaterUnitRef> {
   @TableField(value = "node_code", exist = true)
   private String nodeCode;
 
-  @ApiModelProperty(value = "父级单位编号")
+  @ApiModelProperty(value = "单位id")
   @TableField(value = "use_water_unit_id", exist = true)
   private String useWaterUnitId;
 
-  @ApiModelProperty(value = "单位编号")
+  @ApiModelProperty(value = "被关联单位单位id")
   @TableField(value = "use_water_unit_id_ref", exist = true)
   private String useWaterUnitIdRef;
 

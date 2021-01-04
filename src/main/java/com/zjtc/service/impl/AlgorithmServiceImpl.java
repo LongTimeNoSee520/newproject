@@ -30,6 +30,7 @@ public class AlgorithmServiceImpl extends ServiceImpl<AlgorithmMapper, Algorithm
         result = algorithm.getId() != null ? this.baseMapper.updateNotNull(algorithm) :
             this.baseMapper.insert(algorithm);
       }
+      //todo 调整用水计划数据
       return result > 0 ? true : false;
     }
     return false;
