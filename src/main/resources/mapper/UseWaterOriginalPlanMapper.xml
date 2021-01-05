@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.UseWaterOriginalPlanMapper">
+	<!-- TWUseWaterOriginalPlan的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+	<resultMap id="result_UseWaterOriginalPlan_Map" type="com.zjtc.model.UseWaterOriginalPlan">
+		
+		<result column="id" property="id" />
+		<result column="node_code" property="nodeCode" />
+		<result column="use_water_unit_id" property="useWaterUnitId" />
+		<result column="unit_name" property="unitName" />
+		<result column="unit_code" property="unitCode" />
+		<result column="algorithm_type" property="algorithmType" />
+		<result column="water_meter_code" property="waterMeterCode" />
+		<result column="plan_year" property="planYear" />
+		<result column="base_water_amount" property="baseWaterAmount" />
+		<result column="before_last_year_water_amount" property="beforeLastYearWaterAmount" />
+		<result column="last_year_water_amount" property="lastYearWaterAmount" />
+		<result column="three_year_avg" property="threeYearAvg" />
+		<result column="now_price" property="nowPrice" />
+		<result column="n8" property="n8" />
+		<result column="minus_pay_status" property="minusPayStatus" />
+		<result column="balance_test" property="balanceTest" />
+		<result column="create_type" property="createType" />
+		<result column="cur_year_base_plan" property="curYearBasePlan" />
+		<result column="cur_year_plan" property="curYearPlan" />
+		<result column="next_year_base_start_plan" property="nextYearBaseStartPlan" />
+		<result column="next_year_quota_start_plan" property="nextYearQuotaStartPlan" />
+		<result column="next_year_base_end_plan" property="nextYearBaseEndPlan" />
+		<result column="next_year_quota_end_plan" property="nextYearQuotaEndPlan" />
+		<result column="first_quarter_base" property="firstQuarterBase" />
+		<result column="second_quarter_base" property="secondQuarterBase" />
+		<result column="third_quarter_base" property="thirdQuarterBase" />
+		<result column="fourth_quarter_base" property="fourthQuarterBase" />
+		<result column="first_quarter_quota" property="firstQuarterQuota" />
+		<result column="second_quarter_quota" property="secondQuarterQuota" />
+		<result column="third_quarter_quota" property="thirdQuarterQuota" />
+		<result column="fourth_quarter_quota" property="fourthQuarterQuota" />
+		<result column="printed" property="printed" />
+		<result column="create_time" property="createTime" />
+		<result column="assess_quarter" property="assessQuarter" />
+		<result column="planed" property="planed" />
+	</resultMap>
+
+
+</mapper>
