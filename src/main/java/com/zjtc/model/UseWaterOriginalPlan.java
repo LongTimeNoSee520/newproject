@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.enums.FieldFill;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -17,7 +18,7 @@ import lombok.experimental.Accessors;
  * @author 
  *
  */
-@ApiModel("")
+@ApiModel("用水计划原始表")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
@@ -26,211 +27,211 @@ public class UseWaterOriginalPlan extends Model<UseWaterOriginalPlan>{
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("主键id")
     @TableField(value = "id",exist = true)
     private String id;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("节点编码")
     @TableField(value = "node_code",exist = true)
     private String nodeCode;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("单位id")
     @TableField(value = "use_water_unit_id",exist = true)
     private String useWaterUnitId;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("单位名称")
     @TableField(value = "unit_name",exist = true)
     private String unitName;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("单位编码")
     @TableField(value = "unit_code",exist = true)
     private String unitCode;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("算法类型")
     @TableField(value = "algorithm_type",exist = true)
     private String algorithmType;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("水表档案号")
     @TableField(value = "water_meter_code",exist = true)
     private String waterMeterCode;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("编制年度")
     @TableField(value = "plan_year",exist = true)
     private Integer planYear;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("第三年（编制基础）")
     @TableField(value = "base_water_amount",exist = true)
     private Double baseWaterAmount;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("第二年（前年用水量）")
     @TableField(value = "before_last_year_water_amount",exist = true)
     private Double beforeLastYearWaterAmount;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("第一年（去年用水量）")
     @TableField(value = "last_year_water_amount",exist = true)
     private Double lastYearWaterAmount;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("三年平均水量")
     @TableField(value = "three_year_avg",exist = true)
     private Double threeYearAvg;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("当前水价")
     @TableField(value = "now_price",exist = true)
     private Double nowPrice;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("n8")
     @TableField(value = "n8",exist = true)
     private Integer n8;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("扣加价")
     @TableField(value = "minus_pay_status",exist = true)
     private String minusPayStatus;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("水平衡测试")
     @TableField(value = "balance_test",exist = true)
     private String balanceTest;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("创建")
     @TableField(value = "create_type",exist = true)
     private String createType;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("当前年基础计划")
     @TableField(value = "cur_year_base_plan",exist = true)
     private Double curYearBasePlan;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("本年计划（当前年计划）")
     @TableField(value = "cur_year_plan",exist = true)
     private Double curYearPlan;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("下年初始计划（基础）")
     @TableField(value = "next_year_base_start_plan",exist = true)
     private Double nextYearBaseStartPlan;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("下年初始计划（定额）")
     @TableField(value = "next_year_quota_start_plan",exist = true)
     private Double nextYearQuotaStartPlan;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("下年终计划（基础）")
     @TableField(value = "next_year_base_end_plan",exist = true)
     private Double nextYearBaseEndPlan;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("下年终计划（定额）")
     @TableField(value = "next_year_quota_end_plan",exist = true)
     private Double nextYearQuotaEndPlan;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("第一季度计划(基础)")
     @TableField(value = "first_quarter_base",exist = true)
     private Double firstQuarterBase;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("第二季度计划(基础)")
     @TableField(value = "second_quarter_base",exist = true)
     private Double secondQuarterBase;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("第三季度计划(基础)")
     @TableField(value = "third_quarter_base",exist = true)
     private Double thirdQuarterBase;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("第四季度计划(基础)")
     @TableField(value = "fourth_quarter_base",exist = true)
     private Double fourthQuarterBase;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("第一季度计划（定额）")
     @TableField(value = "first_quarter_quota",exist = true)
     private Double firstQuarterQuota;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("第二季度计划（定额）")
     @TableField(value = "second_quarter_quota",exist = true)
     private Double secondQuarterQuota;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("第三季度计划（定额）")
     @TableField(value = "third_quarter_quota",exist = true)
     private Double thirdQuarterQuota;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("第四季度计划（定额）")
     @TableField(value = "fourth_quarter_quota",exist = true)
     private Double fourthQuarterQuota;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("是否打印")
     @TableField(value = "printed",exist = true)
     private String printed;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("创建时间")
     @TableField(value = "create_time",exist = true,fill = FieldFill.INSERT)
-    private java.time.Instant createTime;
+    private Date createTime;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("开始考核季度")
     @TableField(value = "assess_quarter",exist = true)
     private Integer assessQuarter;
     /**
     * 
     */
-    @ApiModelProperty("")
+    @ApiModelProperty("是否编制")
     @TableField(value = "planed",exist = true)
     private String planed;
 	/**
