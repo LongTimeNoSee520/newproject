@@ -43,7 +43,7 @@
            FROM t_w_use_water_base_plan
            WHERE deleted = '0'
            AND node_code = #{nodeCode}
-           AND SUBSTRING(unit_code,3,2)
+           AND SUBSTRING(unit_code,3,2) <!--批次-->
            IN (
            SELECT unit_type_code
            FROM t_w_use_water_unit_role
@@ -59,7 +59,7 @@
           FROM t_w_use_water_base_plan
            WHERE deleted = '0'
            AND node_code = #{nodeCode}
-           AND SUBSTRING(unit_code,3,2)
+           AND SUBSTRING(unit_code,3,2) <!--批次-->
            IN (
            SELECT unit_type_code
            FROM t_w_use_water_unit_role
@@ -82,7 +82,7 @@
                   FROM t_w_use_water_base_plan
                   WHERE deleted = '0'
                   AND node_code = #{nodeCode}
-                  AND SUBSTRING(unit_code,3,2)
+                  AND SUBSTRING(unit_code,3,2) <!--批次-->
                       IN (
                       SELECT unit_type_code
                       FROM t_w_use_water_unit_role

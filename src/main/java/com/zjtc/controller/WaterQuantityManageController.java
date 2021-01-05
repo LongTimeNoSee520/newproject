@@ -46,8 +46,6 @@ public class WaterQuantityManageController {
   @ApiOperation(value = "分页查询水量")
   public ApiResponse queryPage(@RequestHeader("token") String token,
       @ApiParam("{\"current\":\"当前页,数字类型\",\n"
-          + "\"size\":\"每页条数,数字类型\"\n"
-          + "}{\"current\":\"当前页,数字类型\",\n"
           + " \"size\":\"每页条数,数字类型\" ,\n"
           + " \"unitName\":\"单位名称\",\n"
           + " \"waterMeterCode\":\"水表档案号\",\n"

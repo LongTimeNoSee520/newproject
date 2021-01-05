@@ -35,9 +35,6 @@
     <if test="waterMeterCode != null and waterMeterCode != ''">
       and water_meter_code like '%${waterMeterCode}%'
     </if>
-    <if test="waterMeterCode != null and waterMeterCode != ''">
-      and water_meter_code like '%${waterMeterCode}%'
-    </if>
     <if test="waterNumberStart != null">
       and water_number &gt; #{waterNumberStart}
     </if>
@@ -59,7 +56,7 @@
     <if test="sectorStart != null">
       and convert(int,sector) &gt; #{sectorStart}
     </if>
-    <if test="priceEnd != null">
+    <if test="sectorEnd != null">
       and convert(int,sector) &lt; #{sectorEnd}
     </if>
     <if test="useYear != null">
