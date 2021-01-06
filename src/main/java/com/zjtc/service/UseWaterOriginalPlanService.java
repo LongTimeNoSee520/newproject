@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.UseWaterOriginalPlan;
+import java.util.List;
+import java.util.Map;
 
 /**
- * TWUseWaterOriginalPlan的服务接口
+ * UseWaterOriginalPlan的服务接口
  * 
  * @author 
  *
@@ -19,7 +21,12 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	* @return
 	*/
 	boolean saveModel(JSONObject jsonObject);
-
+	/**
+	 * 编制
+	 * @param jsonObject
+	 * @return
+	 */
+	boolean saveOriginal(JSONObject jsonObject);
 	/**
 	* 修改
 	* @param jsonObject
@@ -39,4 +46,12 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	* @return
 	*/
 	Page<UseWaterOriginalPlan> queryPage(JSONObject jsonObject);
+
+	/**
+	 * 获取本年度初始化编制信息
+	 * @param jsonObject
+	 * @return
+	 */
+  List<Map<String,Object>> goPlanning(JSONObject jsonObject);
+
 }

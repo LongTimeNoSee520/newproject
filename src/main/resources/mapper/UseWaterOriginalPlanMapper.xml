@@ -1,45 +1,235 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zjtc.mapper.UseWaterOriginalPlanMapper">
-	<!-- TWUseWaterOriginalPlan的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
-	<resultMap id="result_UseWaterOriginalPlan_Map" type="com.zjtc.model.UseWaterOriginalPlan">
-		
-		<result column="id" property="id" />
-		<result column="node_code" property="nodeCode" />
-		<result column="use_water_unit_id" property="useWaterUnitId" />
-		<result column="unit_name" property="unitName" />
-		<result column="unit_code" property="unitCode" />
-		<result column="algorithm_type" property="algorithmType" />
-		<result column="water_meter_code" property="waterMeterCode" />
-		<result column="plan_year" property="planYear" />
-		<result column="base_water_amount" property="baseWaterAmount" />
-		<result column="before_last_year_water_amount" property="beforeLastYearWaterAmount" />
-		<result column="last_year_water_amount" property="lastYearWaterAmount" />
-		<result column="three_year_avg" property="threeYearAvg" />
-		<result column="now_price" property="nowPrice" />
-		<result column="n8" property="n8" />
-		<result column="minus_pay_status" property="minusPayStatus" />
-		<result column="balance_test" property="balanceTest" />
-		<result column="create_type" property="createType" />
-		<result column="cur_year_base_plan" property="curYearBasePlan" />
-		<result column="cur_year_plan" property="curYearPlan" />
-		<result column="next_year_base_start_plan" property="nextYearBaseStartPlan" />
-		<result column="next_year_quota_start_plan" property="nextYearQuotaStartPlan" />
-		<result column="next_year_base_end_plan" property="nextYearBaseEndPlan" />
-		<result column="next_year_quota_end_plan" property="nextYearQuotaEndPlan" />
-		<result column="first_quarter_base" property="firstQuarterBase" />
-		<result column="second_quarter_base" property="secondQuarterBase" />
-		<result column="third_quarter_base" property="thirdQuarterBase" />
-		<result column="fourth_quarter_base" property="fourthQuarterBase" />
-		<result column="first_quarter_quota" property="firstQuarterQuota" />
-		<result column="second_quarter_quota" property="secondQuarterQuota" />
-		<result column="third_quarter_quota" property="thirdQuarterQuota" />
-		<result column="fourth_quarter_quota" property="fourthQuarterQuota" />
-		<result column="printed" property="printed" />
-		<result column="create_time" property="createTime" />
-		<result column="assess_quarter" property="assessQuarter" />
-		<result column="planed" property="planed" />
-	</resultMap>
+  <!-- TWUseWaterOriginalPlan的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+  <resultMap id="result_UseWaterOriginalPlan_Map" type="com.zjtc.model.UseWaterOriginalPlan">
 
+    <result column="id" property="id"/>
+    <result column="node_code" property="nodeCode"/>
+    <result column="use_water_unit_id" property="useWaterUnitId"/>
+    <result column="unit_name" property="unitName"/>
+    <result column="unit_code" property="unitCode"/>
+    <result column="algorithm_type" property="algorithmType"/>
+    <result column="water_meter_code" property="waterMeterCode"/>
+    <result column="plan_year" property="planYear"/>
+    <result column="base_water_amount" property="baseWaterAmount"/>
+    <result column="before_last_year_water_amount" property="beforeLastYearWaterAmount"/>
+    <result column="last_year_water_amount" property="lastYearWaterAmount"/>
+    <result column="three_year_avg" property="threeYearAvg"/>
+    <result column="now_price" property="nowPrice"/>
+    <result column="n8" property="n8"/>
+    <result column="minus_pay_status" property="minusPayStatus"/>
+    <result column="balance_test" property="balanceTest"/>
+    <result column="create_type" property="createType"/>
+    <result column="cur_year_base_plan" property="curYearBasePlan"/>
+    <result column="cur_year_plan" property="curYearPlan"/>
+    <result column="next_year_base_start_plan" property="nextYearBaseStartPlan"/>
+    <result column="next_year_quota_start_plan" property="nextYearQuotaStartPlan"/>
+    <result column="next_year_base_end_plan" property="nextYearBaseEndPlan"/>
+    <result column="next_year_quota_end_plan" property="nextYearQuotaEndPlan"/>
+    <result column="first_quarter_base" property="firstQuarterBase"/>
+    <result column="second_quarter_base" property="secondQuarterBase"/>
+    <result column="third_quarter_base" property="thirdQuarterBase"/>
+    <result column="fourth_quarter_base" property="fourthQuarterBase"/>
+    <result column="first_quarter_quota" property="firstQuarterQuota"/>
+    <result column="second_quarter_quota" property="secondQuarterQuota"/>
+    <result column="third_quarter_quota" property="thirdQuarterQuota"/>
+    <result column="fourth_quarter_quota" property="fourthQuarterQuota"/>
+    <result column="printed" property="printed"/>
+    <result column="create_time" property="createTime"/>
+    <result column="assess_quarter" property="assessQuarter"/>
+    <result column="planed" property="planed"/>
+  </resultMap>
+  <select id="initPlan" resultType="java.util.LinkedHashMap">
+  SELECT
+	[ waterMeterCode ] =STUFF (
+	( SELECT ',' + [use_water_unit_id ] FROM t_w_use_water_unit_meter WHERE use_water_unit_id = t1.id FOR XML PATH ( '' ) ),
+	1,
+	1,
+	''
+	),
+	t1.id AS useWaterUnitId ,
+	t1.unit_code as unitCode,
+	t1.unit_name as unitName,
+	t2.baseWaterAmount,
+	t3.beforeLastYearWaterAmount,
+	t4.lastYearWaterAmount,
+	algorithmType=0,
+	minusPayStatus=0,
+	balanceTest=0,
+	createType=0,
+	t5.cur_year_plan as curYearPlan,
+	t5.curYearBasePlan,
+  CASE t1.unit_code_group
+    WHEN t6.first_batch_num THEN
+    CEILING( t2.baseWaterAmount )
+    WHEN t6.second_batch_num THEN
+    CEILING( t2.baseWaterAmount * 2 + t3.beforeLastYearWaterAmount * 4 )
+    WHEN t6.third_batch_num THEN
+    CEILING(
+    ISNULL( t2.baseWaterAmount, 0 ) * 2 + ISNULL( t4.lastYearWaterAmount, 0 ) * 2 + ISNULL( t3.beforeLastYearWaterAmount, 0 ) * 2
+    )
+    END AS threeYearAvg
+FROM
+	(
+	SELECT
+		id,
+		unit_code,
+		unit_name,
+		unit_code_group,
+		unit_code_type,
+		save_unit_type
+	FROM
+		t_w_use_water_unit
+	WHERE
+		deleted = '0'
+		<!--当前用户可操作类型-->
+		AND unit_code_type IN ( SELECT unit_type_code AS unit_code_type FROM t_w_use_water_unit_role WHERE person_id = #{userId} )
+    <if test="null !=unitCodeType">
+      AND unit_code_type = #{unitCodeType}
+    </if>
+    <!--编号开头[批次]筛选-->
+    <if test="null !=unitCodeStart">
+      and unit_code_group=#{unitCodeStart}
+    </if>
+	) t1
+<!--第三年-->
+LEFT JOIN (
+	SELECT
+		MAX( now_price ) AS nowPrice,
+		use_water_unit_id,
+		SUM( topThree + fourth ) AS baseWaterAmount
+	FROM
+		(
+	SELECT
+		n1.use_water_unit_id,
+		n1.now_price,
+		topThree,
+		fourth
+	FROM
+		(
+	SELECT
+		now_price,
+		use_water_unit_id,
+		water_meter_code,
+		topThree = ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count )
+	FROM
+		t_w_water_month_use_data
+	WHERE
+		use_year = #{year}-1
+		) n1
+		LEFT JOIN ( SELECT use_water_unit_id, water_meter_code, fourth = ( october_count + november_count + december_count ) FROM t_w_water_month_use_data  WHERE use_year = #{year}-2) n2 ON n1.water_meter_code = n2.water_meter_code
+		) nn
+	GROUP BY
+		use_water_unit_id
+	) t2 on t1.id=t2.use_water_unit_id
+<!--第二年-->
+left join (
+	SELECT
+		use_water_unit_id,
+		beforeLastYearWaterAmount = (
+			SUM( january_count ) + SUM( february_count ) + SUM( march_count ) + SUM( april_count ) + SUM( may_count ) + SUM( june_count ) + SUM( july_count ) + SUM( august_count ) + SUM( september_count ) + SUM( october_count ) + SUM( november_count ) + SUM( december_count )
+		)
+	FROM
+		t_w_water_month_use_data
+	WHERE
+		use_year = #{year}-2
+	GROUP BY
+		use_water_unit_id
 
+)	t3 on t1.id=t3.use_water_unit_id
+<!--第一年-->
+left join (
+	SELECT
+		use_water_unit_id,
+		lastYearWaterAmount = (
+			SUM( january_count ) + SUM( february_count ) + SUM( march_count ) + SUM( april_count ) + SUM( may_count ) + SUM( june_count ) + SUM( july_count ) + SUM( august_count ) + SUM( september_count ) + SUM( october_count ) + SUM( november_count ) + SUM( december_count )
+		)
+	FROM
+		t_w_water_month_use_data
+	WHERE
+		use_year =#{year}-3
+	GROUP BY
+		use_water_unit_id
+
+)	t4 on t1.id=t4.use_water_unit_id
+LEFT JOIN (
+	SELECT
+		p.use_water_unit_id,<!--当年年计划-->
+		p.cur_year_plan,<!--基建计划-->
+		ISNULL( bp.cur_year_plan, 0 ) AS curYearBasePlan
+	FROM
+		( SELECT use_water_unit_id, cur_year_plan FROM t_w_use_water_plan WHERE plan_type = 0 AND plan_year =#{year}-1 ) p
+		LEFT JOIN ( SELECT cur_year_plan, use_water_unit_id FROM t_w_use_water_base_plan WHERE plan_year =#{year}-1 ) bp ON p.use_water_unit_id = bp.use_water_unit_id
+) t5 ON t1.id= t5.use_water_unit_id
+LEFT JOIN ( SELECT use_water_unit_id FROM t_w_use_water_plan pp WHERE planYear = #{year} ) t7 ON t1.id = t7.use_water_unit_id
+,
+(select first_batch_num ,second_batch_num,third_batch_num,new_batch_num from t_w_algorithm where node_code=#{nodeCode} and algorithm_type='1' ) t6
+where  ISNULL( t7.use_water_unit_id, '1' ) = '1'
+<!--去掉算法中的新户-->
+ and  t1.unit_code_group not in (t6.new_batch_num)
+  </select>
+
+  <select id="nowYearPlan" resultType="java.util.LinkedHashMap">
+    SELECT
+    p.*,
+    u.unitCode,
+    u.unitName
+    FROM
+    (
+    SELECT
+    id,
+    unit_code as unitCode,
+    unit_name AS unitName,
+    water_meter_code AS waterMeterCode,
+    <!--算法类型-->
+    algorithm_type as algorithmType,
+    base_water_amount as baseWaterAmount,
+    before_last_year_water_amount as beforeLastYearWaterAmount,
+    last_year_water_amount as lastYearWaterAmount,
+    three_year_avg as threeYearAvg,
+    now_price as nowPrice,
+    n8 as n8,
+    minus_pay_status As minusPayStatus,
+    balance_test as balanceTest,
+    create_type as createType,
+    cur_year_base_plan as curYearBasePlan,
+    cur_year_plan as curYearPlan,
+    next_year_base_start_plan as nextYearBaseStartPlan,
+    next_year_quota_start_plan as nextYearQuotaStartPlan,
+    next_year_base_end_plan as nextYearBaseEndPlan,
+    next_year_quota_end_plan as nextYearQuotaEndPlan,
+    first_quarter_base as firstQuarterBase,
+    second_quarter_base as secondQuarterBase,
+    third_quarter_base as thirdQuarterBase,
+    fourth_quarter_base as fourthQuarterBase,
+    first_quarter_quota as firstQuarterQuota,
+    second_quarter_quota as secondQuarterQuota,
+    third_quarter_quota as thirdQuarterQuota,
+    fourth_quarter_quota as fourthQuarterQuota,
+    printed as printed,
+    create_time as createTime,
+    assess_quarter as assessQuarter,
+    planed as planed
+    FROM
+    t_w_use_water_original_plan
+    WHERE
+    plan_year =#{year}
+    ) p
+    inner join
+    (
+    select id
+    from t_w_use_water_unit
+    where deleted='0'
+    <if test="null !=userType">
+      and unit_code_type=#{userType}
+    </if>
+    <!---->
+    <if test="null !=unitCodeStart">
+      and unit_code_group=#{unitCodeStart}
+    </if>
+    ) as u on u.id=p.use_water_unit_id
+    ORDER BY unitCode
+  </select>
 </mapper>

@@ -97,7 +97,7 @@ public class UseWaterUnitServiceImpl extends
     ApiResponse apiResponse = new ApiResponse();
     //当前序号，取unitCode 7-9位
     String rank = entity.getUnitCode().substring(7, 9);
-    /**验证当前用户是否有操作当前批次的权限*/
+    /**验证当前用户是否有操作当前类型的权限*/
     boolean flag = useWaterUnitRoleService
         .checkUserRight(user.getId(), entity.getUnitCode(), user.getNodeCode());
     if (!flag) {
@@ -167,7 +167,7 @@ public class UseWaterUnitServiceImpl extends
   @Transactional(rollbackFor = Exception.class)
   public ApiResponse update(UseWaterUnit entity, User user) {
     ApiResponse apiResponse = new ApiResponse();
-    /**验证当前用户是否有操作当前批次的权限*/
+    /**验证当前用户是否有操作当前类型的权限*/
     boolean flag = useWaterUnitRoleService
         .checkUserRight(user.getId(), entity.getUnitCode(), user.getNodeCode());
     if (!flag) {
