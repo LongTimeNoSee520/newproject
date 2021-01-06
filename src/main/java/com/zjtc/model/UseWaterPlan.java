@@ -141,75 +141,39 @@ public class UseWaterPlan extends Model<UseWaterPlan>{
     /**
     * 
     */
-    @ApiModelProperty("下年初始计划（基础）")
-    @TableField(value = "next_year_base_start_plan",exist = true)
-    private Double nextYearBaseStartPlan;
+    @ApiModelProperty("下年初始计划")
+    @TableField(value = "next_year_start_plan",exist = true)
+    private Double nextYearStartPlan;
     /**
     * 
     */
-    @ApiModelProperty("下年初始计划（定额）")
-    @TableField(value = "next_year_quota_start_plan",exist = true)
-    private Double nextYearQuotaStartPlan;
+    @ApiModelProperty("下年终计划")
+    @TableField(value = "next_year_end_plan",exist = true)
+    private Double nextYearEndPlan;
     /**
     * 
     */
-    @ApiModelProperty("下年终计划（基础）")
-    @TableField(value = "next_year_base_end_plan",exist = true)
-    private Double nextYearBaseEndPlan;
+    @ApiModelProperty("第一季度计划")
+    @TableField(value = "first_quarter",exist = true)
+    private Double firstQuarter;
     /**
     * 
     */
-    @ApiModelProperty("下年终计划（定额）")
-    @TableField(value = "next_year_quota_end_plan",exist = true)
-    private Double nextYearQuotaEndPlan;
+    @ApiModelProperty("第二季度计划")
+    @TableField(value = "second_quarter",exist = true)
+    private Double secondQuarter;
     /**
     * 
     */
-    @ApiModelProperty("第一季度计划(基础)")
-    @TableField(value = "first_quarter_base",exist = true)
-    private Double firstQuarterBase;
+    @ApiModelProperty("第三季度计划")
+    @TableField(value = "third_quarter",exist = true)
+    private Double thirdQuarter;
     /**
     * 
     */
-    @ApiModelProperty("第二季度计划（基础）")
-    @TableField(value = "second_quarter_base",exist = true)
-    private Double secondQuarterBase;
-    /**
-    * 
-    */
-    @ApiModelProperty("第三季度计划（基础）")
-    @TableField(value = "third_quarter_base",exist = true)
-    private Double thirdQuarterBase;
-    /**
-    * 
-    */
-    @ApiModelProperty("第四季度计划（基础）")
-    @TableField(value = "fourth_quarter_base",exist = true)
-    private Double fourthQuarterBase;
-    /**
-    * 
-    */
-    @ApiModelProperty("第一季度计划（定额）")
-    @TableField(value = "first_quarter_quota",exist = true)
-    private Double firstQuarterQuota;
-    /**
-    * 
-    */
-    @ApiModelProperty("第二季度计划（定额）")
-    @TableField(value = "second_quarter_quota",exist = true)
-    private Double secondQuarterQuota;
-    /**
-    * 
-    */
-    @ApiModelProperty("第三季度计划（定额）")
-    @TableField(value = "third_quarter_quota",exist = true)
-    private Double thirdQuarterQuota;
-    /**
-    * 
-    */
-    @ApiModelProperty("第四季度计划（定额")
-    @TableField(value = "fourth_quarter_quota",exist = true)
-    private Double fourthQuarterQuota;
+    @ApiModelProperty("第四季度计划")
+    @TableField(value = "fourth_quarter",exist = true)
+    private Double fourthQuarter;
     /**
     * 
     */

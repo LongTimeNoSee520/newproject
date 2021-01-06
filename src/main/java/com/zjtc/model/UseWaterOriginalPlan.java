@@ -111,19 +111,19 @@ public class UseWaterOriginalPlan extends Model<UseWaterOriginalPlan>{
     /**
     * 
     */
-    @ApiModelProperty("扣加价")
+    @ApiModelProperty("扣加价,0默认值,1奖，2罚")
     @TableField(value = "minus_pay_status",exist = true)
     private String minusPayStatus;
     /**
     * 
     */
-    @ApiModelProperty("水平衡测试")
+    @ApiModelProperty("水平衡测试,0默认值,1奖，2罚")
     @TableField(value = "balance_test",exist = true)
     private String balanceTest;
     /**
     * 
     */
-    @ApiModelProperty("创建")
+    @ApiModelProperty("创建,0默认值,1奖，2罚")
     @TableField(value = "create_type",exist = true)
     private String createType;
     /**
