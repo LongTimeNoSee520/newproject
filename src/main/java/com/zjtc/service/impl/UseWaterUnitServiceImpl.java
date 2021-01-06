@@ -517,7 +517,7 @@ public class UseWaterUnitServiceImpl extends
     wrapper.eq("node_code", user.getNodeCode());
     List<String> param = useWaterUnitRoleService
         .selectUseWaterUnitRole(user.getId(), user.getNodeCode());
-    wrapper.in("unit_code_group", param);
+    wrapper.in("unit_code_type", param);
     wrapper.setSqlSelect("id,unit_code as unitCode,unit_name as unitName");
     return this.selectList(wrapper);
   }

@@ -232,7 +232,7 @@
     and main='1'
     ) as b on a.id =b.use_water_unit_id
     WHERE
-    a.unit_code_group in (select unit_type_code as unit_code_group from t_w_use_water_unit_role
+    a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
     where person_id=#{userId})
     and a.deleted='0'
     and a.node_code=#{nodeCode}
@@ -298,7 +298,7 @@
     and main='1'
     ) as b on a.id =b.use_water_unit_id
     WHERE
-    a.unit_code_group in (select unit_type_code as unit_code_group from t_w_use_water_unit_role
+    a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
     where person_id=#{userId})
     and a.deleted='0'
     and a.node_code=#{nodeCode}
@@ -443,7 +443,7 @@
     ) as waterMeterCode
     from t_w_use_water_unit as a
     where node_code=#{nodeCode}
-    and a.unit_code_group in (select unit_type_code as unit_code_group from t_w_use_water_unit_role
+    and a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
       where person_id=#{userId})
     and id in
     <foreach item="item" collection="ids" index="index" open="(" separator="," close=")">

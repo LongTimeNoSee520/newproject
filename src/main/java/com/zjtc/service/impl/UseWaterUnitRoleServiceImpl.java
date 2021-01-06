@@ -27,7 +27,7 @@ public class UseWaterUnitRoleServiceImpl extends
       return false;
     }
 //    截取单位类型号的二至四位进行匹配
-    String unitTypeCodes = unitTypeCode.substring(2, 4);
+    String unitTypeCodes = unitTypeCode.substring(4, 6);
     int i = this.baseMapper.checkUserRight(personId, unitTypeCodes, nodeCode);
     if (i > 0) {
       return true;
