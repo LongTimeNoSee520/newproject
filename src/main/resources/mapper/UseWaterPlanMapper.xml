@@ -1,49 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zjtc.mapper.UseWaterPlanMapper">
-	<!-- TWUseWaterPlan的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
-	<resultMap id="result_UseWaterPlan_Map" type="com.zjtc.model.UseWaterPlan">
-		
-		<result column="id" property="id" />
-		<result column="node_code" property="nodeCode" />
-		<result column="use_water_unit_id" property="useWaterUnitId" />
-		<result column="unit_name" property="unitName" />
-		<result column="unit_code" property="unitCode" />
-		<result column="algorithm_type" property="algorithmType" />
-		<result column="water_meter_code" property="waterMeterCode" />
-		<result column="plan_year" property="planYear" />
-		<result column="base_water_amount" property="baseWaterAmount" />
-		<result column="before_last_year_water_amount" property="beforeLastYearWaterAmount" />
-		<result column="last_year_water_amount" property="lastYearWaterAmount" />
-		<result column="three_year_avg" property="threeYearAvg" />
-		<result column="now_price" property="nowPrice" />
-		<result column="n8" property="n8" />
-		<result column="minus_pay_status" property="minusPayStatus" />
-		<result column="balance_test" property="balanceTest" />
-		<result column="create_type" property="createType" />
-		<result column="cur_year_base_plan" property="curYearBasePlan" />
-		<result column="cur_year_plan" property="curYearPlan" />
-		<result column="next_year_base_start_plan" property="nextYearBaseStartPlan" />
-		<result column="next_year_quota_start_plan" property="nextYearQuotaStartPlan" />
-		<result column="next_year_base_end_plan" property="nextYearBaseEndPlan" />
-		<result column="next_year_quota_end_plan" property="nextYearQuotaEndPlan" />
-		<result column="first_quarter_base" property="firstQuarterBase" />
-		<result column="second_quarter_base" property="secondQuarterBase" />
-		<result column="third_quarter_base" property="thirdQuarterBase" />
-		<result column="fourth_quarter_base" property="fourthQuarterBase" />
-		<result column="first_quarter_quota" property="firstQuarterQuota" />
-		<result column="second_quarter_quota" property="secondQuarterQuota" />
-		<result column="third_quarter_quota" property="thirdQuarterQuota" />
-		<result column="fourth_quarter_quota" property="fourthQuarterQuota" />
-		<result column="plan_type" property="planType" />
-		<result column="create_time" property="createTime" />
-		<result column="update_user_id" property="updateUserId" />
-		<result column="added" property="added" />
-		<result column="reduce_plan" property="reducePlan" />
-		<result column="reward_plan" property="rewardPlan" />
-		<result column="assess_quarter" property="assessQuarter" />
-		<result column="remarks" property="remarks" />
-	</resultMap>
+  <!-- TWUseWaterPlan的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+  <resultMap id="BaseResultMap" type="com.zjtc.model.UseWaterPlan">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="algorithm_type" property="algorithmType" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="base_water_amount" property="baseWaterAmount" jdbcType="DOUBLE"/>
+    <result column="before_last_year_water_amount" property="beforeLastYearWaterAmount"
+      jdbcType="DOUBLE"/>
+    <result column="last_year_water_amount" property="lastYearWaterAmount" jdbcType="DOUBLE"/>
+    <result column="three_year_avg" property="threeYearAvg" jdbcType="DOUBLE"/>
+    <result column="now_price" property="nowPrice" jdbcType="DOUBLE"/>
+    <result column="n8" property="n8" jdbcType="INTEGER"/>
+    <result column="minus_pay_status" property="minusPayStatus" jdbcType="VARCHAR"/>
+    <result column="balance_test" property="balanceTest" jdbcType="VARCHAR"/>
+    <result column="create_type" property="createType" jdbcType="VARCHAR"/>
+    <result column="cur_year_base_plan" property="curYearBasePlan" jdbcType="DOUBLE"/>
+    <result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+    <result column="next_year_start_plan" property="nextYearStartPlan" jdbcType="DOUBLE"/>
+    <result column="next_year_end_plan" property="nextYearEndPlan" jdbcType="DOUBLE"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="plan_type" property="planType" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="update_user_id" property="updateUserId" jdbcType="VARCHAR"/>
+    <result column="added" property="added" jdbcType="VARCHAR"/>
+    <result column="reduce_plan" property="reducePlan" jdbcType="DOUBLE"/>
+    <result column="reward_plan" property="rewardPlan" jdbcType="DOUBLE"/>
+    <result column="assess_quarter" property="assessQuarter" jdbcType="VARCHAR"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+  </resultMap>
 
 
 </mapper>
