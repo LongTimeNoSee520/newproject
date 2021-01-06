@@ -192,6 +192,11 @@ public class UseWaterPlan extends Model<UseWaterPlan>{
     @ApiModelProperty("调整用户id")
     @TableField(value = "update_user_id",exist = true)
     private String updateUserId;
+
+    @ApiModelProperty("调整时间")
+    @TableField(value = "update_time",exist = true,fill = FieldFill.INSERT)
+    private Date updateTime;
+
     /**
     * 
     */
