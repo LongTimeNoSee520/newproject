@@ -107,9 +107,9 @@ public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
   /**
    *
    */
-//  @ApiModelProperty("审核状态")
-//  @TableField(value = "audit_status", exist = true)
-//  private String auditStatus;
+  @ApiModelProperty("审核状态(0:未审核,1:审核不通过,2:审核通过)")
+  @TableField(value = "audit_status", exist = true)
+  private String auditStatus;
   /**
    *
    */
@@ -137,9 +137,9 @@ public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
   /**
    *
    */
-//  @ApiModelProperty("是否执行")
-//  @TableField(value = "executed", exist = true)
-//  private String executed;
+  @ApiModelProperty("是否执行")
+  @TableField(value = "executed", exist = true)
+  private String executed;
   /**
    *
    */
@@ -169,9 +169,9 @@ public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
   @TableField(value = "change_type", exist = true)
   private String changeType;
 
-  @ApiModelProperty("状态(1:初始值,2:待确认,3:已确认,4:执行)")
-  @TableField(value = "status", exist = true)
-  private String status;
+//  @ApiModelProperty("状态(1:初始值,2:待确认,3:已确认,4:执行")
+//  @TableField(value = "status", exist = true)
+//  private String status;
 
   @ApiModelProperty("自平计划材料")
   @TableField(value = "execute_result", exist = false)
