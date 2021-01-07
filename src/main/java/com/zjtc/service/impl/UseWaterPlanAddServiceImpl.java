@@ -29,7 +29,7 @@ public class UseWaterPlanAddServiceImpl extends
   }
 
   @Override
-  public ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String userId) {
+  public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
     ApiResponse response = new ApiResponse();
     Map<String, Object> map = new LinkedHashMap<>(10);
 //    页数
@@ -58,13 +58,13 @@ public class UseWaterPlanAddServiceImpl extends
     }
 //    总条数
     Integer total = this.baseMapper
-        .selectCount(unitName, userType, executed, nodeCode, auditStatus,userId);
+        .selectCount(unitName, userType, executed, nodeCode, auditStatus, userId);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<UseWaterPlanAdd> useWaterPlanAdds = this.baseMapper
         .UseWaterPlanAdd(currPage, pageSize, unitName, userType,
-            executed, nodeCode, auditStatus,userId);
+            executed, nodeCode, auditStatus, userId);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -83,19 +83,40 @@ public class UseWaterPlanAddServiceImpl extends
 
   @Override
   public boolean updateStatusOrPrinted(String id, String status, String printed) {
-    Map<String,Object> map =new HashMap<>();
-    map.put("id",id);
-    if (StringUtils.isNotBlank(status)){
-      map.put("status",status);
+    Map<String, Object> map = new HashMap<>();
+    map.put("id", id);
+    if (StringUtils.isNotBlank(status)) {
+      map.put("status", status);
     }
     if (StringUtils.isNotBlank(printed)) {
       map.put("printed", printed);
     }
-    if (StringUtils.isNotBlank(status) || StringUtils.isNotBlank(printed)){
+    if (StringUtils.isNotBlank(status) || StringUtils.isNotBlank(printed)) {
       this.baseMapper.updateStatusOrPrinted(map);
       return true;
-    }else {
+    } else {
       return false;
+    }
+  }
+
+  @Override
+  public ApiResponse printed(List<String> ids) {
+    ApiResponse response = new ApiResponse();
+    if (ids.isEmpty()) {
+      response.recordError("系统异常");
+      return response;
+    }
+    int i = 0;
+    for (String id : ids) {
+//      修改是否打印状态
+      i = this.baseMapper.updatePrinted(id);
+    }
+    if (i > 0) {
+      response.setCode(200);
+      return response;
+    } else {
+      response.recordError("打印失败");
+      return response;
     }
   }
 }

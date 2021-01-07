@@ -28,7 +28,7 @@ public interface UseWaterPlanAddService extends IService<UseWaterPlanAdd> {
    * 分页
    *
    * @param jsonObject 参数
-   * @return 结果集
+   * @return 响应状态
    */
   ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String userId);
 
@@ -36,4 +36,11 @@ public interface UseWaterPlanAddService extends IService<UseWaterPlanAdd> {
    * 修改调整表数据状态或者打印状态
    * */
   boolean updateStatusOrPrinted(String id,String status, String printed);
+
+  /**
+   * 打印办结单
+   * @param ids 数据集
+   * @return 响应状态
+   */
+  ApiResponse printed(List<String> ids);
 }

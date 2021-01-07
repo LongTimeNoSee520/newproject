@@ -58,4 +58,13 @@ public interface UseWaterPlanAddMapper extends BaseMapper<UseWaterPlanAdd> {
       @Param("nodeCode") String nodeCode,
       @Param("auditStatus") String auditStatus,
       @Param("userId") String userId);
+
+  /**
+   * 修改用水计划调整数据是否打印状态
+   * @param id 打印的主键id
+   * @return 响应行数
+   */
+  int updatePrinted(@Param("id") String id);
+
+
 }

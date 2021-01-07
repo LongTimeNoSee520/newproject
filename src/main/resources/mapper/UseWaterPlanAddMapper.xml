@@ -67,9 +67,17 @@
     t1.printed,--是否打印
     t1.status,
     t1.remarks,
-    t2.audit_status as auditStatus,  --是否执行
-    t2.executed as executed,  --是否审核
-    t2.confirm_time as confirmTime  -- 审核时间
+    t2.confirm_time AS confirmTime, -- 审核时间
+    CASE t2.audit_status
+    WHEN '0' THEN '未执行'
+    WHEN '1' THEN '已执行'
+    ELSE '未知状态'
+    END auditStatus,
+    CASE t2.executed
+    WHEN '0' THEN '未审核'
+    WHEN '1' THEN '已审核'
+    ELSE '未知状态'
+    END executed
     FROM
     t_w_use_water_plan_add t1
     LEFT JOIN t_w_end_paper t2 ON t1.use_water_unit_id = t2.use_water_unit_id
@@ -233,4 +241,15 @@
     </if>
     WHERE id = #{id}
   </update>
+
+  <update id="updatePrinted" >
+    update t_w_use_water_plan_add set
+    <if test="printed != null and printed != ''">
+      printed = #{printed}
+    </if>
+    WHERE id = #{id}
+  </update>
+
+
+
 </mapper>

@@ -107,7 +107,7 @@ public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
   /**
    *
    */
-  @ApiModelProperty("审核状态(0:未审核,1:审核不通过,2:审核通过)")
+  @ApiModelProperty("审核状态(0:未审核(提交申请审核信息时设置此值),1:审核不通过,2:审核通过,3:默认为空,在审核提交之前都为此值)")
   @TableField(value = "audit_status", exist = true)
   private String auditStatus;
   /**
