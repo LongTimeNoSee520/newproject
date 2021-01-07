@@ -120,7 +120,8 @@ public class UseWaterOriginalPlanServiceImpl extends
       //自平表需要的数据
       UseWaterSelfDefinePlan useWaterSelfDefinePlan =new UseWaterSelfDefinePlan();
       useWaterPlan.setCreateTime(new Date());
-      useWaterSelfDefinePlan.setStatus("1");
+//      审核状态(0:未审核,1:审核不通过,2:审核通过)
+      useWaterSelfDefinePlan.setAuditStatus("0");
       useWaterSelfDefinePlan.setNodeCode(useWaterPlan.getNodeCode());
       useWaterSelfDefinePlan.setUseWaterUnitId(useWaterPlan.getUseWaterUnitId());
       useWaterSelfDefinePlan.setUnitCode(useWaterPlan.getUnitCode());
