@@ -79,8 +79,10 @@
     t_w_use_water_plan
     WHERE
     node_code = #{nodeCode}
-    AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE
-    person_id = #{loginId} ))
+    AND SUBSTRING ( unit_code, 3, 2 )
+    IN ( SELECT unit_type_code
+    FROM t_w_use_water_unit_role WHERE
+    person_id = #{userId} ))
     AND t2.id IN (
     SELECT
     id
@@ -88,8 +90,10 @@
     t_w_use_water_plan
     WHERE
     node_code = #{nodeCode}
-    AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE
-    person_id = #{loginId} )))
+    AND SUBSTRING ( unit_code, 3, 2 )
+    IN ( SELECT unit_type_code
+    FROM t_w_use_water_unit_role WHERE
+    person_id = #{userId} )))
     <if test="unitName != null and unitName != ''">
       and t1.unit_name like '%${unitName}%'
     </if>
@@ -124,7 +128,7 @@
     WHERE
     node_code = #{nodeCode}
     AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE
-    person_id = #{loginId} ))
+    person_id = #{userId} ))
     AND t2.id IN (
     SELECT
     id
@@ -133,7 +137,7 @@
     WHERE
     node_code = #{nodeCode}
     AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE
-    person_id = #{loginId} )))
+    person_id = #{userId} )))
     <if test="unitName != null and unitName != ''">
       and t1.unit_name like '%${unitName}%'
     </if>

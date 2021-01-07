@@ -55,7 +55,7 @@ public class UseWaterSelfDefinePlanController {
       return response;
     }
     try {
-      response = tWUseWaterSelfDefinePlanService.queryPage(jsonObject, user.getNodeCode(),user.getLoginId());
+      response = tWUseWaterSelfDefinePlanService.queryPage(jsonObject, user.getNodeCode(),user.getId());
       return response;
     } catch (Exception e) {
       response.setCode(500);

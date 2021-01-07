@@ -39,7 +39,7 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
       @Param("unitCode") String unitCode,
       @Param("nodeCode") String nodeCode,
       @Param("auditStatus") String auditStatus,
-      @Param("loginId") String loginId);
+      @Param("userId") String userId);
 
   /**
    * 分页查询数据
@@ -55,7 +55,7 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
    * @param unitCode    单位编号
    * @param nodeCode    节点编码
    * @param auditStatus 是否审核
-  //   * @param rank        根据单位编号排序
+//     * @param rank        根据单位编号排序
    * @return 结果集
    */
   List<UseWaterSelfDefinePlan> queryList(
@@ -70,7 +70,7 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
       @Param("unitCode") String unitCode,
       @Param("nodeCode") String nodeCode,
       @Param("auditStatus") String auditStatus,
-      @Param("loginId") String loginId);
+      @Param("userId") String userId);
 
   /**
    * 执行时修改执行信息

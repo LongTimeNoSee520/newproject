@@ -29,7 +29,7 @@ public class UseWaterPlanAddServiceImpl extends
   }
 
   @Override
-  public ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String loginId) {
+  public ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String userId) {
     ApiResponse response = new ApiResponse();
     Map<String, Object> map = new LinkedHashMap<>(10);
 //    页数
@@ -58,13 +58,13 @@ public class UseWaterPlanAddServiceImpl extends
     }
 //    总条数
     Integer total = this.baseMapper
-        .selectCount(unitName, userType, executed, nodeCode, auditStatus,loginId);
+        .selectCount(unitName, userType, executed, nodeCode, auditStatus,userId);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<UseWaterPlanAdd> useWaterPlanAdds = this.baseMapper
         .UseWaterPlanAdd(currPage, pageSize, unitName, userType,
-            executed, nodeCode, auditStatus,loginId);
+            executed, nodeCode, auditStatus,userId);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));

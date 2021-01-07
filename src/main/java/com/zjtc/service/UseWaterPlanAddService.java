@@ -30,7 +30,7 @@ public interface UseWaterPlanAddService extends IService<UseWaterPlanAdd> {
    * @param jsonObject 参数
    * @return 结果集
    */
-  ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String loginId);
+  ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String userId);
 
   /**
    * 修改调整表数据状态或者打印状态

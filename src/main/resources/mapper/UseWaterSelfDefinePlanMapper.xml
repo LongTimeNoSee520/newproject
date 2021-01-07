@@ -153,8 +153,10 @@
     FROM
     t_w_use_water_plan
     WHERE
-    node_code = #{nodeCode} 	AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id =
-    #{loginId}))
+    node_code = #{nodeCode}
+    AND SUBSTRING ( unit_code, 3, 2 )
+    IN ( SELECT unit_type_code
+    FROM t_w_use_water_unit_role WHERE person_id = #{userId}))
     ) c
     WHERE
     rownumber > (${pageSize}*(${currPage}-1))
@@ -195,8 +197,10 @@
     FROM
     t_w_use_water_plan
     WHERE
-    node_code = #{nodeCode} 	AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id =
-    #{loginId}))
+    node_code = #{nodeCode}
+    AND SUBSTRING ( unit_code, 3, 2 )
+    IN ( SELECT unit_type_code
+    FROM t_w_use_water_unit_role WHERE person_id = #{userId}))
   </select>
 
 

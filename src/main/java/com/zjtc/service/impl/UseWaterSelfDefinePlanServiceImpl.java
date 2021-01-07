@@ -42,7 +42,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
   private UseWaterPlanService useWaterPlanService;
 
   @Override
-  public ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String loginId) {
+  public ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String userId) {
     ApiResponse response = new ApiResponse();
     Map<String, Object> map = new LinkedHashMap<>(10);
 //    页数
@@ -102,13 +102,13 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //    总条数
     Integer total = this.baseMapper
         .selectCount(unitName, userType, areaCode, beginYear,
-            endYear, executed, unitCode, nodeCode, auditStatus,loginId);
+            endYear, executed, unitCode, nodeCode, auditStatus,userId);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<UseWaterSelfDefinePlan> waterSelfDefinePlans = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType, areaCode, beginYear,
-            endYear, executed, unitCode, nodeCode, auditStatus,loginId);
+            endYear, executed, unitCode, nodeCode, auditStatus,userId);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));

@@ -21,7 +21,7 @@ public interface UseWaterSelfDefinePlanService extends IService<UseWaterSelfDefi
    * @param jsonObject 参数
    * @return 结果集
    */
-  ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String loginId);
+  ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String userId);
 
   /*
    * 审核用水自平计划

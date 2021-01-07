@@ -35,7 +35,7 @@ public interface UseWaterPlanAddMapper extends BaseMapper<UseWaterPlanAdd> {
       @Param("executed") String executed,
       @Param("nodeCode") String nodeCode,
       @Param("auditStatus") String auditStatus,
-      @Param("loginId") String loginId);
+      @Param("userId") String userId);
 
   /**
    * 分页查询
@@ -57,5 +57,5 @@ public interface UseWaterPlanAddMapper extends BaseMapper<UseWaterPlanAdd> {
       @Param("executed") String executed,
       @Param("nodeCode") String nodeCode,
       @Param("auditStatus") String auditStatus,
-      @Param("loginId") String loginId);
+      @Param("userId") String userId);
 }
