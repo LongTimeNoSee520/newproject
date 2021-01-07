@@ -81,8 +81,8 @@ public class UseWaterPlanAdd extends Model<UseWaterPlanAdd> {
   private Double secondWater;
 
   @ApiModelProperty(value = "调整类型")
-  @TableField(value = "change_type", exist = true)
-  private String changeType;
+  @TableField(value = "plan_type", exist = true)
+  private String planType;
 
   @ApiModelProperty(value = "调整季度")
   @TableField(value = "change_quarter", exist = true)
