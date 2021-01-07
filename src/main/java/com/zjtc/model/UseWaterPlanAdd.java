@@ -98,7 +98,7 @@ public class UseWaterPlanAdd extends Model<UseWaterPlanAdd> {
 
   @ApiModelProperty(value = "创建者id")
   @TableField(value = "creater_id", exist = true)
-  private String creater_id;
+  private String createrId;
 
   @ApiModelProperty(value = "审批申请附件id")
   @TableField(value = "audit_file_id", exist = true)
@@ -112,13 +112,17 @@ public class UseWaterPlanAdd extends Model<UseWaterPlanAdd> {
   @TableField(value = "other_file_id", exist = true)
   private String otherFileId;
 
-  @ApiModelProperty(value = "是否打印")
+  @ApiModelProperty(value = "是否打印(0否1是)")
   @TableField(value = "printed", exist = true)
   private String printed;
 
   @ApiModelProperty(value = "状态")
   @TableField(value = "status", exist = true)
   private String status;
+
+  @ApiModelProperty(value = "备注")
+  @TableField(value = "remarks", exist = true)
+  private String remarks;
 
   @Override
   protected Serializable pkVal() {

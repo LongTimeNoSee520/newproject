@@ -3,6 +3,7 @@ package com.zjtc.mapper;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.UseWaterPlanAdd;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @Author: ZhouDaBo
@@ -11,4 +12,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UseWaterPlanAddMapper extends BaseMapper<UseWaterPlanAdd> {
 
+  void updateRemarks(@Param("id") String id, @Param("remarks") String remarks);
 }

@@ -16,4 +16,8 @@ public class UseWaterPlanAddServiceImpl extends
     ServiceImpl<UseWaterPlanAddMapper, UseWaterPlanAdd> implements
     UseWaterPlanAddService {
 
+  @Override
+  public void updateRemarks(String id, String remarks) {
+    this.baseMapper.updateRemarks(id,remarks);
+  }
 }

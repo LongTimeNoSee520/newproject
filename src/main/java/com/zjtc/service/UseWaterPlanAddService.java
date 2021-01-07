@@ -9,4 +9,8 @@ import com.zjtc.model.UseWaterPlanAdd;
  */
 public interface UseWaterPlanAddService extends IService<UseWaterPlanAdd> {
 
+  /**
+   * 修改备注
+   * */
+  void updateRemarks(String id, String remarks);
 }
