@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
-import com.zjtc.mapper.TWUseWaterSelfDefinePlanMapper;
+import com.zjtc.mapper.UseWaterSelfDefinePlanMapper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;
@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 public class UseWaterSelfDefinePlanServiceImpl extends
-    ServiceImpl<TWUseWaterSelfDefinePlanMapper, UseWaterSelfDefinePlan> implements
+    ServiceImpl<UseWaterSelfDefinePlanMapper, UseWaterSelfDefinePlan> implements
     UseWaterSelfDefinePlanService {
 
   @Autowired
@@ -42,7 +42,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
   private UseWaterPlanService useWaterPlanService;
 
   @Override
-  public ApiResponse queryPage(JSONObject jsonObject, String nodeCode) {
+  public ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String loginId) {
     ApiResponse response = new ApiResponse();
     Map<String, Object> map = new LinkedHashMap<>(10);
 //    页数
@@ -80,11 +80,11 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     if (null != jsonObject.getString("unitCode")) {
       unitCode = jsonObject.getString("unitCode");
     }
-//    排序
-    String rank = "";
-    if (null != jsonObject.getString("rank")) {
-      rank = jsonObject.getString("rank");
-    }
+////    排序
+//    String rank = "";
+//    if (null != jsonObject.getString("rank")) {
+//      rank = jsonObject.getString("rank");
+//    }
     if (StringUtils.isBlank(nodeCode)) {
       response.recordError("系统异常");
       return response;
@@ -102,13 +102,13 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //    总条数
     Integer total = this.baseMapper
         .selectCount(unitName, userType, areaCode, beginYear,
-            endYear, executed, unitCode, nodeCode, auditStatus);
+            endYear, executed, unitCode, nodeCode, auditStatus,loginId);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<UseWaterSelfDefinePlan> waterSelfDefinePlans = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType, areaCode, beginYear,
-            endYear, executed, unitCode, nodeCode, auditStatus);
+            endYear, executed, unitCode, nodeCode, auditStatus,loginId);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -166,9 +166,11 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     int water = 0;
 //>>>>>>>>> 第一步:更新自平表数据<<<<<<<<<
     for (String id : ids) {
-//      如果是未审核的数据不能被执行
+//    查询未审核过审核不通过信息
       UseWaterSelfDefinePlan auditStatus = this.baseMapper.selectAuditStatus(id);
+//      查询已经被执行信息
       UseWaterSelfDefinePlan executed = this.baseMapper.selectExecuted(id);
+//      如果是未审核的数据不能被执行
       if (null != auditStatus) {
         response.recordError("单位名称为『" + auditStatus.getUnitName() + "』的数据未审核或审核不通过,不能执行");
         return response;
@@ -222,9 +224,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //      第四季度计划
       waterPlanAdd.setFourthQuarter(useWaterSelfDefinePlan.getFourthQuarter());
 //      调整类型(数据字典值(增加计划))
-      waterPlanAdd.setChangeType(useWaterSelfDefinePlan.getChangeType());
-//      调整季度
-      waterPlanAdd.setChangeQuarter("1、2、3、4季度");
+      // TODO: 2021/1/7 需要在新增用水计划自平的时候往ChangeType中添加对应是状态
+      waterPlanAdd.setPlanType(useWaterSelfDefinePlan.getChangeType());
 //      创建时间
       waterPlanAdd.setCreateTime(new Date());
 //      创建者

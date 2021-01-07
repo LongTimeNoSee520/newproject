@@ -85,6 +85,13 @@
     <if test="received != null and received != ''">
       and  received = #{received}
     </if>
+    and id IN (
+    SELECT
+    id
+    FROM
+    t_w_use_water_plan
+    WHERE
+    node_code = #{nodeCode} 	AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{loginId} ))
   </select>
 
   <select id="queryList" parameterType="java.util.Map" resultMap="UseWaterUnitInvoiceModel">
@@ -130,6 +137,13 @@
     <if test="received != null and received != ''">
       and  received = #{received}
     </if>
+    and id IN (
+    SELECT
+    id
+    FROM
+    t_w_use_water_plan
+    WHERE
+    node_code = #{nodeCode} 	AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{loginId} ))
     ) c
     WHERE
     rownumber > (${pageSize}*(${currPage}-1))
@@ -137,5 +151,6 @@
     invoice_number,
     invice_unit_code DESC;
   </select>
+
 
 </mapper>
