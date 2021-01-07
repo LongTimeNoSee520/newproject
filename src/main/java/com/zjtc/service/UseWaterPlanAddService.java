@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterPlanAdd;
+import java.util.List;
 
 /**
  * @Author: ZhouDaBo
@@ -17,10 +18,22 @@ public interface UseWaterPlanAddService extends IService<UseWaterPlanAdd> {
   void updateRemarks(String id, String remarks);
 
   /**
+   * 行内编辑修改调整计划
+   * @param useWaterPlanAdds
+   * @return
+   */
+  void updatePlanAdd(List<UseWaterPlanAdd> useWaterPlanAdds);
+
+  /**
    * 分页
    *
    * @param jsonObject 参数
    * @return 结果集
    */
   ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String loginId);
+
+  /**
+   * 修改调整表数据状态或者打印状态
+   * */
+  boolean updateStatusOrPrinted(String id,String status, String printed);
 }
