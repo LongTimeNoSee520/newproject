@@ -3,7 +3,9 @@ package com.zjtc.service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterOriginalPlan;
+import com.zjtc.model.User;
 import java.util.List;
 import java.util.Map;
 
@@ -20,13 +22,13 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	* @param jsonObject
 	* @return
 	*/
-	boolean saveModel(JSONObject jsonObject);
+	ApiResponse saveModel(JSONObject jsonObject);
 	/**
 	 * 编制
 	 * @param jsonObject
 	 * @return
 	 */
-	boolean saveOriginal(JSONObject jsonObject);
+	ApiResponse saveOriginal(JSONObject jsonObject, User user);
 	/**
 	* 修改
 	* @param jsonObject

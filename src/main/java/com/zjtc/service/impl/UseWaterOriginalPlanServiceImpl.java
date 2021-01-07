@@ -5,16 +5,25 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.UseWaterOriginalPlanMapper;
 import com.zjtc.model.Algorithm;
 import com.zjtc.model.UseWaterOriginalPlan;
+import com.zjtc.model.UseWaterPlan;
+import com.zjtc.model.UseWaterSelfDefinePlan;
+import com.zjtc.model.User;
 import com.zjtc.service.AlgorithmService;
 import com.zjtc.service.UseWaterOriginalPlanService;
+import com.zjtc.service.UseWaterPlanService;
+import com.zjtc.service.UseWaterSelfDefinePlanMapperService;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * TWUseWaterOriginalPlan的服务接口的实现类
@@ -28,26 +37,113 @@ public class UseWaterOriginalPlanServiceImpl extends
 
   @Autowired
   private AlgorithmService algorithmService;
+  @Autowired
+  private UseWaterPlanService useWaterPlanService;
+  @Autowired
+  private UseWaterSelfDefinePlanMapperService useWaterSelfDefinePlanMapperService;
 
   @Override
-  public boolean saveModel(JSONObject jsonObject) {
+  @Transactional(rollbackFor = Exception.class)
+  public ApiResponse saveModel(JSONObject jsonObject) {
+    ApiResponse apiResponse = new ApiResponse();
     List<UseWaterOriginalPlan> entity = jsonObject.getJSONArray("data")
         .toJavaList(UseWaterOriginalPlan.class);
-    boolean result = this.insertBatch(entity);
-    return result;
+    for (UseWaterOriginalPlan item : entity) {
+      if (item.getPlaned().equals("1")) {
+        apiResponse.recordError("当前保存的数据中存在已编制数据");
+        return apiResponse;
+      }
+    }
+    this.insertOrUpdateBatch(entity);
+    return apiResponse;
   }
 
   @Override
-  public boolean saveOriginal(JSONObject jsonObject) {
+  @Transactional(rollbackFor = Exception.class)
+  public ApiResponse saveOriginal(JSONObject jsonObject, User user) {
+    ApiResponse apiResponse = new ApiResponse();
     List<UseWaterOriginalPlan> entity = jsonObject.getJSONArray("data")
         .toJavaList(UseWaterOriginalPlan.class);
-    /**1.更新用水计划原始表状态为已编制*/
+    List<UseWaterPlan> useWaterPlanList = new ArrayList<>();
+    List<UseWaterSelfDefinePlan> selfDefinePlanList = new ArrayList<>();
+    //判断当前要编制的数据是否存在已编制的数据
+    for (UseWaterOriginalPlan item : entity) {
+      if (item.getPlaned().equals("1")) {
+        apiResponse.recordError("当前要编制的数据中存在已编制数据");
+        return apiResponse;
+      }
+      if (null != item.getAlgorithmType()) {
+        apiResponse.recordError("请选择算法");
+        return apiResponse;
+      }
+      /**1.更新用水计划原始表状态为已编制*/
+      item.setPlaned("1");
+      //用水表计划需要的数据
+      UseWaterPlan useWaterPlan = new UseWaterPlan();
+      useWaterPlan.setCreateTime(new Date());
+      useWaterPlan.setNodeCode(user.getNodeCode());
+      useWaterPlan.setUseWaterUnitId(item.getUseWaterUnitId());
+      useWaterPlan.setUnitCode(item.getUnitCode());
+      useWaterPlan.setUnitName(item.getUnitName());
+      useWaterPlan.setWaterMeterCode(item.getWaterMeterCode());
+      useWaterPlan.setPlanYear(item.getPlanYear());
+      useWaterPlan.setBaseWaterAmount(item.getBaseWaterAmount());
+      useWaterPlan.setBeforeLastYearWaterAmount(item.getBeforeLastYearWaterAmount());
+      useWaterPlan.setLastYearWaterAmount(item.getLastYearWaterAmount());
+      useWaterPlan.setThreeYearAvg(item.getThreeYearAvg());
+      useWaterPlan.setNowPrice(item.getNowPrice());
+      useWaterPlan.setN8(item.getN8());
+      useWaterPlan.setMinusPayStatus(item.getMinusPayStatus());
+      useWaterPlan.setBalanceTest(item.getBalanceTest());
+      useWaterPlan.setCreateType(item.getCreateType());
+      useWaterPlan.setCurYearBasePlan(item.getCurYearBasePlan());
+      useWaterPlan.setCurYearPlan(item.getCurYearPlan());
+      //判断算法
+      if (useWaterPlan.getAlgorithmType().equals("1")) {
+        useWaterPlan.setAlgorithmType("1");
+        useWaterPlan.setNextYearStartPlan(item.getNextYearBaseStartPlan());
+        useWaterPlan.setNextYearEndPlan(item.getNextYearBaseEndPlan());
+        useWaterPlan.setFirstQuarter(item.getFirstQuarterBase());
+        useWaterPlan.setSecondQuarter(item.getSecondQuarterBase());
+        useWaterPlan.setThirdQuarter(item.getThirdQuarterBase());
+        useWaterPlan.setFourthQuarter(item.getFourthQuarterBase());
+      }
+      if (useWaterPlan.getAlgorithmType().equals("2")) {
+        useWaterPlan.setAlgorithmType("2");
+        useWaterPlan.setNextYearStartPlan(item.getNextYearQuotaStartPlan());
+        useWaterPlan.setNextYearEndPlan(item.getNextYearQuotaEndPlan());
+        useWaterPlan.setFirstQuarter(item.getFirstQuarterQuota());
+        useWaterPlan.setSecondQuarter(item.getSecondQuarterQuota());
+        useWaterPlan.setThirdQuarter(item.getThirdQuarterQuota());
+        useWaterPlan.setFourthQuarter(item.getFourthQuarterQuota());
+      }
+      //自平表需要的数据
+      UseWaterSelfDefinePlan useWaterSelfDefinePlan =new UseWaterSelfDefinePlan();
+      useWaterPlan.setCreateTime(new Date());
+      useWaterSelfDefinePlan.setStatus("1");
+      useWaterSelfDefinePlan.setNodeCode(useWaterPlan.getNodeCode());
+      useWaterSelfDefinePlan.setUseWaterUnitId(useWaterPlan.getUseWaterUnitId());
+      useWaterSelfDefinePlan.setUnitCode(useWaterPlan.getUnitCode());
+      useWaterSelfDefinePlan.setUnitName(useWaterPlan.getUnitName());
+      useWaterSelfDefinePlan.setWaterMeterCode(useWaterPlan.getWaterMeterCode());
+      useWaterSelfDefinePlan.setPlanYear(useWaterPlan.getPlanYear());
+      useWaterSelfDefinePlan.setCurYearPlan(useWaterPlan.getCurYearPlan());
+      useWaterSelfDefinePlan.setFirstQuarter(useWaterPlan.getFirstQuarter());
+      useWaterSelfDefinePlan.setSecondQuarter(useWaterPlan.getSecondQuarter());
+      useWaterSelfDefinePlan.setThirdQuarter(useWaterPlan.getThirdQuarter());
+      useWaterSelfDefinePlan.setFourthQuarter(useWaterPlan.getFourthQuarter());
+      selfDefinePlanList.add(useWaterSelfDefinePlan);
+      useWaterPlanList.add(useWaterPlan);
+    }
     /**2.数据保存至用水计划原始表*/
+    this.insertOrUpdateBatch(entity);
     /**3.保存至用水计划表*/
+    useWaterPlanService.insertBatch(useWaterPlanList);
     /**4.保存至自平表*/
+    useWaterSelfDefinePlanMapperService.insertBatch(selfDefinePlanList);
     /**待办：Todo*/
     /**公众号：Todo*/
-    return false;
+    return apiResponse;
   }
 
   @Override
@@ -89,13 +185,14 @@ public class UseWaterOriginalPlanServiceImpl extends
     }
     List<Map<String, Object>> list = null;
     //如果没有编制过则初始化，否则直接查询UseWaterPlan表数据
-    if (findPlanRecord(year)) {
+    if (findPlanRecord(year, jsonObject.getString("nodeCode"))) {
       System.out.print("===编制初始化");
       list = initPlan(year, userType, unitCodeStart, jsonObject.getString("userId"),
           jsonObject.getString("nodeCode"));
     } else {
       System.out.print("===编制查询");
-      list = nowYearPlan(year, userType, unitCodeStart);
+      list = nowYearPlan(year, userType, unitCodeStart, jsonObject.getString("userId"),
+          jsonObject.getString("nodeCode"));
     }
     return list;
   }
@@ -131,9 +228,9 @@ public class UseWaterOriginalPlanServiceImpl extends
         //下年初始计划(基础)
         double nextYearBaseStartPlan = 0;
         //下年终计划(基础)
-        double nextYearBaseEndPlan ;
+        double nextYearBaseEndPlan;
         //下年初始计划(定额)
-        double nextYearQuotaStartPlan ;
+        double nextYearQuotaStartPlan;
         //下年终计划(定额)
         double nextYearQuotaEndPlan;
         //第一季度(基础)
@@ -245,12 +342,20 @@ public class UseWaterOriginalPlanServiceImpl extends
     return list;
   }
 
-  private List<Map<String, Object>> nowYearPlan(int year, String userType, String unitCodeStart) {
+  private List<Map<String, Object>> nowYearPlan(int year, String userType, String unitCodeStart,
+      String userId, String nodeCode) {
 
-    return baseMapper.nowYearPlan(year, userType, unitCodeStart);
+    return baseMapper.nowYearPlan(year, userType, unitCodeStart, userId, nodeCode);
   }
 
-  private boolean findPlanRecord(int year) {
-    return false;
+  /**
+   *
+   */
+  private boolean findPlanRecord(int year, String nodeCode) {
+    Wrapper wrapper = new EntityWrapper();
+    wrapper.eq("node_code", nodeCode);
+    wrapper.eq("plan_year", year);
+    int count = useWaterPlanService.selectCount(wrapper);
+    return count > 0 ? false : true;
   }
 }

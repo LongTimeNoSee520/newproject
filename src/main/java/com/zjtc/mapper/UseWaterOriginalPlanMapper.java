@@ -20,7 +20,9 @@ public interface UseWaterOriginalPlanMapper extends BaseMapper<UseWaterOriginalP
    *
    * @param year 年份
    * @param userType 用户类型
-   * @param unitCodeStart 单位编号开头
+   * @param unitCodeStart 单位编号开头[单位批次]
+   * @param userId  用户id
+   * @param nodeCode 节点编码
    */
   List<Map<String, Object>> initPlan(@Param("year") int year,
       @Param("unitCodeType") String userType, @Param("unitCodeStart") String unitCodeStart,
@@ -33,7 +35,10 @@ public interface UseWaterOriginalPlanMapper extends BaseMapper<UseWaterOriginalP
    * @param year 年份
    * @param userType 用户类型
    * @param unitCodeStart 单位编号开头
+   * @param userId  用户id
+   * @param nodeCode 节点编码
    */
   List<Map<String, Object>> nowYearPlan(@Param("year") int year, @Param("userType") String userType,
-      @Param("unitCodeStart") String unitCodeStart);
+      @Param("unitCodeStart") String unitCodeStart, @Param("userId") String userId,
+      @Param("nodeCode") String nodeCode);
 }
