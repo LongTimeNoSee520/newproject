@@ -124,6 +124,18 @@ public class UseWaterPlanAdd extends Model<UseWaterPlanAdd> {
   @TableField(value = "remarks", exist = true)
   private String remarks;
 
+  @ApiModelProperty(value = "是否执行")
+  @TableField(value = "auditStatus", exist = false)
+  private String auditStatus;
+
+  @ApiModelProperty(value = "是否审核")
+  @TableField(value = "executed", exist = false)
+  private String executed;
+
+  @ApiModelProperty(value = "审核时间")
+  @TableField(value = "confirmTime", exist = false)
+  private Date confirmTime;
+
   @Override
   protected Serializable pkVal() {
     return null;

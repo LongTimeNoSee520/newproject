@@ -29,6 +29,10 @@
     <result column="printed" property="printed" jdbcType="VARCHAR"/>
     <result column="status" property="status" jdbcType="VARCHAR"/>
     <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+
+    <result column="auditStatus" property="auditStatus" jdbcType="VARCHAR"/>
+    <result column="executed" property="executed" jdbcType="VARCHAR"/>
+    <result column="confirmTime" property="confirmTime" jdbcType="TIMESTAMP"/>
   </resultMap>
 
 
@@ -63,9 +67,9 @@
     t1.printed,--是否打印
     t1.status,
     t1.remarks,
-    t2.audit_status,--是否执行
-    t2.executed ,--是否审核
-    t2.confirm_time -- 审核时间
+    t2.audit_status as auditStatus,  --是否执行
+    t2.executed as executed,  --是否审核
+    t2.confirm_time as confirmTime  -- 审核时间
     FROM
     t_w_use_water_plan_add t1
     LEFT JOIN t_w_end_paper t2 ON t1.use_water_unit_id = t2.use_water_unit_id
@@ -111,7 +115,7 @@
     rownumber > (${pageSize}*(${currPage}-1))
   </select>
 
-  <select id="selectCount">
+  <select id="selectCount" resultType="int">
     SELECT
     count(1)
     FROM
@@ -155,7 +159,7 @@
 
 
 
-  <select id="queryPage" resultMap="PageResultMap">
+  <select id="queryPage" resultMap="UseWaterPlanAddModel">
   SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_name,t1.unit_code,
   t1.water_meter_code,t1.plan_year,t1.minus_pay_status,t1.balance_test,
   t1.create_type,t1.cur_year_plan,t1.first_quarter,t1.second_quarter,
