@@ -26,7 +26,7 @@ public class UseWaterUnitRoleServiceImpl extends
       log.error("查看用户是否有权限进行操作传入参数有误,方法名为:+checkUserRight");
       return false;
     }
-//    截取单位类型号的二至四位进行匹配
+//    截取单位类型号的五至六位进行匹配
     String unitTypeCodes = unitTypeCode.substring(4, 6);
     int i = this.baseMapper.checkUserRight(personId, unitTypeCodes, nodeCode);
     if (i > 0) {
