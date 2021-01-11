@@ -238,9 +238,18 @@ public class  EndPaper extends Model<EndPaper>{
     /**
     * 
     */
-    @ApiModelProperty("算法规则")
+    @ApiModelProperty("算法规则(是否在年计划上增加)")
     @TableField(value = "algorithm_rules",exist = true)
     private String algorithmRules;
+
+    @ApiModelProperty("经办人名字")
+    @TableField(value = "creater_name",exist = true)
+    private String creater_name;
+
+    @ApiModelProperty("处理结果")
+    @TableField(value = "result",exist = true)
+    private String result;
+
 	/**
 	 * 实例化
 	 */
