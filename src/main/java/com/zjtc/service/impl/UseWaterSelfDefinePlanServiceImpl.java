@@ -3,6 +3,7 @@ package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.UseWaterSelfDefinePlanMapper;
@@ -199,6 +200,16 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //    附件id
     String fileId;
     for (UseWaterSelfDefinePlan useWaterSelfDefinePlan : useWaterSelfDefinePlans) {
+      Wrapper<UseWaterPlan> wrapper1 = new EntityWrapper<>();
+      wrapper1.eq("node_code", useWaterSelfDefinePlan.getNodeCode());
+      wrapper1.eq("unit_code", useWaterSelfDefinePlan.getUnitCode());
+      wrapper1.eq("plan_year", useWaterSelfDefinePlan.getPlanYear());
+      List<UseWaterPlan> useWaterPlans =useWaterPlanService.selectList(wrapper1);//实际上只有一条数据
+      UseWaterPlan useWaterPlanModel = useWaterPlans.get(0);
+      if (useWaterSelfDefinePlan.getCurYearPlan() != useWaterPlanModel.getFirstQuarter() + useWaterPlanModel.getSecondQuarter() + useWaterPlanModel.getThirdQuarter() +useWaterPlanModel.getFourthQuarter()){
+        response.recordError("四个季度水量总和与年计划水量不符");
+        return response;
+      }
 //      主键
       waterPlanAdd.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 //      节点编码
@@ -214,17 +225,18 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //      编制年度
       waterPlanAdd.setPlanYear(useWaterSelfDefinePlan.getPlanYear());
 //      本年计划（当前年计划）
-      waterPlanAdd.setCurYearPlan(useWaterSelfDefinePlan.getCurYearPlan());
+//      waterPlanAdd.setCurYearPlan(useWaterSelfDefinePlan.getCurYearPlan());
+      waterPlanAdd.setCurYearPlan(0.0);
+
 //      第一季度计划
-      waterPlanAdd.setFirstQuarter(useWaterSelfDefinePlan.getFirstQuarter());
+      waterPlanAdd.setFirstQuarter(useWaterSelfDefinePlan.getFirstQuarter() - useWaterPlanModel.getFirstQuarter());
 //      第二季度计划
-      waterPlanAdd.setSecondQuarter(useWaterSelfDefinePlan.getSecondQuarter());
+      waterPlanAdd.setSecondQuarter(useWaterSelfDefinePlan.getSecondQuarter() - useWaterPlanModel.getSecondQuarter());
 //      第三季度计划
-      waterPlanAdd.setThirdQuarter(useWaterSelfDefinePlan.getThirdQuarter());
+      waterPlanAdd.setThirdQuarter(useWaterSelfDefinePlan.getThirdQuarter() - useWaterPlanModel.getThirdQuarter());
 //      第四季度计划
-      waterPlanAdd.setFourthQuarter(useWaterSelfDefinePlan.getFourthQuarter());
+      waterPlanAdd.setFourthQuarter(useWaterSelfDefinePlan.getFourthQuarter() - useWaterPlanModel.getFourthQuarter());
 //      调整类型(数据字典值(增加计划))
-      // TODO: 2021/1/7 需要在新增用水计划自平的时候往ChangeType中添加对应是状态
       waterPlanAdd.setPlanType(useWaterSelfDefinePlan.getChangeType());
 //      创建时间
       waterPlanAdd.setCreateTime(new Date());
@@ -237,7 +249,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //      审批申请附件id
       waterPlanAdd.setAuditFileId(fileId);
 //      状态(1:草稿、2:审核、3:累加)
-      waterPlanAdd.setStatus("2");
+      waterPlanAdd.setStatus("3");
       planAdd = useWaterPlanAddService.insert(waterPlanAdd);
 //>>>>>>>>第三步:更新用水计划表数据<<<<<<<<<<
 //    匹配用水计划表里的那条数据

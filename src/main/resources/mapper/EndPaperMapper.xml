@@ -22,7 +22,6 @@
 		<result column="add_way" property="addWay" jdbcType="VARCHAR"/>
 		<result column="minus_pay_status" property="minusPayStatus" jdbcType="VARCHAR"/>
 		<result column="balance_test" property="balanceTest" jdbcType="VARCHAR"/>
-		<result column="create_type" property="createType" jdbcType="VARCHAR"/>
 		<result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
 		<result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
 		<result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>

@@ -148,12 +148,6 @@ public class  EndPaper extends Model<EndPaper>{
     /**
     * 
     */
-    @ApiModelProperty("创建类型")
-    @TableField(value = "create_type",exist = true)
-    private String createType;
-    /**
-    * 
-    */
     @ApiModelProperty("第一季度计划")
     @TableField(value = "first_quarter",exist = true)
     private Double firstQuarter;
@@ -244,7 +238,7 @@ public class  EndPaper extends Model<EndPaper>{
 
     @ApiModelProperty("经办人名字")
     @TableField(value = "creater_name",exist = true)
-    private String creater_name;
+    private String createrName;
 
     @ApiModelProperty("处理结果")
     @TableField(value = "result",exist = true)

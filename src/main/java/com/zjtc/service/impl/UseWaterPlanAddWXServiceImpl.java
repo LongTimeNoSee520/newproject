@@ -127,15 +127,16 @@ public class UseWaterPlanAddWXServiceImpl extends
       endPaper.setUnitCode(useWaterPlanAddWX.getUnitCode());
 //      水表档案号
       endPaper.setWaterMeterCode(useWaterPlanAddWX.getWaterMeterCode());
-//      办结单类型
-      // TODO: 2021/1/9   不清楚类型
-//      endPaper.setPaperType()
+//      办结单类型(增加计划.调整计划.临时用水.......)
+      endPaper.setPaperType(useWaterPlanAddWX.getChangeType());
 //      数据来源(1:网上申报,2:现场申报)
       endPaper.setDataSources("1");
 //      创建时间
       endPaper.setCreateTime(useWaterPlanAddWX.getCreateTime());
-//      经办人（创建人）
+//      经办人id
       endPaper.setCreaterId(useWaterPlanAddWX.getAuditPersonId());
+//      经办人名字
+      endPaper.setCreaterName(userName);
 //      调整年份
       endPaper.setPlanYear(useWaterPlanAddWX.getPlanYear());
 //      调整季度
@@ -147,8 +148,7 @@ public class UseWaterPlanAddWXServiceImpl extends
 //      第二水量
       endPaper.setSecondWater(useWaterPlanAddWX.getSecondWater());
 //      增加水量
-      // TODO: 2021/1/9
-//      endPaper.setAddNumber()
+      endPaper.setAddNumber(useWaterPlanAddWX.getCurYearPlan());
 //      是否在年计划上增加
       endPaper.setYear("1");
 //      创建类型
