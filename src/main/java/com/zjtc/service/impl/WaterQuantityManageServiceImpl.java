@@ -233,10 +233,9 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 
     String xmlConfig = "template/xml/WaterQuantityManage.xml";
     Map result = new HashMap();
-    String fileRealPath = "C:\\Users\\LH\\Desktop\\WaterQuantityManageTemplate.xlsx";
-        //fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx";
+    String fileRealPath =  fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx";
     //"C:\\Users\\LH\\Desktop\\导入测试.xlsx";
-    //WaterQuantityManageTemplate.xlsx;
+    //"C:\\Users\\LH\\Desktop\\WaterQuantityManageTemplate.xlsx";
     errorMsgs = new StringBuffer();//错误信息
     String nodeCode = user.getNodeCode();
     /**日志*/

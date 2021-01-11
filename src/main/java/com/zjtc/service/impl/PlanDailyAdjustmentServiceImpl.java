@@ -319,6 +319,11 @@ public class PlanDailyAdjustmentServiceImpl extends
     wrapper.eq("plan_year", useWaterPlanAdd.getPlanYear());
     List<UseWaterPlan> useWaterPlans =this.selectList(wrapper);//实际上只有一条数据
     UseWaterPlan useWaterPlan = useWaterPlans.get(0);
+    /**如果有未完成流程的办结单，则不允许操作*/
+    if("1".equals(useWaterPlan.getExistSettlementForm())){
+      response.recordError("计划存在未完成的办结单");
+      return response;
+    }
     useWaterPlan.setCurYearPlan(useWaterPlan.getCurYearPlan() + useWaterPlanAdd.getCurYearPlan());
     useWaterPlan.setFirstQuarter(useWaterPlan.getFirstQuarter() + useWaterPlanAdd.getFirstQuarter());
     useWaterPlan.setSecondQuarter(useWaterPlan.getSecondQuarter() + useWaterPlanAdd.getSecondQuarter());
