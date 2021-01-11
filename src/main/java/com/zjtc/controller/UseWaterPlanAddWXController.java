@@ -38,7 +38,14 @@ public class UseWaterPlanAddWXController {
 
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("用水计划调整审核查询")
-  public ApiResponse queryPage(@ApiParam("xx") @RequestBody JSONObject jsonObject,
+  public ApiResponse queryPage(@ApiParam("{\n"
+      + "    \"current\":\"页数\",\n"
+      + "    \"size\":\"条数\",\n"
+      + "    \"unitName\":\"单位名称\",\n"
+      + "    \"userType\":\"用户类型(截取的是3-4位)\",\n"
+      + "    \"auditStatus\":\"审核状态(0:未审核,2:已审核)\",\n"
+      + "    \"executed\":\"是否执行(0:未执行,1:已执行)\"\n"
+      + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("用水计划调整审核分页查询,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
@@ -66,7 +73,9 @@ public class UseWaterPlanAddWXController {
 
   @RequestMapping(value = "printed", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("打印办结单")
-  public ApiResponse printed(@ApiParam("xx") @RequestBody JSONObject jsonObject,
+  public ApiResponse printed(@ApiParam("   {\n"
+      + "     \"ids\":[\"打印的id\"]\n"
+      + "   }") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("打印办结单,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
@@ -94,7 +103,9 @@ public class UseWaterPlanAddWXController {
 
   @RequestMapping(value = "audit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("用水计划调整审核")
-  public ApiResponse audit(@ApiParam("xx") @RequestBody JSONObject jsonObject,
+  public ApiResponse audit(@ApiParam("   {\n"
+      + "     \"id\":\"审核id\",\"auditStatus\":\"审核状态(1:未通过,2:通过)\",\"auditResult\":\"审核意见\"\n"
+      + "   }") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("用水计划调整审核,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();

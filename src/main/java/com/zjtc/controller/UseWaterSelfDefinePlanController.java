@@ -41,7 +41,17 @@ public class UseWaterSelfDefinePlanController {
 
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("自平计划管理分页查询")
-  public ApiResponse queryPage(@ApiParam("xx") @RequestBody JSONObject jsonObject,
+  public ApiResponse queryPage(@ApiParam("{\n"
+      + "    \"current\":\"页数\",\n"
+      + "    \"size\":\"条数\",\n"
+      + "    \"unitName\":\"单位名称\",\n"
+      + "    \"userType\":\"用户类型(截取的是3-4位)\",\n"
+      + "    \"areaCode\":\"编号开头\",\n"
+      + "    \"beginYear\":\"是开始年份\",\n"
+      + "    \"endYear\":\"结束年份\",\n"
+      + "    \"auditStatus\":\"是否审核(0:未审核,2:已审核)\",\n"
+      + "    \"executed\":\"是否执行(0:未执行,1:已执行)\"\n"
+      + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("自平计划管理分页查询,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
@@ -70,6 +80,9 @@ public class UseWaterSelfDefinePlanController {
   @ApiOperation(value = "审核自平申请")
   @RequestMapping(value = "audit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse audit(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + " \"id\":\"审核id\",\"auditStatus\":\"审核结果(1:不同意,2:同意)\",\"auditResult\":\"审核条件\"\n"
+          + "}")
       @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -104,6 +117,9 @@ public class UseWaterSelfDefinePlanController {
   @ApiOperation(value = "执行自平申请")
   @RequestMapping(value = "execute", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse execute(@RequestHeader("token") String token,
+      @ApiParam("   {\n"
+          + "     \"ids\":[\"id\"]\n"
+          + "   }")
       @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
