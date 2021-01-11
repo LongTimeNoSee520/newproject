@@ -337,8 +337,8 @@
   <select id="initPlanNew" resultType="java.util.LinkedHashMap">
     SELECT
     id=null,
-    [ waterMeterCode ] =STUFF (
-    ( SELECT ',' + [water_meter_code ] FROM t_w_use_water_unit_meter WHERE use_water_unit_id =
+    waterMeterCode =STUFF (
+    ( SELECT ',' +water_meter_code FROM t_w_use_water_unit_meter WHERE use_water_unit_id =
     t1.id FOR XML PATH ( '' ) ),
     1,
     1,
@@ -355,6 +355,7 @@
     planed=0,
     added=1,
     assessQuarter=0,
+    yearPlan=#{year},
     ISNULL(t2.nowPrice,0) as nowPrice,
     t3.cur_year_plan as curYearPlan,
     t3.curYearBasePlan,

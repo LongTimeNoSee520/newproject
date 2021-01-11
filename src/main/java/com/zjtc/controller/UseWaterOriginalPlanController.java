@@ -8,6 +8,7 @@ import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.UseWaterOriginalPlan;
 import com.zjtc.model.User;
 import com.zjtc.service.UseWaterOriginalPlanService;
+import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -68,16 +69,14 @@ public class UseWaterOriginalPlanController {
 
   @RequestMapping(value = "queryAllNew", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "新户查询列表")
-  public ApiResponse queryAllNew(@RequestBody JSONObject jsonObject,
+  public ApiResponse queryAllNew(
       @RequestHeader("token") String token) {
-    log.info("查询列表==== 参数{" + jsonObject.toJSONString() + "}");
+    log.info("查询列表==== 参数{" + token + "}");
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
-    if (null != jsonObject && null != user) {
+    if (null != user) {
       try {
-        jsonObject.put("userId",user.getId());
-        jsonObject.put("nodeCode",user.getNodeCode());
-        List<Map<String, Object>> result = useWaterOriginalPlanService.goPlanningNew(jsonObject);
+        List<Map<String, Object>> result = useWaterOriginalPlanService.goPlanningNew(user.getId(),user.getNodeCode());
         apiResponse.setData(result);
         apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
       } catch (Exception e) {
@@ -133,6 +132,87 @@ public class UseWaterOriginalPlanController {
         }
       } catch (Exception e) {
         log.error("老户,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
+  }
+  @ResponseBody
+  @ApiOperation(value = "新户调整三年平均水量时，回填重新计算的数据项")
+  @RequestMapping(value = "getNewResultByThreeYearAvg", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse getNewResultByThreeYearAvg(@RequestHeader("token") String token,
+     @ApiParam("{\n"
+         + "  \"nowPrice\":\"水价\",\n"
+         + "  \"threeYearAvg\":\"三年平均\",\n"
+         + "  \"unitCode\":\"单位编号\"\n"
+         + "}") @RequestBody JSONObject jsonObject) {
+    log.info("老户/新户编制==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != jsonObject && null !=user) {
+      try {
+        Map<String,Object> result = useWaterOriginalPlanService.getNewResultByThreeYearAvg(jsonObject,user);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("老户,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
+  }
+  @ResponseBody
+  @ApiOperation(value = "新户调整下年终计划时，回填重新计算的数据项")
+  @RequestMapping(value = "getNewByNextYearBase", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse getNewByNextYearBase(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "  \"nextYearBaseEndPlan\":\"下年终计划\",\n"
+          + "  \"threeYearAvg\":\"三年平均\",\n"
+          + "  \"unitCode\":\"单位编号\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("查询==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != jsonObject && null !=user) {
+      try {
+        Map<String,Object> result = useWaterOriginalPlanService.getNewByNextYearBase(jsonObject,user);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("查询,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
+  }
+  @ResponseBody
+  @ApiOperation(value = "老户勾选【扣加价】，选择【水平衡】、【创建】，回填重新计算的数据项")
+  @RequestMapping(value = "getResultBycheck", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse getResultBycheck(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "  \"minusPayStatus\":\"扣加价，0否，1是\",\n"
+          + "  \"balanceTest\":\"水平衡，1奖，2扣\",\n"
+          + "  \"createType\":\"创建，1奖，2扣\"\n"
+          + "  \"curYearPlan\":\"当年计划\"\n"
+          + "  \"nextYearBaseStartPlan\":\"下年初始计划\"\n"
+          + "  \"unitCode\":\"单位编号\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("查询==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != jsonObject && null !=user) {
+      try {
+        Map<String,Object> result = useWaterOriginalPlanService.getResultBycheck(jsonObject,user);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("查询,errMsg==={}", e.getMessage());
         e.printStackTrace();
         apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
       }

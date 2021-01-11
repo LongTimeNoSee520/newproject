@@ -54,11 +54,11 @@ public class Algorithm extends Model<Algorithm> {
   @TableField(value = "new_batch_num", exist = true)
   private String newBatchNum;
 
-  @ApiModelProperty("n8Floot")
+  @ApiModelProperty("n8下届")
   @TableField(value = "n8_floot", exist = true)
   private Double n8Floot;
 
-  @ApiModelProperty("n8Up")
+  @ApiModelProperty("n8上届")
   @TableField(value = "n8_up", exist = true)
   private Double n8Up;
 

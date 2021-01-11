@@ -64,10 +64,11 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
   List<Map<String,Object>> goPlanningOld(JSONObject jsonObject);
 	/**
 	 * 获取本年度初始化编制信息新户
-	 * @param jsonObject
+	 * @param userId
+	 * @param nodeCode
 	 * @return
 	 */
-	List<Map<String,Object>> goPlanningNew(JSONObject jsonObject);
+	List<Map<String,Object>> goPlanningNew(String userId,String nodeCode);
 	/**
 	 * 老户调整【下年年终计划(基础)】,重新计算【各季度计划(基础)】
 	 */
@@ -78,7 +79,7 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	Map<String,Object> getOldResultByThreeYearAvg(JSONObject jsonObject,User user);
 	/**
 	 *老户勾选【扣加价】，选择【水平衡】、【创建】，重新计算【下年年终计划(基础)】
-	 */
+			*/
 	Map<String,Object> getResultBycheck(JSONObject jsonObject,User user);
 	/**
 	 * 新户调整【下年年终计划(基础)】,重新计算【各季度计划(基础)】
