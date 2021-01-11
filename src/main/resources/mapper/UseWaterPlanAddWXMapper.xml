@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.UseWaterPlanAddWXMapper">
+  <!-- UseWaterPlanAdd的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+  <resultMap id="UseWaterPlanAddWXModel" type="com.zjtc.model.UseWaterPlanAddWX">
+
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
+    <result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
+    <result column="change_type" property="changeType" jdbcType="VARCHAR"/>
+    <result column="change_quarter" property="changeQuarter" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="confirmed" property="confirmed" jdbcType="VARCHAR"/>
+    <result column="confirm_time" property="confirmTime" jdbcType="TIMESTAMP"/>
+    <result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
+    <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP"/>
+    <result column="audit_person" property="auditPerson" jdbcType="VARCHAR"/>
+    <result column="audit_person_id" property="auditPersonId" jdbcType="VARCHAR"/>
+    <result column="audit_result" property="auditResult" jdbcType="VARCHAR"/>
+    <result column="executed" property="executed" jdbcType="VARCHAR"/>
+    <result column="printed" property="printed" jdbcType="VARCHAR"/>
+    <result column="audit_file_id" property="auditFileId" jdbcType="VARCHAR"/>
+    <result column="water_proof_file_id" property="waterProofFileId" jdbcType="VARCHAR"/>
+    <result column="other_file_id" property="otherFileId" jdbcType="VARCHAR"/>
+    <result column="check_adjust_water" property="checkAdjustWater" jdbcType="VARCHAR"/>
+    <result column="first_quarter_quota" property="firstQuarterQuota" jdbcType="DOUBLE"/>
+    <result column="second_quarter_quota" property="secondQuarterQuota" jdbcType="DOUBLE"/>
+    <result column="third_quarter_quota" property="thirdQuarterQuota" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter_quota" property="fourthQuarterQuota" jdbcType="DOUBLE"/>
+    <result column="FrontFirstQuarter" property="FrontFirstQuarter" jdbcType="DOUBLE"/>
+    <result column="FrontSecondQuarter" property="FrontSecondQuarter" jdbcType="DOUBLE"/>
+    <result column="FrontThirdQuarter" property="FrontThirdQuarter" jdbcType="DOUBLE"/>
+    <result column="FrontFourthQuarter" property="FrontFourthQuarter" jdbcType="DOUBLE"/>
+    <result column="FrontCurYearPlan" property="FrontCurYearPlan" jdbcType="DOUBLE"/>
+    <result column="FrontPlanYear" property="FrontPlanYear" jdbcType="INTEGER"/>
+
+  </resultMap>
+
+
+  <select id="queryList" resultMap="UseWaterPlanAddWXModel">
+    SELECT TOP
+    ${pageSize} c.*
+    FROM
+    (
+    SELECT
+    row_number () OVER ( ORDER BY t1.unit_code DESC ) AS rownumber,
+    id,
+    node_code,
+    use_water_unit_id,
+    unit_name,
+    unit_code,
+    water_meter_code,
+    plan_year,
+    cur_year_plan,
+    first_quarter,
+    second_quarter,
+    third_quarter,
+    fourth_quarter,
+    first_water,
+    second_water,
+    change_type,
+    change_quarter,
+    create_time,
+    confirmed,
+    confirm_time,
+    audit_time,
+    audit_person,
+    audit_person_id,
+    audit_result,
+    audit_file_id,
+    water_proof_file_id,
+    other_file_id,
+    check_adjust_water,
+    first_quarter_quota,
+    second_quarter_quota,
+    third_quarter_quota,
+    fourth_quarter_quota,
+    (select t2.plan_year FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontPlanYear, --当前年度
+    (select t2.first_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontFirstQuarter, --当前第一季度
+    (select t2.second_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontSecondQuarter, --当前第二季度
+    (select t2.third_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontThirdQuarter, --当前第三季度
+    (select t2.fourth_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontFourthQuarter, --当前第四季度
+    (select t2.cur_year_plan FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontCurYearPlan, --当前年计划
+    CASE
+    t1.audit_status
+    WHEN '0' THEN '未执行'
+    WHEN '1' THEN '已执行' ELSE '已执行'
+    END audit_status,
+    CASE
+    t1.executed
+    WHEN '0' THEN '未审核'
+    WHEN '1' THEN '已审核'
+    WHEN '2' THEN '已审核' ELSE '已审核'
+    END executed,
+    CASE
+    t1.printed
+    WHEN '0' THEN '未打印'
+    WHEN '1' THEN '已打印' ELSE '已打印'
+    END printed --是否打印
+
+    FROM
+    t_wx_use_water_plan_add t1
+    WHERE
+    t1.node_code = #{nodeCode}
+    AND t1.id IN (
+    SELECT
+    id
+    FROM
+    t_w_use_water_plan
+    WHERE
+    node_code = #{nodeCode}
+    AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE
+    person_id = #{userId} ))
+    <if test="unitName != null and unitName != ''">
+      and t1.unit_name like '%${unitName}%'
+    </if>
+    <if test="userType != null and userType != ''">
+      and SUBSTRING(t1.unit_code,3,2) like '%${userType}%'
+    </if>
+    <if test="executed != null and executed != ''">
+      and t1.executed = #{executed}
+    </if>
+    <if test="auditStatus != null and auditStatus != ''">
+      and t1.audit_status = #{auditStatus}
+    </if>
+    ) c
+    WHERE
+    rownumber > (${pageSize}*(${currPage}-1))
+  </select>
+
+
+  <select id="selectCount" resultType="int">
+    SELECT
+    count(1)
+    FROM
+    t_wx_use_water_plan_add t1
+    WHERE
+    t1.node_code = #{nodeCode}
+    AND t1.id IN (
+    SELECT
+    id
+    FROM
+    t_w_use_water_plan
+    WHERE
+    node_code = #{nodeCode}
+    AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE
+    person_id = #{userId} ))
+    <if test="unitName != null and unitName != ''">
+      and t1.unit_name like '%${unitName}%'
+    </if>
+    <if test="userType != null and userType != ''">
+      and SUBSTRING(t1.unit_code,3,2) like '%${userType}%'
+    </if>
+    <if test="executed != null and executed != ''">
+      and t1.executed = #{executed}
+    </if>
+    <if test="auditStatus != null and auditStatus != ''">
+      and t1.audit_status = #{auditStatus}
+    </if>
+  </select>
+
+
+  <update id="updatePrinted" >
+    update t_wx_use_water_plan_add set
+      printed = '1'
+    WHERE id = #{id}
+  </update>
+
+
+  <update id="updateAudit">
+    UPDATE t_wx_use_water_plan_add
+    SET
+    audit_person_id = #{ auditPersonId },
+    audit_person = #{ userName },
+    audit_status = #{ auditStatus },
+    audit_result = #{ auditResult },
+    audit_time = #{ auditTime }
+    WHERE
+    id = #{ id}
+  </update>
+
+</mapper>
