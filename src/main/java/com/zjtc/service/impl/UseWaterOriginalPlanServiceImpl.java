@@ -133,7 +133,7 @@ public class UseWaterOriginalPlanServiceImpl extends
       //自平表需要的数据
       UseWaterSelfDefinePlan useWaterSelfDefinePlan = new UseWaterSelfDefinePlan();
       useWaterPlan.setCreateTime(new Date());
-      useWaterSelfDefinePlan.setAuditStatus("0");
+      useWaterSelfDefinePlan.setAuditStatus("3");
       useWaterSelfDefinePlan.setNodeCode(useWaterPlan.getNodeCode());
       useWaterSelfDefinePlan.setUseWaterUnitId(useWaterPlan.getUseWaterUnitId());
       useWaterSelfDefinePlan.setUnitCode(useWaterPlan.getUnitCode());
@@ -145,6 +145,7 @@ public class UseWaterOriginalPlanServiceImpl extends
       useWaterSelfDefinePlan.setSecondQuarter(useWaterPlan.getSecondQuarter());
       useWaterSelfDefinePlan.setThirdQuarter(useWaterPlan.getThirdQuarter());
       useWaterSelfDefinePlan.setFourthQuarter(useWaterPlan.getFourthQuarter());
+      useWaterSelfDefinePlan.setExecuted("0");
       selfDefinePlanList.add(useWaterSelfDefinePlan);
       useWaterPlanList.add(useWaterPlan);
     }
