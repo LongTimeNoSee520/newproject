@@ -357,5 +357,54 @@ public class TimeUtil {
     return weeks[week_index];
   }
 
-
+  /**
+   * 获取传入时间所属月份相差monthDiff个月的第一天
+   * @param date，monthDiff
+   * @return
+   */
+  public static Date getMonthFirstDay(Date date, int monthDiff) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    calendar.set(Calendar.DAY_OF_MONTH, 1);//获取当月第一天
+    calendar.add(Calendar.MONTH, monthDiff);//monthDiff: 0是指本月,-1是向前推一个月,1是向后推一个月
+    return calendar.getTime();
+  }
+  /**
+   * 获取传入时间所属年份相差yearDiff年的第一天
+   * @param date，yearDiff
+   * @return
+   */
+  public static Date getMonthFirstYear(Date date, int yearDiff) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    calendar.set(Calendar.DAY_OF_YEAR, 1);//获取当年第一天
+    calendar.add(Calendar.YEAR, yearDiff);//monthDiff: 0是指本月,-1是向前推一个月,1是向后推一个月
+    return calendar.getTime();
+  }
+  /**
+   * 获取传入时间是当年第几个季度
+   * @param date
+   * @return
+   */
+  public static int toQuarter(Date date) {
+    date=formatDate(formatTimeStr(date));
+    long january = getMonthFirstYear(date,0).getTime();//1月的第一天
+    long april = getMonthFirstDay(getMonthFirstYear(date,0),3).getTime();//4月的第一天
+    long july = getMonthFirstDay(getMonthFirstYear(date,0),6).getTime();//7月的第一天
+    long october = getMonthFirstDay(getMonthFirstYear(date,0),9).getTime();//10月的第一天
+    long nextYear =getMonthFirstYear(date,1).getTime(); //下年的第一天
+    if (date.getTime() >= january && date.getTime() < april){
+      return  1;
+    }
+    else  if (date.getTime() >= april && date.getTime() < july){
+     return  2;
+    }
+    else if(date.getTime() >= july && date.getTime() < october){
+      return  3;
+    }
+    else if(date.getTime() >= october && date.getTime() < nextYear){
+      return  4;
+    }
+    return -1;
+  }
 }

@@ -267,7 +267,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
       sendSocketIndex.add(i*size);
     }
     /**解析完后,逐条检查数据，检查是否存在数据格式问题，和相同水表档案号在相同月份是否有多条数据*/
-      /**查询所有水表号对应单位编号*/
+      /**查询所有水表号对应单位id*/
     Map<String, String> meterMap = useWaterUnitMeterService.getMeterMap(nodeCode);
     List<WaterUseData> waterUseDataList = new ArrayList<>();
     /**existMap用于判断相同年份+月份是否已经有该水表档案号的信息,

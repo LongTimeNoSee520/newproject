@@ -35,11 +35,11 @@ public class UseWaterBasePlanServiceImpl extends
   @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
   public ApiResponse add(User user, UseWaterBasePlan useWaterBasePlan) {
     ApiResponse response = new ApiResponse();
-    /**查询当前登录人员是否有操作该批次的权限*/
+    /**查询当前登录人员是否有操作该类型的权限*/
     boolean result = useWaterUnitRoleService
         .checkUserRight(user.getId(), useWaterBasePlan.getUnitCode(), user.getNodeCode());
     if (!result) {
-      response.recordError("当前登录用户没有操作当前批次的权限");
+      response.recordError("当前登录用户没有操作当前类型的权限");
       return response;
     }
     /**查询当前单位编码在当前nodeCode下、当前年份下是否已经有基建计划*/
@@ -62,11 +62,11 @@ public class UseWaterBasePlanServiceImpl extends
   @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
   public ApiResponse edit(User user, UseWaterBasePlan useWaterBasePlan) {
     ApiResponse response = new ApiResponse();
-    /**查询当前登录人员是否有操作该批次的权限*/
+    /**查询当前登录人员是否有操作该类型的权限*/
     boolean result = useWaterUnitRoleService
         .checkUserRight(user.getId(), useWaterBasePlan.getUnitCode(), user.getNodeCode());
     if (!result) {
-      response.recordError("当前登录用户没有操作当前批次的权限");
+      response.recordError("当前登录用户没有操作当前类型的权限");
       return response;
     }
     /**因为有可能修改了单位编号，所以需要查询当前单位编号是否已经有编制(排除自己),

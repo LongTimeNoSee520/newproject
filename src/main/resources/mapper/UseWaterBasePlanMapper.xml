@@ -43,12 +43,12 @@
            FROM t_w_use_water_base_plan
            WHERE deleted = '0'
            AND node_code = #{nodeCode}
-           AND SUBSTRING(unit_code,3,2) <!--批次-->
+           AND SUBSTRING(unit_code,5,2) <!--类型-->
            IN (
            SELECT unit_type_code
            FROM t_w_use_water_unit_role
            WHERE person_id = #{userId}
-           ) <!-- in条件是查询当前登录者能查询的批次的单位基建计划年份-->
+           ) <!-- in条件是查询当前登录者能查询的类型的单位基建计划年份-->
             )t1
     ORDER BY t1.plan_year ASC
   </select>
@@ -59,7 +59,7 @@
           FROM t_w_use_water_base_plan
            WHERE deleted = '0'
            AND node_code = #{nodeCode}
-           AND SUBSTRING(unit_code,3,2) <!--批次-->
+           AND SUBSTRING(unit_code,5,2) <!--类型-->
            IN (
            SELECT unit_type_code
            FROM t_w_use_water_unit_role
@@ -82,7 +82,7 @@
                   FROM t_w_use_water_base_plan
                   WHERE deleted = '0'
                   AND node_code = #{nodeCode}
-                  AND SUBSTRING(unit_code,3,2) <!--批次-->
+                  AND SUBSTRING(unit_code,5,2) <!--类型-->
                       IN (
                       SELECT unit_type_code
                       FROM t_w_use_water_unit_role
