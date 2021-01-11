@@ -1,13 +1,18 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.UseWaterPlanAddWXMapper;
 import com.zjtc.model.EndPaper;
+import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.service.EndPaperService;
+import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.UseWaterPlanAddWXService;
+import com.zjtc.service.UseWaterPlanService;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,9 +32,15 @@ import org.springframework.stereotype.Service;
 public class UseWaterPlanAddWXServiceImpl extends
     ServiceImpl<UseWaterPlanAddWXMapper, UseWaterPlanAddWX> implements
     UseWaterPlanAddWXService {
+
   @Autowired
   private EndPaperService endPaperService;
 
+  @Autowired
+  private UseWaterPlanService useWaterPlanService;
+
+  @Autowired
+  private PlanDailyAdjustmentService planDailyAdjustmentService;
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
     ApiResponse response = new ApiResponse();
@@ -116,6 +127,16 @@ public class UseWaterPlanAddWXServiceImpl extends
     UseWaterPlanAddWX useWaterPlanAddWX = this.baseMapper.selectById(id);
     EndPaper endPaper = new EndPaper();
     if ("2".equals(useWaterPlanAddWX.getAuditStatus())) {
+      Wrapper<UseWaterPlan> wrapper1 = new EntityWrapper<>();
+      wrapper1.eq("node_code", useWaterPlanAddWX.getNodeCode());
+      wrapper1.eq("unit_code", useWaterPlanAddWX.getUnitCode());
+      wrapper1.eq("plan_year", useWaterPlanAddWX.getPlanYear());
+      List<UseWaterPlan> useWaterPlans = useWaterPlanService.selectList(wrapper1);//实际上只有一条数据
+      if (useWaterPlans.isEmpty()){
+        response.recordError("系统异常,操作失败");
+        return response;
+      }
+      UseWaterPlan useWaterPlanModel = useWaterPlans.get(0);
       endPaper.setId(UUID.randomUUID().toString().replace("-", ""));
 //      节点编码
       endPaper.setNodeCode(useWaterPlanAddWX.getNodeCode());
@@ -149,10 +170,8 @@ public class UseWaterPlanAddWXServiceImpl extends
       endPaper.setSecondWater(useWaterPlanAddWX.getSecondWater());
 //      增加水量
       endPaper.setAddNumber(useWaterPlanAddWX.getCurYearPlan());
-//      是否在年计划上增加
-      endPaper.setYear("1");
 //      创建类型
-//      endPaper.setCreateType()
+      endPaper.setCreateType(useWaterPlanModel.getCreateType());
 //      第一季度计划
       endPaper.setFirstQuarter(useWaterPlanAddWX.getFirstQuarter());
 //      第二季度计划
@@ -166,7 +185,7 @@ public class UseWaterPlanAddWXServiceImpl extends
 //      确认时间
       endPaper.setConfirmTime(useWaterPlanAddWX.getConfirmTime());
 //      是否审核
-      endPaper.setAuditStatus(useWaterPlanAddWX.getAuditStatus());
+      endPaper.setAuditStatus("1");
 //      是否执行
       endPaper.setExecuted(useWaterPlanAddWX.getExecuted());
 //      审批申请附件id
@@ -175,12 +194,13 @@ public class UseWaterPlanAddWXServiceImpl extends
       endPaper.setWaterProofFileId(useWaterPlanAddWX.getWaterProofFileId());
 //      其他证明材料
       endPaper.setOtherFileId(useWaterPlanAddWX.getOtherFileId());
-       endPaperService.insert(endPaper);
+      endPaperService.insert(endPaper);
+      planDailyAdjustmentService.updateExistSettlement("1",endPaper.getUnitCode(),endPaper.getNodeCode(),endPaper.getPlanYear());
     }
-    if (i > 0){
+    if (i > 0) {
       response.setCode(200);
       return response;
-    }else {
+    } else {
       response.recordError("审核失败");
       return response;
     }

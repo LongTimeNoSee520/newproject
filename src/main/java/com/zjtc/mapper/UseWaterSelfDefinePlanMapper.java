@@ -110,10 +110,11 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
       @Param("id") String id,
       @Param("firstQuarter") Double firstQuarter,
       @Param("secondQuarter") Double secondQuarter,
-      @Param("thirdQuarter") Double thirdQuarter,
-      @Param("fourthQuarter") Double fourthQuarter,
-      @Param("executorId") String executorId,
-      @Param("updateTime") Date updateTime);
+      @Param("thirdQuarter")Double thirdQuarter,
+      @Param("fourthQuarter")Double fourthQuarter,
+      @Param("curYearPlan")Double curYearPlan,
+      @Param("executorId")String executorId,
+      @Param("updateTime")Date updateTime);
 
   /**
    * 匹配用水计划表里的那条数据

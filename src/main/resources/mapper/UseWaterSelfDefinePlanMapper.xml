@@ -248,6 +248,7 @@
     second_quarter = #{secondQuarter},
     third_quarter = #{thirdQuarter},
     fourth_quarter = #{fourthQuarter},
+    cur_year_plan = #{curYearPlan},
     update_user_id = #{executorId},
     update_time = #{updateTime}
     where id = #{id}
@@ -269,6 +270,6 @@
   </select>
 
   <select id="selectExecuted" resultMap="TWUseWaterSelfDefinePlanModel">
-    select * FROM t_w_use_water_self_define_plan WHERE executed = '1' and id = #{id}
+    select * FROM t_w_use_water_self_define_plan WHERE executed = '1'  and id = #{id}
   </select>
 </mapper>

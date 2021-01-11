@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
-import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

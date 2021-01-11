@@ -43,7 +43,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
   private UseWaterPlanService useWaterPlanService;
 
   @Override
-  public ApiResponse queryPage(JSONObject jsonObject, String nodeCode,String userId) {
+  public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
     ApiResponse response = new ApiResponse();
     Map<String, Object> map = new LinkedHashMap<>(10);
 //    页数
@@ -103,13 +103,13 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //    总条数
     Integer total = this.baseMapper
         .selectCount(unitName, userType, areaCode, beginYear,
-            endYear, executed, unitCode, nodeCode, auditStatus,userId);
+            endYear, executed, unitCode, nodeCode, auditStatus, userId);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<UseWaterSelfDefinePlan> waterSelfDefinePlans = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType, areaCode, beginYear,
-            endYear, executed, unitCode, nodeCode, auditStatus,userId);
+            endYear, executed, unitCode, nodeCode, auditStatus, userId);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -181,21 +181,16 @@ public class UseWaterSelfDefinePlanServiceImpl extends
         return response;
       }
     }
-    for (String id : ids) {
-      // ====  需要修改自平数据表的字段======
-//        是否执行(0:否,1:是)
-//        执行时间
-//        执行人
-//        执行人Id
-//        执行结果(0:否,1:是)
-      zp = this.baseMapper.updateExecuteData(id, executor, executorId, new Date());
-    }
 //>>>>>>>>>> 第二步:新增用水计划调整表<<<<<<<<<<
     EntityWrapper<UseWaterSelfDefinePlan> wrapper = new EntityWrapper<>();
     List<UseWaterSelfDefinePlan> useWaterSelfDefinePlans = null;
 //    根据执行id查询出对应的数据
     wrapper.in("id", ids);
     useWaterSelfDefinePlans = this.baseMapper.selectList(wrapper);
+    if (useWaterSelfDefinePlans.isEmpty()) {
+      response.recordError("系统异常,操作失败");
+      return response;
+    }
     UseWaterPlanAdd waterPlanAdd = new UseWaterPlanAdd();
 //    附件id
     String fileId;
@@ -204,9 +199,15 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       wrapper1.eq("node_code", useWaterSelfDefinePlan.getNodeCode());
       wrapper1.eq("unit_code", useWaterSelfDefinePlan.getUnitCode());
       wrapper1.eq("plan_year", useWaterSelfDefinePlan.getPlanYear());
-      List<UseWaterPlan> useWaterPlans =useWaterPlanService.selectList(wrapper1);//实际上只有一条数据
+      List<UseWaterPlan> useWaterPlans = useWaterPlanService.selectList(wrapper1);//实际上只有一条数据
+      if (useWaterPlans.isEmpty()) {
+        response.recordError("系统异常,操作失败");
+        return response;
+      }
       UseWaterPlan useWaterPlanModel = useWaterPlans.get(0);
-      if (useWaterSelfDefinePlan.getCurYearPlan() != useWaterPlanModel.getFirstQuarter() + useWaterPlanModel.getSecondQuarter() + useWaterPlanModel.getThirdQuarter() +useWaterPlanModel.getFourthQuarter()){
+      if (useWaterSelfDefinePlan.getCurYearPlan()
+          != useWaterPlanModel.getFirstQuarter() + useWaterPlanModel.getSecondQuarter()
+          + useWaterPlanModel.getThirdQuarter() + useWaterPlanModel.getFourthQuarter()) {
         response.recordError("四个季度水量总和与年计划水量不符");
         return response;
       }
@@ -227,15 +228,18 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //      本年计划（当前年计划）
 //      waterPlanAdd.setCurYearPlan(useWaterSelfDefinePlan.getCurYearPlan());
       waterPlanAdd.setCurYearPlan(0.0);
-
 //      第一季度计划
-      waterPlanAdd.setFirstQuarter(useWaterSelfDefinePlan.getFirstQuarter() - useWaterPlanModel.getFirstQuarter());
+      waterPlanAdd.setFirstQuarter(
+          useWaterSelfDefinePlan.getFirstQuarter() - useWaterPlanModel.getFirstQuarter());
 //      第二季度计划
-      waterPlanAdd.setSecondQuarter(useWaterSelfDefinePlan.getSecondQuarter() - useWaterPlanModel.getSecondQuarter());
+      waterPlanAdd.setSecondQuarter(
+          useWaterSelfDefinePlan.getSecondQuarter() - useWaterPlanModel.getSecondQuarter());
 //      第三季度计划
-      waterPlanAdd.setThirdQuarter(useWaterSelfDefinePlan.getThirdQuarter() - useWaterPlanModel.getThirdQuarter());
+      waterPlanAdd.setThirdQuarter(
+          useWaterSelfDefinePlan.getThirdQuarter() - useWaterPlanModel.getThirdQuarter());
 //      第四季度计划
-      waterPlanAdd.setFourthQuarter(useWaterSelfDefinePlan.getFourthQuarter() - useWaterPlanModel.getFourthQuarter());
+      waterPlanAdd.setFourthQuarter(
+          useWaterSelfDefinePlan.getFourthQuarter() - useWaterPlanModel.getFourthQuarter());
 //      调整类型(数据字典值(增加计划))
       waterPlanAdd.setPlanType(useWaterSelfDefinePlan.getChangeType());
 //      创建时间
@@ -244,13 +248,12 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       waterPlanAdd.setCreater(executor);
 //      创建者id
       waterPlanAdd.setCreaterId(executorId);
-//      查询出当前id对应的附件id
+////      查询出当前id对应的附件id
       fileId = this.baseMapper.selectFileId(useWaterSelfDefinePlan.getId());
 //      审批申请附件id
       waterPlanAdd.setAuditFileId(fileId);
 //      状态(1:草稿、2:审核、3:累加)
       waterPlanAdd.setStatus("3");
-      planAdd = useWaterPlanAddService.insert(waterPlanAdd);
 //>>>>>>>>第三步:更新用水计划表数据<<<<<<<<<<
 //    匹配用水计划表里的那条数据
       List<UseWaterPlan> waterPlan = this.baseMapper.selectWaterPlan(
@@ -260,12 +263,19 @@ public class UseWaterSelfDefinePlanServiceImpl extends
           useWaterSelfDefinePlan.getUnitCode(),
           useWaterSelfDefinePlan.getPlanYear());
       System.out.println("匹配到的用水计划表数据:" + waterPlan);
+//      修改自平数据
+      for (String id : ids) {
+        zp = this.baseMapper.updateExecuteData(id, executor, executorId, new Date());
+      }
+//      用水计划日常调整
+      planAdd = useWaterPlanAddService.insert(waterPlanAdd);
 //      修改用水计划表季度水量
       for (UseWaterPlan useWaterPlan : waterPlan) {
         water = this.baseMapper
             .updateUseWaterPlanWater(useWaterPlan.getId(), useWaterSelfDefinePlan.getFirstQuarter(),
                 useWaterSelfDefinePlan.getSecondQuarter(), useWaterSelfDefinePlan.getThirdQuarter(),
-                useWaterSelfDefinePlan.getFourthQuarter(), executorId, new Date());
+                useWaterSelfDefinePlan.getFourthQuarter(), useWaterSelfDefinePlan.getCurYearPlan(),
+                executorId, new Date());
       }
     }
     if (zp > 0 && planAdd && water > 0) {
