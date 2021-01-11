@@ -130,12 +130,6 @@ public class  EndPaper extends Model<EndPaper>{
     /**
     * 
     */
-    @ApiModelProperty("是否在年计划上增加")
-    @TableField(value = "year",exist = true)
-    private String year;
-    /**
-    * 
-    */
     @ApiModelProperty("扣加价")
     @TableField(value = "minus_pay_status",exist = true)
     private String minusPayStatus;
@@ -145,6 +139,10 @@ public class  EndPaper extends Model<EndPaper>{
     @ApiModelProperty("水平衡测试")
     @TableField(value = "balance_test",exist = true)
     private String balanceTest;
+
+    @ApiModelProperty("创建类型(是否扣/奖创建)")
+    @TableField(value = "create_type",exist = true)
+    private String createType;
     /**
     * 
     */
