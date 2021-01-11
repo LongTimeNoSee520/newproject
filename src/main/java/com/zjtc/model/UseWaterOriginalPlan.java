@@ -2,8 +2,10 @@ package com.zjtc.model;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
+import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -28,7 +30,7 @@ public class UseWaterOriginalPlan extends Model<UseWaterOriginalPlan>{
     * 
     */
     @ApiModelProperty("主键id")
-    @TableField(value = "id",exist = true)
+    @TableId(value = "id", type = IdType.UUID)
     private String id;
     /**
     * 
@@ -234,6 +236,12 @@ public class UseWaterOriginalPlan extends Model<UseWaterOriginalPlan>{
     @ApiModelProperty("是否编制")
     @TableField(value = "planed",exist = true)
     private String planed;
+    /**
+     *
+     */
+    @ApiModelProperty("是否新增(户)")
+    @TableField(value = "added",exist = true)
+    private String added;
 	/**
 	 * 实例化
 	 */

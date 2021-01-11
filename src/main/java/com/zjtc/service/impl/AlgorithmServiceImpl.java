@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.toolkit.StringUtils;
 import com.zjtc.mapper.AlgorithmMapper;
 import com.zjtc.model.Algorithm;
 import com.zjtc.service.AlgorithmService;
+import com.zjtc.service.UseWaterOriginalPlanService;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AlgorithmServiceImpl extends ServiceImpl<AlgorithmMapper, Algorithm> implements
     AlgorithmService {
+  @Autowired
+  private UseWaterOriginalPlanService useWaterOriginalPlanService;
 
   @Override
   public boolean saveOrUpdate(List<Algorithm> algorithms, String nodeCode) {
@@ -31,7 +35,9 @@ public class AlgorithmServiceImpl extends ServiceImpl<AlgorithmMapper, Algorithm
             this.baseMapper.insert(algorithm);
       }
       //todo 调整用水计划数据
-      return result > 0 ? true : false;
+      //
+      boolean falg= useWaterOriginalPlanService.deleteAllNotplaned(nodeCode);
+      return result > 0 ? true : false && falg;
     }
     return false;
   }

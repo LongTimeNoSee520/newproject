@@ -19,6 +19,7 @@ import com.zjtc.service.UseWaterSelfDefinePlanMapperService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,15 +45,25 @@ public class UseWaterOriginalPlanServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public ApiResponse saveModel(JSONObject jsonObject) {
+  public ApiResponse save(JSONObject jsonObject) {
     ApiResponse apiResponse = new ApiResponse();
     List<UseWaterOriginalPlan> entity = jsonObject.getJSONArray("data")
         .toJavaList(UseWaterOriginalPlan.class);
     for (UseWaterOriginalPlan item : entity) {
+      //已编制的数据不能再编制
       if (item.getPlaned().equals("1")) {
         apiResponse.recordError("当前保存的数据中存在已编制数据");
-        return apiResponse;
+        break;
       }
+      //新户必须选择选择考核季度
+      if(0==item.getAssessQuarter() && "1".equals(item.getAdded())){
+        apiResponse.recordError("请选择考核季度");
+        break;
+      }
+      item.setNodeCode(jsonObject.getString("nodeCode"));
+    }
+    if(200 !=apiResponse.getCode()){
+      return apiResponse;
     }
     this.insertOrUpdateBatch(entity);
     return apiResponse;
@@ -76,6 +87,8 @@ public class UseWaterOriginalPlanServiceImpl extends
         apiResponse.recordError("请选择算法");
         return apiResponse;
       }
+      /**请选择季度 todo: 新户需要选择季度？*/
+
       /**1.更新用水计划原始表状态为已编制*/
       item.setPlaned("1");
       //用水表计划需要的数据
@@ -118,9 +131,8 @@ public class UseWaterOriginalPlanServiceImpl extends
         useWaterPlan.setFourthQuarter(item.getFourthQuarterQuota());
       }
       //自平表需要的数据
-      UseWaterSelfDefinePlan useWaterSelfDefinePlan =new UseWaterSelfDefinePlan();
+      UseWaterSelfDefinePlan useWaterSelfDefinePlan = new UseWaterSelfDefinePlan();
       useWaterPlan.setCreateTime(new Date());
-//      审核状态(0:未审核,1:审核不通过,2:审核通过)
       useWaterSelfDefinePlan.setAuditStatus("0");
       useWaterSelfDefinePlan.setNodeCode(useWaterPlan.getNodeCode());
       useWaterSelfDefinePlan.setUseWaterUnitId(useWaterPlan.getUseWaterUnitId());
@@ -148,6 +160,11 @@ public class UseWaterOriginalPlanServiceImpl extends
   }
 
   @Override
+  public ApiResponse saveOriginalNew(JSONObject jsonObject, User user) {
+    return null;
+  }
+
+  @Override
   public boolean updateModel(JSONObject jsonObject) {
     UseWaterOriginalPlan entity = jsonObject.toJavaObject(UseWaterOriginalPlan.class);
     boolean result = this.updateById(entity);
@@ -167,7 +184,7 @@ public class UseWaterOriginalPlanServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> goPlanning(JSONObject jsonObject) {
+  public List<Map<String, Object>> goPlanningOld(JSONObject jsonObject) {
     //用户类型
     String userType = jsonObject.getString("userType");
     //编号开头
@@ -188,21 +205,412 @@ public class UseWaterOriginalPlanServiceImpl extends
     //如果没有编制过则初始化，否则直接查询UseWaterPlan表数据
     if (findPlanRecord(year, jsonObject.getString("nodeCode"))) {
       System.out.print("===编制初始化");
-      list = initPlan(year, userType, unitCodeStart, jsonObject.getString("userId"),
+      list = initPlanOld(year, userType, unitCodeStart, jsonObject.getString("userId"),
           jsonObject.getString("nodeCode"));
     } else {
       System.out.print("===编制查询");
-      list = nowYearPlan(year, userType, unitCodeStart, jsonObject.getString("userId"),
+      list = nowYearPlanOld(year, userType, unitCodeStart, jsonObject.getString("userId"),
           jsonObject.getString("nodeCode"));
     }
     return list;
   }
 
-  private List<Map<String, Object>> initPlan(int year, String userType, String unitCodeStart,
+  @Override
+  public List<Map<String, Object>> goPlanningNew(JSONObject jsonObject) {
+    List<Map<String, Object>> result=new ArrayList<>();
+    //用户类型
+    String userType = jsonObject.getString("userType");
+    //编号开头
+    String unitCodeStart = jsonObject.getString("unitStart");
+    //年份
+    Calendar now = Calendar.getInstance();
+    int nowYear = now.get(Calendar.YEAR);
+    int nowMonth = now.get(Calendar.MONTH);
+
+    //判断2021年是否已经编制了,如果2021年未编制，不再进行初始化查询
+    //9-12月时，老户未完成编制，新户初始化不显示数据
+    boolean flag = false;
+    if (9 <= nowMonth && nowMonth < 12) {
+      flag = findPlanRecord(nowYear + 1, jsonObject.getString("nodeCode"));
+    }
+    if (!flag) {
+      //已完成计划编制
+      //初始化数据
+      result =initPlanNew(nowMonth, nowMonth, jsonObject.getString("userId"),
+          jsonObject.getString("nodeCode"));
+    }
+    return result;
+  }
+
+  private List<Map<String, Object>> initPlanNew(int year, int month, String userId,
+      String nodeCode) {
+    List<Map<String, Object>> list = new ArrayList<>();
+    int ParamOne = year; //计算前三季度用到的参数
+    int ParamTwo = year; //计算第四季度季度用到的参数
+    //当年水量
+    String threeWaterMonth = "0";
+    //前一年水量
+    String fourWaterMonth = "0";
+    //第一季度
+    if (0 <= month && month < 3) {
+      //只计算去年第3-4季度
+      ParamOne--;
+      ParamTwo--;
+      fourWaterMonth = "july_count + august_count + september_count + october_count + november_count + december_count";
+    } else if (3 <= month && month < 6) {
+      //计算去年第四季度，今年前三季度(当年第一季度)
+      ParamTwo--;
+      threeWaterMonth = "january_count + february_count + march_count";
+      fourWaterMonth = "october_count + november_count + december_count";
+    } else if (6 <= month && month < 9) {
+      //计算当年前三季度(当前前两季度)
+      threeWaterMonth = "january_count + february_count + march_count + april_count+ may_count+ june_count";
+    } else if (9 <= month && month < 12) {
+      //一定是初始化下一年的编制
+      year++;
+      //计算当前年前三季度(当前年中间俩进度，下一年编制是2021，则今年就是2020)
+      threeWaterMonth = "april_count + may_count + june_count + july_count + august_count + september_count";
+    }
+    //初始化的数据
+    list = baseMapper
+        .initPlanNew(year, userId, nodeCode, ParamOne, ParamTwo, threeWaterMonth, fourWaterMonth);
+    /**初始化基础算法*/
+    Algorithm algorithm = algorithmService.queryAlgorithm(nodeCode,"1");
+    if (!list.isEmpty()) {
+      double threeYearAvg;
+      double nowPrice;
+      double nextYearBaseStartPlan = 0;
+      double nextYearBaseEndPlan;
+      double firstQuarterBase;
+      double secondQuarterBase;
+      double thirdQuarterBase;
+      double fourthQuarterBase;
+      for (Map<String, Object> map : list) {
+        threeYearAvg = (Double) map.get("threeYearAvg");
+        nowPrice = (Double) map.get("nowPrice");
+        String unitCode = (String) map.get("unitCode");
+        //截取类型
+        String unitType = unitCode.substring(0, 2);
+        /**如果三年平均、水价不为空*/
+        if (threeYearAvg != 0 && nowPrice != 0) {
+          /**计算下年初计划(基础)*/
+          //nowPrice <= priceFloot
+          if (nowPrice <= algorithm.getPriceTop()) {
+            nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro1();
+            //nowPrice > priceFloot && nowPrice <= priceUp
+          } else if (nowPrice > algorithm.getPriceTop() && nowPrice <= algorithm.getPriceBottom()) {
+            nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro2();
+          } else if (nowPrice > algorithm.getPriceBottom()) {
+            nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro3();
+          }
+          /**进10*/
+          if (Math.ceil(nextYearBaseStartPlan) % 10 != 0) {
+            nextYearBaseStartPlan =
+                Math.ceil(nextYearBaseStartPlan) + (10 - Math.ceil(nextYearBaseStartPlan) % 10);
+          } else {
+            nextYearBaseStartPlan = Math.ceil(nextYearBaseStartPlan);
+          }
+          /**下年终计划(基础) 默认等于下年初计划(基础)*/
+          nextYearBaseEndPlan = nextYearBaseStartPlan;
+          /**特殊类型*/
+          double nextYearPlan1;
+          double nextYearPlan2;
+          if (unitType.equals("33")) {
+            firstQuarterBase = 0;
+            secondQuarterBase = Math.round(nextYearBaseEndPlan / 2);
+            thirdQuarterBase = 0;
+            fourthQuarterBase = secondQuarterBase;
+          } else {
+            /**普通类型*/
+            nextYearPlan2 = Math.round(nextYearBaseEndPlan * algorithm.getSecondQuarterPro());
+            //nextYearPlan3 = Math.round(nextYearPlan * threeQuarterApp);
+            nextYearPlan1 = Math.round((nextYearBaseEndPlan - (nextYearPlan2 * 2)) / 2);
+            firstQuarterBase = nextYearPlan1;
+            secondQuarterBase = nextYearPlan2;
+            thirdQuarterBase = nextYearPlan2;
+            fourthQuarterBase = nextYearPlan1;
+            map.put("nextYearBaseStartPlan", nextYearBaseStartPlan);
+            map.put("nextYearBaseEndPlan", nextYearBaseEndPlan);
+            map.put("firstQuarterBase", firstQuarterBase);
+            map.put("secondQuarterBase", secondQuarterBase);
+            map.put("thirdQuarterBase", thirdQuarterBase);
+            map.put("fourthQuarterBase", fourthQuarterBase);
+          }
+          /**三年平均为0*/
+        } else if (threeYearAvg == 0) {
+          map.put("nextYearBaseStartPlan", 0);
+          map.put("nextYearBaseEndPlan", 0);
+          map.put("firstQuarterBase", 0);
+          map.put("secondQuarterBase", 0);
+          map.put("thirdQuarterBase", 0);
+          map.put("fourthQuarterBase", 0);
+        }
+      }
+    }
+    return list;
+  }
+
+  private List<Map<String, Object>> nowYearPlanNew(int year, String userType, String unitCodeStart,
+      String userId, String nodeCode) {
+    return baseMapper.nowYearPlanNew(year, userId, nodeCode);
+  }
+
+  @Override
+  public Map<String, Object> getOldByNextYearBase(JSONObject jsonObject, User user) {
+    Map<String, Object> map = new HashMap<>();
+    /**初始化算法*/
+    Wrapper algorithmWrapper = new EntityWrapper();
+    algorithmWrapper.eq("node_code", user.getNodeCode());
+    algorithmWrapper.eq("algorithm_type", "1");
+    Algorithm algorithm = algorithmService.selectOne(algorithmWrapper);
+    //下年终计划
+    double nextYearBaseEndPlan = jsonObject.getDouble("nextYearBaseEndPlan");
+    String unitCode = jsonObject.getString("unitCode");
+    String unitType = unitCode.substring(2, 4);
+    double firstQuarterBase;
+    double secondQuarterBase;
+    double thirdQuarterBase;
+    double fourthQuarterBase;
+    /**重新计算【各季度计划】:基础算法*/
+    double nextYearBaseEndPlan1;
+    double nextYearBaseEndPlan2;
+    /**6.1.特殊用户33批次*/
+    if (unitType.equals("33")) {
+      firstQuarterBase = 0;
+      secondQuarterBase = Math.round(nextYearBaseEndPlan / 2);
+      thirdQuarterBase = 0;
+      fourthQuarterBase = secondQuarterBase;
+    } else {
+      /**6.2.正常用户*/
+      nextYearBaseEndPlan2 = Math
+          .round(nextYearBaseEndPlan * algorithm.getSecondQuarterPro());
+      nextYearBaseEndPlan1 = Math
+          .round((nextYearBaseEndPlan - (nextYearBaseEndPlan2 * 2)) / 2);
+      //第一季度：(下年终计划(基础)-(第二季度计划*2))/2 ;结果4舍5入
+      firstQuarterBase = nextYearBaseEndPlan1;
+      //第二季度：下年终计划(基础)*第二季度(用水)比例,结果4舍5入
+      secondQuarterBase = nextYearBaseEndPlan2;
+      thirdQuarterBase = nextYearBaseEndPlan2;
+      fourthQuarterBase = nextYearBaseEndPlan1;
+    }
+    map.put("firstQuarterBase", firstQuarterBase);
+    map.put("secondQuarterBase", secondQuarterBase);
+    map.put("thirdQuarterBase", thirdQuarterBase);
+    map.put("fourthQuarterBase", fourthQuarterBase);
+    return map;
+  }
+
+  @Override
+  public Map<String, Object> getNewByNextYearBase(JSONObject jsonObject, User user) {
+    Map<String, Object> map = new HashMap<>();
+    //三年平均
+    double threeYearAvg = jsonObject.getDouble("threeYearAvg");
+    //单位编号
+    String unitCode = jsonObject.getString("unitCode");
+    //下年终计划
+    double nextYearBaseEndPlan = jsonObject.getDouble("nextYearBaseEndPlan");
+    //单位类型
+    String unitType = unitCode.substring(2, 4);
+    double firstQuarterBase;
+    double secondQuarterBase;
+    double thirdQuarterBase;
+    double fourthQuarterBase;
+    double nextYearPlan1;
+    double nextYearPlan2;
+    Algorithm algorithm = algorithmService.queryAlgorithm(user.getNodeCode(), "1");
+    if (threeYearAvg != 0) {
+      //特殊类型
+      if (unitType.equals("33")) {
+        firstQuarterBase = 0;
+        secondQuarterBase = Math.round(nextYearBaseEndPlan / 2);
+        thirdQuarterBase = 0;
+        fourthQuarterBase = secondQuarterBase;
+      } else {
+        /**普通类型*/
+        nextYearPlan2 = Math.round(nextYearBaseEndPlan * algorithm.getSecondQuarterPro());
+        //nextYearPlan3 = Math.round(nextYearPlan * threeQuarterApp);
+        nextYearPlan1 = Math.round((nextYearBaseEndPlan - (nextYearPlan2 * 2)) / 2);
+        firstQuarterBase = nextYearPlan1;
+        secondQuarterBase = nextYearPlan2;
+        thirdQuarterBase = nextYearPlan2;
+        fourthQuarterBase = nextYearPlan1;
+        map.put("firstQuarterBase", firstQuarterBase);
+        map.put("secondQuarterBase", secondQuarterBase);
+        map.put("thirdQuarterBase", thirdQuarterBase);
+        map.put("fourthQuarterBase", fourthQuarterBase);
+      }
+    } else {
+      map.put("firstQuarterBase", 0);
+      map.put("secondQuarterBase", 0);
+      map.put("thirdQuarterBase", 0);
+      map.put("fourthQuarterBase", 0);
+    }
+    return map;
+  }
+
+  @Override
+  public Map<String, Object> getOldResultByThreeYearAvg(JSONObject jsonObject, User user) {
+    Map<String, Object> map = new HashMap<>();
+    /**初始化算法*/
+    Wrapper algorithmWrapper = new EntityWrapper();
+    algorithmWrapper.eq("node_code", user.getNodeCode());
+    algorithmWrapper.eq("algorithm_type", "1");
+    Algorithm algorithm = algorithmService.selectOne(algorithmWrapper);
+    double threeYearAvg = jsonObject.getDouble("threeYearAvg");
+    double n8 = jsonObject.getDouble("n8");
+    double curYearPlan = jsonObject.getDouble("curYearPlan");
+    double nowPrice = jsonObject.getDouble("nowPrice");
+    double nextYearBaseStartPlan = 0;
+    double nextYearBaseEndPlan;
+    /**2.计算下年初始计划(基础)*/
+    /**2.1.如：N8<n8Floot */
+    if (n8 < algorithm.getN8Floot()) {
+      nextYearBaseStartPlan = threeYearAvg * algorithm.getBasePro();
+    } else if (algorithm.getN8Up() >= n8 && n8 >= algorithm
+        .getN8Floot()) {
+      /**2.2：n8Up >= N8 && N8 >= n8Floot*/
+      nextYearBaseStartPlan = curYearPlan;
+    } else if (n8 > algorithm.getN8Up()) {
+      if (nowPrice <= algorithm.getPriceTop()) {
+        /**2.3：N8>n8Up && nowPrice <= priceFloot*/
+        nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro1();
+      } else if (nowPrice > algorithm.getPriceTop() && nowPrice <= algorithm
+          .getPriceBottom()) {
+        /**2.4：N8>n8Up &&（nowPrice > priceFloot && nowPrice <= priceUp*/
+        nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro2();
+      } else if (nowPrice > algorithm
+          .getPriceBottom()) {
+        /**2.5: N8>n8Up && nowPrice > priceUp*/
+        nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro3();
+      }
+    }
+    /**3.下年初始计划(基础),如结果不能被10整除，则需进10*/
+    if (Math.ceil(nextYearBaseStartPlan) % 10 != 0) {
+      nextYearBaseStartPlan =
+          Math.ceil(nextYearBaseStartPlan) + (10 - Math.ceil(nextYearBaseStartPlan) % 10);
+    } else {
+      nextYearBaseStartPlan = Math.ceil(nextYearBaseStartPlan);
+    }
+    //下年终计划等于下年初始计划
+    nextYearBaseEndPlan = nextYearBaseStartPlan;
+    map.put("nextYearBaseStartPlan", nextYearBaseStartPlan);
+    map.put("nextYearBaseEndPlan", nextYearBaseEndPlan);
+    /**重新计算各季度计划水量*/
+    Map<String, Object> nextMap = getOldByNextYearBase(jsonObject, user);
+    map.putAll(nextMap);
+    return map;
+  }
+
+  @Override
+  public Map<String, Object> getResultBycheck(JSONObject jsonObject, User user) {
+    Map<String, Object> map = new HashMap<>();
+    /**初始化算法*/
+    Wrapper algorithmWrapper = new EntityWrapper();
+    algorithmWrapper.eq("node_code", user.getNodeCode());
+    algorithmWrapper.eq("algorithm_type", "1");
+    Algorithm algorithm = algorithmService.selectOne(algorithmWrapper);
+    //扣加价
+    String minusPayStatus = jsonObject.getString("minusPayStatus");
+    //水平衡
+    String balanceTest = jsonObject.getString("balanceTest");
+    //创建
+    String createType = jsonObject.getString("createType");
+    //当年计划
+    double curYearPlan = jsonObject.getDouble("curYearPlan");
+    //下年初始计划
+    double nextYearBaseStartPlan = jsonObject.getDouble("nextYearBaseStartPlan");
+    //下年终计划
+    double nextYearBaseEndPlan = 0;
+    //重新计算下年终计划：=下年初始计划+(奖励情况-扣减情况)
+    //特殊情况：选择奖励创建，当年计划>下年终计划，下年终计划=当年计划
+    /**扣加价*/
+    if ("true".equals(minusPayStatus)) {
+      nextYearBaseEndPlan =
+          nextYearBaseStartPlan + (0 - (nextYearBaseStartPlan * algorithm.getReducePro()));
+    }
+    /**水平衡，1奖，2扣*/
+    if ("1".equals(balanceTest)) {
+      nextYearBaseEndPlan =
+          nextYearBaseStartPlan + (nextYearBaseStartPlan * algorithm.getRewardPro());
+    } else if ("2".equals(balanceTest)) {
+      nextYearBaseEndPlan =
+          nextYearBaseStartPlan + (0 - (nextYearBaseStartPlan * algorithm.getReducePro()));
+    }
+    /**创建，1奖，2扣*/
+    if ("1".equals(balanceTest)) {
+      //特殊情况：
+      if (curYearPlan > nextYearBaseStartPlan) {
+        nextYearBaseStartPlan = curYearPlan;
+      } else {
+        nextYearBaseEndPlan =
+            nextYearBaseStartPlan + (nextYearBaseStartPlan * algorithm.getRewardPro());
+      }
+    } else if ("2".equals(balanceTest)) {
+      nextYearBaseEndPlan =
+          nextYearBaseStartPlan + (0 - (nextYearBaseStartPlan * algorithm.getReducePro()));
+    }
+    map.put("nextYearBaseEndPlan", nextYearBaseEndPlan);
+    /**重新计算各季度计划水量*/
+    Map<String, Object> nextMap = getOldByNextYearBase(jsonObject, user);
+    map.putAll(nextMap);
+    return map;
+  }
+
+  @Override
+  public Map<String, Object> getNewResultByThreeYearAvg(JSONObject jsonObject, User user) {
+    Map<String, Object> map = new HashMap<>();
+    //水价
+    double nowPrice = jsonObject.getDouble("nowPrice");
+    //三年平均水量
+    double threeYearAvg = jsonObject.getDouble("nowPrice");
+    /**初始化算法*/
+    Wrapper algorithmWrapper = new EntityWrapper();
+    algorithmWrapper.eq("node_code", user.getNodeCode());
+    algorithmWrapper.eq("algorithm_type", "1");
+    Algorithm algorithm = algorithmService.selectOne(algorithmWrapper);
+    double nextYearBaseStartPlan = 0;
+    double nextYearBaseEndPlan;
+    /**'下年初始计划"需按照"如“三年平均水量”大于0且本年计划等于0"的公式重新重新计算*/
+    /**2.计算下年初始计划(基础)*/
+    /**2.1. nowPrice <= priceFloot*/
+    if (nowPrice <= algorithm.getPriceTop()) {
+      nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro1();
+    } else if (nowPrice > algorithm.getPriceTop() && nowPrice <= algorithm.getPriceBottom()) {
+      /**2.2. nowPrice > priceFloot && nowPrice <= priceUp*/
+      nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro2();
+      /**2.3. nowPrice > priceUp*/
+      nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro3();
+    }
+    /**3.下年初始计划(基础),如结果不能被10整除，则需进10*/
+    if (Math.ceil(nextYearBaseStartPlan) % 10 != 0) {
+      nextYearBaseStartPlan =
+          Math.ceil(nextYearBaseStartPlan) + (10 - Math.ceil(nextYearBaseStartPlan) % 10);
+    } else {
+      nextYearBaseStartPlan = Math.ceil(nextYearBaseStartPlan);
+    }
+    /**4.下年终计划(基础)：默认等于下年初始计划(基础)*/
+    nextYearBaseEndPlan = nextYearBaseStartPlan;
+    map.put("nextYearBaseStartPlan", nextYearBaseStartPlan);
+    map.put("nextYearBaseEndPlan", nextYearBaseEndPlan);
+    /**5.重新计算各季度水量*/
+    Map<String, Object> resultMap = getNewByNextYearBase(jsonObject, user);
+    map.putAll(resultMap);
+    return map;
+  }
+
+  @Override
+  public boolean deleteAllNotplaned(String nodeCode) {
+    Wrapper wrapper = new EntityWrapper();
+    wrapper.eq("planed", "0");
+    wrapper.eq("node_code", nodeCode);
+    return this.delete(wrapper);
+  }
+
+  private List<Map<String, Object>> initPlanOld(int year, String userType, String unitCodeStart,
       String userId, String nodeCode) {
     /**初始化编制算法返回的数据*/
     List<Map<String, Object>> list = baseMapper
-        .initPlan(year, userType, unitCodeStart, userId, nodeCode);
+        .initPlanOld(year, userType, unitCodeStart, userId, nodeCode);
     /**初始化算法*/
     Wrapper algorithmWrapper = new EntityWrapper();
     algorithmWrapper.eq("node_code", nodeCode);
@@ -343,16 +751,17 @@ public class UseWaterOriginalPlanServiceImpl extends
     return list;
   }
 
-  private List<Map<String, Object>> nowYearPlan(int year, String userType, String unitCodeStart,
+  private List<Map<String, Object>> nowYearPlanOld(int year, String userType, String unitCodeStart,
       String userId, String nodeCode) {
 
-    return baseMapper.nowYearPlan(year, userType, unitCodeStart, userId, nodeCode);
+    return baseMapper.nowYearPlanOld(year, userType, unitCodeStart, userId, nodeCode);
   }
 
   /**
    *
    */
   private boolean findPlanRecord(int year, String nodeCode) {
+    /**这里不需要查询人员的类型权限，因为保存编制初始化第一次保存一定是保存所有*/
     Wrapper wrapper = new EntityWrapper();
     wrapper.eq("node_code", nodeCode);
     wrapper.eq("plan_year", year);

@@ -43,7 +43,7 @@ public class UseWaterOriginalPlanController {
 
   @RequestMapping(value = "queryAllOld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "老户查询列表")
-  public ApiResponse queryAll(@RequestBody JSONObject jsonObject,
+  public ApiResponse queryAllOld(@RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("查询列表==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -52,7 +52,7 @@ public class UseWaterOriginalPlanController {
       try {
         jsonObject.put("userId",user.getId());
         jsonObject.put("nodeCode",user.getNodeCode());
-        List<Map<String, Object>> result = useWaterOriginalPlanService.goPlanning(jsonObject);
+        List<Map<String, Object>> result = useWaterOriginalPlanService.goPlanningOld(jsonObject);
         apiResponse.setData(result);
         apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
       } catch (Exception e) {
@@ -66,23 +66,49 @@ public class UseWaterOriginalPlanController {
     return apiResponse;
   }
 
+  @RequestMapping(value = "queryAllNew", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "新户查询列表")
+  public ApiResponse queryAllNew(@RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
+    log.info("查询列表==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != jsonObject && null != user) {
+      try {
+        jsonObject.put("userId",user.getId());
+        jsonObject.put("nodeCode",user.getNodeCode());
+        List<Map<String, Object>> result = useWaterOriginalPlanService.goPlanningNew(jsonObject);
+        apiResponse.setData(result);
+        apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
+      } catch (Exception e) {
+        log.error("老户查询错误,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
+  }
   /**
    * 插入TWUseWaterOriginalPlan属性不为空的数据方法
    */
   @ResponseBody
-  @ApiOperation(value = "新增")
+  @ApiOperation(value = "老户/新户保存")
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse add(@RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
-    log.info("新增==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+  public ApiResponse addOld(@RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
+    log.info("老户/新户保存==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
-    if (null != jsonObject) {
+    User user=jwtUtil.getUserByToken(token);
+    if (null != jsonObject && null!=user) {
       try {
-        ApiResponse result = useWaterOriginalPlanService.saveModel(jsonObject);
+        jsonObject.put("nodeCode",user.getNodeCode());
+        ApiResponse result = useWaterOriginalPlanService.save(jsonObject);
         if(200!=result.getCode()){
           return result;
         }
       } catch (Exception e) {
-        log.error("新增错误,errMsg==={}", e.getMessage());
+        log.error("老户/新户保存错误,errMsg==={}", e.getMessage());
         e.printStackTrace();
         apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
       }
@@ -93,10 +119,10 @@ public class UseWaterOriginalPlanController {
   }
 
   @ResponseBody
-  @ApiOperation(value = "编制")
+  @ApiOperation(value = "老户/新户编制")
   @RequestMapping(value = "saveOriginal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse saveOriginal(@RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
-    log.info("新增==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    log.info("老户/新户编制==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     if (null != jsonObject && null !=user) {
@@ -106,7 +132,7 @@ public class UseWaterOriginalPlanController {
           return result;
         }
       } catch (Exception e) {
-        log.error("新增错误,errMsg==={}", e.getMessage());
+        log.error("老户,errMsg==={}", e.getMessage());
         e.printStackTrace();
         apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
       }
