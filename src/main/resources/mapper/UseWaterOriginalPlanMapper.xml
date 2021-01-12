@@ -63,17 +63,21 @@
     planed=0,
     anded=0,
     t2.nowPrice,
-    t5.cur_year_plan as curYearPlan,
-    t5.curYearBasePlan,
-    CASE t1.unit_code_group
-    WHEN t6.first_batch_num THEN
-    CEILING( t2.baseWaterAmount )
-    WHEN t6.second_batch_num THEN
-    CEILING( t2.baseWaterAmount * 2 + t3.beforeLastYearWaterAmount * 4 )
-    WHEN t6.third_batch_num THEN
+    isNull(t5.cur_year_plan,0) as curYearPlan,
+    isNull(t5.curYearBasePlan,0) as curYearBasePlan ,
+    CASE
+    WHEN t1.unit_code_group = t6.third_batch_num  THEN
+    CEILING( ISNULL(t2.baseWaterAmount,0) )
+    WHEN t1.unit_code_group=t6.second_batch_num THEN
     CEILING(
-    ISNULL( t2.baseWaterAmount, 0 ) * 2 + ISNULL( t4.lastYearWaterAmount, 0 ) * 2 + ISNULL(
-    t3.beforeLastYearWaterAmount, 0 ) * 2
+    ISNULL( t2.baseWaterAmount, 0 ) *ISNULL(t6.first_year_pro,0)
+    + ISNULL( t3.beforeLastYearWaterAmount, 0 )*ISNULL(t6.second_year_pro+t6.third_year_pro,0)
+    )
+    WHEN t1.unit_code_group &lt;=t6.first_batch_num or t1.unit_code_group>t6.third_batch_num  THEN
+    CEILING(
+    ISNULL( t2.baseWaterAmount, 0 ) *ISNULL(t6.first_year_pro,0)
+    + ISNULL( t3.beforeLastYearWaterAmount, 0 )*ISNULL(t6.second_year_pro,0)
+    + ISNULL( t4.lastYearWaterAmount, 0 )*ISNULL(t6.third_year_pro,0)
     )
     END AS threeYearAvg
     FROM
@@ -92,11 +96,11 @@
     <!--当前用户可操作类型-->
     AND unit_code_type IN ( SELECT unit_type_code AS unit_code_type FROM t_w_use_water_unit_role
     WHERE person_id = #{userId} )
-    <if test="null !=unitCodeType">
+    <if test="null !=unitCodeType and unitCodeType !=''">
       AND unit_code_type = #{unitCodeType}
     </if>
     <!--编号开头[批次]筛选-->
-    <if test="null !=unitCodeStart">
+    <if test="null !=unitCodeStart and unitCodeStart !=''">
       and unit_code_group=#{unitCodeStart}
     </if>
     ) t1
@@ -181,15 +185,16 @@
     LEFT JOIN ( SELECT use_water_unit_id FROM t_w_use_water_plan pp WHERE plan_year = #{year} ) t7
     ON
     t1.id = t7.use_water_unit_id
-    <!--原始表中能查到的单位，为老户-->
+    <!--原始表中上一年能查到的单位，为老户-->
     inner join (select use_water_unit_id from t_w_use_water_original_plan where
-    node_code=#{nodeCode}) t8 on t1.id =t8.use_water_unit_id
+    node_code=#{nodeCode} and plan_year=#{year}-1 ) t8 on t1.id =t8.use_water_unit_id
     ,
-    (select first_batch_num ,second_batch_num,third_batch_num,new_batch_num from t_w_algorithm where
+    (select * from t_w_algorithm where
     node_code=#{nodeCode} and algorithm_type='1' ) t6
     where ISNULL( t7.use_water_unit_id, '1' ) = '1'
     <!--去掉算法中的新户-->
     and t1.unit_code_group not in (t6.new_batch_num)
+    order by t1.unit_code
   </select>
 
   <select id="nowYearPlanOld" resultType="java.util.LinkedHashMap">
