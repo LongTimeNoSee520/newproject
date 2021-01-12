@@ -168,23 +168,39 @@
     AND   plan_year =#{planYear}
   </select>
 
-  <select id="queryMessage" resultType="java.util.LinkedHashMap">
-    SELECT use_water_unit_id AS useWaterUnitId,unit_code AS unitCode,unit_name AS
-    unitName,water_meter_code AS waterMeterCode,plan_year AS planYear,
+  <resultMap id="MessageResultMap" type="java.util.LinkedHashMap">
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
+    <result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
+    <collection property="unpaidList" ofType="java.util.LinkedHashMap" column="unit_code"
+    select="queryUnpaidList">
+    </collection>
+  </resultMap>
+  <select id="queryMessage" resultMap="MessageResultMap">
+    SELECT t1.use_water_unit_id,t1.unit_code,t1.unit_name,t1.water_meter_code,t1.plan_year,
+    t1.first_quarter,t1.second_quarter,t1.third_quarter,t1.fourth_quarter,
     COALESCE((SELECT sum(COALESCE(water_number,0))
              FROM t_w_water_use_data
              WHERE use_month=#{thisMonth}
              AND   use_year =#{thisMonthYear}
              AND   use_water_unit_id =t1.use_water_unit_id
              GROUP BY use_water_unit_id
-           ),0) AS firstWater,
+           ),0) AS first_water,
     COALESCE((SELECT sum(COALESCE(water_number,0))
              FROM t_w_water_use_data
              WHERE use_month=#{monthBefore}
              AND   use_year =#{monthBeforeYear}
              AND   use_water_unit_id =t1.use_water_unit_id
              GROUP BY use_water_unit_id
-          ),0) AS secondWater
+          ),0) AS second_water
     FROM t_w_use_water_plan t1
     WHERE id IN
      ( SELECT id
@@ -203,7 +219,9 @@
       and unit_code like '%${unitCode}%'
     </if>
   </select>
-
+  <select id="queryUnpaidList" resultType="java.util.LinkedHashMap">
+    SELECT 1 AS a
+  </select>
   <update id="updateRemarks">
     UPDATE t_w_use_water_plan
     SET remarks = #{remarks}
