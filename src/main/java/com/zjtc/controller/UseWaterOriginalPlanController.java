@@ -44,7 +44,13 @@ public class UseWaterOriginalPlanController {
 
   @RequestMapping(value = "queryAllOld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "老户查询列表")
-  public ApiResponse queryAllOld(@RequestBody JSONObject jsonObject,
+  public ApiResponse queryAllOld(
+      @ApiParam("{\n"
+          + "\"userType\":\"用户类型\",\n"
+          + "\"unitStart\":\"编号开头 \",\n"
+          + "\"year\":\"年份\"\n"
+          + "\n"
+          + "}")@RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("查询列表==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -89,9 +95,6 @@ public class UseWaterOriginalPlanController {
     }
     return apiResponse;
   }
-  /**
-   * 插入TWUseWaterOriginalPlan属性不为空的数据方法
-   */
   @ResponseBody
   @ApiOperation(value = "老户/新户保存")
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

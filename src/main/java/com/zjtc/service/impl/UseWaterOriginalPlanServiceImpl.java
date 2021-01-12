@@ -89,6 +89,7 @@ public class UseWaterOriginalPlanServiceImpl extends
       }
       /**1.更新用水计划原始表状态为已编制*/
       item.setPlaned("1");
+      item.setNodeCode(user.getNodeCode());
       //用水表计划需要的数据
       UseWaterPlan useWaterPlan = new UseWaterPlan();
       useWaterPlan.setCreateTime(new Date());
@@ -129,9 +130,8 @@ public class UseWaterOriginalPlanServiceImpl extends
         useWaterPlan.setFourthQuarter(item.getFourthQuarterQuota());
       }
       //自平表需要的数据
-      UseWaterSelfDefinePlan useWaterSelfDefinePlan = new UseWaterSelfDefinePlan();
-      useWaterPlan.setCreateTime(new Date());
-      useWaterSelfDefinePlan.setAuditStatus("0");
+      UseWaterSelfDefinePlan useWaterSelfDefinePlan = new UseWaterSelfDefinePlan();;
+      useWaterSelfDefinePlan.setCreateTime(new Date());
       useWaterSelfDefinePlan.setAuditStatus("3");
       useWaterSelfDefinePlan.setNodeCode(useWaterPlan.getNodeCode());
       useWaterSelfDefinePlan.setUseWaterUnitId(useWaterPlan.getUseWaterUnitId());
