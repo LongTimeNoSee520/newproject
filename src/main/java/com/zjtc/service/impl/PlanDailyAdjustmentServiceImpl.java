@@ -8,9 +8,12 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.PlanDailyAdjustmentMapper;
+import com.zjtc.model.EndPaper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.PlanDailyAdjustmentVO;
+import com.zjtc.service.EndPaperService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.UseWaterPlanAddService;
 import java.util.ArrayList;
@@ -19,10 +22,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author lianghao
@@ -37,7 +42,8 @@ public class PlanDailyAdjustmentServiceImpl extends
 
   @Autowired
   private UseWaterPlanAddService useWaterPlanAddService;
-
+  @Autowired
+  private EndPaperService endPaperService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -89,7 +95,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     result.put("current", current);//当前页
 
     /**查出满足条件的数据*/
-    List<Map<String, Object>> records = this.baseMapper.queryPage(map);
+    List<PlanDailyAdjustmentVO> records = this.baseMapper.queryPage(map);
     result.put("records", records);
     return result;
   }
@@ -198,10 +204,10 @@ public class PlanDailyAdjustmentServiceImpl extends
     /**计算每个季度与原数据的差值*/
     Double firstQuarterDiff = firstQuarter - useWaterPlan.getFirstQuarter();//填写的与原数据作差
     Double secondQuarterDiff = secondQuarter - useWaterPlan.getSecondQuarter();
-    Double thirdQuarteriff = thirdQuarter - useWaterPlan.getThirdQuarter();
+    Double thirdQuarterDiff = thirdQuarter - useWaterPlan.getThirdQuarter();
     Double fourthQuarterDiff = fourthQuarter - useWaterPlan.getFourthQuarter();
     /**判断季度数据是否有修改*/
-    if(firstQuarterDiff != 0 || secondQuarterDiff != 0 || thirdQuarteriff != 0 || fourthQuarterDiff != 0){
+    if(firstQuarterDiff != 0 || secondQuarterDiff != 0 || thirdQuarterDiff != 0 || fourthQuarterDiff != 0){
       /**判断四个季度的总和是否与年计划相等*/
       if ((firstQuarter+secondQuarter+thirdQuarter+fourthQuarter) != useWaterPlan.getCurYearPlan()){
         response.recordError("四个季度和不等于年计划，不能修改");
@@ -216,7 +222,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       useWaterPlanAdd.setCurYearPlan(0d);//double
       useWaterPlanAdd.setFirstQuarter(firstQuarterDiff);
       useWaterPlanAdd.setSecondQuarter(secondQuarterDiff);
-      useWaterPlanAdd.setThirdQuarter(thirdQuarteriff);
+      useWaterPlanAdd.setThirdQuarter(thirdQuarterDiff);
       useWaterPlanAdd.setFourthQuarter(fourthQuarterDiff);
       useWaterPlanAdd.setPlanYear(useWaterPlan.getPlanYear());
       useWaterPlanAdd.setNodeCode(useWaterPlan.getNodeCode());
@@ -228,7 +234,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       useWaterPlanAdd.setPrinted("0");
       useWaterPlanAdd.setStatus("2");//已审核，可累加
       useWaterPlanAddService.insert(useWaterPlanAdd);
-    } else if (firstQuarterDiff == 0 && secondQuarterDiff == 0 && thirdQuarteriff == 0
+    } else if (firstQuarterDiff == 0 && secondQuarterDiff == 0 && thirdQuarterDiff == 0
         && fourthQuarterDiff == 0) {
       //季度数据没有调整(业务只允许季度数据修改 和 增加计划 只能存在一种，且季度数据修改后，默认不能进行“增加计划”)
       /**判断有没有增加水量*/
@@ -390,11 +396,27 @@ public class PlanDailyAdjustmentServiceImpl extends
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public ApiResponse initiateSettlement(User user,JSONObject jsonObject) {
 
     ApiResponse response = new ApiResponse();
     String unitCode = jsonObject.getString("unitCode");
+    String unitName = jsonObject.getString("unitName");
+    String waterMeterCode = jsonObject.getString("waterMeterCode");
     Integer planYear = jsonObject.getInteger("planYear");
+    String paperType = jsonObject.getString("paperType");//调整类型(申报类型)
+    Double firstQuarter =jsonObject.getDouble("firstQuarter");
+    Double secondQuarter = jsonObject.getDouble("secondQuarter");
+    Double thirdQuarter = jsonObject.getDouble("thirdQuarter");
+    Double fourthQuarter = jsonObject.getDouble("fourthQuarter");
+    Double firstWater = jsonObject.getDouble("firstWater");
+    Double secondWater = jsonObject.getDouble("secondWater");
+    String quarter = jsonObject.getString("quarter");//调整季度
+    String opinions = jsonObject.getString("opinions");//意见
+    List<String> auditFileIds = jsonObject.getJSONArray("auditFileIds").toJavaList(String.class);
+    List<String> waterProofFileIds = jsonObject.getJSONArray("waterProofFileIds").toJavaList(String.class);
+    List<String> otherFileIds = jsonObject.getJSONArray("otherFileIds").toJavaList(String.class);
+
 
     /**查询该用水单位是否存在没有走完办结流程的办结单*/
     Wrapper wrapper = new EntityWrapper();
@@ -408,7 +430,48 @@ public class PlanDailyAdjustmentServiceImpl extends
       response.recordError("该计划已存在未完成的办结单");
       return response;
     }
-    /**TODO 办结单数据处理*/
+    EndPaper endPaper = new EndPaper();
+    endPaper.setNodeCode(user.getNodeCode());
+    endPaper.setUseWaterUnitId(useWaterPlan.getUseWaterUnitId());
+    endPaper.setUnitName(unitName);
+    endPaper.setUnitCode(unitCode);
+    endPaper.setWaterMeterCode(waterMeterCode);
+    endPaper.setPaperType(paperType);
+    endPaper.setDataSources("2");//现场申报
+    endPaper.setCreateTime(new Date());
+    endPaper.setCreaterId(user.getId());
+    endPaper.setCreaterName(user.getUsername());
+    endPaper.setPlanYear(planYear);
+    endPaper.setChangeQuarter(quarter);
+    if (null != firstQuarter && null != secondQuarter && null != thirdQuarter
+        && null != fourthQuarter) {
+      endPaper.setFirstQuarter(firstQuarter);
+      endPaper.setSecondQuarter(secondQuarter);
+      endPaper.setThirdQuarter(thirdQuarter);
+      endPaper.setFourthQuarter(fourthQuarter);
+      endPaper.setCurYearPlan(firstQuarter + secondQuarter + thirdQuarter + fourthQuarter);
+    }
+    if (null != firstWater && null != secondWater) {
+      endPaper.setFirstWater(firstWater);
+      endPaper.setSecondWater(secondWater);
+    }
+    endPaper.setMinusPayStatus(useWaterPlan.getMinusPayStatus());
+    endPaper.setBalanceTest(useWaterPlan.getBalanceTest());
+    endPaper.setCreateType(useWaterPlan.getCreateType());
+    if (!auditFileIds.isEmpty()){
+      String auditFileId = StringUtils.strip(auditFileIds.toString(),"[]").replace(" ", "");
+      endPaper.setAuditFileId(auditFileId);
+    }
+    if (!waterProofFileIds.isEmpty()){
+      String waterProofFileId = StringUtils.strip(waterProofFileIds.toString(),"[]").replace(" ", "");
+      endPaper.setWaterProofFileId(waterProofFileId);
+    }
+    if (!otherFileIds.isEmpty()){
+      String otherFileId = StringUtils.strip(otherFileIds.toString(),"[]").replace(" ", "");
+      endPaper.setOtherFileId(otherFileId);
+    }
+    endPaperService.insert(endPaper);
+    /**TODO 审核流程信息新增*/
 
     /**发起办结单后，将计划表中的“是否存在没有走完办结流程的办结单”的状态改为是(办结流程走完后或者撤销办结单后，改为否)。*/
     this.updateExistSettlement("1",unitCode,user.getNodeCode(),planYear);

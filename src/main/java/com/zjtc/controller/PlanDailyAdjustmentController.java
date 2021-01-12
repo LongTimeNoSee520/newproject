@@ -246,7 +246,7 @@ public class PlanDailyAdjustmentController {
 
 
   @RequestMapping(value = "queryMessage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation(value = "查询回填单位信息和一、二水量")
+  @ApiOperation(value = "发起办结单时输入单位编码后回填数据")
   public ApiResponse queryMessage(@RequestHeader("token") String token,
       @ApiParam("{\n"
           + "\"unitCode\": \"单位编号\"\n"

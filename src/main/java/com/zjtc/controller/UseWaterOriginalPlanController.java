@@ -44,7 +44,13 @@ public class UseWaterOriginalPlanController {
 
   @RequestMapping(value = "queryAllOld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "老户查询列表")
-  public ApiResponse queryAllOld(@RequestBody JSONObject jsonObject,
+  public ApiResponse queryAllOld(
+      @ApiParam("{\n"
+          + "\"userType\":\"用户类型\",\n"
+          + "\"unitStart\":\"编号开头 \",\n"
+          + "\"year\":\"年份\"\n"
+          + "\n"
+          + "}")@RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("查询列表==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -89,9 +95,6 @@ public class UseWaterOriginalPlanController {
     }
     return apiResponse;
   }
-  /**
-   * 插入TWUseWaterOriginalPlan属性不为空的数据方法
-   */
   @ResponseBody
   @ApiOperation(value = "老户/新户保存")
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -193,7 +196,7 @@ public class UseWaterOriginalPlanController {
     return apiResponse;
   }
   @ResponseBody
-  @ApiOperation(value = "老户勾选【扣加价】，选择【水平衡】、【创建】，回填重新计算的数据项")
+  @ApiOperation(value = "老户/新户勾选【扣加价】，选择【水平衡】、【创建】，回填重新计算的数据项")
   @RequestMapping(value = "getResultBycheck", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse getResultBycheck(@RequestHeader("token") String token,
       @ApiParam("{\n"
@@ -210,6 +213,59 @@ public class UseWaterOriginalPlanController {
     if (null != jsonObject && null !=user) {
       try {
         Map<String,Object> result = useWaterOriginalPlanService.getResultBycheck(jsonObject,user);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("查询,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
+  }
+  @ResponseBody
+  @ApiOperation(value = "老户调整【三年平均水量】时,重新计算【下年初始计划(基础)】,回填重新计算的数据项")
+  @RequestMapping(value = "getOldResultByThreeYearAvg", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse getOldResultByThreeYearAvg(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "  \"nowPrice\":\"水价\",\n"
+          + "  \"threeYearAvg\":\"三年平均\",\n"
+          + "  \"unitCode\":\"单位编号\",\n"
+          + "  \"n8\":\"n8\",\n"
+          + "  \"curYearPlan\":\"当年计划\",\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("查询==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != jsonObject && null !=user) {
+      try {
+        Map<String,Object> result = useWaterOriginalPlanService.getOldResultByThreeYearAvg(jsonObject,user);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("查询,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
+  }
+  @ResponseBody
+  @ApiOperation(value = "老户调整【下年年终计划(基础)】,重新计算【各季度计划(基础)】,回填重新计算的数据项")
+  @RequestMapping(value = "getOldByNextYearBase", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse getOldByNextYearBase(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "  \"nextYearBaseEndPlan\":\"下年终计划(基础)\",\n"
+          + "  \"unitCode\":\"单位编号\",\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("查询==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != jsonObject && null !=user) {
+      try {
+        Map<String,Object> result = useWaterOriginalPlanService.getOldByNextYearBase(jsonObject,user);
         apiResponse.setData(result);
       } catch (Exception e) {
         log.error("查询,errMsg==={}", e.getMessage());

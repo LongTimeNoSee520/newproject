@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.mapper.EndPaperMapper;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.EndPaperVO;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     result.put("current", current);//当前页
 
     /**查出满足条件的数据*/
-    List<Map<String, Object>> records = this.baseMapper.queryPage(map);
+    List<EndPaperVO> records = this.baseMapper.queryPage(map);
     result.put("records", records);
     return result;
   }

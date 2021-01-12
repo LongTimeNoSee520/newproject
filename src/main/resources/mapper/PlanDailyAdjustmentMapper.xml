@@ -150,37 +150,57 @@
     WHERE  rownumber > (#{current}-1)* #{size}
   </select>
   <select id="queryAdjustList" resultType="java.util.LinkedHashMap">
-    SELECT id,node_code AS nodeCode,use_water_unit_id AS useWaterUnitId,unit_name AS unitName,unit_code AS unitCode,
-    water_meter_code AS waterMeterCode,plan_year AS planYear,
-    cur_year_plan AS curYearPlan,first_quarter AS firstQuarter,second_quarter AS secondQuarter,
-    third_quarter AS thirdQuarter,fourth_quarter AS fourthQuarter,
-    plan_type AS planType,
-    CASE plan_type WHEN '0' THEN '日常调整' WHEN '1' THEN '增加计划' END AS planTypeName,
-    create_time AS updateTime,printed AS printed,status AS  status,
-    remarks AS remarks
-    FROM t_w_use_water_plan_add
+    SELECT t1.id,t1.node_code AS nodeCode,t1.use_water_unit_id AS useWaterUnitId,t1.unit_name AS unitName,t1.unit_code AS unitCode,
+    t1.water_meter_code AS waterMeterCode,t1.plan_year AS planYear,
+    t1.cur_year_plan AS curYearPlan,t1.first_quarter AS firstQuarter,t1.second_quarter AS secondQuarter,
+    t1.third_quarter AS thirdQuarter,t1.fourth_quarter AS fourthQuarter,
+    t1.plan_type AS planType,
+    (SELECT dict_item_name
+		  FROM t_dict_item
+		  WHERE dict_id =(SELECT id FROM t_dict WHERE dict_code = 'changeType')
+		  AND  dict_item_code = t1.plan_type
+		) AS planTypeName,
+    t1.create_time AS updateTime,t1.printed AS printed,t1.status AS  status,
+    t1.remarks AS remarks
+    FROM t_w_use_water_plan_add t1
     WHERE node_code =#{nodeCode}
     AND   unit_code =#{unitCode}
     AND   plan_year =#{planYear}
   </select>
 
-  <select id="queryMessage" resultType="java.util.LinkedHashMap">
-    SELECT use_water_unit_id AS useWaterUnitId,unit_code AS unitCode,unit_name AS
-    unitName,water_meter_code AS waterMeterCode,plan_year AS planYear,
+  <resultMap id="MessageResultMap" type="java.util.LinkedHashMap">
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
+    <result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
+    <collection property="unpaidList" ofType="java.util.LinkedHashMap" column="unit_code"
+    select="queryUnpaidList">
+    </collection>
+  </resultMap>
+  <select id="queryMessage" resultMap="MessageResultMap">
+    SELECT t1.use_water_unit_id,t1.unit_code,t1.unit_name,t1.water_meter_code,t1.plan_year,
+    t1.first_quarter,t1.second_quarter,t1.third_quarter,t1.fourth_quarter,
     COALESCE((SELECT sum(COALESCE(water_number,0))
              FROM t_w_water_use_data
              WHERE use_month=#{thisMonth}
              AND   use_year =#{thisMonthYear}
              AND   use_water_unit_id =t1.use_water_unit_id
              GROUP BY use_water_unit_id
-           ),0) AS firstWater,
+           ),0) AS first_water,
     COALESCE((SELECT sum(COALESCE(water_number,0))
              FROM t_w_water_use_data
              WHERE use_month=#{monthBefore}
              AND   use_year =#{monthBeforeYear}
              AND   use_water_unit_id =t1.use_water_unit_id
              GROUP BY use_water_unit_id
-          ),0) AS secondWater
+          ),0) AS second_water
     FROM t_w_use_water_plan t1
     WHERE id IN
      ( SELECT id
@@ -199,7 +219,9 @@
       and unit_code like '%${unitCode}%'
     </if>
   </select>
-
+  <select id="queryUnpaidList" resultType="java.util.LinkedHashMap">
+    SELECT 1 AS a
+  </select>
   <update id="updateRemarks">
     UPDATE t_w_use_water_plan
     SET remarks = #{remarks}

@@ -3,6 +3,7 @@ package com.zjtc.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.UseWaterPlan;
+import com.zjtc.model.vo.PlanDailyAdjustmentVO;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -18,7 +19,7 @@ public interface PlanDailyAdjustmentMapper extends BaseMapper<UseWaterPlan> {
 
   int queryNum(Map<String, Object> map);
 
-  List<Map<String,Object>> queryPage(Map<String, Object> map);
+  List<PlanDailyAdjustmentVO> queryPage(Map<String, Object> map);
 
   void updateRemarks(@Param("id") String id, @Param("remarks") String remarks);
 

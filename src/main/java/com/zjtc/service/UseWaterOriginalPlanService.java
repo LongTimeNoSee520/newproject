@@ -31,12 +31,6 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	 */
 	ApiResponse saveOriginal(JSONObject jsonObject, User user);
 	/**
-	 * 新户编制
-	 * @param jsonObject
-	 * @return
-	 */
-	ApiResponse saveOriginalNew(JSONObject jsonObject, User user);
-	/**
 	* 修改
 	* @param jsonObject
 	* @return
