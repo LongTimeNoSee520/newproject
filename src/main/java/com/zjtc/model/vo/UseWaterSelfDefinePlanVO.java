@@ -1,9 +1,9 @@
-package com.zjtc.model;
+package com.zjtc.model.vo;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
+import com.zjtc.model.File;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -23,8 +23,8 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@TableName("t_w_use_water_self_define_plan")
-public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
+//@TableName("t_w_use_water_self_define_plan")
+public class UseWaterSelfDefinePlanVO extends Model<UseWaterSelfDefinePlanVO> {
 
   /**
    *
@@ -175,14 +175,14 @@ public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
 
   @ApiModelProperty("自平材料附件id")
   @TableField(value = "self_define_file_id", exist = true)
-  private String selfDefineFileId;
+  List<File> selfDefineFileId;
 
 
 
   /**
    * 实例化
    */
-  public UseWaterSelfDefinePlan() {
+  public UseWaterSelfDefinePlanVO() {
     super();
   }
 

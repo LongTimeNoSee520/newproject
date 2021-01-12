@@ -10,6 +10,7 @@ import com.zjtc.mapper.UseWaterSelfDefinePlanMapper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;
+import com.zjtc.model.vo.UseWaterSelfDefinePlanVO;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanService;
 import com.zjtc.service.UseWaterSelfDefinePlanService;
@@ -107,7 +108,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
-    List<UseWaterSelfDefinePlan> waterSelfDefinePlans = this.baseMapper
+    List<UseWaterSelfDefinePlanVO> waterSelfDefinePlans = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType, areaCode, beginYear,
             endYear, executed, unitCode, nodeCode, auditStatus, userId);
     map.put("total", total);
@@ -192,8 +193,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       return response;
     }
     UseWaterPlanAdd waterPlanAdd = new UseWaterPlanAdd();
-//    附件id
-    String fileId;
+
     for (UseWaterSelfDefinePlan useWaterSelfDefinePlan : useWaterSelfDefinePlans) {
       Wrapper<UseWaterPlan> wrapper1 = new EntityWrapper<>();
       wrapper1.eq("node_code", useWaterSelfDefinePlan.getNodeCode());
@@ -205,9 +205,9 @@ public class UseWaterSelfDefinePlanServiceImpl extends
         return response;
       }
       UseWaterPlan useWaterPlanModel = useWaterPlans.get(0);
-      if (useWaterSelfDefinePlan.getCurYearPlan()
-          != useWaterPlanModel.getFirstQuarter() + useWaterPlanModel.getSecondQuarter()
-          + useWaterPlanModel.getThirdQuarter() + useWaterPlanModel.getFourthQuarter()) {
+      if (useWaterPlanModel.getCurYearPlan()
+          != useWaterSelfDefinePlan.getFirstQuarter() + useWaterSelfDefinePlan.getSecondQuarter()
+          + useWaterSelfDefinePlan.getThirdQuarter() + useWaterSelfDefinePlan.getFourthQuarter()) {
         response.recordError("四个季度水量总和与年计划水量不符");
         return response;
       }
@@ -248,10 +248,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       waterPlanAdd.setCreater(executor);
 //      创建者id
       waterPlanAdd.setCreaterId(executorId);
-////      查询出当前id对应的附件id
-      fileId = this.baseMapper.selectFileId(useWaterSelfDefinePlan.getId());
-//      审批申请附件id
-      waterPlanAdd.setAuditFileId(fileId);
+////      审批申请附件id
+//      waterPlanAdd.setAuditFileId(useWaterSelfDefinePlan.getSelfDefineFileId());
 //      状态(1:草稿、2:审核、3:累加)
       waterPlanAdd.setStatus("3");
 //>>>>>>>>第三步:更新用水计划表数据<<<<<<<<<<

@@ -3,6 +3,7 @@ package com.zjtc.mapper;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterSelfDefinePlan;
+import com.zjtc.model.vo.UseWaterSelfDefinePlanVO;
 import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -58,7 +59,7 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
 //     * @param rank        根据单位编号排序
    * @return 结果集
    */
-  List<UseWaterSelfDefinePlan> queryList(
+  List<UseWaterSelfDefinePlanVO> queryList(
       @Param("currPage") Integer currPage,
       @Param("pageSize") Integer pageSize,
       @Param("unitName") String unitName,

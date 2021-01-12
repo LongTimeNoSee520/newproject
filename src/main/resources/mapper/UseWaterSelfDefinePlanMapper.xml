@@ -29,9 +29,37 @@
     <result column="change_type" property="changeType" jdbcType="VARCHAR"/>
     <result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
     <result column="executed" property="executed" jdbcType="VARCHAR"/>
-    <collection property="files" column="id" ofType="com.zjtc.model.File"
-      select="sysAttrFileMap"/>
+    <result column="self_define_file_id" property="selfDefineFileId" jdbcType="VARCHAR"/>
+  </resultMap>
 
+
+  <resultMap id="UseWaterSelfDefinePlanVOModel" type="com.zjtc.model.vo.UseWaterSelfDefinePlanVO">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="cur_year_plan" property="curYearPlan" jdbcType="INTEGER"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="INTEGER"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="INTEGER"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="INTEGER"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="INTEGER"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="audit_time" property="auditTime" jdbcType="VARCHAR"/>
+    <result column="audit_person" property="auditPerson" jdbcType="VARCHAR"/>
+    <result column="audit_person_id" property="auditPersonId" jdbcType="VARCHAR"/>
+    <result column="audit_result" property="auditResult" jdbcType="VARCHAR"/>
+    <result column="execute_time" property="executeTime" jdbcType="TIMESTAMP"/>
+    <result column="executor" property="executor" jdbcType="VARCHAR"/>
+    <result column="executor_id" property="executorId" jdbcType="VARCHAR"/>
+    <result column="execute_result" property="executeResult" jdbcType="VARCHAR"/>
+    <result column="change_type" property="changeType" jdbcType="VARCHAR"/>
+    <result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
+    <result column="executed" property="executed" jdbcType="VARCHAR"/>
+    <collection property="selfDefineFileId" column="id" ofType="com.zjtc.model.File"
+      select="SelectSysAttrFileMap"/>
   </resultMap>
 
   <resultMap id="sysAttrFileMap" type="com.zjtc.model.File">
@@ -85,7 +113,7 @@
     <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
   </resultMap>
 
-  <select id="queryList" parameterType="java.util.Map" resultMap="TWUseWaterSelfDefinePlanModel">
+  <select id="queryList" parameterType="java.util.Map" resultMap="UseWaterSelfDefinePlanVOModel">
     SELECT TOP
     ${pageSize} c.*
     FROM
@@ -151,7 +179,7 @@
     SELECT
     id
     FROM
-    t_w_use_water_plan
+    t_w_use_water_self_define_plan
     WHERE
     node_code = #{nodeCode}
     AND SUBSTRING ( unit_code, 3, 2 )
@@ -195,7 +223,7 @@
     SELECT
     id
     FROM
-    t_w_use_water_plan
+    t_w_use_water_self_define_plan
     WHERE
     node_code = #{nodeCode}
     AND SUBSTRING ( unit_code, 3, 2 )
@@ -204,8 +232,25 @@
   </select>
 
 
-  <select id="sysAttrFileMap" resultMap="sysAttrFileMap">
-    select
+<!--  <select id="SelectSysAttrFileMap" resultMap="sysAttrFileMap">-->
+<!--    select-->
+<!--    id,-->
+<!--    node_code,-->
+<!--    create_time,-->
+<!--    creater_id,-->
+<!--    file_type,-->
+<!--    size,-->
+<!--    file_path,-->
+<!--    file_name,-->
+<!--    business_id-->
+<!--    from-->
+<!--    t_file-->
+<!--    where business_id = #{id}-->
+<!--    and deleted='0'-->
+<!--  </select>-->
+
+  <select id="SelectSysAttrFileMap"  resultMap="sysAttrFileMap">
+    SELECT
     id,
     node_code,
     create_time,
@@ -215,10 +260,18 @@
     file_path,
     file_name,
     business_id
-    from
-    t_file
-    where business_id = #{id}
-    and deleted='0'
+    FROM t_file
+    WHERE deleted ='0'
+    AND id
+    IN (
+    SELECT  SUBSTRING(a.other_file_id,number,CHARINDEX(',',a.other_file_id+',',number)-number) as other_file_id
+    from (SELECT other_file_id
+    FROM t_wx_use_water_plan_add
+    WHERE id = #{id} ) a,master..spt_values
+    where number >= 1 and number  &lt; len(a.other_file_id)
+    and type='p'
+    and SUBSTRING(','+a.other_file_id,number,1)=','
+    ) <!--将逗号隔开的字符串拆分为行-->
   </select>
 
   <update id="updateExecuteData">

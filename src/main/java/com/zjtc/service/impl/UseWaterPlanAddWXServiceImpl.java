@@ -148,7 +148,7 @@ public class UseWaterPlanAddWXServiceImpl extends
       endPaper.setUnitCode(useWaterPlanAddWX.getUnitCode());
 //      水表档案号
       endPaper.setWaterMeterCode(useWaterPlanAddWX.getWaterMeterCode());
-//      办结单类型(增加计划.调整计划.临时用水.......)
+//      办结单类型((增加计划).调整计划.临时用水.......)
       endPaper.setPaperType(useWaterPlanAddWX.getChangeType());
 //      数据来源(1:网上申报,2:现场申报)
       endPaper.setDataSources("1");
@@ -163,14 +163,14 @@ public class UseWaterPlanAddWXServiceImpl extends
 //      调整季度
       endPaper.setChangeQuarter(useWaterPlanAddWX.getChangeQuarter());
 //      本年计划（当前年计划）
-      endPaper.setCurYearPlan(useWaterPlanAddWX.getCurYearPlan());
+      //endPaper.setCurYearPlan(useWaterPlanAddWX.getCurYearPlan());
 //      第一水量
       endPaper.setFirstWater(useWaterPlanAddWX.getFirstWater());
 //      第二水量
       endPaper.setSecondWater(useWaterPlanAddWX.getSecondWater());
 //      增加水量
       endPaper.setAddNumber(useWaterPlanAddWX.getCurYearPlan());
-//      创建类型
+//      创建类型(奖/扣创建)
       endPaper.setCreateType(useWaterPlanModel.getCreateType());
 //      第一季度计划
       endPaper.setFirstQuarter(useWaterPlanAddWX.getFirstQuarter());
@@ -181,13 +181,13 @@ public class UseWaterPlanAddWXServiceImpl extends
 //      第四季度计划
       endPaper.setFourthQuarter(useWaterPlanAddWX.getFourthQuarter());
 //      是否确认
-      endPaper.setConfirmed(useWaterPlanAddWX.getConfirmed());
+//      endPaper.setConfirmed(useWaterPlanAddWX.getConfirmed());
 //      确认时间
-      endPaper.setConfirmTime(useWaterPlanAddWX.getConfirmTime());
+//      endPaper.setConfirmTime(useWaterPlanAddWX.getConfirmTime());
 //      是否审核
-      endPaper.setAuditStatus("1");
+ //     endPaper.setAuditStatus("1");
 //      是否执行
-      endPaper.setExecuted(useWaterPlanAddWX.getExecuted());
+//      endPaper.setExecuted(useWaterPlanAddWX.getExecuted());
 //      审批申请附件id
       endPaper.setAuditFileId(useWaterPlanAddWX.getAuditFileId());
 //      近2月水量凭证附件id
