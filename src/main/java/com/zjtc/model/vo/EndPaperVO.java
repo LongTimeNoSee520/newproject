@@ -37,8 +37,11 @@ public class EndPaperVO extends Model<EndPaperVO>{
     @ApiModelProperty("水表档案号")
     private String waterMeterCode;
 
-    @ApiModelProperty("办结单类型")
+    @ApiModelProperty("办结单类型code")
     private String paperType;
+
+    @ApiModelProperty("办结单类型名称")
+    private String paperTypeName;
 
     @ApiModelProperty("数据来源")
     private String dataSources;

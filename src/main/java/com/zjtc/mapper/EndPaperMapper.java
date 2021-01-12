@@ -3,6 +3,7 @@ package com.zjtc.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.EndPaper;
+import com.zjtc.model.vo.EndPaperVO;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,5 +20,5 @@ public interface EndPaperMapper extends BaseMapper<EndPaper> {
 
   int queryNum(Map<String, Object> map);
 
-  List<Map<String,Object>> queryPage(Map<String, Object> map);
+  List<EndPaperVO> queryPage(Map<String, Object> map);
 }
