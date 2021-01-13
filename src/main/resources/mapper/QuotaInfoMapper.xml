@@ -9,6 +9,9 @@
     <result column="industry_name" property="industryName" jdbcType="VARCHAR"/>
     <result column="quota_unit" property="quotaUnit" jdbcType="VARCHAR"/>
     <result column="quota_value" property="quotaValue" jdbcType="FLOAT"/>
+    <result column="common_value" property="commonValue" jdbcType="FLOAT"/>
+    <result column="quota_rate" property="quotaRate" jdbcType="FLOAT"/>
+    <result column="time_param" property="timeParam" jdbcType="INTEGER"/>
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
     <result column="remark" property="remark" jdbcType="VARCHAR"/>
@@ -42,6 +45,9 @@
     <if test="quotaInfo.quotaValue != null">,quota_value = #{quotaInfo.quotaValue} </if>
     <if test="quotaInfo.remark != null and quotaInfo.remark != ''">,remark = #{quotaInfo.remark} </if>
     <if test="quotaInfo.advanceValue != null">,advance_value = #{quotaInfo.advanceValue}</if>
+    <if test="quotaInfo.commonValue != null">,common_value = #{quotaInfo.commonValue}</if>
+    <if test="quotaInfo.quotaRate != null">,quota_rate = #{quotaInfo.quotaRate}</if>
+    <if test="quotaInfo.timeParam != null">,time_param = #{quotaInfo.timeParam}</if>
     WHERE id = #{quotaInfo.id}
   </update>
   <update id="delete">

@@ -43,7 +43,10 @@ public class QuotaInfoController {
       + "  \"industryName\": \"行业名称\",\n"
       + "  \"parentId\": \"上级行业id\",\n"
       + "  \"quotaUnit\": \"定额单位\",\n"
-      + "  \"quotaValue\":\"定额值,float\",\n"
+      + "  \"quotaValue\":\"定额标准单位值,float\",\n"
+      + "  \"commonValue\":\"定额通用值,float\",\n"
+      + "  \"quotaRate\":\"综合利用率,float\",\n"
+      + "  \"timeParam\":\"时间参数，标准单位为天：365，标准单位为年：1\",\n"
       + "  \"remark\": \"备注\"\n"
       + "}")@RequestBody QuotaInfo quotaInfo) {
     log.info("定额信息新增参数{" + quotaInfo != null ? quotaInfo.toString() : "null" + "}");
@@ -72,7 +75,10 @@ public class QuotaInfoController {
           + "  \"industryName\": \"行业名称\",\n"
           + "  \"parentId\": \"上级行业id\",\n"
           + "  \"quotaUnit\": \"定额单位\",\n"
-          + "  \"quotaValue\":\"定额值,float\",\n"
+          + "  \"quotaValue\":\"定额标准单位值,float\",\n"
+          + "  \"commonValue\":\"定额通用值,float\",\n"
+          + "  \"quotaRate\":\"综合利用率,float\",\n"
+          + "  \"timeParam\":\"时间参数，标准单位为天：365，标准单位为年：1\",\n"
           + "  \"remark\": \"备注\"\n"
           + "}")@RequestBody QuotaInfo quotaInfo) {
     log.info("修改==== 参数{" + quotaInfo != null ? quotaInfo.toString() : "null" + "}");

@@ -11,6 +11,9 @@
     <result column="product" property="product" jdbcType="VARCHAR"/>
     <result column="quota_unit" property="quotaUnit" jdbcType="VARCHAR"/>
     <result column="quota_value" property="quotaValue" jdbcType="FLOAT"/>
+    <result column="common_value" property="commonValue" jdbcType="FLOAT"/>
+    <result column="quota_rate" property="quotaRate" jdbcType="FLOAT"/>
+    <result column="time_param" property="timeParam" jdbcType="INTEGER"/>
     <result column="amount" property="amount" jdbcType="FLOAT"/>
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
   </resultMap>
