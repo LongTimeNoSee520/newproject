@@ -253,27 +253,27 @@ public class PlanDailyAdjustmentServiceImpl extends
         if(year){//在年计划上增加
           /**只设置年计划,4个季度都是0*/
           useWaterPlanAdd.setCurYearPlan(addNumber);
-        }else {//选择了在某个季度增加且没有勾选年计划，则修改这个季度的水量
+        }else {//选择了在某个季度且没有勾选年计划，则默认将增加的水量加到这个季度
           switch (quarter) {
             case 1:
               useWaterPlanAdd.setFirstQuarter(addNumber);
               useWaterPlanAdd.setCurYearPlan(addNumber);
-              useWaterPlanAdd.setChangeQuarter("1季度");
+              useWaterPlanAdd.setChangeQuarter("1");
               break;
             case 2:
               useWaterPlanAdd.setSecondQuarter(addNumber);
               useWaterPlanAdd.setCurYearPlan(addNumber);
-              useWaterPlanAdd.setChangeQuarter("2季度");
+              useWaterPlanAdd.setChangeQuarter("2");
               break;
             case 3:
               useWaterPlanAdd.setThirdQuarter(addNumber);
               useWaterPlanAdd.setCurYearPlan(addNumber);
-              useWaterPlanAdd.setChangeQuarter("3季度");
+              useWaterPlanAdd.setChangeQuarter("3");
               break;
             case 4:
               useWaterPlanAdd.setFourthQuarter(addNumber);
               useWaterPlanAdd.setCurYearPlan(addNumber);
-              useWaterPlanAdd.setChangeQuarter("4季度");
+              useWaterPlanAdd.setChangeQuarter("4");
               break;
           }
         }
@@ -323,8 +323,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     wrapper.eq("node_code", useWaterPlanAdd.getNodeCode());
     wrapper.eq("unit_code", useWaterPlanAdd.getUnitCode());
     wrapper.eq("plan_year", useWaterPlanAdd.getPlanYear());
-    List<UseWaterPlan> useWaterPlans =this.selectList(wrapper);//实际上只有一条数据
-    UseWaterPlan useWaterPlan = useWaterPlans.get(0);
+    UseWaterPlan useWaterPlan = this.selectOne(wrapper);
     /**如果有未完成流程的办结单，则不允许操作*/
     if("1".equals(useWaterPlan.getExistSettlementForm())){
       response.recordError("计划存在未完成的办结单");
@@ -411,7 +410,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     Double fourthQuarter = jsonObject.getDouble("fourthQuarter");
     Double firstWater = jsonObject.getDouble("firstWater");
     Double secondWater = jsonObject.getDouble("secondWater");
-    String quarter = jsonObject.getString("quarter");//调整季度
+    String quarter = jsonObject.getString("quarter");//季度
     String opinions = jsonObject.getString("opinions");//意见
     List<String> auditFileIds = jsonObject.getJSONArray("auditFileIds").toJavaList(String.class);
     List<String> waterProofFileIds = jsonObject.getJSONArray("waterProofFileIds").toJavaList(String.class);
@@ -423,8 +422,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     wrapper.eq("node_code", user.getNodeCode());
     wrapper.eq("unit_code", unitCode);
     wrapper.eq("plan_year", planYear);
-    List<UseWaterPlan> useWaterPlans =this.selectList(wrapper);//实际上只有一条数据
-    UseWaterPlan useWaterPlan = useWaterPlans.get(0);
+    UseWaterPlan useWaterPlan = this.selectOne(wrapper);
      /**有则不让在发起*/
     if(null !=useWaterPlan && "1".equals(useWaterPlan.getExistSettlementForm())){
       response.recordError("该计划已存在未完成的办结单");

@@ -109,7 +109,7 @@ public class PlanDailyAdjustmentController {
           + "\"secondWater\":第二水量 数字,\n"
           + "\"addWay\": \"加计划的方式：1-平均，2-最高\",\n"
           + "\"quarter\": 选择的季度 数字,\n"
-          + "\"year\": \"是否在年计划上增加 0否，1是\"\n"
+          + "\"year\": \"是否勾选年计划 0否，1是\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("获取计算后的增加水量 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
@@ -272,7 +272,24 @@ public class PlanDailyAdjustmentController {
   @RequestMapping(value = "initiateSettlement'", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "发起办结单")
   public ApiResponse initiateSettlement(@RequestHeader("token") String token,
-      @ApiParam("") @RequestBody JSONObject jsonObject) {
+      @ApiParam("{\n"
+          + "\"unitCode\": \"单位编号\",\n"
+          + "\"unitName\": \"单位名称\",\n"
+          + "\"waterMeterCode\": \"水表档案号\",\n"
+          + "\"planYear\": \"年份 数字\",\n"
+          + "\"paperType\": \"申报类型\",\n"
+          + "\"firstQuarter\": \"一季度水量 数字\",\n"
+          + "\"secondQuarter\": \"二季度水量 数字\",\n"
+          + "\"thirdQuarter\": \"三季度水量 数字\",\n"
+          + "\"fourthQuarter\":\"四季度水量 数字\",\n"
+          + "\"firstWater\":\"第一水量\",\n"
+          + "\"secondWater\":\"第二水量\",\n"
+          + "\"quarter\":\"季度\",\n"
+          + "\"opinions\":\"具体意见\",\n"
+          + "\"auditFileIds\":[\"审批申请附件id列表\"], \n"
+          + "\"waterProofFileIds\":[\"近2月水量凭证附件id列表\"], \n"
+          + "\"otherFileIds\":[\"其他证明材料id列表\"]   \n"
+          + "}") @RequestBody JSONObject jsonObject) {
     log.info("发起办结单==== 参数{" + jsonObject.toJSONString()+ "}");
     ApiResponse response = new ApiResponse();
     if (null != jsonObject) {

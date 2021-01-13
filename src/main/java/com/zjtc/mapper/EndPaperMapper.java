@@ -21,4 +21,6 @@ public interface EndPaperMapper extends BaseMapper<EndPaper> {
   int queryNum(Map<String, Object> map);
 
   List<EndPaperVO> queryPage(Map<String, Object> map);
+  /**更新*/
+  void update(Map<String, Object> map);
 }

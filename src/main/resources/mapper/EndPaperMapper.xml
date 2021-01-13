@@ -113,6 +113,9 @@
 		<if test="unitName != null and unitName != ''">
 			and unit_name like '%${unitName}%'
 		</if>
+		<if test="executed != null and executed != ''">
+			and executed = #{executed}
+		</if>
 		<if test="waterMeterCode != null and waterMeterCode != ''">
 			and water_meter_code like '%${waterMeterCode}%'
 		</if>
@@ -160,6 +163,9 @@
 		</if>
 		<if test="unitName != null and unitName != ''">
 			and unit_name like '%${unitName}%'
+		</if>
+		<if test="executed != null and executed != ''">
+			and executed = #{executed}
 		</if>
 		<if test="waterMeterCode != null and waterMeterCode != ''">
 			and water_meter_code like '%${waterMeterCode}%'
@@ -220,4 +226,17 @@
 		and SUBSTRING(','+a.other_file_id,number,1)=','
 		) <!--将逗号隔开的字符串拆分为行-->
 	</select>
+	<update id="update">
+		update t_w_end_paper
+		<set>
+			<if test="firstWater != null"> first_water= #{firstWater},</if>
+			<if test="secondWater != null">second_water = #{secondWater},</if>
+			<if test="addWay != null and addWay != ''">add_way = #{addWay},</if>
+			<if test="quarter != null and quarter != ''">quarter = #{quarter},</if>
+			<if test="addNumber != null">add_number = #{addNumber},</if>
+			<if test="addNumber != null">cur_year_plan = #{addNumber},</if> <!--增加水量也赋值给年计划，回填数据-->
+			<if test="algorithmRules != null and algorithmRules != ''">algorithm_rules = #{algorithmRules}</if>
+		</set>
+		where id = #{id}
+	</update>
 </mapper>

@@ -45,6 +45,7 @@ public class SettlementFormManageController {
           + " \"size\":\"每页条数,数字类型\" ,\n"
           + " \"unitCode\":\"单位编号\",\n"
           + " \"unitName\":\"单位名称\",\n"
+          + " \"executed\":\"是否已执行0否1是\",\n"
           + " \"waterMeterCode\":\"水表档案号\",\n"
           + " \"applyTimeStart\":\"申请时间起始\",\n"
           + " \"applyTimeEnd\":\"申请时间截止\"\n"
@@ -69,7 +70,9 @@ public class SettlementFormManageController {
   @RequestMapping(value = "cancelSettlement", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "撤销")
   public ApiResponse cancelSettlement(@RequestHeader("token") String token,
-      @ApiParam("") @RequestBody JSONObject jsonObject) {
+      @ApiParam("{\n"
+          + "  \"ids\":[\"办结单id列表\"]\n"
+          + "}") @RequestBody JSONObject jsonObject) {
     log.info("撤销 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
     if (null != jsonObject) {
@@ -87,6 +90,59 @@ public class SettlementFormManageController {
       }
     } else {
       response.recordError("撤销参数不能为空");
+    }
+    return response;
+  }
+
+  @RequestMapping(value = "examineSettlement", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "办结单审核")
+  public ApiResponse examineSettlement(@RequestHeader("token") String token,
+      @ApiParam("{\"id\":\"id\",\n"
+          + " \"firstWater\":\"第一水量,数字\" ,\n"
+          + " \"secondWater\":\"第二水量,数字\",\n"
+          + " \"addWay\":\"加计划的方式：1-平均，2-最高\",\n"
+          + " \"quarter\":\"季度，数字\",\n"
+          + " \"year\":\"是否勾选年计划 0否，1是\",\n"
+          + " \"addNumber\":\"增加水量，数字\",\n"
+          + " \"opinions\":\"审核意见\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("办结单审核 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        User user = jwtUtil.getUserByToken(token);
+         endPaperService.examineSettlement(user, jsonObject);
+      } catch (Exception e) {
+        log.error("办结单审核失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("办结单审核参数不能为空");
+    }
+    return response;
+  }
+  @RequestMapping(value = "executeSettlement", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "办结单执行")
+  public ApiResponse executeSettlement(@RequestHeader("token") String token,
+      @ApiParam("{\"id\":\"id\",\n"
+          + "\"curYearPlan\":\"年计划,数字\",\n"
+          + "\"firstQuarter\": 第一季度水量 数字,\n"
+          + "\"secondQuarter\": 第二季度水量 数字,\n"
+          + "\"thirdQuarter\": 第三季度水量 数字,\n"
+          + "\"fourthQuarter\": 第四季度水量 数字\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("办结单执行 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        User user = jwtUtil.getUserByToken(token);
+        response =endPaperService.executeSettlement(user, jsonObject);
+      } catch (Exception e) {
+        log.error("办结单执行失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("办结单执行参数不能为空");
     }
     return response;
   }
