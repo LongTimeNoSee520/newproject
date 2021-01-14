@@ -43,6 +43,7 @@
   </resultMap>
   <select id="initPlanOld" resultType="java.util.LinkedHashMap">
     SELECT
+    id=null,
      waterMeterCode =STUFF (
     ( SELECT ',' + water_meter_code  FROM t_w_use_water_unit_meter WHERE use_water_unit_id =
     t1.id FOR XML PATH ( '' ) ),
@@ -53,7 +54,7 @@
     t1.id AS useWaterUnitId ,
     t1.unit_code as unitCode,
     t1.unit_name as unitName,
-    t2.baseWaterAmount,
+    baseWaterAmount=isnull(t2.baseWaterAmount,0),
     t3.beforeLastYearWaterAmount,
     t4.lastYearWaterAmount,
     nextYearQuotaStartPlan=isnull(t9.nextYearQuotaStartPlan,0),
@@ -65,7 +66,7 @@
     printed=0,
     anded=0,
     assessQuarter=0,
-    t2.nowPrice,
+    isnull(t2.nowPrice,0) as nowPrice,
     planYear=#{year},
     isNull(t5.cur_year_plan,0) as curYearPlan,
     isNull(t5.curYearBasePlan,0) as curYearBasePlan ,
@@ -226,6 +227,7 @@
     three_year_avg as threeYearAvg,
     now_price as nowPrice,
     n8 as n8,
+    sign ,
     minus_pay_status As minusPayStatus,
     balance_test as balanceTest,
     create_type as createType,
