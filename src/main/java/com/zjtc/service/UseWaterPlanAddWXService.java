@@ -33,13 +33,16 @@ public interface UseWaterPlanAddWXService extends IService<UseWaterPlanAddWX> {
   /**
    * 审核计划调整申请
    *
-   * @param auditPersonId 审核人id
-   * @param userName      用户名
-   * @param id            审核信息id
-   * @param auditStatus   审核状态
-   * @param auditResult   审核结果
+   * @param auditPersonId    审核人id
+   * @param userName         用户名
+   * @param id               审核信息id
+   * @param auditStatus      审核状态
+   * @param auditResult      审核结果
+   * @param firstWater       第一水量
+   * @param secondWater      第二水量
+   * @param checkAdjustWater 核定调整水量
    * @return 响应结果
    */
   ApiResponse audit(String auditPersonId, String userName, String id, String auditStatus,
-      String auditResult);
+      String auditResult, Double firstWater, Double secondWater, Double checkAdjustWater);
 }

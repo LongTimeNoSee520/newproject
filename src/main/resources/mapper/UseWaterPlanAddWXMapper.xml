@@ -30,7 +30,7 @@
     <result column="audit_result" property="auditResult" jdbcType="VARCHAR"/>
     <result column="executed" property="executed" jdbcType="VARCHAR"/>
     <result column="printed" property="printed" jdbcType="VARCHAR"/>
-    <result column="check_adjust_water" property="checkAdjustWater" jdbcType="VARCHAR"/>
+    <result column="check_adjust_water" property="checkAdjustWater" jdbcType="DOUBLE"/>
     <result column="first_quarter_quota" property="firstQuarterQuota" jdbcType="DOUBLE"/>
     <result column="second_quarter_quota" property="secondQuarterQuota" jdbcType="DOUBLE"/>
     <result column="third_quarter_quota" property="thirdQuarterQuota" jdbcType="DOUBLE"/>
@@ -74,7 +74,7 @@
     <result column="audit_result" property="auditResult" jdbcType="VARCHAR"/>
     <result column="executed" property="executed" jdbcType="VARCHAR"/>
     <result column="printed" property="printed" jdbcType="VARCHAR"/>
-    <result column="check_adjust_water" property="checkAdjustWater" jdbcType="VARCHAR"/>
+    <result column="check_adjust_water" property="checkAdjustWater" jdbcType="DOUBLE"/>
     <result column="first_quarter_quota" property="firstQuarterQuota" jdbcType="DOUBLE"/>
     <result column="second_quarter_quota" property="secondQuarterQuota" jdbcType="DOUBLE"/>
     <result column="third_quarter_quota" property="thirdQuarterQuota" jdbcType="DOUBLE"/>
@@ -319,7 +319,10 @@
     audit_person = #{ userName },
     audit_status = #{ auditStatus },
     audit_result = #{ auditResult },
-    audit_time = #{ auditTime }
+    audit_time = #{ auditTime },
+    first_water = #{firstWater},
+    second_water = #{secondWater},
+    check_adjust_water = #{checkAdjustWater}
     WHERE
     id = #{ id}
   </update>

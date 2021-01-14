@@ -182,7 +182,7 @@ public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
    */
   @ApiModelProperty("核定调整计划")
   @TableField(value = "check_adjust_water", exist = true)
-  private String checkAdjustWater;
+  private Double checkAdjustWater;
   /**
    *
    */

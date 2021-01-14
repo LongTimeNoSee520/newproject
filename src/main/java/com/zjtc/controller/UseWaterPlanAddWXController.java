@@ -125,8 +125,14 @@ public class UseWaterPlanAddWXController {
 //    审核状态(0:为审核,1:审核不通过,2:审核通过)
     String auditStatus = jsonObject.getString("auditStatus");
     String auditResult = jsonObject.getString("auditResult");
+//    第一水量
+    Double firstWater = jsonObject.getDouble("firstWater");
+//    第二水量
+    Double secondWater = jsonObject.getDouble("secondWater");
+//    核定调整水量
+    Double checkAdjustWater = jsonObject.getDouble("checkAdjustWater");
     try {
-      response = useWaterPlanAddWXService.audit(user.getId(),user.getUsername(),id,auditStatus,auditResult);
+      response = useWaterPlanAddWXService.audit(user.getId(),user.getUsername(),id,auditStatus,auditResult,firstWater,secondWater,checkAdjustWater);
       return response;
     } catch (Exception e) {
       response.setCode(500);

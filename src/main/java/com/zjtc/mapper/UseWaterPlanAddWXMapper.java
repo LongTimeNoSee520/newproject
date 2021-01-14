@@ -69,11 +69,14 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
   /**
    * 审核调整申请
    *
-   * @param auditPersonId 审核人id
-   * @param userName      审核人
-   * @param id            审核信息id
-   * @param auditStatus   审核状态
-   * @param auditResult   审核结果
+   * @param auditPersonId    审核人id
+   * @param userName         审核人
+   * @param id               审核信息id
+   * @param auditStatus      审核状态
+   * @param auditResult      审核结果
+   * @param firstWater       第一水量
+   * @param secondWater      第二水量
+   * @param checkAdjustWater 核定调整水量
    * @return 响应行数
    */
   int updateAudit(
@@ -82,5 +85,9 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
       @Param("id") String id,
       @Param("auditStatus") String auditStatus,
       @Param("auditResult") String auditResult,
-      @Param("auditTime") Date auditTime);
+      @Param("auditTime") Date auditTime,
+      @Param("firstWater") Double firstWater,
+      @Param("secondWater") Double secondWater,
+      @Param("checkAdjustWater") Double checkAdjustWater
+  );
 }

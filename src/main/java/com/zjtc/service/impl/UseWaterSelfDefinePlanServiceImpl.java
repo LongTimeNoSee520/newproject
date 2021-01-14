@@ -199,12 +199,11 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       wrapper1.eq("node_code", useWaterSelfDefinePlan.getNodeCode());
       wrapper1.eq("unit_code", useWaterSelfDefinePlan.getUnitCode());
       wrapper1.eq("plan_year", useWaterSelfDefinePlan.getPlanYear());
-      List<UseWaterPlan> useWaterPlans = useWaterPlanService.selectList(wrapper1);//实际上只有一条数据
-      if (useWaterPlans.isEmpty()) {
+      UseWaterPlan useWaterPlanModel = useWaterPlanService.selectOne(wrapper1);//实际上只有一条数据
+      if (null == useWaterPlanModel) {
         response.recordError("系统异常,操作失败");
         return response;
       }
-      UseWaterPlan useWaterPlanModel = useWaterPlans.get(0);
       if (useWaterPlanModel.getCurYearPlan()
           != useWaterSelfDefinePlan.getFirstQuarter() + useWaterSelfDefinePlan.getSecondQuarter()
           + useWaterSelfDefinePlan.getThirdQuarter() + useWaterSelfDefinePlan.getFourthQuarter()) {
