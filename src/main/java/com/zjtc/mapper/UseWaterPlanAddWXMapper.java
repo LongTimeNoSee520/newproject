@@ -102,7 +102,7 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
    * @param fourthQuarterQuota 第四季度计划（定额）
    *
    */
-  int updateAuditStatus(
+  int update(
       @Param("id") String id,
       @Param("auditStatus") String auditStatus,
       @Param("executed") String executed,

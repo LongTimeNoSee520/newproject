@@ -57,5 +57,5 @@ public interface UseWaterPlanAddWXService extends IService<UseWaterPlanAddWX> {
    * @param fourthQuarterQuota 第四季度计划（定额）
    * @return 修改是否成功
    */
-  boolean updateAuditStatus(String id,String auditStatus,String executed,Double checkAdjustWater,Double firstQuarterQuota,Double secondQuarterQuota, Double thirdQuarterQuota,Double fourthQuarterQuota);
+  boolean update(String id,String auditStatus,String executed,Double checkAdjustWater,Double firstQuarterQuota,Double secondQuarterQuota, Double thirdQuarterQuota,Double fourthQuarterQuota);
 }

@@ -376,7 +376,7 @@
     id = #{ id}
   </update>
 
-  <update id="updateAuditStatus">
+  <update id="update">
     update t_wx_use_water_plan_add
     <set>
     <if test="executed != null and executed != ''">
