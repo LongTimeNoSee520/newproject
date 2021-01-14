@@ -87,10 +87,10 @@
     <result column="FrontPlanYear" property="FrontPlanYear" jdbcType="INTEGER"/>
     <collection property="auditFileId" ofType="com.zjtc.model.File" column="id"
       select="queryAuditFiles">
-        </collection>
+    </collection>
     <collection property="waterProofFileId" ofType="com.zjtc.model.File" column="id"
       select="queryWaterProofFiles">
-      </collection>
+    </collection>
     <collection property="otherFileId" ofType="com.zjtc.model.File" column="id"
       select="queryOtherFiles">
     </collection>
@@ -107,6 +107,47 @@
     <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
     <result column="business_id" property="businessId" jdbcType="VARCHAR"/>
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+  </resultMap>
+
+
+  <resultMap id="BaseResultMap" type="com.zjtc.model.EndPaper">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="paper_type" property="paperType" jdbcType="VARCHAR"/>
+    <result column="data_sources" property="dataSources" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="creater_id" property="createrId" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="change_quarter" property="changeQuarter" jdbcType="VARCHAR"/>
+    <result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+    <result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
+    <result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
+    <result column="add_number" property="addNumber" jdbcType="DOUBLE"/>
+    <result column="add_way" property="addWay" jdbcType="VARCHAR"/>
+    <result column="minus_pay_status" property="minusPayStatus" jdbcType="VARCHAR"/>
+    <result column="balance_test" property="balanceTest" jdbcType="VARCHAR"/>
+    <result column="create_type" property="createType" jdbcType="VARCHAR"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="confirmed" property="confirmed" jdbcType="VARCHAR"/>
+    <result column="confirm_time" property="confirmTime" jdbcType="TIMESTAMP"/>
+    <result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
+    <result column="executed" property="executed" jdbcType="VARCHAR"/>
+    <result column="execute_time" property="executeTime" jdbcType="TIMESTAMP"/>
+    <result column="executor" property="executor" jdbcType="VARCHAR"/>
+    <result column="executor_id" property="executorId" jdbcType="VARCHAR"/>
+    <result column="audit_file_id" property="auditFileId" jdbcType="VARCHAR"/>
+    <result column="water_proof_file_id" property="waterProofFileId" jdbcType="VARCHAR"/>
+    <result column="other_file_id" property="otherFileId" jdbcType="VARCHAR"/>
+    <result column="algorithm_rules" property="algorithmRules" jdbcType="VARCHAR"/>
+    <result column="creater_name" property="createrName" jdbcType="VARCHAR"/>
+    <result column="result" property="result" jdbcType="VARCHAR"/>
   </resultMap>
 
 
@@ -145,12 +186,17 @@
     second_quarter_quota,
     third_quarter_quota,
     fourth_quarter_quota,
-    (select t2.plan_year FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontPlanYear, --当前年度
-    (select t2.first_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontFirstQuarter, --当前第一季度
-    (select t2.second_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontSecondQuarter, --当前第二季度
-    (select t2.third_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontThirdQuarter, --当前第三季度
-    (select t2.fourth_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontFourthQuarter, --当前第四季度
-    (select t2.cur_year_plan FROM t_w_use_water_plan t2 WHERE t1.id = t2.id  ) as FrontCurYearPlan, --当前年计划
+    (select t2.plan_year FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as FrontPlanYear, --当前年度
+    (select t2.first_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as FrontFirstQuarter,
+    --当前第一季度
+    (select t2.second_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as
+    FrontSecondQuarter, --当前第二季度
+    (select t2.third_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as FrontThirdQuarter,
+    --当前第三季度
+    (select t2.fourth_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as
+    FrontFourthQuarter, --当前第四季度
+    (select t2.cur_year_plan FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as FrontCurYearPlan,
+    --当前年计划
     CASE
     t1.audit_status
     WHEN '0' THEN '未执行'
@@ -231,7 +277,7 @@
     </if>
   </select>
 
-  <select id="queryAuditFiles"  resultMap="sysAttrFileMap">
+  <select id="queryAuditFiles" resultMap="sysAttrFileMap">
     SELECT
     id,
     node_code,
@@ -246,16 +292,17 @@
     WHERE deleted ='0'
     AND id
     IN (
-    SELECT  SUBSTRING(a.audit_file_id,number,CHARINDEX(',',a.audit_file_id+',',number)-number) as audit_file_id
+    SELECT SUBSTRING(a.audit_file_id,number,CHARINDEX(',',a.audit_file_id+',',number)-number) as
+    audit_file_id
     from (SELECT audit_file_id
     FROM t_wx_use_water_plan_add
     WHERE id = #{id} ) a,master..spt_values
-    where number >= 1 and number  &lt; len(a.audit_file_id)
+    where number >= 1 and number &lt; len(a.audit_file_id)
     and type='p'
     and SUBSTRING(','+a.audit_file_id,number,1)=','
     ) <!--将逗号隔开的字符串拆分为行-->
   </select>
-  <select id="queryWaterProofFiles"  resultMap="sysAttrFileMap">
+  <select id="queryWaterProofFiles" resultMap="sysAttrFileMap">
     SELECT
     id,
     node_code,
@@ -270,16 +317,18 @@
     WHERE deleted ='0'
     AND id
     IN (
-    SELECT  SUBSTRING(a.water_proof_file_id,number,CHARINDEX(',',a.water_proof_file_id+',',number)-number) as water_proof_file_id
+    SELECT
+    SUBSTRING(a.water_proof_file_id,number,CHARINDEX(',',a.water_proof_file_id+',',number)-number)
+    as water_proof_file_id
     from (SELECT water_proof_file_id
     FROM t_wx_use_water_plan_add
     WHERE id = #{id} ) a,master..spt_values
-    where number >= 1 and number  &lt; len(a.water_proof_file_id)
+    where number >= 1 and number &lt; len(a.water_proof_file_id)
     and type='p'
     and SUBSTRING(','+a.water_proof_file_id,number,1)=','
     ) <!--将逗号隔开的字符串拆分为行-->
   </select>
-  <select id="queryOtherFiles"  resultMap="sysAttrFileMap">
+  <select id="queryOtherFiles" resultMap="sysAttrFileMap">
     SELECT
     id,
     node_code,
@@ -294,20 +343,21 @@
     WHERE deleted ='0'
     AND id
     IN (
-    SELECT  SUBSTRING(a.other_file_id,number,CHARINDEX(',',a.other_file_id+',',number)-number) as other_file_id
+    SELECT SUBSTRING(a.other_file_id,number,CHARINDEX(',',a.other_file_id+',',number)-number) as
+    other_file_id
     from (SELECT other_file_id
     FROM t_wx_use_water_plan_add
     WHERE id = #{id} ) a,master..spt_values
-    where number >= 1 and number  &lt; len(a.other_file_id)
+    where number >= 1 and number &lt; len(a.other_file_id)
     and type='p'
     and SUBSTRING(','+a.other_file_id,number,1)=','
     ) <!--将逗号隔开的字符串拆分为行-->
   </select>
 
 
-  <update id="updatePrinted" >
+  <update id="updatePrinted">
     update t_wx_use_water_plan_add set
-      printed = '1'
+    printed = '1'
     WHERE id = #{id}
   </update>
 
@@ -321,10 +371,44 @@
     audit_result = #{ auditResult },
     audit_time = #{ auditTime },
     first_water = #{firstWater},
-    second_water = #{secondWater},
-    check_adjust_water = #{checkAdjustWater}
+    second_water = #{secondWater}
     WHERE
     id = #{ id}
   </update>
 
+  <update id="updateAuditStatus">
+    update t_wx_use_water_plan_add
+    <set>
+    <if test="executed != null and executed != ''">
+      executed = #{executed},
+    </if>
+    <if test="checkAdjustWater != null and checkAdjustWater != ''">
+      check_adjust_water  = #{checkAdjustWater},
+    </if>
+    <if test="firstQuarterQuota != null and firstQuarterQuota != ''">
+      first_quarter_quota = #{firstQuarterQuota},
+    </if>
+    <if test="secondQuarterQuota != null and secondQuarterQuota != ''">
+      second_quarter_quota = #{secondQuarterQuota},
+    </if>
+    <if test="thirdQuarterQuota != null and thirdQuarterQuota != ''">
+      third_quarter_quota  = #{thirdQuarterQuota},
+    </if>
+    <if test="fourthQuarterQuota != null and fourthQuarterQuota != ''">
+      fourth_quarter_quota = #{fourthQuarterQuota},
+    </if>
+    <if test="auditStatus != null and auditStatus != ''">
+      audit_status = #{auditStatus}
+    </if>
+    </set>
+    where id = #{id}
+  </update>
+
+
+  <select id="selectEndPaper" resultMap="BaseResultMap">
+    select * from t_w_end_paper
+    where node_code = #{nodeCode}
+    and unit_code = #{unitCode}
+    and plan_year = #{planYear}
+  </select>
 </mapper>

@@ -129,10 +129,8 @@ public class UseWaterPlanAddWXController {
     Double firstWater = jsonObject.getDouble("firstWater");
 //    第二水量
     Double secondWater = jsonObject.getDouble("secondWater");
-//    核定调整水量
-    Double checkAdjustWater = jsonObject.getDouble("checkAdjustWater");
     try {
-      response = useWaterPlanAddWXService.audit(user.getId(),user.getUsername(),id,auditStatus,auditResult,firstWater,secondWater,checkAdjustWater);
+      response = useWaterPlanAddWXService.audit(user.getId(),user.getUsername(),id,auditStatus,auditResult,firstWater,secondWater);
       return response;
     } catch (Exception e) {
       response.setCode(500);

@@ -1,6 +1,7 @@
 package com.zjtc.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAddWX;
 import java.util.Date;
 import java.util.List;
@@ -76,7 +77,6 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
    * @param auditResult      审核结果
    * @param firstWater       第一水量
    * @param secondWater      第二水量
-   * @param checkAdjustWater 核定调整水量
    * @return 响应行数
    */
   int updateAudit(
@@ -87,7 +87,38 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
       @Param("auditResult") String auditResult,
       @Param("auditTime") Date auditTime,
       @Param("firstWater") Double firstWater,
-      @Param("secondWater") Double secondWater,
-      @Param("checkAdjustWater") Double checkAdjustWater
+      @Param("secondWater") Double secondWater
   );
+
+  /**
+   * 修改审核 \ 执行状态,执行后增加核定水量
+   * @param id 修改的主键id
+   * @param auditStatus 审核状态
+   * @param executed 执行状态
+   * @param checkAdjustWater  核定调整计划(定额)
+   * @param firstQuarterQuota 第一季度计划（定额）
+   * @param secondQuarterQuota 第二季度计划（定额）
+   * @param thirdQuarterQuota 第三季度计划（定额）
+   * @param fourthQuarterQuota 第四季度计划（定额）
+   *
+   */
+  int updateAuditStatus(
+      @Param("id") String id,
+      @Param("auditStatus") String auditStatus,
+      @Param("executed") String executed,
+      @Param("checkAdjustWater") Double checkAdjustWater,
+      @Param("firstQuarterQuota") Double firstQuarterQuota,
+      @Param("secondQuarterQuota") Double secondQuarterQuota,
+      @Param("thirdQuarterQuota") Double thirdQuarterQuota,
+      @Param("fourthQuarterQuota") Double fourthQuarterQuota);
+
+
+  /**
+   * 查询对应数据的用水计划表信息
+   * @param nodeCode 节点编码
+   * @param unitCode 单位编码
+   * @param planYear 年份
+   * @return 用水计划表实体
+   */
+  UseWaterPlan selectEndPaper(@Param("nodeCode") String nodeCode,@Param("unitCode") String unitCode,@Param("planYear") Integer planYear);
 }
