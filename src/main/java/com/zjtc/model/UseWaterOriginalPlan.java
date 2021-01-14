@@ -113,7 +113,7 @@ public class UseWaterOriginalPlan extends Model<UseWaterOriginalPlan>{
     /**
     * 
     */
-    @ApiModelProperty("扣加价,0默认值,1奖，2罚")
+    @ApiModelProperty("扣加价,0否，1是")
     @TableField(value = "minus_pay_status",exist = true)
     private String minusPayStatus;
     /**
