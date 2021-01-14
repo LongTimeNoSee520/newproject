@@ -265,11 +265,11 @@
     AND unit_code_type IN ( SELECT unit_type_code AS unit_code_type FROM t_w_use_water_unit_role
     WHERE person_id = #{userId} )
     <!--筛选类型-->
-    <if test="null !=userType">
+    <if test="null !=userType and userType !='' ">
       and unit_code_type=#{userType}
     </if>
     <!--筛选批次-->
-    <if test="null !=unitCodeStart">
+    <if test="null !=unitCodeStart and unitCodeStart !=''">
       and unit_code_group=#{unitCodeStart}
     </if>
     ) as u on u.id=p.useWaterUnitId
@@ -431,8 +431,12 @@
     = #{year}-1 ) bp ON p.use_water_unit_id = bp.use_water_unit_id
     ) t3 ON t1.id = t3.use_water_unit_id
     left join(
-    select use_water_unit_id,sum(quota_value * amount * time_param * quota_rate) as nextYearQuotaStartPlan from t_w_use_water_quota
-    group by use_water_unit_id
+    select
+     a.use_water_unit_id,
+     sum(a.quota_value * a.amount * b.time_param * b.quota_rate) as nextYearQuotaStartPlan
+     from t_w_use_water_quota as a
+     inner join t_w_quota_info as b on a.product=b.id
+      group by a.use_water_unit_id
     ) t4 on t4.use_water_unit_id=t1.id
     order by t1.unit_code
   </select>

@@ -76,19 +76,6 @@ public class UseWaterQuota extends Model<UseWaterQuota> {
   @ApiModelProperty(value = "创建时间")
   @TableField(value = "create_time", exist = true)
   private Date createTime;
-
-  @ApiModelProperty(value = "定额通用值")
-  @TableField(value = "common_value", exist = true)
-  private Float commonValue;
-
-  @ApiModelProperty(value = "综合利用率")
-  @TableField(value = "quota_rate", exist = true)
-  private Float quotaRate;
-
-  @ApiModelProperty(value = "时间参数，标准单位为天：365，标准单位为年：1")
-  @TableField(value = "time_param", exist = true)
-  private int timeParam;
-
   @Override
   protected Serializable pkVal() {
     return null;
