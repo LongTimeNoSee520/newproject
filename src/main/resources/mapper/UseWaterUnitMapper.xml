@@ -92,8 +92,11 @@
     <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
     <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
     <result column="industry" property="industry" jdbcType="VARCHAR"/>
+    <result column="industryName" property="industryName" jdbcType="VARCHAR"/>
     <result column="sub_industry" property="subIndustry" jdbcType="VARCHAR"/>
+    <result column="subIndustryName" property="subIndustryName" jdbcType="VARCHAR"/>
     <result column="product" property="product" jdbcType="VARCHAR"/>
+    <result column="productName" property="productName" jdbcType="VARCHAR"/>
     <result column="quota_unit" property="quotaUnit" jdbcType="VARCHAR"/>
     <result column="quota_value" property="quotaValue" jdbcType="FLOAT"/>
     <result column="amount" property="amount" jdbcType="FLOAT"/>
@@ -418,8 +421,11 @@
     order by create_time desc
   </select>
   <select id="selectUseWaterQuota" resultMap="BaseResultMap_UseWaterQuota">
-    SELECT  *
-    FROM t_w_use_water_quota
+    SELECT
+    a.*,
+    (select industry_name as subIndustryName from t_w_quota_info where id=a.sub_industry)as subIndustryName,
+    (select industry_name  as productName from t_w_quota_info where id=a.product) as productName
+    FROM t_w_use_water_quota as a
     WHERE use_water_unit_id = #{id}
     and node_code=#{nodeCode}
     ORDER BY create_time desc
