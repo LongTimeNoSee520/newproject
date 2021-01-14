@@ -37,17 +37,29 @@ public class UseWaterQuota extends Model<UseWaterQuota> {
   @TableField(value = "use_water_unit_id", exist = true)
   private String useWaterUnitId;
 
-  @ApiModelProperty(value = "所属行业")
+  @ApiModelProperty(value = "所属行业id")
   @TableField(value = "industry", exist = true)
   private String industry;
 
-  @ApiModelProperty(value = "行业名称")
+  @ApiModelProperty(value = "所属行业名称")
+  @TableField(value = "industry_name", exist = false)
+  private String industry_name;
+
+  @ApiModelProperty(value = "行业id")
   @TableField(value = "sub_industry", exist = true)
   private String subIndustry;
 
-  @ApiModelProperty(value = "产品")
+  @ApiModelProperty(value = "行业名称")
+  @TableField(value = "sub_industry_name", exist = true)
+  private String subIndustryName;
+
+  @ApiModelProperty(value = "产品id")
   @TableField(value = "product", exist = true)
   private String product;
+
+  @ApiModelProperty(value = "产品id")
+  @TableField(value = "product_name", exist = true)
+  private String productName;
 
   @ApiModelProperty(value = "定额单位")
   @TableField(value = "quota_unit", exist = true)

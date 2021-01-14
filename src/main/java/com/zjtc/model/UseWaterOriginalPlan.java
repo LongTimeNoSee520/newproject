@@ -242,6 +242,12 @@ public class UseWaterOriginalPlan extends Model<UseWaterOriginalPlan>{
     @ApiModelProperty("是否新增(户)")
     @TableField(value = "added",exist = true)
     private String added;
+    /**
+     *
+     */
+    @ApiModelProperty("基础计划大于，定额计划的标识")
+    @TableField(value = "sign",exist = true)
+    private String sign;
 	/**
 	 * 实例化
 	 */

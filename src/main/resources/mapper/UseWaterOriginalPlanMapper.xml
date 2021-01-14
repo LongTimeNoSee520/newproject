@@ -56,6 +56,7 @@
     t2.baseWaterAmount,
     t3.beforeLastYearWaterAmount,
     t4.lastYearWaterAmount,
+    nextYearQuotaStartPlan=isnull(t9.nextYearQuotaStartPlan,0),
     algorithmType=0,
     minusPayStatus=0,
     balanceTest=0,
@@ -191,6 +192,10 @@
     <!--原始表中上一年能查到的单位，为老户-->
     inner join (select use_water_unit_id from t_w_use_water_original_plan where
     node_code=#{nodeCode} and plan_year=#{year}-1 ) t8 on t1.id =t8.use_water_unit_id
+    left join(
+      select use_water_unit_id,sum(quota_value * amount * time_param * quota_rate) as nextYearQuotaStartPlan from t_w_use_water_quota
+      group by use_water_unit_id
+    ) t9 on t9.use_water_unit_id=t1.id
     ,
     (select * from t_w_algorithm where
     node_code=#{nodeCode} and algorithm_type='1' ) t6
@@ -368,7 +373,8 @@
     ISNULL(t2.nowPrice,0) as nowPrice,
     t3.cur_year_plan as curYearPlan,
     t3.curYearBasePlan,
-    threeYearAvg = isnull( t2.baseWaterAmount * 2, 0 )
+    threeYearAvg = isnull( t2.baseWaterAmount * 2, 0 ),
+    nextYearQuotaStartPlan=isnull(t4.nextYearQuotaStartPlan,0)
     from
 
     (
@@ -424,6 +430,11 @@
     LEFT JOIN ( SELECT cur_year_plan, use_water_unit_id FROM t_w_use_water_base_plan WHERE plan_year
     = #{year}-1 ) bp ON p.use_water_unit_id = bp.use_water_unit_id
     ) t3 ON t1.id = t3.use_water_unit_id
+    left join(
+    select use_water_unit_id,sum(quota_value * amount * time_param * quota_rate) as nextYearQuotaStartPlan from t_w_use_water_quota
+    group by use_water_unit_id
+    ) t4 on t4.use_water_unit_id=t1.id
+    order by t1.unit_code
   </select>
 
 </mapper>

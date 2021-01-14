@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * TWUseWaterOriginalPlan的服务接口的实现类
  *
- * @author
+ * @author yuyantian
  */
 @Service
 public class UseWaterOriginalPlanServiceImpl extends
@@ -130,7 +130,8 @@ public class UseWaterOriginalPlanServiceImpl extends
         useWaterPlan.setFourthQuarter(item.getFourthQuarterQuota());
       }
       //自平表需要的数据
-      UseWaterSelfDefinePlan useWaterSelfDefinePlan = new UseWaterSelfDefinePlan();;
+      UseWaterSelfDefinePlan useWaterSelfDefinePlan = new UseWaterSelfDefinePlan();
+      ;
       useWaterSelfDefinePlan.setCreateTime(new Date());
       useWaterSelfDefinePlan.setAuditStatus("3");
       useWaterSelfDefinePlan.setNodeCode(useWaterPlan.getNodeCode());
@@ -271,21 +272,27 @@ public class UseWaterOriginalPlanServiceImpl extends
     list = baseMapper
         .initPlanNew(year, userId, nodeCode, ParamOne, ParamTwo, threeWaterMonth, fourWaterMonth);
     /**初始化基础算法*/
-    Algorithm algorithm = algorithmService.queryAlgorithm(nodeCode, "1");
+    Algorithm algorithmBase = algorithmService.queryAlgorithm(nodeCode, "1");
+    /**初始化定额算法*/
+    Algorithm algorithmQuota = algorithmService.queryAlgorithm(nodeCode, "2");
     if (!list.isEmpty()) {
-      double threeYearAvg;
-      double nowPrice;
-      double nextYearBaseStartPlan = 0;
-      double nextYearBaseEndPlan;
-      double firstQuarterBase;
-      double secondQuarterBase;
-      double thirdQuarterBase;
-      double fourthQuarterBase;
       //本年计划,默认等于下年终计划
       double curYearPlan;
       for (Map<String, Object> map : list) {
-        threeYearAvg = (Double) map.get("threeYearAvg");
-        nowPrice = (Double) map.get("nowPrice");
+        double nextYearBaseStartPlan = 0;
+        double nextYearBaseEndPlan;
+        double firstQuarterBase;
+        double secondQuarterBase;
+        double thirdQuarterBase;
+        double fourthQuarterBase;
+        double nextYearQuotaEndPlan = 0;
+        double firstQuarterQuota;
+        double secondQuarterQuota;
+        double thirdQuarterQuota;
+        double fourthQuarterQuota;
+        double threeYearAvg = (Double) map.get("threeYearAvg");
+        double nowPrice = (Double) map.get("nowPrice");
+        double nextYearQuotaStartPlan = (Double) map.get("nextYearQuotaStartPlan");
         String unitCode = (String) map.get("unitCode");
         //截取类型
         String unitType = unitCode.substring(0, 2);
@@ -293,50 +300,54 @@ public class UseWaterOriginalPlanServiceImpl extends
         if (threeYearAvg != 0 && nowPrice != 0) {
           /**计算下年初计划(基础)*/
           //nowPrice <= priceFloot
-          if (nowPrice <= algorithm.getPriceBottom()) {
-            nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro1();
+          if (nowPrice <= algorithmBase.getPriceBottom()) {
+            nextYearBaseStartPlan = threeYearAvg * algorithmBase.getThreeAvgPro1();
             //nowPrice > priceFloot && nowPrice <= priceUp
-          } else if (nowPrice > algorithm.getPriceBottom() && nowPrice <= algorithm.getPriceTop()) {
-            nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro2();
-          } else if (nowPrice > algorithm.getPriceTop()) {
-            nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro3();
+          } else if (nowPrice > algorithmBase.getPriceBottom() && nowPrice <= algorithmBase
+              .getPriceTop()) {
+            nextYearBaseStartPlan = threeYearAvg * algorithmBase.getThreeAvgPro2();
+          } else if (nowPrice > algorithmBase.getPriceTop()) {
+            nextYearBaseStartPlan = threeYearAvg * algorithmBase.getThreeAvgPro3();
           }
-          /**进10*/
-          if (Math.ceil(nextYearBaseStartPlan) % 10 != 0) {
-            nextYearBaseStartPlan =
-                Math.ceil(nextYearBaseStartPlan) + (10 - Math.ceil(nextYearBaseStartPlan) % 10);
-          } else {
-            nextYearBaseStartPlan = Math.ceil(nextYearBaseStartPlan);
-          }
+          /**下年初计划(基础)进10*/
+          nextYearBaseStartPlan = ceil(nextYearBaseStartPlan);
+          /**下年初计划(定额)进10*/
+          nextYearQuotaStartPlan = ceil(nextYearQuotaStartPlan);
           /**下年终计划(基础) 默认等于下年初计划(基础)*/
           nextYearBaseEndPlan = nextYearBaseStartPlan;
-          //本年计划，默认等于下年终计划
-          curYearPlan = nextYearBaseEndPlan;
+          /**下年终计划(定额) 默认等于下年初计划(定额)*/
+          nextYearQuotaEndPlan = nextYearQuotaStartPlan;
+          /**如果下年初始计划(基础)大于下年初计划(定额)，基础计划默认等于定额计划*/
+          if (nextYearBaseStartPlan > nextYearQuotaStartPlan) {
+            nextYearBaseStartPlan = nextYearQuotaStartPlan;
+            //标识
+            map.put("sign", "1");
+          }
           /**特殊类型*/
-          double nextYearPlan1;
-          double nextYearPlan2;
           if (unitType.equals("33")) {
+            //基础
             firstQuarterBase = 0;
             secondQuarterBase = Math.round(nextYearBaseEndPlan / 2);
             thirdQuarterBase = 0;
             fourthQuarterBase = secondQuarterBase;
           } else {
             /**普通类型*/
-            nextYearPlan2 = Math.round(nextYearBaseEndPlan * algorithm.getSecondQuarterPro());
+            double nextYearPlan2 = Math
+                .round(nextYearBaseEndPlan * algorithmBase.getSecondQuarterPro());
             //nextYearPlan3 = Math.round(nextYearPlan * threeQuarterApp);
-            nextYearPlan1 = Math.round((nextYearBaseEndPlan - (nextYearPlan2 * 2)) / 2);
+            double nextYearPlan1 = Math.round((nextYearBaseEndPlan - (nextYearPlan2 * 2)) / 2);
             firstQuarterBase = nextYearPlan1;
             secondQuarterBase = nextYearPlan2;
             thirdQuarterBase = nextYearPlan2;
             fourthQuarterBase = nextYearPlan1;
-            map.put("nextYearBaseStartPlan", nextYearBaseStartPlan);
-            map.put("nextYearBaseEndPlan", nextYearBaseEndPlan);
-            map.put("curYearPlan", curYearPlan);
-            map.put("firstQuarterBase", firstQuarterBase);
-            map.put("secondQuarterBase", secondQuarterBase);
-            map.put("thirdQuarterBase", thirdQuarterBase);
-            map.put("fourthQuarterBase", fourthQuarterBase);
           }
+          map.put("nextYearBaseStartPlan", nextYearBaseStartPlan);
+          map.put("nextYearBaseEndPlan", nextYearBaseEndPlan);
+          map.put("firstQuarterBase", firstQuarterBase);
+          map.put("secondQuarterBase", secondQuarterBase);
+          map.put("thirdQuarterBase", thirdQuarterBase);
+          map.put("fourthQuarterBase", fourthQuarterBase);
+
           /**三年平均为0*/
         } else if (threeYearAvg == 0) {
           map.put("nextYearBaseStartPlan", 0);
@@ -346,6 +357,31 @@ public class UseWaterOriginalPlanServiceImpl extends
           map.put("thirdQuarterBase", 0);
           map.put("fourthQuarterBase", 0);
         }
+        if (unitType.equals("33")) {
+          //定额
+          firstQuarterQuota = 0;
+          secondQuarterQuota = Math.round(nextYearQuotaEndPlan / 2);
+          thirdQuarterQuota = 0;
+          fourthQuarterQuota = secondQuarterQuota;
+        } else {
+          //定额
+          double nextYearQuotaEndPlan2 = Math
+              .round(nextYearQuotaEndPlan * algorithmQuota.getSecondQuarterPro());
+          double nextYearQuotaEndPlan1 = Math
+              .round((nextYearQuotaEndPlan - (nextYearQuotaEndPlan2 * 2)) / 2);
+          //第一季度：(下年终计划(基础)-(第二季度计划*2))/2 ;结果4舍5入
+          firstQuarterQuota = nextYearQuotaEndPlan1;
+          //第二季度：下年终计划(基础)*第二季度(用水)比例,结果4舍5入
+          secondQuarterQuota = nextYearQuotaEndPlan2;
+          thirdQuarterQuota = nextYearQuotaEndPlan2;
+          fourthQuarterQuota = nextYearQuotaEndPlan1;
+        }
+        map.put("nextYearQuotaStartPlan", nextYearQuotaStartPlan);
+        map.put("nextYearQuotaEndPlan", nextYearQuotaEndPlan);
+        map.put("firstQuarterQuota", firstQuarterQuota);
+        map.put("secondQuarterQuota", secondQuarterQuota);
+        map.put("thirdQuarterQuota", thirdQuarterQuota);
+        map.put("fourthQuarterQuota", fourthQuarterQuota);
       }
     }
     return list;
@@ -554,6 +590,33 @@ public class UseWaterOriginalPlanServiceImpl extends
   }
 
   @Override
+  public Map<String, Object> getNewByBaseWaterAmount(JSONObject jsonObject,User user) {
+    Map<String, Object> map = new HashMap<>();
+    //下年初计划
+    //价格
+    double baseWaterAmount = jsonObject.getDouble("baseWaterAmount");
+    //新户三年平均=第三年编制基础*2
+    double threeYearAvg = baseWaterAmount * 2;
+    map.put("threeYearAvg",threeYearAvg);
+    //重新计算下年初计划
+    jsonObject.put("threeYearAvg",threeYearAvg);
+    Map<String, Object> nextMap= getNewResultByThreeYearAvg(jsonObject,user);
+    map.putAll(nextMap);
+    return map;
+  }
+
+  @Override
+  public Map<String, Object> getNewByNowPrice(JSONObject jsonObject, User user) {
+    Double nowPrice=jsonObject.getDouble("nowPrice");
+    Double threeYearAvg=jsonObject.getDouble("threeYearAvg");
+    Double nextYearBaseStartPlan=jsonObject.getDouble("nextYearBaseStartPlan");
+    //重新计算下年初计划
+    Map<String,Object> map=getNewResultByThreeYearAvg(jsonObject,user);
+    //调整三年下年初计划
+    return map;
+  }
+
+  @Override
   public Map<String, Object> getNewResultByThreeYearAvg(JSONObject jsonObject, User user) {
     Map<String, Object> map = new HashMap<>();
     //水价
@@ -564,7 +627,6 @@ public class UseWaterOriginalPlanServiceImpl extends
     Algorithm algorithm = algorithmService.queryAlgorithm(user.getNodeCode(), "1");
     //下年初计划初始值
     double nextYearBaseStartPlan = jsonObject.getDouble("nextYearBaseStartPlan");
-    double nextYearBaseEndPlan = nextYearBaseStartPlan;
     /**'下年初始计划"需按照"如“三年平均水量”大于0且本年计划等于0"的公式重新重新计算*/
     /**2.计算下年初始计划(基础)*/
     /**2.1. nowPrice <= priceFloot*/
@@ -585,7 +647,7 @@ public class UseWaterOriginalPlanServiceImpl extends
       nextYearBaseStartPlan = Math.ceil(nextYearBaseStartPlan);
     }
     /**4.下年终计划(基础)：默认等于下年初始计划(基础)*/
-    nextYearBaseEndPlan = nextYearBaseStartPlan;
+    double nextYearBaseEndPlan = nextYearBaseStartPlan;
     map.put("nextYearBaseStartPlan", nextYearBaseStartPlan);
     map.put("nextYearBaseEndPlan", nextYearBaseEndPlan);
     /**5.重新计算各季度水量*/
@@ -608,50 +670,54 @@ public class UseWaterOriginalPlanServiceImpl extends
     /**初始化编制算法返回的数据*/
     List<Map<String, Object>> list = baseMapper
         .initPlanOld(year, userType, unitCodeStart, userId, nodeCode);
-    /**初始化算法*/
-    Algorithm algorithm = algorithmService.queryAlgorithm(nodeCode, "1");
+    /**初始化算法(基础)*/
+    Algorithm algorithmBase = algorithmService.queryAlgorithm(nodeCode, "1");
+    /**初始化算法(定额)*/
+    Algorithm algorithmQuota = algorithmService.queryAlgorithm(nodeCode, "1");
     if (!list.isEmpty()) {
+      //当年年计划
+      double curYearPlan;
+      //当年基建计划
+      double curYearBasePlan;
+      //第三年编制基础
+      double baseWaterAmount;
+      //三年平均
+      double threeYearAvg;
+      //水价
+      double nowPrice;
+      //n8
+      double n8;
+      //下年初始计划(基础)
+      double nextYearBaseStartPlan = 0;
+      //下年终计划(基础)
+      double nextYearBaseEndPlan;
+      //下年初始计划(定额)
+      double nextYearQuotaStartPlan;
+      //下年终计划(定额)
+      double nextYearQuotaEndPlan;
+      //第一季度(基础)
+      double firstQuarterBase;
+      //第二季度(基础)
+      double secondQuarterBase;
+      //第三季度(基础)
+      double thirdQuarterBase;
+      //第四季度(基础)
+      double fourthQuarterBase;
+      //第一季度(定额)
+      double firstQuarterQuota;
+      //第二季度(定额)
+      double secondQuarterQuota;
+      //第三季度(定额)
+      double thirdQuarterQuota;
+      //第四季度(定额)
+      double fourthQuarterQuota;
       for (Map<String, Object> map : list) {
-        //当年年计划
-        double curYearPlan = (Double) map.get("curYearPlan");
-        //当年基建计划
-        double curYearBasePlan = (Double) map.get("curYearBasePlan");
-        //第三年编制基础
-        double baseWaterAmount = (Double) map.get("baseWaterAmount");
-        //第二年
-        double beforeLastYearWaterAmount = (Double) map.get("beforeLastYearWaterAmount");
-        //第一年
-        double lastYearWaterAmount = (Double) map.get("lastYearWaterAmount");
-        //三年平均
-        double threeYearAvg = (Double) map.get("threeYearAvg");
-        //水价
-        double nowPrice = (Double) map.get("nowPrice");
-        //n8
-        double n8;
-        //下年初始计划(基础)
-        double nextYearBaseStartPlan = 0;
-        //下年终计划(基础)
-        double nextYearBaseEndPlan;
-        //下年初始计划(定额)
-        double nextYearQuotaStartPlan;
-        //下年终计划(定额)
-        double nextYearQuotaEndPlan;
-        //第一季度(基础)
-        double firstQuarterBase;
-        //第二季度(基础)
-        double secondQuarterBase;
-        //第三季度(基础)
-        double thirdQuarterBase;
-        //第四季度(基础)
-        double fourthQuarterBase;
-        //第一季度(定额)
-        double firstQuarterQuota;
-        //第二季度(定额)
-        double secondQuarterQuota;
-        //第三季度(定额)
-        double thirdQuarterQuota;
-        //第四季度(定额)
-        double fourthQuarterQuota;
+        curYearPlan = (Double) map.get("curYearPlan");
+        curYearBasePlan = (Double) map.get("curYearBasePlan");
+        baseWaterAmount = (Double) map.get("baseWaterAmount");
+        threeYearAvg = (Double) map.get("threeYearAvg");
+        nowPrice = (Double) map.get("nowPrice");
+        nextYearQuotaStartPlan = (Double) map.get("nextYearQuotaStartPlan");
         //33批次
         String unitCode = (String) map.get("unitCode");
         String unitType = unitCode.substring(2, 4);
@@ -662,24 +728,24 @@ public class UseWaterOriginalPlanServiceImpl extends
           n8 = Math.round(n8 * 100);
           /**2.计算下年初始计划(基础)*/
           /**2.1.如：N8<n8Floot */
-          if (n8 < algorithm.getN8Floot()) {
-            nextYearBaseStartPlan = threeYearAvg * algorithm.getBasePro();
-          } else if (algorithm.getN8Up() >= n8 && n8 >= algorithm
+          if (n8 < algorithmBase.getN8Floot()) {
+            nextYearBaseStartPlan = threeYearAvg * algorithmBase.getBasePro();
+          } else if (algorithmBase.getN8Up() >= n8 && n8 >= algorithmBase
               .getN8Floot()) {
             /**2.2：n8Up >= N8 && N8 >= n8Floot*/
             nextYearBaseStartPlan = curYearPlan;
-          } else if (n8 > algorithm.getN8Up()) {
-            if (nowPrice <= algorithm.getPriceBottom()) {
+          } else if (n8 > algorithmBase.getN8Up()) {
+            if (nowPrice <= algorithmBase.getPriceBottom()) {
               /**2.3：N8>n8Up && nowPrice <= priceFloot*/
-              nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro1();
-            } else if (nowPrice > algorithm.getPriceBottom() && nowPrice <= algorithm
+              nextYearBaseStartPlan = threeYearAvg * algorithmBase.getThreeAvgPro1();
+            } else if (nowPrice > algorithmBase.getPriceBottom() && nowPrice <= algorithmBase
                 .getPriceTop()) {
               /**2.4：N8>n8Up &&（nowPrice > priceFloot && nowPrice <= priceUp*/
-              nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro2();
-            } else if (nowPrice > algorithm
+              nextYearBaseStartPlan = threeYearAvg * algorithmBase.getThreeAvgPro2();
+            } else if (nowPrice > algorithmBase
                 .getPriceTop()) {
               /**2.5: N8>n8Up && nowPrice > priceUp*/
-              nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro3();
+              nextYearBaseStartPlan = threeYearAvg * algorithmBase.getThreeAvgPro3();
             }
           }
           /**3.赋值*/
@@ -690,41 +756,53 @@ public class UseWaterOriginalPlanServiceImpl extends
           /**1. n8:不计算*/
           /**2.计算下年初始计划(基础)*/
           /**2.1. nowPrice <= priceFloot*/
-          if (nowPrice <= algorithm.getPriceBottom()) {
-            nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro1();
-          } else if (nowPrice > algorithm.getPriceBottom() && nowPrice <= algorithm.getPriceTop()) {
+          if (nowPrice <= algorithmBase.getPriceBottom()) {
+            nextYearBaseStartPlan = threeYearAvg * algorithmBase.getThreeAvgPro1();
+          } else if (nowPrice > algorithmBase.getPriceBottom() && nowPrice <= algorithmBase
+              .getPriceTop()) {
             /**2.2. nowPrice > priceFloot && nowPrice <= priceUp*/
-            nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro2();
-          } else if (nowPrice > algorithm.getPriceTop()) {
+            nextYearBaseStartPlan = threeYearAvg * algorithmBase.getThreeAvgPro2();
+          } else if (nowPrice > algorithmBase.getPriceTop()) {
             /**2.3. nowPrice > priceUp*/
-            nextYearBaseStartPlan = threeYearAvg * algorithm.getThreeAvgPro3();
+            nextYearBaseStartPlan = threeYearAvg * algorithmBase.getThreeAvgPro3();
           }
           /**3.赋值*/
           map.put("n8", null);
         }
         /**4.下年初始计划(基础),如结果不能被10整除，则需进10*/
-        if (Math.ceil(nextYearBaseStartPlan) % 10 != 0) {
-          nextYearBaseStartPlan =
-              Math.ceil(nextYearBaseStartPlan) + (10 - Math.ceil(nextYearBaseStartPlan) % 10);
-        } else {
-          nextYearBaseStartPlan = Math.ceil(nextYearBaseStartPlan);
+        nextYearBaseStartPlan = ceil(nextYearBaseStartPlan);
+        /**4.下年初计划(定额)，如结果不能被10整除，则需进10*/
+        nextYearQuotaStartPlan = ceil(nextYearQuotaStartPlan);
+        /**如果下年初始计划(基础)大于下年初计划(定额)，基础计划默认等于定额计划*/
+        if (nextYearBaseStartPlan > nextYearQuotaStartPlan) {
+          nextYearBaseStartPlan = nextYearQuotaStartPlan;
+          //标识
+          map.put("sign", "1");
         }
         /**5.下年终计划(基础)：默认等于下年初始计划(基础)*/
         nextYearBaseEndPlan = nextYearBaseStartPlan;
+        /**5.下年终计划(定额)：默认等于下年初始计划(定额)*/
+        nextYearQuotaEndPlan = nextYearQuotaStartPlan;
         /**6：各季度计划*/
-        double nextYearBaseEndPlan1;
-        double nextYearBaseEndPlan2;
         /**6.1.特殊用户33批次*/
         if (unitType.equals("33")) {
+          //基础
           firstQuarterBase = 0;
           secondQuarterBase = Math.round(nextYearBaseEndPlan / 2);
           thirdQuarterBase = 0;
           fourthQuarterBase = secondQuarterBase;
+          //定额
+          firstQuarterQuota = 0;
+          secondQuarterQuota = Math.round(nextYearQuotaEndPlan / 2);
+          thirdQuarterQuota = 0;
+          fourthQuarterQuota = secondQuarterQuota;
+
         } else {
           /**6.2.正常用户*/
-          nextYearBaseEndPlan2 = Math
-              .round(nextYearBaseEndPlan * algorithm.getSecondQuarterPro());
-          nextYearBaseEndPlan1 = Math
+          //基础
+          double nextYearBaseEndPlan2 = Math
+              .round(nextYearBaseEndPlan * algorithmBase.getSecondQuarterPro());
+          double nextYearBaseEndPlan1 = Math
               .round((nextYearBaseEndPlan - (nextYearBaseEndPlan2 * 2)) / 2);
           //第一季度：(下年终计划(基础)-(第二季度计划*2))/2 ;结果4舍5入
           firstQuarterBase = nextYearBaseEndPlan1;
@@ -732,8 +810,18 @@ public class UseWaterOriginalPlanServiceImpl extends
           secondQuarterBase = nextYearBaseEndPlan2;
           thirdQuarterBase = nextYearBaseEndPlan2;
           fourthQuarterBase = nextYearBaseEndPlan1;
+          //定额
+          double nextYearQuotaEndPlan2 = Math
+              .round(nextYearQuotaEndPlan * algorithmQuota.getSecondQuarterPro());
+          double nextYearQuotaEndPlan1 = Math
+              .round((nextYearQuotaEndPlan - (nextYearQuotaEndPlan2 * 2)) / 2);
+          //第一季度：(下年终计划(基础)-(第二季度计划*2))/2 ;结果4舍5入
+          firstQuarterQuota = nextYearQuotaEndPlan1;
+          //第二季度：下年终计划(基础)*第二季度(用水)比例,结果4舍5入
+          secondQuarterQuota = nextYearQuotaEndPlan2;
+          thirdQuarterQuota = nextYearQuotaEndPlan2;
+          fourthQuarterQuota = nextYearQuotaEndPlan1;
         }
-        /**定额算法：Todo*/
         //赋值
         map.put("nextYearBaseStartPlan", nextYearBaseStartPlan);
         map.put("nextYearBaseEndPlan", nextYearBaseEndPlan);
@@ -741,6 +829,13 @@ public class UseWaterOriginalPlanServiceImpl extends
         map.put("secondQuarterBase", secondQuarterBase);
         map.put("thirdQuarterBase", thirdQuarterBase);
         map.put("fourthQuarterBase", fourthQuarterBase);
+
+        map.put("nextYearQuotaStartPlan", nextYearQuotaStartPlan);
+        map.put("nextYearQuotaEndPlan", nextYearQuotaEndPlan);
+        map.put("firstQuarterQuota", firstQuarterQuota);
+        map.put("secondQuarterQuota", secondQuarterQuota);
+        map.put("thirdQuarterQuota", thirdQuarterQuota);
+        map.put("fourthQuarterQuota", fourthQuarterQuota);
       }
     }
     return list;
@@ -762,5 +857,18 @@ public class UseWaterOriginalPlanServiceImpl extends
     wrapper.eq("plan_year", year);
     int count = useWaterPlanService.selectCount(wrapper);
     return count > 0 ? false : true;
+  }
+
+  /**
+   * 数据不能被10整除，进10的方法
+   */
+  private Double ceil(Double param) {
+    if (Math.ceil(param) % 10 != 0) {
+      param =
+          Math.ceil(param) + (10 - Math.ceil(param) % 10);
+    } else {
+      param = Math.ceil(param);
+    }
+    return param;
   }
 }

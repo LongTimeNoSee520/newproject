@@ -83,7 +83,14 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	 *新户调整"三年平均水量"时,重新计算【下年初始计划(基础)】
 	 */
 	Map<String,Object> getNewResultByThreeYearAvg(JSONObject jsonObject,User user);
-
+	/**
+	 *新户调整第三年编制基础，重新计算【三年平均水量】
+	 */
+	Map<String,Object> getNewByBaseWaterAmount(JSONObject jsonObject,User user);
+	/**
+	 *新户调整水价，重新计算"下年初计划(基础)"
+	 */
+	Map<String,Object> getNewByNowPrice(JSONObject jsonObject,User user);
 	/**
 	 * 算法调整后，删除所有未编制的数据
 	 * */
