@@ -244,6 +244,10 @@ public class  EndPaper extends Model<EndPaper>{
     @TableField(value = "result",exist = true)
     private String result;
 
+    @ApiModelProperty("计划调整微信表Id")
+    @TableField(value = "water_plan_WX_id",exist = true)
+    private String waterPlanWXId;
+
 	/**
 	 * 实例化
 	 */

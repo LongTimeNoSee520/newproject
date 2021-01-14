@@ -32,6 +32,6 @@ public class User {
   private int wrongTimes;
 
   @ApiModelProperty(value = "是否修改")
-  private String pwdEdited;
+  private String needEdited;
 
 }
