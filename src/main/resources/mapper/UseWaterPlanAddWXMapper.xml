@@ -382,20 +382,20 @@
     <if test="useWaterPlanAddWX.executed != null and useWaterPlanAddWX.executed != ''">
       executed = #{useWaterPlanAddWX.executed},
     </if>
-    <if test="checkAdjustWater != null and useWaterPlanAddWX.checkAdjustWater != ''">
-      check_adjust_water  = #{useWaterPlanAddWX.checkAdjustWater},
+    <if test="checkAdjustWater.curYearPlan != null and useWaterPlanAddWX.checkAdjustWater != ''">
+      check_adjust_water  = #{useWaterPlanAddWX.curYearPlan},
     </if>
-    <if test="useWaterPlanAddWX.firstQuarterQuota != null and useWaterPlanAddWX.firstQuarterQuota != ''">
-      first_quarter_quota = #{useWaterPlanAddWX.firstQuarterQuota},
+    <if test="useWaterPlanAddWX.firstQuarter != null and useWaterPlanAddWX.firstQuarter != ''">
+      first_quarter_quota = #{useWaterPlanAddWX.firstQuarter},
     </if>
-    <if test="useWaterPlanAddWX.secondQuarterQuota != null and useWaterPlanAddWX.secondQuarterQuota != ''">
-      second_quarter_quota = #{useWaterPlanAddWX.secondQuarterQuota},
+    <if test="useWaterPlanAddWX.secondQuarter != null and useWaterPlanAddWX.secondQuarter != ''">
+      second_quarter_quota = #{useWaterPlanAddWX.secondQuarter},
     </if>
-    <if test="useWaterPlanAddWX.thirdQuarterQuota != null and useWaterPlanAddWX.thirdQuarterQuota != ''">
-      third_quarter_quota  = #{useWaterPlanAddWX.thirdQuarterQuota},
+    <if test="useWaterPlanAddWX.thirdQuarter != null and useWaterPlanAddWX.thirdQuarter != ''">
+      third_quarter_quota  = #{useWaterPlanAddWX.thirdQuarter},
     </if>
-    <if test="useWaterPlanAddWX.fourthQuarterQuota != null and useWaterPlanAddWX.fourthQuarterQuota != ''">
-      fourth_quarter_quota = #{useWaterPlanAddWX.fourthQuarterQuota},
+    <if test="useWaterPlanAddWX.fourthQuarter != null and useWaterPlanAddWX.fourthQuarter != ''">
+      fourth_quarter_quota = #{useWaterPlanAddWX.fourthQuarter},
     </if>
     <if test="useWaterPlanAddWX.auditStatus != null and useWaterPlanAddWX.auditStatus != ''">
       audit_status = #{useWaterPlanAddWX.auditStatus}

@@ -212,7 +212,6 @@ public class UseWaterPlanAddWXServiceImpl extends
 
   @Override
   public boolean update(UseWaterPlanAddWX useWaterPlanAddWX) {
-    //String id,String auditStatus,String executed,Double checkAdjustWater,Double firstQuarterQuota,Double secondQuarterQuota, Double thirdQuarterQuota,Double fourthQuarterQuota
     if (StringUtils.isBlank(useWaterPlanAddWX.getId())) {
       return false;
     }
