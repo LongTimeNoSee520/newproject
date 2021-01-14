@@ -379,26 +379,32 @@
   <update id="update">
     update t_wx_use_water_plan_add
     <set>
-    <if test="executed != null and executed != ''">
-      executed = #{executed},
+    <if test="useWaterPlanAddWX.executed != null and useWaterPlanAddWX.executed != ''">
+      executed = #{useWaterPlanAddWX.executed},
     </if>
-    <if test="checkAdjustWater != null and checkAdjustWater != ''">
-      check_adjust_water  = #{checkAdjustWater},
+    <if test="checkAdjustWater != null and useWaterPlanAddWX.checkAdjustWater != ''">
+      check_adjust_water  = #{useWaterPlanAddWX.checkAdjustWater},
     </if>
-    <if test="firstQuarterQuota != null and firstQuarterQuota != ''">
-      first_quarter_quota = #{firstQuarterQuota},
+    <if test="useWaterPlanAddWX.firstQuarterQuota != null and useWaterPlanAddWX.firstQuarterQuota != ''">
+      first_quarter_quota = #{useWaterPlanAddWX.firstQuarterQuota},
     </if>
-    <if test="secondQuarterQuota != null and secondQuarterQuota != ''">
-      second_quarter_quota = #{secondQuarterQuota},
+    <if test="useWaterPlanAddWX.secondQuarterQuota != null and useWaterPlanAddWX.secondQuarterQuota != ''">
+      second_quarter_quota = #{useWaterPlanAddWX.secondQuarterQuota},
     </if>
-    <if test="thirdQuarterQuota != null and thirdQuarterQuota != ''">
-      third_quarter_quota  = #{thirdQuarterQuota},
+    <if test="useWaterPlanAddWX.thirdQuarterQuota != null and useWaterPlanAddWX.thirdQuarterQuota != ''">
+      third_quarter_quota  = #{useWaterPlanAddWX.thirdQuarterQuota},
     </if>
-    <if test="fourthQuarterQuota != null and fourthQuarterQuota != ''">
-      fourth_quarter_quota = #{fourthQuarterQuota},
+    <if test="useWaterPlanAddWX.fourthQuarterQuota != null and useWaterPlanAddWX.fourthQuarterQuota != ''">
+      fourth_quarter_quota = #{useWaterPlanAddWX.fourthQuarterQuota},
     </if>
-    <if test="auditStatus != null and auditStatus != ''">
-      audit_status = #{auditStatus}
+    <if test="useWaterPlanAddWX.auditStatus != null and useWaterPlanAddWX.auditStatus != ''">
+      audit_status = #{useWaterPlanAddWX.auditStatus}
+    </if>
+    <if test="useWaterPlanAddWX.firstWater != null and useWaterPlanAddWX.firstWater != ''">
+      first_water = #{useWaterPlanAddWX.firstWater},
+    </if>
+    <if test="useWaterPlanAddWX.secondWater != null and useWaterPlanAddWX.secondWater != ''">
+      second_water = #{useWaterPlanAddWX.secondWater}
     </if>
     </set>
     where id = #{id}

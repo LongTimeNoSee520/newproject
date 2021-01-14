@@ -211,11 +211,12 @@ public class UseWaterPlanAddWXServiceImpl extends
 
 
   @Override
-  public boolean update(String id,String auditStatus,String executed,Double checkAdjustWater,Double firstQuarterQuota,Double secondQuarterQuota, Double thirdQuarterQuota,Double fourthQuarterQuota) {
-    if (StringUtils.isBlank(id)) {
+  public boolean update(UseWaterPlanAddWX useWaterPlanAddWX) {
+    //String id,String auditStatus,String executed,Double checkAdjustWater,Double firstQuarterQuota,Double secondQuarterQuota, Double thirdQuarterQuota,Double fourthQuarterQuota
+    if (StringUtils.isBlank(useWaterPlanAddWX.getId())) {
       return false;
     }
-    int i = this.baseMapper.update( id, auditStatus, executed, checkAdjustWater, firstQuarterQuota, secondQuarterQuota,  thirdQuarterQuota, fourthQuarterQuota);
+    int i = this.baseMapper.update(useWaterPlanAddWX);
     return i > 0;
   }
 }
