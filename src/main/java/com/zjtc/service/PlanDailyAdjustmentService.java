@@ -6,6 +6,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.PrintVO;
 import java.util.List;
 import java.util.Map;
 /**
@@ -59,7 +60,7 @@ public interface PlanDailyAdjustmentService extends IService<UseWaterPlan> {
 	 * 修改打印状态
 	 * @param printList
 	 */
-	boolean signPrinted(List<String> printList);
+	boolean signPrinted(List<PrintVO> printList);
 
 	/**
 	 * 根据单位编号，查询单位信息和一、二水量前端回填

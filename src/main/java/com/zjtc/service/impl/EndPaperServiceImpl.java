@@ -10,11 +10,13 @@ import com.zjtc.mapper.EndPaperMapper;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
+import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.EndPaperVO;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.UseWaterPlanAddService;
+import com.zjtc.service.UseWaterPlanAddWXService;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -38,6 +40,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Autowired
   private UseWaterPlanAddService useWaterPlanAddService;
+
+  @Autowired
+  private UseWaterPlanAddWXService useWaterPlanAddWXService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -131,10 +136,13 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     map.put("addWay", addWay);
     map.put("quarter", quarter.toString());
     map.put("addNumber", addNumber);
-    /**更新数据*/
+    /**更新数据（如果审核流程走完，则修改办结单审核状态）*/
+    //map.put("auditStatus", "1");//已审核通过
     this.baseMapper.update(map);
+    /**TODO 如果审核流程走完，更新微信调整表审核状态和数据()*/
 
     /**TODO 审核流程信息新增*/
+
 
   }
 
@@ -155,6 +163,11 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     }
     /**查询办结单信息*/
     EndPaper endPaper = this.selectById(id);
+    if (!("1".equals(endPaper.getAuditStatus()) && "1".equals(endPaper.getConfirmed()))){
+      //审核没有完成或没有通过、没有确认
+      response.recordError("该数据没有审核通过或者还未确认，不能执行");
+       return response;
+    }
     /**查询计划表信息*/
     Wrapper wrapper = new EntityWrapper();
     wrapper.eq("node_code", endPaper.getNodeCode());
@@ -192,7 +205,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       endPaper.setResult(
           "增加计划" + endPaper.getAddNumber() + "m3(" + endPaper.getChangeQuarter() + "季度)");
     } else {//调整计划、自来水、专供水等(4个季度间调整)
-      /**调整表“计划调整/自来水/专供水/..”的年计划、4个季度数据(相对于计划表数据的改变量)*/
+      /**调整表“计划调整”的年计划、4个季度数据(相对于计划表数据的改变量)*/
       useWaterPlanAdd.setCurYearPlan(0d);//double
       useWaterPlanAdd.setFirstQuarter(firstQuarter - useWaterPlan.getFirstQuarter());
       useWaterPlanAdd.setSecondQuarter(secondQuarter - useWaterPlan.getSecondQuarter());
@@ -226,6 +239,27 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     endPaper.setThirdQuarter(thirdQuarter);
     endPaper.setFourthQuarter(fourthQuarter);
     this.updateById(endPaper);
+    /**如果是来自微信(网上申报)，则更新微信调整表核定数*/
+    if("1".equals(endPaper.getDataSources())){
+      UseWaterPlanAddWX useWaterPlanAddWX = new UseWaterPlanAddWX();
+      useWaterPlanAddWX.setId(endPaper.getWaterPlanWXId());
+      useWaterPlanAddWX.setCheckAdjustWater(curYearPlan);
+      useWaterPlanAddWX.setFirstQuarterQuota(firstQuarter);
+      useWaterPlanAddWX.setSecondQuarterQuota(secondQuarter);
+      useWaterPlanAddWX.setThirdQuarterQuota(thirdQuarter);
+      useWaterPlanAddWX.setFourthQuarterQuota(fourthQuarter);
+      useWaterPlanAddWX.setExecuted("1");//已执行
+      useWaterPlanAddWXService.update(useWaterPlanAddWX);
+    }
     return response;
+  }
+
+  @Override
+  public boolean updateFromWeChat(EndPaper endPaper) {
+    /**来自办结单的更新或者新增*/
+    if (null != endPaper.getCurYearPlan()){//如果微信端传入的参数有年计划则表示是“增加计划”
+      endPaper.setAddNumber(endPaper.getCurYearPlan());
+    }
+    return this.baseMapper.updateFromWeChat(endPaper);
   }
 }

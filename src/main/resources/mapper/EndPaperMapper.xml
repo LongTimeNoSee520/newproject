@@ -69,8 +69,8 @@
 		<result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
 		<result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
 		<result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
-		<!--<result column="confirmed" property="confirmed" jdbcType="VARCHAR"/>-->
-		<!--<result column="confirm_time" property="confirmTime" jdbcType="TIMESTAMP"/>-->
+		<result column="confirmed" property="confirmed" jdbcType="VARCHAR"/>
+		<result column="confirm_time" property="confirmTime" jdbcType="TIMESTAMP"/>
 		<result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
 		<result column="executed" property="executed" jdbcType="VARCHAR"/>
 		<result column="execute_time" property="executeTime" jdbcType="TIMESTAMP"/>
@@ -140,10 +140,10 @@
 		t1.create_time,t1.creater_id,t1.creater_name,t1.plan_year,t1.change_quarter,t1.cur_year_plan,
 	  t1.first_water,t1.second_water,t1.add_number,t1.add_way,t1.minus_pay_status,t1.balance_test,
 		t1.create_type,t1.first_quarter,t1.second_quarter,t1.third_quarter,t1.fourth_quarter,
--- 		CASE t1.confirmed WHEN '0' THEN '否' WHEN '1' THEN '是' END AS confirmed,
--- 		confirm_time,
+		CASE t1.confirmed WHEN '0' THEN '否' WHEN '1' THEN '是' END AS confirmed,
+		confirm_time,
 		CASE t1.audit_status WHEN '0' THEN '否' WHEN '1' THEN '是' END AS audit_status,
-		CASE t1.executed WHEN '0' THEN '否' WHEN '1' THEN '是' END AS audit_status,
+		CASE t1.executed WHEN '0' THEN '否' WHEN '1' THEN '是' END AS executed,
 		t1.execute_time,t1.executor,t1.executor_id,t1.algorithm_rules,t1.result
 		FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,*
 		FROM
@@ -229,14 +229,28 @@
 	<update id="update">
 		update t_w_end_paper
 		<set>
-			<if test="firstWater != null"> first_water= #{firstWater},</if>
+			<if test="firstWater != null">first_water= #{firstWater},</if>
 			<if test="secondWater != null">second_water = #{secondWater},</if>
 			<if test="addWay != null and addWay != ''">add_way = #{addWay},</if>
 			<if test="quarter != null and quarter != ''">quarter = #{quarter},</if>
 			<if test="addNumber != null">add_number = #{addNumber},</if>
 			<if test="addNumber != null">cur_year_plan = #{addNumber},</if> <!--增加水量也赋值给年计划，回填数据-->
-			<if test="algorithmRules != null and algorithmRules != ''">algorithm_rules = #{algorithmRules}</if>
+			<if test="algorithmRules != null and algorithmRules != ''">algorithm_rules = #{algorithmRules},</if>
+			<if test="auditStatus != null and auditStatus != ''">audit_status = #{auditStatus},</if>
 		</set>
 		where id = #{id}
+	</update>
+	<update id="updateFromWeChat">
+		update t_w_end_paper
+		<set>
+			<if test="endPaper.addNumber != null">add_number= #{endPaper.addNumber},</if>
+			<if test="endPaper.curYearPlan != null">cur_year_plan= #{endPaper.curYearPlan},</if>
+			<if test="endPaper.firstQuarter != null">first_quarter= #{endPaper.firstQuarter},</if>
+			<if test="endPaper.secondQuarter != null">second_quarter= #{endPaper.secondQuarter},</if>
+			<if test="endPaper.thirdQuarter != null">third_quarter= #{endPaper.thirdQuarter},</if>
+			<if test="endPaper.fourthQuarter != null">fourth_quarter= #{endPaper.fourthQuarter},</if>
+			<if test="confirmed != null and confirmed != ''">confirmed = #{endPaper.confirmed},</if>
+		</set>
+		where water_plan_WX_id = #{endPaper.waterPlanWXId}
 	</update>
 </mapper>

@@ -26,7 +26,7 @@ public interface PlanDailyAdjustmentMapper extends BaseMapper<UseWaterPlan> {
   /**
    * 修改计划表数据的打印状态
    * */
-//  void updatePrintStatus(@Param("id") String id);
+  void updatePrintStatus(@Param("id") String id);
 
   List<Map<String,Object>> queryMessage(Map<String, Object> map);
 

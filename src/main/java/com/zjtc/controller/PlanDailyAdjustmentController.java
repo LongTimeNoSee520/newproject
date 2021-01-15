@@ -5,6 +5,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.PrintVO;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -220,15 +221,17 @@ public class PlanDailyAdjustmentController {
   @ApiOperation(value = "打印后标记修改打印状态(只有调整的数据可以打印)")
   public ApiResponse signPrinted(@RequestHeader("token") String token,
       @ApiParam("{\n"
-          + "\"printList\": 打印id列表:[\n"
-          + "\"id1\",\"id2\"]\n"
+          + "\"printList\": 打印列表: [{\n"
+          + "\"id\": \"id\",\n"
+          + "\"printType\": \"打印的类型0为主数据，1为展开列表的调整数据\"\n"
+          + "}]\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("修改打印状态==== 参数{" + jsonObject.toJSONString()+ "}");
     ApiResponse response = new ApiResponse();
-    if (null != jsonObject) {
+    List<PrintVO> printList = jsonObject.getJSONArray("printList").toJavaList(PrintVO.class);
+    if (null != printList) {
       try {
        // User user = jwtUtil.getUserByToken(token);
-        List<String> printList = jsonObject.getJSONArray("printList").toJavaList(String.class);
         boolean result = planDailyAdjustmentService.signPrinted(printList);
         if (!result){
           response.recordError("修改打印状态失败");

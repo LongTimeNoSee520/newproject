@@ -34,4 +34,9 @@ public interface EndPaperService extends IService<EndPaper> {
    * 办结单执行
    */
   ApiResponse executeSettlement(User user, JSONObject jsonObject);
+
+  /**
+   * 微信办结单
+   */
+  boolean updateFromWeChat(EndPaper endPaper);
 }

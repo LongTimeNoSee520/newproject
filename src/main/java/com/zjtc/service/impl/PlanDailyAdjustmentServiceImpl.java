@@ -13,6 +13,7 @@ import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.PlanDailyAdjustmentVO;
+import com.zjtc.model.vo.PrintVO;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.UseWaterPlanAddService;
@@ -22,7 +23,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringJoiner;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -359,10 +359,14 @@ public class PlanDailyAdjustmentServiceImpl extends
   }
 
   @Override
-  public boolean signPrinted(List<String> printList) {
-    for (String id :printList) {
-      /**修改调整表打印状态*/
-      useWaterPlanAddService.updateStatusOrPrinted(id, null, "1");
+  public boolean signPrinted(List<PrintVO> printList) {
+    for (PrintVO printVO : printList) {
+      if ("0".equals(printVO.getPrintType())) {
+        this.baseMapper.updatePrintStatus(printVO.getId());
+      } else if ("1".equals(printVO.getPrintType())) {
+        /**修改调整表打印状态*/
+        useWaterPlanAddService.updateStatusOrPrinted(printVO.getId(), null, "1");
+      }
     }
     return true;
   }
@@ -436,6 +440,8 @@ public class PlanDailyAdjustmentServiceImpl extends
     endPaper.setWaterMeterCode(waterMeterCode);
     endPaper.setPaperType(paperType);
     endPaper.setDataSources("2");//现场申报
+    endPaper.setConfirmed("1");//现场申报的都是已确认的
+    endPaper.setConfirmTime(new Date());
     endPaper.setCreateTime(new Date());
     endPaper.setCreaterId(user.getId());
     endPaper.setCreaterName(user.getUsername());

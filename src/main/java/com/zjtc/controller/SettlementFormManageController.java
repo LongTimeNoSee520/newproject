@@ -3,6 +3,7 @@ package com.zjtc.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
+import com.zjtc.model.EndPaper;
 import com.zjtc.model.User;
 import com.zjtc.service.EndPaperService;
 import io.swagger.annotations.Api;
@@ -64,6 +65,26 @@ public class SettlementFormManageController {
       }
     } else {
       response.recordError("分页查询参数不能为空");
+    }
+    return response;
+  }
+
+  @RequestMapping(value = "updateFromWeChat", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "微信端办结单确认后更新")
+  public ApiResponse updateFromWeChat(@RequestHeader("token") String token,
+      @ApiParam("EndPaper实体been") @RequestBody EndPaper endPaper) {
+    log.info("分页查询 ==== 参数{" + endPaper.toString()+ "}");
+    ApiResponse response = new ApiResponse();
+    if (null != endPaper) {
+      try {
+        //User user = jwtUtil.getUserByToken(token);
+         endPaperService.updateFromWeChat(endPaper);
+      } catch (Exception e) {
+        log.error("分页查询失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("参数为空或者解析失败");
     }
     return response;
   }

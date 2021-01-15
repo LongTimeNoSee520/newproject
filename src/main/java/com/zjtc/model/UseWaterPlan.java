@@ -233,6 +233,10 @@ public class UseWaterPlan extends Model<UseWaterPlan>{
     @ApiModelProperty("是否存在未处理完的办结单(0否1是)")
     @TableField(value = "exist_settlement_form",exist = true)
     private String existSettlementForm;
+
+    @ApiModelProperty("是否打印")
+    @TableField(value = "printed",exist = true)
+    private String printed;
 	/**
 	 * 实例化
 	 */
