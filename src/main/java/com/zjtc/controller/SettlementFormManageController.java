@@ -73,14 +73,14 @@ public class SettlementFormManageController {
   @ApiOperation(value = "微信端办结单确认后更新")
   public ApiResponse updateFromWeChat(@RequestHeader("token") String token,
       @ApiParam("EndPaper实体been") @RequestBody EndPaper endPaper) {
-    log.info("分页查询 ==== 参数{" + endPaper.toString()+ "}");
+    log.info("办结单确认后更新 ==== 参数{" + endPaper.toString()+ "}");
     ApiResponse response = new ApiResponse();
     if (null != endPaper) {
       try {
         //User user = jwtUtil.getUserByToken(token);
          endPaperService.updateFromWeChat(endPaper);
       } catch (Exception e) {
-        log.error("分页查询失败,errMsg==={}" + e.getMessage());
+        log.error("办结单确认后更新失败,errMsg==={}" + e.getMessage());
         response.recordError(500);
       }
     } else {

@@ -249,8 +249,8 @@
 			<if test="endPaper.secondQuarter != null">second_quarter= #{endPaper.secondQuarter},</if>
 			<if test="endPaper.thirdQuarter != null">third_quarter= #{endPaper.thirdQuarter},</if>
 			<if test="endPaper.fourthQuarter != null">fourth_quarter= #{endPaper.fourthQuarter},</if>
-			<if test="confirmed != null and confirmed != ''">confirmed = #{endPaper.confirmed},</if>
-			<if test="confirmTime != null and confirmTime != ''">confirm_time = #{endPaper.confirmTime},</if>
+			<if test="endPaper.confirmed != null and endPaper.confirmed != ''">confirmed = #{endPaper.confirmed},</if>
+			<if test="endPaper.confirmTime != null and endPaper.confirmTime != ''">confirm_time = #{endPaper.confirmTime},</if>
 		</set>
 		where water_plan_WX_id = #{endPaper.waterPlanWXId}
 	</update>
