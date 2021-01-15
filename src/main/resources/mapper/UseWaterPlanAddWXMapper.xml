@@ -400,16 +400,14 @@
     <if test="useWaterPlanAddWX.auditStatus != null and useWaterPlanAddWX.auditStatus != ''">
       audit_status = #{useWaterPlanAddWX.auditStatus}
     </if>
-
-
-      <if test="useWaterPlanAddWX.firstWater != null and useWaterPlanAddWX.firstWater != ''">
-        first_water = #{useWaterPlanAddWX.firstWater},
-      </if>
-      <if test="useWaterPlanAddWX.secondWater != null and useWaterPlanAddWX.secondWater != ''">
-        second_water = #{useWaterPlanAddWX.secondWater}
-      </if>
+    <if test="useWaterPlanAddWX.firstWater != null and useWaterPlanAddWX.firstWater != ''">
+      first_water = #{useWaterPlanAddWX.firstWater},
+    </if>
+    <if test="useWaterPlanAddWX.secondWater != null and useWaterPlanAddWX.secondWater != ''">
+      second_water = #{useWaterPlanAddWX.secondWater}
+    </if>
     </set>
-    where id = #{id}
+    where id = #{useWaterPlanAddWX.id}
   </update>
 
 
