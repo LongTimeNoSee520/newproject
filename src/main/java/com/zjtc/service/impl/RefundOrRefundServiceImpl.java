@@ -1,13 +1,13 @@
-package service.impl;
+package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.mapper.RefundOrRefundMapper;
+import com.zjtc.model.RefundOrRefund;
+import com.zjtc.service.RefundOrRefundService;
 import org.springframework.stereotype.Service;
-import mapper.RefundOrRefundMapper;
-import service.RefundOrRefundService;
-import model.RefundOrRefund;
 
 /**
  * RefundOrRefund的服务接口的实现类
@@ -16,7 +16,8 @@ import model.RefundOrRefund;
  *
  */
 @Service
-public class RefundOrRefundServiceImpl extends ServiceImpl<RefundOrRefundMapper, RefundOrRefund> implements RefundOrRefundService {
+public class RefundOrRefundServiceImpl extends ServiceImpl<RefundOrRefundMapper, RefundOrRefund> implements
+		RefundOrRefundService {
 
 	@Override
 	public boolean saveModel(JSONObject jsonObject) {

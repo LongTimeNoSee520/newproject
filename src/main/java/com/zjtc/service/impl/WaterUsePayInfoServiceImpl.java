@@ -1,13 +1,13 @@
-package service.impl;
+package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.mapper.WaterUsePayInfoMapper;
+import com.zjtc.model.WaterUsePayInfo;
+import com.zjtc.service.WaterUsePayInfoService;
 import org.springframework.stereotype.Service;
-import mapper.WaterUsePayInfoMapper;
-import service.WaterUsePayInfoService;
-import entity.WaterUsePayInfo;
 
 /**
  * WaterUsePayInfo的服务接口的实现类
@@ -16,7 +16,8 @@ import entity.WaterUsePayInfo;
  *
  */
 @Service
-public class WaterUsePayInfoServiceImpl extends ServiceImpl<WaterUsePayInfoMapper, WaterUsePayInfo> implements WaterUsePayInfoService {
+public class WaterUsePayInfoServiceImpl extends ServiceImpl<WaterUsePayInfoMapper, WaterUsePayInfo> implements
+		WaterUsePayInfoService {
 
 	@Override
 	public boolean saveModel(JSONObject jsonObject) {

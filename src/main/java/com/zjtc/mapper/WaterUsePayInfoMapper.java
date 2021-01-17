@@ -1,8 +1,8 @@
-package mapper;
+package com.zjtc.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import com.eeds.base.box.dao.Mapper;
-import entity.WaterUsePayInfo;
+import com.zjtc.model.WaterUsePayInfo;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * WaterUsePayInfo的Dao接口
