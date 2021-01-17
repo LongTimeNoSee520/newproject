@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.WaterUsePayInfoMapper">
+	<!-- WaterUsePayInfo的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+	<resultMap id="result_WaterUsePayInfo_Map" type="com.zjtc.model.WaterUsePayInfo">
+		<id column="id" property="id" />
+		<result column="node_code" property="nodeCode" />
+		<result column="use_water_unit_id" property="useWaterUnitId" />
+		<result column="unit_name" property="unitName" />
+		<result column="unit_code" property="unitCode" />
+		<result column="pay_type" property="payType" />
+		<result column="invoice_num" property="invoiceNum" />
+		<result column="invoice_print_time" property="invoicePrintTime" />
+		<result column="count_quarter" property="countQuarter" />
+		<result column="count_year" property="countYear" />
+		<result column="year_plan" property="yearPlan" />
+		<result column="quarter_plan" property="quarterPlan" />
+		<result column="base_plan" property="basePlan" />
+		<result column="water_num1" property="waterNum1" />
+		<result column="water_num2" property="waterNum2" />
+		<result column="water_num3" property="waterNum3" />
+		<result column="water_num_amount" property="waterNumAmount" />
+		<result column="pay_ratio" property="payRatio" />
+		<result column="price" property="price" />
+		<result column="exceed_water" property="exceedWater" />
+		<result column="multiple" property="multiple" />
+		<result column="actual_multiple" property="actualMultiple" />
+		<result column="amount_receivable" property="amountReceivable" />
+		<result column="actual_amount" property="actualAmount" />
+		<result column="pay_status" property="payStatus" />
+		<result column="printed" property="printed" />
+		<result column="warned" property="warned" />
+		<result column="remarks" property="remarks" />
+		<result column="audit_status" property="auditStatus" />
+		<result column="audit_time" property="auditTime" />
+		<result column="audit_person" property="auditPerson" />
+		<result column="audit_person_id" property="auditPersonId" />
+		<result column="edited_actual" property="editedActual" />
+		<result column="entrusted" property="entrusted" />
+		<result column="cash_check" property="cashCheck" />
+		<result column="transfer_check" property="transferCheck" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+
+</mapper>

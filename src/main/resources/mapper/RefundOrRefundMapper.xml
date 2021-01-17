@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.RefundOrRefundMapper">
+	<!-- RefundOrRefund的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+	<resultMap id="result_RefundOrRefund_Map" type="com.zjtc.model.RefundOrRefund">
+		<id column="id" property="id" />
+		<result column="node_code" property="nodeCode" />
+		<result column="use_water_unit_id" property="useWaterUnitId" />
+		<result column="unit_name" property="unitName" />
+		<result column="unit_code" property="unitCode" />
+		<result column="water_meter_code" property="waterMeterCode" />
+		<result column="pay_id" property="payId" />
+		<result column="type" property="type" />
+		<result column="quarter" property="quarter" />
+		<result column="year" property="year" />
+		<result column="actual_amount" property="actualAmount" />
+		<result column="money" property="money" />
+		<result column="reason" property="reason" />
+		<result column="drawer" property="drawer" />
+		<result column="create_time" property="createTime" />
+		<result column="audit_person" property="auditPerson" />
+		<result column="audit_ttime" property="auditTtime" />
+		<result column="status" property="status" />
+	</resultMap>
+
+
+</mapper>
