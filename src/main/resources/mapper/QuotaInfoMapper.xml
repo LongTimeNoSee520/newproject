@@ -34,7 +34,12 @@
     WHERE deleted ='0'
     AND industry_name like  '%${keyword}%'
   </select>
-
+  <select id="queryIndustry" resultType="java.util.LinkedHashMap">
+    SELECT id AS id,industry_name AS industryName
+    FROM t_w_quota_info
+    WHERE node_code = #{nodeCode}
+    AND (parent_id IS NULL OR parent_id = '')
+  </select>
   <update id="update">
     UPDATE t_w_quota_info
     SET deleted = '0'

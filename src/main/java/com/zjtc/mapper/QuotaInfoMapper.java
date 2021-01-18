@@ -4,6 +4,7 @@ package com.zjtc.mapper;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.QuotaInfo;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -35,4 +36,6 @@ public interface QuotaInfoMapper extends BaseMapper<QuotaInfo> {
    * 通过关键词查询满足条件的行业id，父级id
    * */
   List<QuotaInfo> selectByKeyword(@Param("keyword")String keyword);
+
+  List<Map<String,Object>> queryIndustry(@Param("nodeCode")String nodeCode);
 }

@@ -8,6 +8,7 @@ import com.zjtc.service.QuotaInfoService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +78,12 @@ public class QuotaInfoServiceImpl extends ServiceImpl<QuotaInfoMapper, QuotaInfo
       }
     }
     return result;
+  }
+
+  @Override
+  public List<Map<String, Object>> queryIndustry(User user) {
+    String nodeCode = user.getNodeCode();
+    return this.baseMapper.queryIndustry(nodeCode);
   }
 
 

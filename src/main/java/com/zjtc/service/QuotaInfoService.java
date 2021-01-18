@@ -6,6 +6,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.QuotaInfo;
 import com.zjtc.model.User;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author lianghao
@@ -34,4 +35,9 @@ public interface QuotaInfoService extends IService<QuotaInfo> {
    * 定额信息树关键词查询
    */
   List<QuotaInfo> queryTree(String keyword);
+
+  /**
+   * 一级行业信息查询
+   * */
+  List<Map<String,Object>> queryIndustry(User user);
 }

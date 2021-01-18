@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -143,5 +144,21 @@ public class QuotaInfoController {
     }
     return response;
   }
-
+  @ApiOperation(value = "一级行业信息查询(用水单位监控查询行条件业类型下拉列表)")
+  @RequestMapping(value = "queryIndustry", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse queryIndustry(@RequestHeader("token") String token,
+      @ApiParam("{}")@RequestBody JSONObject jsonObject) {
+    ApiResponse response = new ApiResponse();
+    log.debug("一级行业信息查询，参数param==={" + jsonObject.toString() + "}");
+    try {
+      User user = jwtUtil.getUserByToken(token);
+      List<Map<String,Object>> result = quotaInfoService.queryIndustry(user);
+      response.setData(result);
+      response.setCode(200);
+    } catch (Exception e) {
+      log.error("一级行业信息查询失败,errMsg==={}" + e.getMessage());
+      response.recordError(500);
+    }
+    return response;
+  }
 }
