@@ -142,7 +142,7 @@ public class UseWaterPlanAddWX extends Model<UseWaterPlanAddWX> {
   /**
    *
    */
-  @ApiModelProperty("审核状态")
+  @ApiModelProperty("审核状态(0:提交,1:驳回,2:微信服务端审核通过,3默认,4办结单审核通过)")
   @TableField(value = "audit_status", exist = true)
   private String auditStatus;
   /**

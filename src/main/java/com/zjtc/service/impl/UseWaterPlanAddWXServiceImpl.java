@@ -76,7 +76,6 @@ public class UseWaterPlanAddWXServiceImpl extends
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     // TODO: 2021/1/8 还没有查询加价费信息
-    // TODO: 2021/1/14 当前计划对比查询待调整 
     List<UseWaterPlanAddWX> useWaterPlanAdds = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType,
             executed, nodeCode, auditStatus, userId);
