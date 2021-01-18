@@ -156,16 +156,6 @@
     <if test="unitName != null and unitName != ''">
       and  t6.unitName like '%${unitName}%'
     </if>
-    and t6.id IN (
-    SELECT
-    id
-    FROM
-    t_w_use_water_self_define_plan
-    WHERE
-    node_code = #{nodeCode}
-    AND SUBSTRING ( unit_code, 3, 2 )
-    IN ( SELECT unit_type_code
-    FROM t_w_use_water_unit_role WHERE person_id = #{loginId}))
   </select>
 
   <select id="queryList" resultMap="WaterUnitAssessModel">
@@ -295,16 +285,6 @@
     <if test="unitName != null and unitName != ''">
     and  t6.unitName like '%${unitName}%'
     </if>
-    and t6.id IN (
-    SELECT
-    id
-    FROM
-    t_w_use_water_self_define_plan
-    WHERE
-    node_code = #{nodeCode}
-    AND SUBSTRING ( unit_code, 3, 2 )
-    IN ( SELECT unit_type_code
-    FROM t_w_use_water_unit_role WHERE person_id = #{loginId}))
     ) c
     WHERE
     rownumber > (${pageSize}*(${currPage}-1))
