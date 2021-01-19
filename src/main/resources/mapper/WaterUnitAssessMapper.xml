@@ -48,7 +48,7 @@
     t2.plan_year AS planYear,--年度
     t2.curYearPlan,--本年计划
     t3.yearPracticalWater,--年实际水量
-    t3.waterMeterCode, --水表档案号
+    t3.waterMeterCode,--水表档案号
     t4.oneQuarter,--第一季度基建计划水量
     t4.twoQuarter,--第二季度基建计划
     t4.threeQuarter,--第三季度基建计划
@@ -69,6 +69,7 @@
     t5.twoStatus,--第二季度回收情况
     t5.threeStatus,--第三季度回收情况
     t5.fourStatus --第四季度回收情况
+
     FROM
     (
     SELECT
@@ -77,6 +78,7 @@
     unit_code AS unitCode,
     unit_name AS unitName,--单位名称
     unit_address AS unitAddress --单位地址
+
     FROM
     t_w_use_water_unit
     WHERE
@@ -99,17 +101,86 @@
     ) t2 --用水计划
     ON t1.id = t2.use_water_unit_id
     LEFT JOIN (
+    select
+    s3.use_water_unit_id,
+    s3.use_year,
+    s3.water_meter_code AS waterMeterCode,
+    ( s3.january_count + s3.february_count +s3. march_count ) AS onePracticalWater,
+    ( s3.april_count + s3.may_count + s3.june_count ) AS twoPracticalWater,
+    ( s3.july_count + s3.august_count + s3.september_count ) AS threePracticalWater,
+    ( s3.october_count + s3.november_count + s3.december_count ) AS fourPracticalWater,
+    ( s3.january_count + s3.february_count + s3.march_count + s3.april_count + s3.may_count + june_count + s3.july_count + s3.august_count + s3.september_count + s3.october_count + s3.november_count + s3.december_count ) AS yearPracticalWater
+    FROM (
     SELECT
-    use_water_unit_id,
-    use_year,
-    water_meter_code as waterMeterCode,
-    ( january_count + february_count + march_count ) AS onePracticalWater,
-    ( april_count + may_count + june_count ) AS twoPracticalWater,
-    ( july_count + august_count + september_count ) AS threePracticalWater,
-    ( october_count + november_count + december_count ) AS fourPracticalWater,
-    ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + november_count + december_count ) AS yearPracticalWater
+    s2.use_water_unit_id,
+    s2.use_year,
+    s2.water_meter_code,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    0 ELSE january_count
+    END AS january_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    0 ELSE february_count
+    END AS february_count,
+    CASE
+
+    WHEN SUBSTRING(s1.unit_code, 3, 2) 	= '33' THEN
+    0 ELSE march_count
+    END AS march_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    january_count + april_count ELSE april_count
+    END AS april_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    february_count + may_count ELSE may_count
+    END AS may_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    march_count + june_count ELSE june_count
+    END AS june_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    0 ELSE july_count
+    END AS july_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    0 ELSE august_count
+    END AS august_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    0 ELSE september_count
+    END AS september_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    july_count + october_count ELSE october_count
+    END AS october_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    august_count + november_count ELSE november_count
+    END AS november_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    september_count + december_count ELSE december_count
+    END AS december_count
     FROM
-    t_w_water_month_use_data
+    t_w_use_water_plan s1 LEFT JOIN t_w_water_month_use_data s2 ON s1.use_water_unit_id = s2.use_water_unit_id and s1.plan_year = s2.use_year
+    WHERE
+    s1.node_code = #{nodeCode}
+    and s2.node_code = #{nodeCode}
+    )s3
     ) t3 --水使用量月数据
     ON t1.id = t3.use_water_unit_id
     AND t2.plan_year = t3.use_year
@@ -139,7 +210,7 @@
     FROM
     t_w_water_use_pay_info --水使用量季度缴费表
     PIVOT (
-    MIN ( pay_status ) FOR [count_quarter] IN ( [1], [2], [3], [4] )) AS pvtGROUP
+    MIN ( pay_status ) FOR [count_quarter] IN ( [1], [2], [3], [4] )) AS pvt
     WHERE
     node_code = #{nodeCode}
     GROUP BY
@@ -177,7 +248,7 @@
     t2.plan_year AS planYear,--年度
     t2.curYearPlan,--本年计划
     t3.yearPracticalWater,--年实际水量
-    t3.waterMeterCode, --水表档案号
+    t3.waterMeterCode,--水表档案号
     t4.oneQuarter,--第一季度基建计划水量
     t4.twoQuarter,--第二季度基建计划
     t4.threeQuarter,--第三季度基建计划
@@ -198,6 +269,7 @@
     t5.twoStatus,--第二季度回收情况
     t5.threeStatus,--第三季度回收情况
     t5.fourStatus --第四季度回收情况
+
     FROM
     (
     SELECT
@@ -206,6 +278,7 @@
     unit_code AS unitCode,
     unit_name AS unitName,--单位名称
     unit_address AS unitAddress --单位地址
+
     FROM
     t_w_use_water_unit
     WHERE
@@ -228,17 +301,86 @@
     ) t2 --用水计划
     ON t1.id = t2.use_water_unit_id
     LEFT JOIN (
+    select
+    s3.use_water_unit_id,
+    s3.use_year,
+    s3.water_meter_code AS waterMeterCode,
+    ( s3.january_count + s3.february_count +s3. march_count ) AS onePracticalWater,
+    ( s3.april_count + s3.may_count + s3.june_count ) AS twoPracticalWater,
+    ( s3.july_count + s3.august_count + s3.september_count ) AS threePracticalWater,
+    ( s3.october_count + s3.november_count + s3.december_count ) AS fourPracticalWater,
+    ( s3.january_count + s3.february_count + s3.march_count + s3.april_count + s3.may_count + june_count + s3.july_count + s3.august_count + s3.september_count + s3.october_count + s3.november_count + s3.december_count ) AS yearPracticalWater
+    FROM (
     SELECT
-    use_water_unit_id,
-    use_year,
-    water_meter_code as waterMeterCode,
-    ( january_count + february_count + march_count ) AS onePracticalWater,
-    ( april_count + may_count + june_count ) AS twoPracticalWater,
-    ( july_count + august_count + september_count ) AS threePracticalWater,
-    ( october_count + november_count + december_count ) AS fourPracticalWater,
-    ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + november_count + december_count ) AS yearPracticalWater
+    s2.use_water_unit_id,
+    s2.use_year,
+    s2.water_meter_code,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    0 ELSE january_count
+    END AS january_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    0 ELSE february_count
+    END AS february_count,
+    CASE
+
+    WHEN SUBSTRING(s1.unit_code, 3, 2) 	= '33' THEN
+    0 ELSE march_count
+    END AS march_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    january_count + april_count ELSE april_count
+    END AS april_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    february_count + may_count ELSE may_count
+    END AS may_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    march_count + june_count ELSE june_count
+    END AS june_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    0 ELSE july_count
+    END AS july_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    0 ELSE august_count
+    END AS august_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    0 ELSE september_count
+    END AS september_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    july_count + october_count ELSE october_count
+    END AS october_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    august_count + november_count ELSE november_count
+    END AS november_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    september_count + december_count ELSE december_count
+    END AS december_count
     FROM
-    t_w_water_month_use_data
+    t_w_use_water_plan s1 LEFT JOIN t_w_water_month_use_data s2 ON s1.use_water_unit_id = s2.use_water_unit_id and s1.plan_year = s2.use_year
+    WHERE
+    s1.node_code = #{nodeCode}
+    and s2.node_code = #{nodeCode}
+    )s3
     ) t3 --水使用量月数据
     ON t1.id = t3.use_water_unit_id
     AND t2.plan_year = t3.use_year
