@@ -80,7 +80,6 @@ public class UseWaterUnitInvoiceServiceImpl extends
     }
 //    经手人
     unitInvoice.setDrawer(userName);
-    unitInvoice.setEnabled("0");
     unitInvoice.setReceived("0");
     boolean b = this.updateById(unitInvoice);
     if (b) {
@@ -305,7 +304,6 @@ public class UseWaterUnitInvoiceServiceImpl extends
 
   @Override
   public List<Map<String, Object>> selectInvoices() {
-    // TODO: 2021/1/19 发票登记和领取是在更新用户信息之前还是之后
     return this.baseMapper.selectInvoices();
   }
 
