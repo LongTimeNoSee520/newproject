@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterUnitInvoice;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: ZhouDaBo
@@ -80,4 +81,20 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
    * @return 响应结果
    */
   ApiResponse queryPage(JSONObject jsonObject,String nodeCode,String loginId);
+
+  /**
+   * 查询未被使用的发票编号
+   * @return 集合
+   */
+  List<Map<String,Object>> selectInvoices();
+
+  /**
+   * 更新发票的单位信息
+   * @param id 主键
+   * @param payInfoId 缴费记录id
+   * @param invoiceUnitName 单位名称
+   * @param invoiceUnitCode 单位编码
+   * @return 结果集
+   */
+  ApiResponse updateInvoicesUnitMessage(String id,String payInfoId,String invoiceUnitName,String invoiceUnitCode);
 }

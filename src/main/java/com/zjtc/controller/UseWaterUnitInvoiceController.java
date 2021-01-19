@@ -9,6 +9,7 @@ import com.zjtc.service.UseWaterUnitInvoiceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -325,8 +326,52 @@ public class UseWaterUnitInvoiceController {
       response = useWaterUnitInvoiceService.queryPage(jsonObject, user.getNodeCode(),user.getLoginId());
       return response;
     } catch (Exception e) {
-      response.setCode(500);
-      response.setMessage("分页查询人员信息异常");
+      response.recordError("分页查询人员信息异常");
+      log.error("分页查询人员信息错误,errMsg==={}", e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
+
+  @RequestMapping(value = "selectInvoices", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation("查询未被使用的发票编号")
+  public ApiResponse selectInvoices( @RequestBody JSONObject jsonObject) {
+    log.info("分页查询数据,参数param==={" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null == jsonObject){
+      response.recordError("系统异常");
+      return response;
+    }
+    try {
+      List<Map<String, Object>> maps = useWaterUnitInvoiceService.selectInvoices();
+      response.setData(maps);
+      return response;
+    } catch (Exception e) {
+      response.recordError("分页查询人员信息异常");
+      log.error("分页查询人员信息错误,errMsg==={}", e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
+
+  @RequestMapping(value = "updateInvoicesUnitMessage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation("更新发票的单位信息")
+  public ApiResponse updateInvoicesUnitMessage( @RequestBody JSONObject jsonObject) {
+    log.info("分页查询数据,参数param==={" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null == jsonObject){
+      response.recordError("系统异常");
+      return response;
+    }
+    String id = jsonObject.getString("id");
+    String payInfoId = jsonObject.getString("payInfoId");
+    String invoiceUnitName = jsonObject.getString("invoiceUnitName");
+    String invoiceUnitCode = jsonObject.getString("invoiceUnitCode");
+    try {
+      response = useWaterUnitInvoiceService.updateInvoicesUnitMessage(id,payInfoId,invoiceUnitName,invoiceUnitCode);
+      return response;
+    } catch (Exception e) {
+      response.recordError("更新发票的单位信息异常");
       log.error("分页查询人员信息错误,errMsg==={}", e.getMessage());
       e.printStackTrace();
     }

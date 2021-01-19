@@ -52,6 +52,8 @@ public class UseWaterUnitInvoiceServiceImpl extends
       } else {
         unitInvoice.setCreateTime(new Date());
         unitInvoice.setNodeCode(nodeCode);
+        unitInvoice.setEnabled("0");
+        unitInvoice.setReceived("0");
         unitInvoice.setDeleted("0");
         unitInvoiceList.add(unitInvoice);
       }
@@ -299,5 +301,30 @@ public class UseWaterUnitInvoiceServiceImpl extends
     response.setData(map);
     return response;
 
+  }
+
+  @Override
+  public List<Map<String, Object>> selectInvoices() {
+    // TODO: 2021/1/19 发票登记和领取是在更新用户信息之前还是之后
+    return this.baseMapper.selectInvoices();
+  }
+
+  @Override
+  public ApiResponse updateInvoicesUnitMessage(String id, String payInfoId, String invoiceUnitName,
+      String invoiceUnitCode) {
+    ApiResponse response = new ApiResponse();
+    if (StringUtils.isBlank(id) || StringUtils.isBlank(payInfoId) || StringUtils
+        .isBlank(invoiceUnitName) || StringUtils.isBlank(invoiceUnitCode)) {
+      response.recordError("系统异常");
+      return response;
+    }
+      int i = this.baseMapper.updateInvoicesUnitMessage(id,payInfoId,invoiceUnitName,invoiceUnitCode);
+    if (i>0){
+      response.setCode(200);
+      return response;
+    }else{
+      response.recordError(" 单位信息关联发票失败");
+      return response;
+    }
   }
 }

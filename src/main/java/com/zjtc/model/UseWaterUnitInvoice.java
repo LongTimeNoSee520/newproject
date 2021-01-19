@@ -89,8 +89,8 @@ public class UseWaterUnitInvoice extends Model<UseWaterUnitInvoice>{
     * 
     */
     @ApiModelProperty("发票单位编号")
-    @TableField(value = "invice_unit_code",exist = true)
-    private String inviceUnitCode;
+    @TableField(value = "invoice_unit_code",exist = true)
+    private String invoiceUnitCode;
     /**
     * 
     */

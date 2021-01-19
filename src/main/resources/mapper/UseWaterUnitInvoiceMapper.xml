@@ -15,7 +15,7 @@
     <result column="drawer" property="drawer" jdbcType="VARCHAR"/>
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     <result column="invoice_type" property="invoiceType" jdbcType="VARCHAR"/>
-    <result column="invice_unit_code" property="inviceUnitCode" jdbcType="VARCHAR"/>
+    <result column="invoice_unit_code" property="invoiceUnitCode" jdbcType="VARCHAR"/>
     <result column="printed" property="printed" jdbcType="VARCHAR"/>
     <result column="person" property="person" jdbcType="VARCHAR"/>
     <result column="received" property="received" jdbcType="VARCHAR"/>
@@ -111,7 +111,7 @@
     drawer,
     create_time,
     invoice_type,
-    invice_unit_code,
+    invoice_unit_code,
     printed,
     person,
     received,
@@ -149,8 +149,38 @@
     rownumber > (${pageSize}*(${currPage}-1))
     ORDER BY
     invoice_number,
-    invice_unit_code DESC;
+    invoice_unit_code DESC;
   </select>
 
+  <select id="selectInvoices" resultType="java.util.LinkedHashMap">
+    SELECT
+    id,
+    invoice_number as invoiceNumber
+    FROM
+    t_w_use_water_unit_invoice
+    WHERE
+    ( pay_info_id = NULL OR pay_info_id = '' )
+    AND enabled = '0'
+    AND received = '0'
+    AND deleted = '0'
+  </select>
+
+  <update id="updateInvoicesUnitMessage" >
+    update t_w_use_water_unit_invoice
+    <set>
+      <if test="payInfoId != null and payInfoId != ''">
+        pay_info_id = #{payInfoId},
+      </if>
+      <if test="invoiceUnitName != null and invoiceUnitName != ''">
+        invoice_unit_name = #{invoiceUnitName},
+      </if>
+      <if test="invoiceUnitCode != null and invoiceUnitCode != ''">
+        invoice_unit_code = #{invoiceUnitCode}
+      </if>
+    </set>
+    <where>
+      id = #{id}
+    </where>
+  </update>
 
 </mapper>

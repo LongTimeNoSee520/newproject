@@ -3,6 +3,7 @@ package com.zjtc.mapper;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnitInvoice;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -105,4 +106,24 @@ public interface UseWaterUnitInvoiceMapper extends BaseMapper<UseWaterUnitInvoic
       @Param("received") String received,
       @Param("nodeCode") String nodeCode,
       @Param("loginId") String loginId);
+
+  /**
+   * 查询未被使用的发票编号
+   * @return 集合
+   */
+  List<Map<String,Object>> selectInvoices();
+
+  /**
+   * 单位信息关联发票
+   * @param id 主键id
+   * @param payInfoId 单位id
+   * @param invoiceUnitName 单位名称
+   * @param invoiceUnitCode 单位编号
+   * @return 影响行数
+   */
+  int updateInvoicesUnitMessage(
+      @Param("id") String id,
+      @Param("payInfoId") String payInfoId,
+      @Param("invoiceUnitName") String invoiceUnitName,
+      @Param("invoiceUnitCode") String invoiceUnitCode);
 }
