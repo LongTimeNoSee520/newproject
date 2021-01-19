@@ -311,14 +311,14 @@ public class UseWaterUnitInvoiceServiceImpl extends
 
   @Override
   public ApiResponse updateInvoicesUnitMessage(String id, String payInfoId, String invoiceUnitName,
-      String invoiceUnitCode) {
+      String invoiceUnitCode,String invoiceType) {
     ApiResponse response = new ApiResponse();
     if (StringUtils.isBlank(id) || StringUtils.isBlank(payInfoId) || StringUtils
-        .isBlank(invoiceUnitName) || StringUtils.isBlank(invoiceUnitCode)) {
+        .isBlank(invoiceUnitName) || StringUtils.isBlank(invoiceUnitCode) || StringUtils.isBlank(invoiceType)) {
       response.recordError("系统异常");
       return response;
     }
-      int i = this.baseMapper.updateInvoicesUnitMessage(id,payInfoId,invoiceUnitName,invoiceUnitCode);
+      int i = this.baseMapper.updateInvoicesUnitMessage(id,payInfoId,invoiceUnitName,invoiceUnitCode,invoiceType);
     if (i>0){
       response.setCode(200);
       return response;

@@ -119,11 +119,13 @@ public interface UseWaterUnitInvoiceMapper extends BaseMapper<UseWaterUnitInvoic
    * @param payInfoId 单位id
    * @param invoiceUnitName 单位名称
    * @param invoiceUnitCode 单位编号
+   * @param invoiceType 0污水处理费1水资源费
    * @return 影响行数
    */
   int updateInvoicesUnitMessage(
       @Param("id") String id,
       @Param("payInfoId") String payInfoId,
       @Param("invoiceUnitName") String invoiceUnitName,
-      @Param("invoiceUnitCode") String invoiceUnitCode);
+      @Param("invoiceUnitCode") String invoiceUnitCode,
+      @Param("invoiceType")String invoiceType);
 }

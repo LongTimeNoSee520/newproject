@@ -356,7 +356,14 @@ public class UseWaterUnitInvoiceController {
 
   @RequestMapping(value = "updateInvoicesUnitMessage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("更新发票的单位信息")
-  public ApiResponse updateInvoicesUnitMessage( @RequestBody JSONObject jsonObject) {
+  public ApiResponse updateInvoicesUnitMessage( @ApiParam(""
+      + "{\n"
+      + "\"id\":\"主键\",\n"
+      + "\"payInfoId\":\"缴费记录id\",\n"
+      + "\"invoiceUnitName\":\"单位名称\",\n"
+      + "\"invoiceUnitCode\":\"单位编码\",\n"
+      + "\"invoiceType\":\"0污水处理费1水资源费\"\n"
+      + "}")@RequestBody JSONObject jsonObject) {
     log.info("分页查询数据,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
     if (null == jsonObject){
@@ -367,8 +374,9 @@ public class UseWaterUnitInvoiceController {
     String payInfoId = jsonObject.getString("payInfoId");
     String invoiceUnitName = jsonObject.getString("invoiceUnitName");
     String invoiceUnitCode = jsonObject.getString("invoiceUnitCode");
+    String invoiceType = jsonObject.getString("invoiceType");
     try {
-      response = useWaterUnitInvoiceService.updateInvoicesUnitMessage(id,payInfoId,invoiceUnitName,invoiceUnitCode);
+      response = useWaterUnitInvoiceService.updateInvoicesUnitMessage(id,payInfoId,invoiceUnitName,invoiceUnitCode,invoiceType);
       return response;
     } catch (Exception e) {
       response.recordError("更新发票的单位信息异常");

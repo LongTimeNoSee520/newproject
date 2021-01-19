@@ -175,7 +175,10 @@
         invoice_unit_name = #{invoiceUnitName},
       </if>
       <if test="invoiceUnitCode != null and invoiceUnitCode != ''">
-        invoice_unit_code = #{invoiceUnitCode}
+        invoice_unit_code = #{invoiceUnitCode},
+      </if>
+      <if test="invoiceType != null and invoiceType != ''">
+        invoice_type  = #{invoiceType}
       </if>
     </set>
     <where>
