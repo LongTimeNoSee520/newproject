@@ -6,6 +6,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.PlanDailyAdjustmentVO;
 import com.zjtc.model.vo.PrintVO;
 import java.util.List;
 import java.util.Map;
@@ -75,4 +76,9 @@ public interface PlanDailyAdjustmentService extends IService<UseWaterPlan> {
 	 * @param
 	 */
 	void updateExistSettlement(String existSettlement, String unitCode, String nodeCode, Integer planYear);
+	/**
+	 * 列表查询
+	 * @param
+	 */
+	List<PlanDailyAdjustmentVO> queryList(User user, JSONObject jsonObject);
 }

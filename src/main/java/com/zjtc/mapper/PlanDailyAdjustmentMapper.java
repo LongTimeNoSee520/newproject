@@ -33,4 +33,6 @@ public interface PlanDailyAdjustmentMapper extends BaseMapper<UseWaterPlan> {
   void updateExistSettlement(@Param("existSettlement") String existSettlement,
       @Param("unitCode") String unitCode, @Param("nodeCode") String nodeCode,
       @Param("planYear") Integer planYear);
+
+  List<PlanDailyAdjustmentVO> queryList(Map<String, Object> map);
 }

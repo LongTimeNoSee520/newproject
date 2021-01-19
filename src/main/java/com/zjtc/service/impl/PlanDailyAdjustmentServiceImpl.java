@@ -487,6 +487,41 @@ public class PlanDailyAdjustmentServiceImpl extends
     this.baseMapper.updateExistSettlement(existSettlement,unitCode,nodeCode,planYear);
   }
 
+  @Override
+  public List<PlanDailyAdjustmentVO> queryList(User user, JSONObject jsonObject) {
+
+    String nodeCode = user.getNodeCode();//节点编码
+    String userId = user.getId();
+    String unitCode = jsonObject.getString("unitCode");//单位编号
+    String unitName = jsonObject.getString("unitName");//单位名称
+    String waterMeterCode = jsonObject.getString("waterMeterCode");//水表档案号
+    Integer yearStart = jsonObject.getInteger("yearStart");//计划年度起始
+    Integer yearEnd = jsonObject.getInteger("yearEnd");//计划年度截止
+
+    Map<String, Object> map = new HashMap();
+    map.put("nodeCode", nodeCode);
+    map.put("userId",userId);
+    if (StringUtils.isNotBlank(unitCode)) {
+      map.put("unitCode", unitCode);
+    }
+    if (StringUtils.isNotBlank(unitName)) {
+      map.put("unitName", unitName);
+    }
+    if (StringUtils.isNotBlank(waterMeterCode)) {
+      map.put("waterMeterCode", waterMeterCode);
+    }
+    if (null != yearStart && 0 != yearStart) {
+      map.put("yearStart", yearStart);
+    }
+    if (null != yearEnd && 0 != yearEnd) {
+      map.put("yearEnd", yearEnd);
+    }
+
+    /**查出满足条件的数据*/
+    List<PlanDailyAdjustmentVO> records = this.baseMapper.queryList(map);
+    return records;
+  }
+
   /**
    * 向上十位取整
    * 34512 返回34520。

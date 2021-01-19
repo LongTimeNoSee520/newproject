@@ -67,7 +67,30 @@ public class PlanDailyAdjustmentController {
     }
     return response;
   }
-
+  @RequestMapping(value = "queryList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "列表查询")
+  public ApiResponse queryList(@RequestHeader("token") String token,
+      @ApiParam("{\"unitCode\":\"单位编号\",\n"
+          + " \"unitName\":\"单位名称\",\n"
+          + " \"waterMeterCode\":\"水表档案号\",\n"
+          + " \"yearStart\":\"计划年度起始 数字\",\n"
+          + " \"yearEnd\":\"计划年度截止 数字\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("列表查询 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        User user = jwtUtil.getUserByToken(token);
+        response.setData( planDailyAdjustmentService.queryList(user, jsonObject));
+      } catch (Exception e) {
+        log.error("列表查询失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("分页查询参数不能为空");
+    }
+    return response;
+  }
   @RequestMapping(value = "editRemarks", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "修改备注")
   public ApiResponse editRemarks(@RequestHeader("token") String token,
