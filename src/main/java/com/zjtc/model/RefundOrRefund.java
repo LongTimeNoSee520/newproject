@@ -124,12 +124,12 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
     * 
     */
     @ApiModelProperty("审核时间")
-    @TableField(value = "audit_ttime",exist = true)
-    private java.time.Instant auditTtime;
+    @TableField(value = "audit_time",exist = true)
+    private java.time.Instant auditTime;
     /**
     * 
     */
-    @ApiModelProperty("状态")
+    @ApiModelProperty("状态,0:初始状态")
     @TableField(value = "status",exist = true)
     private String status;
 	/**

@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.activerecord.Model;
+import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -57,7 +58,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     /**
     * 
     */
-    @ApiModelProperty("付款方式")
+    @ApiModelProperty("付款方式，默认0，2现金,3转账")
     @TableField(value = "pay_type",exist = true)
     private String payType;
     /**
@@ -71,7 +72,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     */
     @ApiModelProperty("开票日期")
     @TableField(value = "invoice_print_time",exist = true)
-    private java.time.Instant invoicePrintTime;
+    private Date invoicePrintTime;
     /**
     * 
     */
@@ -171,7 +172,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     /**
     * 
     */
-    @ApiModelProperty("缴费状态")
+    @ApiModelProperty("缴费状态,// 0未缴费 1托收已缴费  5非托收已缴费")
     @TableField(value = "pay_status",exist = true)
     private String payStatus;
     /**
@@ -219,25 +220,25 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     /**
     * 
     */
-    @ApiModelProperty("是否修改过实收")
+    @ApiModelProperty("是否修改过实收，0否，1是")
     @TableField(value = "edited_actual",exist = true)
     private String editedActual;
     /**
     * 
     */
-    @ApiModelProperty("托收缴费")
+    @ApiModelProperty("是否需要托收，0否，1是")
     @TableField(value = "entrusted",exist = true)
     private String entrusted;
     /**
     * 
     */
-    @ApiModelProperty("现金财务复核")
+    @ApiModelProperty("现金财务复核，0否，1是")
     @TableField(value = "cash_check",exist = true)
     private String cashCheck;
     /**
     * 
     */
-    @ApiModelProperty("转账财务复核")
+    @ApiModelProperty("转账财务复核，0否 ，1是")
     @TableField(value = "transfer_check",exist = true)
     private String transferCheck;
     /**
@@ -245,7 +246,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     */
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time",exist = true,fill = FieldFill.INSERT)
-    private java.time.Instant createTime;
+    private Date createTime;
 	/**
 	 * 实例化
 	 */

@@ -5,8 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zjtc.base.constant.ResponseMsgConstants;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.JWTUtil;
+import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
 import com.zjtc.service.WaterUsePayInfoService;
+import io.swagger.annotations.ApiParam;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -31,6 +35,8 @@ import io.swagger.annotations.Api;
 @Api(description = "xxx rest服务")
 @Slf4j
 public class WaterUsePayInfoController {
+	@Autowired
+	private JWTUtil jwtUtil;
 
 	/** WaterUsePayInfoService服务 */
 	@Autowired
@@ -38,12 +44,28 @@ public class WaterUsePayInfoController {
 
 	@RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "分页查询xxx内容")
-	public ApiResponse queryPage(@RequestBody JSONObject jsonObject) {
+	public ApiResponse queryPage(@RequestBody JSONObject jsonObject,
+			@ApiParam("{\n"
+					+ "  \"current\":\"当前页，必填\",\n"
+					+ "  \"size\":\"当前页数据条数，必填\",\n"
+					+ "  \"unitName\":\"单位名称\",\n"
+					+ "  \"unitCode\":\"单位编号\",\n"
+					+ "  \"countYear\":\"年，必填\",\n"
+					+ "  \"countQuarter\":\"季度，必填\",\n"
+					+ "  \"payStatus\":\"缴费状态：0：未缴费，1已缴费\",\n"
+					+ "  \"actualAmount\":\"金额\",\n"
+					+ "  \"userType\":\"用户类型\",\n"
+					+ "  \"waterMeterCode\":\"水表档案号\",\n"
+					+ "  \"editedActual\":\"是否调整,0否，1是\",\n"
+					+ "  \"payType\":\"付款方式：2现金,3转账\"\n"
+					+ "}") @RequestHeader("token") String token) {
 		log.info("分页查询 ==== 参数{" + jsonObject.toJSONString() + "}");
 		ApiResponse apiResponse = new ApiResponse();
-		if (null != jsonObject) {
+		User user=jwtUtil.getUserByToken(token);
+		if (null != jsonObject && null !=user) {
 			try {
-				Page<WaterUsePayInfo> result = waterUsePayInfoService.queryPage(jsonObject);
+				jsonObject.put("userId",user.getId());
+				Map<String,Object> result = waterUsePayInfoService.queryPage(jsonObject);
 				apiResponse.setData(result);
 				apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
 			} catch (Exception e) {
@@ -63,14 +85,17 @@ public class WaterUsePayInfoController {
 	 * @return
 	 */
 	@ResponseBody
-	@ApiOperation(value = "新增")
+	@ApiOperation(value = "保存")
 	@RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ApiResponse add(@RequestHeader("token")String token,@RequestBody JSONObject jsonObject) {
+	public ApiResponse add(@RequestHeader("token")String token,@ApiParam("{\n"
+			+ "  \"描述：\"\n"
+			+ "\n"
+			+ "}") @RequestBody JSONObject jsonObject) {
 		log.info("新增==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
 		ApiResponse apiResponse = new ApiResponse();
 		if (null != jsonObject) {
 			try {
-				boolean result = waterUsePayInfoService.saveModel(jsonObject);
+				boolean result = waterUsePayInfoService.updateModel(jsonObject);
 				if (result) {
 					apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
 				} else {
@@ -87,57 +112,30 @@ public class WaterUsePayInfoController {
 		return apiResponse;
 	}
 
-	/**
-	 * 修改
-	 * @param
-	 * @return
-	 */
-    @ResponseBody
-    @ApiOperation(value = "修改")
-    @RequestMapping(value = "edit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ApiResponse edit(@RequestHeader("token")String token,@RequestBody JSONObject jsonObject) {
-		log.info("修改==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
-		ApiResponse apiResponse = new ApiResponse();
-		if (null != jsonObject) {
-			try {
-				boolean result = waterUsePayInfoService.updateModel(jsonObject);
-				if (result) {
-					apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
-				} else {
-					apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
-				}
-			} catch (Exception e) {
-				log.error("修改错误,errMsg==={}", e.getMessage());
-				e.printStackTrace();
-				apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
-			}
-		} else {
-			apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
-		}
-		return apiResponse;
-	}
 
-	/**
-	 * 通过id删除WaterUsePayInfo数据方法
-	 * @param
-	 * @return
-	 */
-    @ResponseBody
-    @ApiOperation(value = "删除")
-    @RequestMapping(value = "remove", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ApiResponse remove(@RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
-		log.info("删除 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+	@ResponseBody
+	@ApiOperation(value = "重算加价")
+	@RequestMapping(value = "initPayInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ApiResponse initPayInfo(@RequestHeader("token") String token,@ApiParam("{\n"
+			+ "  \"countYear\":\"年，必填\",\n"
+			+ "  \"countQuarter\":\"季度，必填\",\n"
+			+ "  \"unitIds\":[单位id数组 取字段useWaterUnitId的值]\n"
+			+ "  \n"
+			+ "}") @RequestBody JSONObject jsonObject) {
+		log.info("重算加价， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
 		ApiResponse apiResponse = new ApiResponse();
-		if (null != jsonObject) {
+		User user=jwtUtil.getUserByToken(token);
+		if (null != jsonObject && null !=user) {
 			try {
-				boolean result = waterUsePayInfoService.deleteModel(jsonObject);
+				jsonObject.put("nodeCode",user.getNodeCode());
+				boolean result = waterUsePayInfoService.initPayInfo(jsonObject);
 				if (result) {
 					apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
 				} else {
 					apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
 				}
 			} catch (Exception e) {
-				log.error("删除错误,errMsg==={}", e.getMessage());
+				log.error("重算加价错误,errMsg==={}", e.getMessage());
 				e.printStackTrace();
 				apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
 			}

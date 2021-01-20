@@ -154,7 +154,7 @@
   <select id="maxUnitCode" resultType="String">
     SELECT
     max(
-    substring( unit_code, 7, 9 )
+    substring( unit_code, 7, 3 )
     )
     FROM
     t_w_use_water_unit

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.WaterUsePayInfo;
+import java.util.Map;
 
 /**
  * WaterUsePayInfo的服务接口
@@ -38,5 +39,11 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
 	* 分页查询
 	* @return
 	*/
-	Page<WaterUsePayInfo> queryPage(JSONObject jsonObject);
+	Map<String,Object> queryPage(JSONObject jsonObject);
+	/**
+	 *重算加价
+	 */
+	boolean initPayInfo(JSONObject jsonObject);
+
+
 }
