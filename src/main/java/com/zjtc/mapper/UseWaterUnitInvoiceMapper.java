@@ -59,7 +59,9 @@ public interface UseWaterUnitInvoiceMapper extends BaseMapper<UseWaterUnitInvoic
       @Param("begin") int begin,
       @Param("end") int end,
       @Param("personId") String personId,
-      @Param("loginId") String loginId);
+      @Param("loginId") String loginId,
+      @Param("nodeCode") String nodeCode
+  );
 
   /**
    * 条件查询总条数

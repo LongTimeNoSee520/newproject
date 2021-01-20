@@ -259,7 +259,7 @@ public class UseWaterUnitInvoiceController {
     String begin = jsonObject.getString("begin");
     String end = jsonObject.getString("end");
     String personId = jsonObject.getString("personId");
-    response = useWaterUnitInvoiceService.shift(begin, end, personId, user.getId());
+    response = useWaterUnitInvoiceService.shift(begin, end, personId, user.getId(),user.getNodeCode());
     return response;
   }
 

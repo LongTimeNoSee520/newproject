@@ -203,14 +203,14 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public ApiResponse shift(String begin, String end, String personId, String loginId) {
+  public ApiResponse shift(String begin, String end, String personId, String loginId,String nodeCode) {
     ApiResponse response = new ApiResponse();
     if (StringUtils.isBlank(begin) || StringUtils.isBlank(end) || StringUtils.isBlank(personId)) {
       response.recordError("系统异常");
     }
 
     int i = this.baseMapper
-        .updateUid(Integer.parseInt(begin), Integer.parseInt(end), personId, loginId);
+        .updateUid(Integer.parseInt(begin), Integer.parseInt(end), personId, loginId,nodeCode);
     if (i > 0) {
       response.setCode(200);
       response.setMessage("已移交:" + i + "张发票");

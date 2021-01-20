@@ -61,7 +61,7 @@
     WHERE
     (convert(int,invoice_number) &gt;= #{begin} AND convert(int,invoice_number) &lt;= #{end})
     AND person = #{loginId}
-    and deleted = '0'
+    and deleted = '0' AND (pay_info_id = null or pay_info_id = '') and enabled = '0'  AND received = '0' and node_code = #{nodeCode}
   </update>
 
   <select id="selectCount" resultType="int">

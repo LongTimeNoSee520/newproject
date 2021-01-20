@@ -63,7 +63,7 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
    * @param personId 所领取人id
    * @return 响应结果
    */
-  ApiResponse shift(String begin,String end,String personId,String loginId);
+  ApiResponse shift(String begin,String end,String personId,String loginId,String nodeCode);
 
   /**
    * 发票标记
