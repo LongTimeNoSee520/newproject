@@ -124,6 +124,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
     UseWaterUnitInvoice unitInvoice;
     List<UseWaterUnitInvoice> list = new ArrayList<>();
     boolean b = false;
+    // TODO: 2021/1/19 取消发票作废之前判断是否也有其他被作废的状态,如果有,就根据开票时间选择留最先选择的发票号
     for (String id : ids) {
       unitInvoice = new UseWaterUnitInvoice();
       unitInvoice.setId(id);
@@ -143,23 +144,29 @@ public class UseWaterUnitInvoiceServiceImpl extends
   @Override
   public ApiResponse cancelAbolish(List<String> ids) {
     ApiResponse response = new ApiResponse();
-    UseWaterUnitInvoice unitInvoice;
-    List<UseWaterUnitInvoice> list = new ArrayList<>();
-    boolean b = false;
+    int b = 0;
     for (String id : ids) {
-      unitInvoice = new UseWaterUnitInvoice();
-      unitInvoice.setId(id);
-      unitInvoice.setEnabled("0");
-      list.add(unitInvoice);
+      UseWaterUnitInvoice unitInvoice1 = this.baseMapper.selectById(id);
+      List<String> invoiceNumberList = this.baseMapper.selectEnabledStatus(unitInvoice1.getPayInfoId());
+      if (!invoiceNumberList.isEmpty()) {
+        String invoiceNumbers = StringUtils.strip(invoiceNumberList.toString(), "[]")
+            .replace(" ", "");
+        response.recordError("请先取消作废发票号为:" + invoiceNumbers + "的数据");
+        return response;
+      }
+      if ("0".equals(unitInvoice1.getEnabled())){
+        response.recordError("请先选择已作废的数据");
+        return response;
+      }
+      b =  this.baseMapper.updateEnabledStatus(id);
     }
-    b = this.updateBatchById(list);
-    if (b) {
+    if (b > 0) {
       response.setCode(200);
       return response;
+    }else {
+      response.recordError("操作失败失败");
+      return response;
     }
-    response.setMessage("发票取消作废失败");
-    response.setCode(500);
-    return response;
   }
 
 
@@ -308,19 +315,27 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public ApiResponse updateInvoicesUnitMessage(String id, String payInfoId, String invoiceUnitName,
-      String invoiceUnitCode,String invoiceType) {
+  public ApiResponse updateInvoicesUnitMessage(UseWaterUnitInvoice useWaterUnitInvoice,
+      String userName) {
     ApiResponse response = new ApiResponse();
-    if (StringUtils.isBlank(id) || StringUtils.isBlank(payInfoId) || StringUtils
-        .isBlank(invoiceUnitName) || StringUtils.isBlank(invoiceUnitCode) || StringUtils.isBlank(invoiceType)) {
+    if (null == useWaterUnitInvoice || StringUtils.isBlank(userName)) {
       response.recordError("系统异常");
       return response;
     }
-      int i = this.baseMapper.updateInvoicesUnitMessage(id,payInfoId,invoiceUnitName,invoiceUnitCode,invoiceType);
-    if (i>0){
+//    UseWaterUnitInvoice unitInvoice = this.baseMapper.selectById(useWaterUnitInvoice.getId());
+//    if (unitInvoice.getPayInfoId() != null || !unitInvoice.getPayInfoId().isEmpty()) {
+//      response.recordError("发票号已被使用");
+//      return response;
+//    } else if ("1".equals(unitInvoice.getEnabled())) {
+//      response.recordError("发票号已经被作废,不能使用");
+//      return response;
+//    }
+    useWaterUnitInvoice.setInvoiceDate(new Date());
+    int i = this.baseMapper.updateInvoicesUnitMessage(useWaterUnitInvoice, userName);
+    if (i > 0) {
       response.setCode(200);
       return response;
-    }else{
+    } else {
       response.recordError(" 单位信息关联发票失败");
       return response;
     }

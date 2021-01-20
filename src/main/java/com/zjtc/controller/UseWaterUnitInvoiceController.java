@@ -356,27 +356,28 @@ public class UseWaterUnitInvoiceController {
 
   @RequestMapping(value = "updateInvoicesUnitMessage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("更新发票的单位信息")
-  public ApiResponse updateInvoicesUnitMessage( @ApiParam(""
-      + "{\n"
+  public ApiResponse updateInvoicesUnitMessage( @ApiParam("{\n"
       + "\"id\":\"主键\",\n"
       + "\"payInfoId\":\"缴费记录id\",\n"
-      + "\"invoiceUnitName\":\"单位名称\",\n"
-      + "\"invoiceUnitCode\":\"单位编码\",\n"
-      + "\"invoiceType\":\"0污水处理费1水资源费\"\n"
-      + "}")@RequestBody JSONObject jsonObject) {
+      + "\"invoiceMoney\":\"发票金额\",\n"
+      + "\"invoiceUnitName\":\"发票单位名称\",\n"
+      + "\"invoiceType\":\"0有效1作废\",\n"
+      + "\"invoiceUnitCode\":\"发票单位编号\"\n"
+      + "}")@RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     log.info("分页查询数据,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
     if (null == jsonObject){
       response.recordError("系统异常");
       return response;
     }
-    String id = jsonObject.getString("id");
-    String payInfoId = jsonObject.getString("payInfoId");
-    String invoiceUnitName = jsonObject.getString("invoiceUnitName");
-    String invoiceUnitCode = jsonObject.getString("invoiceUnitCode");
-    String invoiceType = jsonObject.getString("invoiceType");
+    User user = jwtUtil.getUserByToken(token);
+    if (null == user){
+      response.recordError("系统异常");
+      return response;
+    }
+    UseWaterUnitInvoice unitInvoice = jsonObject.toJavaObject(UseWaterUnitInvoice.class);
     try {
-      response = useWaterUnitInvoiceService.updateInvoicesUnitMessage(id,payInfoId,invoiceUnitName,invoiceUnitCode,invoiceType);
+      response = useWaterUnitInvoiceService.updateInvoicesUnitMessage(unitInvoice,user.getUsername());
       return response;
     } catch (Exception e) {
       response.recordError("更新发票的单位信息异常");

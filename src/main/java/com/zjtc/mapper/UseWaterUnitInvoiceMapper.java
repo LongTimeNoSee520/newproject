@@ -115,17 +115,21 @@ public interface UseWaterUnitInvoiceMapper extends BaseMapper<UseWaterUnitInvoic
 
   /**
    * 单位信息关联发票
-   * @param id 主键id
-   * @param payInfoId 单位id
-   * @param invoiceUnitName 单位名称
-   * @param invoiceUnitCode 单位编号
-   * @param invoiceType 0污水处理费1水资源费
    * @return 影响行数
    */
-  int updateInvoicesUnitMessage(
-      @Param("id") String id,
-      @Param("payInfoId") String payInfoId,
-      @Param("invoiceUnitName") String invoiceUnitName,
-      @Param("invoiceUnitCode") String invoiceUnitCode,
-      @Param("invoiceType")String invoiceType);
+  int updateInvoicesUnitMessage(@Param("useWaterUnitInvoice") UseWaterUnitInvoice useWaterUnitInvoice,@Param("userName") String userName);
+
+  /**
+   * 根据id查询是否有相同单位id的作废状态
+   * @param id 单位id
+   * @return 集合
+   */
+  List<String> selectEnabledStatus(@Param("id") String id);
+
+  /**
+   * 根据id修改作废状态
+   * @param id 主键
+   * @return 影响行数
+   */
+  int updateEnabledStatus(@Param("id") String id);
 }

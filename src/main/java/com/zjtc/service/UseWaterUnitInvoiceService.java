@@ -90,12 +90,9 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
 
   /**
    * 更新发票的单位信息
-   * @param id 主键
-   * @param payInfoId 缴费记录id
-   * @param invoiceUnitName 单位名称
-   * @param invoiceUnitCode 单位编码
-   * @param invoiceType 0污水处理费1水资源费
+   * @param useWaterUnitInvoice 发票实体
+   * @param userName 经手人
    * @return 结果集
    */
-  ApiResponse updateInvoicesUnitMessage(String id,String payInfoId,String invoiceUnitName,String invoiceUnitCode,String invoiceType);
+  ApiResponse updateInvoicesUnitMessage(UseWaterUnitInvoice useWaterUnitInvoice,String userName);
 }

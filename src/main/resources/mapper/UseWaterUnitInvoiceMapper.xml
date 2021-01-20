@@ -163,27 +163,63 @@
     AND enabled = '0'
     AND received = '0'
     AND deleted = '0'
+    order by invoice_number desc
   </select>
 
   <update id="updateInvoicesUnitMessage" >
     update t_w_use_water_unit_invoice
     <set>
-      <if test="payInfoId != null and payInfoId != ''">
-        pay_info_id = #{payInfoId},
+      <if test="useWaterUnitInvoice.payInfoId != null and useWaterUnitInvoice.payInfoId != ''">
+        pay_info_id = #{useWaterUnitInvoice.payInfoId},
       </if>
-      <if test="invoiceUnitName != null and invoiceUnitName != ''">
-        invoice_unit_name = #{invoiceUnitName},
+      <if test="useWaterUnitInvoice.invoiceDate != null">
+        invoice_date = #{useWaterUnitInvoice.invoiceDate},
       </if>
-      <if test="invoiceUnitCode != null and invoiceUnitCode != ''">
-        invoice_unit_code = #{invoiceUnitCode},
+      <if test="useWaterUnitInvoice.invoiceMoney != null and useWaterUnitInvoice.invoiceMoney != ''">
+        invoice_money = #{useWaterUnitInvoice.invoiceMoney},
       </if>
-      <if test="invoiceType != null and invoiceType != ''">
-        invoice_type  = #{invoiceType}
+      <if test="useWaterUnitInvoice.invoiceUnitName != null and useWaterUnitInvoice.invoiceUnitName != ''">
+        invoice_unit_name = #{useWaterUnitInvoice.invoiceUnitName},
+      </if>
+      <if test="useWaterUnitInvoice.invoiceType != null and useWaterUnitInvoice.invoiceType != ''">
+        invoice_type  = #{useWaterUnitInvoice.invoiceType},
+      </if>
+      <if test="useWaterUnitInvoice.invoiceUnitCode != null and useWaterUnitInvoice.invoiceUnitCode != ''">
+        invoice_unit_code = #{useWaterUnitInvoice.invoiceUnitCode},
+      </if>
+      <if test="userName != null and userName != ''">
+        drawer = #{userName}
       </if>
     </set>
     <where>
-      id = #{id}
+      id = #{useWaterUnitInvoice.id}
     </where>
+  </update>
+
+  <select id="selectEnabledStatus" resultType="String">
+    SELECT
+    invoice_number
+    FROM
+    t_w_use_water_unit_invoice
+    WHERE
+    invoice_date > (
+    SELECT MIN
+    ( invoice_date )
+    FROM
+    t_w_use_water_unit_invoice
+    WHERE
+    pay_info_id IN ( SELECT pay_info_id FROM t_w_use_water_unit_invoice WHERE pay_info_id = #{id} AND enabled = '1' AND deleted = '0')
+    AND enabled = '1' AND deleted = '0'
+    )
+    AND enabled = '1' AND deleted = '0' ORDER BY invoice_number desc
+  </select>
+
+  <update id="updateEnabledStatus" >
+    update t_w_use_water_unit_invoice
+    <set>
+      enabled = '0'
+    </set>
+    where id = #{id}
   </update>
 
 </mapper>
