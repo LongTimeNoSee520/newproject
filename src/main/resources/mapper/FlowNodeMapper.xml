@@ -33,7 +33,7 @@
   </resultMap>
 
   <select id="selectNodes" resultMap="flowInfoResult">
-    SELECT node_code,flow_id,flow_node_name,remark,flow_node_role_id,
+    SELECT id,node_code,flow_id,flow_node_name,remark,flow_node_role_id,
     flow_node_role_name,flow_node_code,flow_sort
     FROM t_flow_node
     WHERE flow_id =(SELECT id FROM t_flow WHERE node_code = #{nodeCode} AND flow_code = #{flowCode})

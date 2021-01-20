@@ -28,20 +28,29 @@ public class FlowNodeLineInfoServiceImpl extends
   @Autowired
   private FlowNodeLineService flowNodeLineService;
 
-  @Override
-  public void selectAndInsert(String nodeCode,String flowCode) {
-    /**1.查询办结单审核流程的流程线数据*/
-//    final  String flowCode="endPaperFlow";
-    List<FlowNodeLineInfo> flowNodeLineInfos = flowNodeLineService.selectLineInfo(flowCode,nodeCode);
-    if (flowNodeLineInfos.isEmpty()){
-      log.info("没有查询到流程节点线数据");
-    }else {
-      /**2.复制到流程节点线记录表*/
-      for (FlowNodeLineInfo flowNodeLineInfo: flowNodeLineInfos){
-        flowNodeLineInfo.setId(UUID.randomUUID().toString().replace("-", ""));
-        flowNodeLineInfo.setCreateTime(new Date());
-      }
-    }
+//  @Override
+//  public void selectAndInsert(String nodeCode,String flowCode) {
+//    /**1.查询办结单审核流程的流程线数据*/
+////    final  String flowCode="endPaperFlow";
+//    List<FlowNodeLineInfo> flowNodeLineInfos = flowNodeLineService.selectLineInfo(flowCode,nodeCode);
+//    if (flowNodeLineInfos.isEmpty()){
+//      log.info("没有查询到流程节点线数据");
+//    }else {
+//      /**2.复制到流程节点线记录表*/
+//      for (FlowNodeLineInfo flowNodeLineInfo: flowNodeLineInfos){
+//        flowNodeLineInfo.setId(UUID.randomUUID().toString().replace("-", ""));
+//        flowNodeLineInfo.setCreateTime(new Date());
+//      }
+//    }
+//
+//  }
 
+  @Override
+  public void add(List<FlowNodeLineInfo> flowNodeLineInfos) {
+    for (FlowNodeLineInfo flowNodeLineInfo: flowNodeLineInfos){
+      flowNodeLineInfo.setId(UUID.randomUUID().toString().replace("-", ""));
+      flowNodeLineInfo.setCreateTime(new Date());
+    }
+    this.insertBatch(flowNodeLineInfos);
   }
 }
