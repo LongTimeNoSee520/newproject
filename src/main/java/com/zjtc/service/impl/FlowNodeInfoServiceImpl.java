@@ -37,8 +37,11 @@ public class FlowNodeInfoServiceImpl extends
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void selectAndInsert(String nodeCode, String businessId, String flowCode) {
-    /**1.从流程节点表查询办结单/退减免单审核流程节点数据*/
+    /**从流程节点表查询办结单/退减免单审核流程节点数据*/
     List<FlowNodeInfo> flowNodeInfos = flowNodeService.selectNodes(nodeCode, flowCode);
+    /**从流程线表查询办结单/退减免单审核流程线数据*/
+    List<FlowNodeLineInfo> flowNodeLineInfos = flowNodeLineService
+        .selectLineInfo(flowCode, nodeCode);
     if (flowNodeInfos.isEmpty()) {
       log.info("没有查询到办结单/退减免单审核流程节点数据");
     } else {
@@ -52,8 +55,6 @@ public class FlowNodeInfoServiceImpl extends
          * 为“流程节点表”配置的节点流程id的 都设置为“流程节点信息表”的id
          * (即通过uuid生成的id flowNodeInfo.setId())
          * */
-        List<FlowNodeLineInfo> flowNodeLineInfos = flowNodeLineService
-            .selectLineInfo(flowCode, nodeCode);
         if (!flowNodeLineInfos.isEmpty()) {
           for (FlowNodeLineInfo flowNodeLineInfo : flowNodeLineInfos) {
             if (flowNodeLineInfo.getFlowNodeId().equals(flowNodeId)) {
@@ -64,9 +65,9 @@ public class FlowNodeInfoServiceImpl extends
             }
           }
         }
-        /**插入重新设置了flow_node_id，next_node_id的"流程线表"数据到"流程线信息表"*/
-        flowNodeLineInfoService.add(flowNodeLineInfos);
       }
+      /**插入重新设置了flow_node_id，next_node_id的"流程线表"数据到"流程线信息表"*/
+      flowNodeLineInfoService.add(flowNodeLineInfos);
       this.insertBatch(flowNodeInfos);
     }
 

@@ -12,8 +12,8 @@ import java.util.Map;
 public interface FlowNodeInfoService extends IService<FlowNodeInfo> {
 
   /**
-   * 查询办结单审核流程的流程节点数据、
-   * 并复制到流程节点记录表
+   * 查询办结单/退减免单审核流程的流程节点数据、流程线数据
+   * 并复制到流程节点记录表、流程节点线记录表
    * */
   void selectAndInsert(String nodeCode,String businessId,String flowCode);
 

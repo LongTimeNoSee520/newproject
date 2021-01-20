@@ -47,10 +47,12 @@ public class FlowNodeLineInfoServiceImpl extends
 
   @Override
   public void add(List<FlowNodeLineInfo> flowNodeLineInfos) {
-    for (FlowNodeLineInfo flowNodeLineInfo: flowNodeLineInfos){
-      flowNodeLineInfo.setId(UUID.randomUUID().toString().replace("-", ""));
-      flowNodeLineInfo.setCreateTime(new Date());
+    if (!flowNodeLineInfos.isEmpty()) {
+      for (FlowNodeLineInfo flowNodeLineInfo : flowNodeLineInfos) {
+        flowNodeLineInfo.setId(UUID.randomUUID().toString().replace("-", ""));
+        flowNodeLineInfo.setCreateTime(new Date());
+      }
+      this.insertBatch(flowNodeLineInfos);
     }
-    this.insertBatch(flowNodeLineInfos);
   }
 }
