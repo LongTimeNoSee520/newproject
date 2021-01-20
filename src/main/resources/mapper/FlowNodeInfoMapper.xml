@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.FlowNodeInfoMapper">
+
+  <select id="firStAuditRole" resultType="java.util.LinkedHashMap">
+      SELECT
+        t1.userId,
+        t1.username,
+        t3.org_name AS orgName
+      FROM
+        (
+      SELECT
+        id AS userRoleRefId,
+        user_id AS userId,
+        user_name AS username,
+        role_name,
+        rank
+      FROM
+        t_user_role_ref
+      WHERE
+        role_id = (
+      SELECT
+        top 1 flow_node_role_id AS role_id
+      FROM
+        t_flow_node
+      WHERE
+        flow_id = ( SELECT id FROM t_flow WHERE node_code = #{nodeCode} AND flow_code = #{flowCode} )
+      AND node_code = #{nodeCode}
+      ORDER BY
+        flow_sort ASC
+        )
+        ) t1
+        inner JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t1.userId = t2.id
+        inner JOIN ( SELECT id, org_name FROM t_org  where node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
+      ORDER BY
+        t1.rank ASC
+  </select>
+
+  <select id="nextAuditRole" resultType="java.util.LinkedHashMap">
+      SELECT
+        t1.userId,
+        t1.username,
+        t3.org_name AS orgName
+      FROM
+        (
+      SELECT
+        id AS userRoleRefId,
+        user_id AS userId,
+        user_name AS username,
+        role_name,
+        rank
+      FROM
+        t_user_role_ref
+      WHERE
+        role_id =(
+          select
+          flow_node_role_id as role_id
+          from t_flow_node_info
+          where id=
+          (
+            select
+            next_node_id as id
+            from
+            t_flow_node_line_info
+              where operate_type=#{auditBtn}
+            and flow_node_id=
+               (
+                     SELECT
+                       id as flow_node_id
+                      FROM
+                        t_flow_node_info
+                      WHERE
+                        business_id =#{ id }
+                        AND node_code =#{ nodeCode }
+                        AND flow_sort = (
+                      SELECT
+                        ( flow_sort + 1 ) AS flow_sort
+                      FROM
+                        t_flow_node_info
+                      WHERE
+                        business_id =#{ id }
+                        AND id = ( SELECT next_node_id AS id  FROM ${tableName} where id =#{ id } )
+                        AND node_code =#{ nodeCode }
+                   )
+                )
+          )
+        )
+        ) t1
+        LEFT JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t1.userId = t2.id
+        LEFT JOIN ( SELECT id, org_name FROM t_org  where  node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
+      ORDER BY
+        t1.rank ASC
+  </select>
+
+</mapper>

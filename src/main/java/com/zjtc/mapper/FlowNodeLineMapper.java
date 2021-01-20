@@ -6,6 +6,7 @@ import com.zjtc.model.FlowNodeLine;
 import com.zjtc.model.FlowNodeLineInfo;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author lianghao
@@ -14,5 +15,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface FlowNodeLineMapper extends BaseMapper<FlowNodeLine> {
 
-  List<FlowNodeLineInfo> selectLineInfo(String flowCode, String nodeCode);
+  List<FlowNodeLineInfo> selectLineInfo(@Param("flowCode") String flowCode, @Param("nodeCode") String nodeCode);
 }

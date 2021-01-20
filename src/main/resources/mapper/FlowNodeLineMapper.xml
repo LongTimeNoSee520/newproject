@@ -10,7 +10,7 @@
 		<result column="next_node_id" property="nextNodeId" />
 		<result column="create_time" property="createTime" />
 	</resultMap>
-	<resultMap id="FlowNodeLineInfoMap" type="com.zjtc.model.FlowNodeLine">
+	<resultMap id="FlowNodeLineInfoMap" type="com.zjtc.model.FlowNodeLineInfo">
 		<result column="node_code" property="nodeCode" />
 		<result column="flow_node_id" property="flowNodeId" />
 		<result column="operate_type" property="operateType" />

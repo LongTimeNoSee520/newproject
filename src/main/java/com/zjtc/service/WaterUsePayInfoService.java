@@ -45,5 +45,23 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
 	 */
 	boolean initPayInfo(JSONObject jsonObject);
 
+	/**
+	 * 发起退款单
+	 * @param jsonObject
+	 * @return
+	 */
+	boolean  toStartRefund(JSONObject jsonObject);
+	/**
+	 *发起减免单
+	 * @param jsonObject
+	 * @return
+	 */
+	boolean  toStartReduction(JSONObject jsonObject);
 
+	/**
+	 * 发票号作废，清除发票号，开票时间
+	 * @param waterUsePayInfo
+	 * @return
+	 */
+	boolean updateinvoiceNumRef(WaterUsePayInfo waterUsePayInfo);
 }

@@ -132,6 +132,12 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
     @ApiModelProperty("状态,0:初始状态")
     @TableField(value = "status",exist = true)
     private String status;
+    /**
+     *
+     */
+    @ApiModelProperty("下一环节id")
+    @TableField(value = "next_node_id",exist = true)
+    private String nextNodeId;
 	/**
 	 * 实例化
 	 */

@@ -77,4 +77,26 @@ public class WaterUsePayInfoServiceImpl extends
 
   }
 
+  @Override
+  public boolean toStartRefund(JSONObject jsonObject) {
+    //退减免单单新增一条数据
+    //发起审核流程
+    //创建流程节点记录表
+    //流程节点线记录表
+    //流程进度（审核）表
+    //流程实例表
+    return false;
+  }
+
+  @Override
+  public boolean toStartReduction(JSONObject jsonObject) {
+    return false;
+  }
+
+  @Override
+  public boolean updateinvoiceNumRef(WaterUsePayInfo waterUsePayInfo) {
+   return this.updateById(waterUsePayInfo);
+  }
+
+
 }
