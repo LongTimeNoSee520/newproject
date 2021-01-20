@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.FlowNodeMapper">
+
+  <!-- 开启二级缓存 -->
+  <!--<cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>-->
+
+  <resultMap type="com.zjtc.model.FlowNode" id="flow_result">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="flow_id" property="flowId" jdbcType="VARCHAR"/>
+    <result column="flow_node_name" property="flowNodeName" jdbcType="VARCHAR"/>
+    <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="flow_node_role_id" property="flowNodeRoleId" jdbcType="VARCHAR"/>
+    <result column="flow_node_role_name" property="flowNodeRoleName" jdbcType="VARCHAR"/>
+    <result column="flow_node_code" property="flowNodeCode" jdbcType="VARCHAR"/>
+    <result column="flow_sort" property="flowSort" jdbcType="INTEGER"/>
+  </resultMap>
+
+  <resultMap id="flowInfoResult" type="com.zjtc.model.FlowNodeInfo" >
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="flow_id" property="flowId" jdbcType="VARCHAR"/>
+    <result column="flow_node_name" property="flowNodeName" jdbcType="VARCHAR"/>
+    <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    <!--<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>-->
+    <result column="flow_node_role_id" property="flowNodeRoleId" jdbcType="VARCHAR"/>
+    <result column="flow_node_role_name" property="flowNodeRoleName" jdbcType="VARCHAR"/>
+    <result column="flow_node_code" property="flowNodeCode" jdbcType="VARCHAR"/>
+    <result column="flow_sort" property="flowSort" jdbcType="INTEGER"/>
+    <!--<result column="business_id" property="businessId" jdbcType="INTEGER"/>-->
+  </resultMap>
+
+  <select id="selectNodes" resultMap="flowInfoResult">
+    SELECT node_code,flow_id,flow_node_name,remark,flow_node_role_id,
+    flow_node_role_name,flow_node_code,flow_sort
+    FROM t_flow_node
+    WHERE flow_id =(SELECT id FROM t_flow WHERE node_code = #{nodeCode} AND flow_code = #{flowCode})
+  </select>
+
+</mapper>
