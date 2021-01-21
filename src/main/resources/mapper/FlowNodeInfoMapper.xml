@@ -4,58 +4,50 @@
 <mapper namespace="com.zjtc.mapper.FlowNodeInfoMapper">
 
   <select id="firStAuditRole" resultType="java.util.LinkedHashMap">
-      SELECT
-        t1.userId,
-        t1.username,
-        t3.org_name AS orgName
-      FROM
-        (
-      SELECT
-        id AS userRoleRefId,
-        user_id AS userId,
-        user_name AS username,
-        role_name,
-        rank
-      FROM
-        t_user_role_ref
-      WHERE
-        role_id = (
-      SELECT
-        top 1 flow_node_role_id AS role_id
-      FROM
-        t_flow_node
-      WHERE
-        flow_id = ( SELECT id FROM t_flow WHERE node_code = #{nodeCode} AND flow_code = #{flowCode} )
-      AND node_code = #{nodeCode}
-      ORDER BY
-        flow_sort ASC
-        )
-        ) t1
-        inner JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t1.userId = t2.id
-        inner JOIN ( SELECT id, org_name FROM t_org  where node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
-      ORDER BY
-        t1.rank ASC
+        SELECT
+          t1.userId,
+          t1.username,
+          t3.org_name AS orgName
+        FROM
+          (
+        SELECT
+          id AS userRoleRefId,
+          user_id AS userId,
+          user_name AS username,
+          role_name,
+          rank
+        FROM
+          t_user_role_ref
+        WHERE
+          role_id = (
+        SELECT
+          top 1 flow_node_role_id AS role_id
+        FROM
+          t_flow_node
+        WHERE
+          flow_id = ( SELECT id FROM t_flow WHERE node_code = #{nodeCode} AND flow_code = #{flowCode} )
+        AND node_code = #{nodeCode}
+        ORDER BY
+          flow_sort ASC
+          )
+          ) t1
+          inner JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t1.userId = t2.id
+          inner JOIN ( SELECT id, org_name FROM t_org  where node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
+        ORDER BY
+          t1.rank ASC
   </select>
 
   <select id="nextAuditRole" resultType="java.util.LinkedHashMap">
       SELECT
-        t1.userId,
-        t1.username,
+        t1.id as flowNodeId,
+        t4.user_id as userId,
+        t4.user_name as userName,
         t3.org_name AS orgName
       FROM
         (
-      SELECT
-        id AS userRoleRefId,
-        user_id AS userId,
-        user_name AS username,
-        role_name,
-        rank
-      FROM
-        t_user_role_ref
-      WHERE
-        role_id =(
           select
-          flow_node_role_id as role_id
+					id,
+          flow_node_role_id
           from t_flow_node_info
           where id=
           (
@@ -67,30 +59,31 @@
             and flow_node_id=
                (
                      SELECT
-                       id as flow_node_id
+                       next_node_id as flow_node_id
                       FROM
-                        t_flow_node_info
+                        t_flow_node_line_info
                       WHERE
-                        business_id =#{ id }
-                        AND node_code =#{ nodeCode }
-                        AND flow_sort = (
+
+                         node_code =#{nodeCode}
+												and operate_type='1'
+                        AND flow_node_id = (
                       SELECT
-                        ( flow_sort + 1 ) AS flow_sort
+                        id
                       FROM
                         t_flow_node_info
                       WHERE
-                        business_id =#{ id }
-                        AND id = ( SELECT next_node_id AS id  FROM ${tableName} where id =#{ id } )
-                        AND node_code =#{ nodeCode }
+                        business_id =#{id}
+                        AND id = ( SELECT next_node_id AS id  FROM  ${tableName} where id =#{id})
+                        AND node_code =#{nodeCode}
                    )
                 )
           )
-        )
         ) t1
-        LEFT JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t1.userId = t2.id
-        LEFT JOIN ( SELECT id, org_name FROM t_org  where  node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
+       left join (select user_id ,user_name,role_id,rank from  t_user_role_ref ) t4 on t4.role_id=t1.flow_node_role_id
+       left JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t4.user_id = t2.id
+			 inner JOIN ( SELECT id, org_name FROM t_org  where node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
       ORDER BY
-        t1.rank ASC
+        t4.rank ASC
   </select>
 
 </mapper>
