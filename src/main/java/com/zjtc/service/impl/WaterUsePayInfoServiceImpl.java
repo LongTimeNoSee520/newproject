@@ -5,12 +5,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.mapper.WaterUsePayInfoMapper;
+import com.zjtc.model.FlowNodeInfo;
+import com.zjtc.model.RefundOrRefund;
+import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
+import com.zjtc.service.FlowNodeInfoService;
+import com.zjtc.service.FlowProcessService;
+import com.zjtc.service.RefundOrRefundService;
 import com.zjtc.service.WaterUsePayInfoService;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,6 +30,13 @@ import org.springframework.stereotype.Service;
 public class WaterUsePayInfoServiceImpl extends
     ServiceImpl<WaterUsePayInfoMapper, WaterUsePayInfo> implements
     WaterUsePayInfoService {
+
+  @Autowired
+  private FlowNodeInfoService flowNodeInfoService;
+  @Autowired
+  private RefundOrRefundService refundOrRefundService;
+  @Autowired
+  private FlowProcessService flowProcessService;
 
   @Override
   public boolean saveModel(JSONObject jsonObject) {
@@ -64,38 +79,44 @@ public class WaterUsePayInfoServiceImpl extends
 
   @Override
   public boolean initPayInfo(JSONObject jsonObject) {
-    boolean result=true;
+    boolean result = true;
     /**重算加价前先删除之前的数据*/
     //三种情况:1.托收缴费已托收，2.已选择发票，3：有退减免过程
     baseMapper.deleteByParam(jsonObject);
     /**初始化加价*/
-    List<WaterUsePayInfo> waterUsePayInfos= baseMapper.initPayInfo(jsonObject);
-    if(!waterUsePayInfos.isEmpty()){
-      result= this.insertBatch(waterUsePayInfos);
+    List<WaterUsePayInfo> waterUsePayInfos = baseMapper.initPayInfo(jsonObject);
+    if (!waterUsePayInfos.isEmpty()) {
+      result = this.insertBatch(waterUsePayInfos);
     }
-    return  result;
+    return result;
 
   }
-
   @Override
-  public boolean toStartRefund(JSONObject jsonObject) {
+  public boolean toStartRefund(JSONObject jsonObject, User user) {
+    String nodeCode = jsonObject.getString("nodeCode");
+    RefundOrRefund refundOrRefund=jsonObject.toJavaObject(RefundOrRefund.class);
     //退减免单单新增一条数据
+    refundOrRefundService.insert(refundOrRefund);
     //发起审核流程
     //创建流程节点记录表
     //流程节点线记录表
-    //流程进度（审核）表
-    //流程实例表
+    flowNodeInfoService.selectAndInsert(nodeCode,refundOrRefund.getId(), AuditConstants.PAY_FLOW_CODE);
+    //流程进度（操作记录）表 新增两条数据
+   // flowProcessService.create(user,refundOrRefund.getId(),) ;
+    //1：发起人，2：下一环节审核人
+    //发起待办
+    //流程实例表 todo:
     return false;
   }
 
   @Override
-  public boolean toStartReduction(JSONObject jsonObject) {
+  public boolean toStartReduction(JSONObject jsonObject, User user) {
     return false;
   }
 
   @Override
   public boolean updateinvoiceNumRef(WaterUsePayInfo waterUsePayInfo) {
-   return this.updateById(waterUsePayInfo);
+    return this.updateById(waterUsePayInfo);
   }
 
 

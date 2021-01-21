@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.mapper.RefundOrRefundMapper;
 import com.zjtc.model.RefundOrRefund;
 import com.zjtc.service.RefundOrRefundService;
+import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 
 /**
@@ -42,13 +44,8 @@ public class RefundOrRefundServiceImpl extends ServiceImpl<RefundOrRefundMapper,
 
 	@Override
 	public Page<RefundOrRefund> queryPage(JSONObject jsonObject) {
-		RefundOrRefund entity=jsonObject.toJavaObject(RefundOrRefund.class);
-    	Page<RefundOrRefund> page = new Page<RefundOrRefund>(jsonObject.getInteger("current"),jsonObject.getInteger("size"));
-        page.setSearchCount(true);
-        page.setOptimizeCountSql(true);
-        EntityWrapper<RefundOrRefund> eWrapper = new EntityWrapper<RefundOrRefund>(entity);
-		Page<RefundOrRefund> result=this.selectPage(page,eWrapper);
-		return result;
+		List<Map<String,Object>> list= baseMapper.queryPage(jsonObject);
+		return  null;
 	}
 
 }

@@ -23,5 +23,56 @@
 		<result column="status" property="status" />
 	</resultMap>
 
+	<select id="queryPage">
+			select
+			t1.id,
+			t1.type,
+			case
+			t1.type
+			when'1' then '退款单'
+			when '2' then '减免单'
+			else '未知' end as typeName,
+			t1.unit_code,
+			t1.unit_name,
+      t1.water_meter_code,
+			t1.create_time,
+			t1.drawer,
+			t1.year,
+			t1.quarter,
+			t1.money,
+			t1.reason
+			from t_w_refund_or_refund t1
+			where nodeCode=#{nodeCode}
+			<!--待审核-->
+		<if test="keyWrod==1">
+			and id in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
+		</if>
+		<!--已审核-->
+		<if test="keyWrod==2">
+			and id in(select busIness_id as id  from t_flow_process where (audit_status='2' or audit_status='3') and operator_id=#{userId})
+		</if>
+		<if test="null !=unitCode">
+			and unit_code like '%${unitCode}%'
+		</if>
+		<if test="null !=unitName">
+			and unit_name like '%${unitName}%'
+		</if>
+		<if test="null !=waterMeterCode">
+			and water_meter_code like '%${waterMeterCode}%'
+		</if>
+		<if test="null !=year">
+			and t1.year =#{year}
+		</if>
+		<if test="null !=type">
+			and t1.type =#{type}
+		</if>
+		<if test="null !=startTime">
+			and t1.create_time &gt;={startTime}
+		</if>
+		<if test="null !=endTime">
+			and t1.create_time &lt;{endTime}
+		</if>
+	</select>
+
 
 </mapper>

@@ -3,6 +3,7 @@ package com.zjtc.service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
 import java.util.Map;
 
@@ -50,13 +51,13 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
 	 * @param jsonObject
 	 * @return
 	 */
-	boolean  toStartRefund(JSONObject jsonObject);
+	boolean  toStartRefund(JSONObject jsonObject, User user);
 	/**
 	 *发起减免单
 	 * @param jsonObject
 	 * @return
 	 */
-	boolean  toStartReduction(JSONObject jsonObject);
+	boolean  toStartReduction(JSONObject jsonObject, User user);
 
 	/**
 	 * 发票号作废，清除发票号，开票时间

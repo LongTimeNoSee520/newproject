@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.activerecord.Model;
+import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -69,7 +70,7 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
     /**
     * 
     */
-    @ApiModelProperty("单据类型")
+    @ApiModelProperty("单据类型,单据类型：1退款单，2：减免单")
     @TableField(value = "type",exist = true)
     private String type;
     /**
@@ -113,7 +114,7 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
     */
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time",exist = true,fill = FieldFill.INSERT)
-    private java.time.Instant createTime;
+    private Date createTime;
     /**
     * 
     */
@@ -125,7 +126,7 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
     */
     @ApiModelProperty("审核时间")
     @TableField(value = "audit_time",exist = true)
-    private java.time.Instant auditTime;
+    private Date auditTime;
     /**
     * 
     */
