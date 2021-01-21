@@ -7,7 +7,9 @@ import com.zjtc.model.FlowProcess;
 import com.zjtc.model.User;
 import com.zjtc.service.FlowProcessService;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +23,12 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     FlowProcessService {
 
   @Override
-  public void create(User user, String businessId, String opinions) {
+  public void create(User user, String businessId, String opinions, String auditorName,
+      String auditorId) {
     /**办结单提交(审核创建)*/
     FlowProcess commit = new FlowProcess();
     commit.setAuditContent(opinions);
-    commit.setAuditStatus("0");//审核状态(0:短信/办结单创建1:待审核,2:审核通过,3:审核不通过)
+    commit.setAuditStatus("0");//审核状态(0:短信/办结单/退减免单创建1:待审核,2:审核通过,3:审核不通过)
     commit.setCreateTime(new Date());
     commit.setOperatorId(user.getId());
     commit.setOperator(user.getUsername());
@@ -34,6 +37,15 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     commit.setOperationTime(commit.getCreateTime());
     /**提交后的下一环节数据*/
     FlowProcess next = new FlowProcess();
-    /**查询*/
+    next.setAuditStatus("1");
+    next.setCreateTime(new Date());
+    next.setOperator(auditorName);
+    next.setOperatorId(auditorId);
+    next.setBusinessId(businessId);
+    next.setNodeCode(user.getNodeCode());
+    List<FlowProcess> flowProcesses =new ArrayList<>();
+    flowProcesses.add(commit);
+    flowProcesses.add(next);
+    this.insertBatch(flowProcesses);
   }
 }

@@ -13,5 +13,6 @@ public interface FlowProcessService extends IService<FlowProcess> {
   /**
    * 审核流新增(创建和下一环节两条数据)
    * */
-  void create(User user, String businessId, String opinions);
+  void create(User user, String businessId, String opinions, String auditorName,
+      String auditorId);
 }
