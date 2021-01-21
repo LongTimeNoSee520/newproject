@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * WaterUsePayInfo的服务接口的实现类
@@ -92,17 +93,20 @@ public class WaterUsePayInfoServiceImpl extends
 
   }
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public boolean toStartRefund(JSONObject jsonObject, User user) {
     String nodeCode = jsonObject.getString("nodeCode");
     RefundOrRefund refundOrRefund=jsonObject.toJavaObject(RefundOrRefund.class);
-    //退减免单单新增一条数据
+    /**查询第一个流程*/
+    /**退减免单新增一条数据*/
     refundOrRefundService.insert(refundOrRefund);
     //发起审核流程
     //创建流程节点记录表
     //流程节点线记录表
     flowNodeInfoService.selectAndInsert(nodeCode,refundOrRefund.getId(), AuditConstants.PAY_FLOW_CODE);
+
     //流程进度（操作记录）表 新增两条数据
-   // flowProcessService.create(user,refundOrRefund.getId(),) ;
+    //flowProcessService.create(user,refundOrRefund.getId(),) ;
     //1：发起人，2：下一环节审核人
     //发起待办
     //流程实例表 todo:
