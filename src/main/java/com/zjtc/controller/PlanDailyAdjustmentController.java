@@ -325,8 +325,9 @@ public class PlanDailyAdjustmentController {
     ApiResponse response = new ApiResponse();
     if (null != jsonObject) {
       try {
-          User user = jwtUtil.getUserByToken(token);
-         response = planDailyAdjustmentService.initiateSettlement(user,jsonObject);
+        User user = jwtUtil.getUserByToken(token);
+        jsonObject.put("dataSources", "2");
+        response = planDailyAdjustmentService.initiateSettlement(user, jsonObject);
       } catch (Exception e) {
         log.error("发起办结单失败,errMsg==={}" + e.getMessage());
         response.recordError(500);

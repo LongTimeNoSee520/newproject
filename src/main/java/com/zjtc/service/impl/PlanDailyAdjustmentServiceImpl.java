@@ -439,6 +439,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
     String nextNodeId = jsonObject.getString("nextNodeId");
+    String dataSources = jsonObject.getString("dataSources");
 
     /**查询该用水单位是否存在没有走完办结流程的办结单*/
     Wrapper wrapper = new EntityWrapper();
@@ -459,8 +460,12 @@ public class PlanDailyAdjustmentServiceImpl extends
     endPaper.setUnitCode(unitCode);
     endPaper.setWaterMeterCode(waterMeterCode);
     endPaper.setPaperType(paperType);
-    endPaper.setDataSources("2");//现场申报
-    endPaper.setConfirmed("1");//现场申报的都是已确认的
+    endPaper.setDataSources(dataSources);//2现场申报,1网上申报
+    if("2".equals(dataSources)){
+      endPaper.setConfirmed("1");//现场申报的都是已确认的
+    }else if ("1".equals(dataSources)){
+      endPaper.setConfirmed("0");//网上申报的都是未确认的
+    }
     endPaper.setConfirmTime(new Date());
     endPaper.setCreateTime(new Date());
     endPaper.setCreaterId(user.getId());
@@ -513,6 +518,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       endPaper.setAuditStatus("0");//增加水量时，需要走审核流程，发起时设置为未审核
       endPaper.setNextNodeId(nextNodeInfoId);
     }
+    endPaper.setRescinded("0");//未撤销
     endPaperService.insert(endPaper);
 
     /**发起办结单后，将计划表中的“是否存在没有走完办结流程的办结单”的状态改为是(办结流程走完后或者撤销办结单后，改为否)。*/

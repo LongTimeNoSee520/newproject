@@ -23,7 +23,7 @@ public interface EndPaperService extends IService<EndPaper> {
   /**
    * 撤销办结
    */
-  void cancelSettlement(List<String> ids);
+  ApiResponse cancelSettlement(List<String> ids);
 
   /**
       * 办结单审核
