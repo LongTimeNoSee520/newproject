@@ -248,6 +248,10 @@ public class  EndPaper extends Model<EndPaper>{
     @TableField(value = "water_plan_WX_id",exist = true)
     private String waterPlanWXId;
 
+    @ApiModelProperty("审核流程下一环节id")
+    @TableField(value = "next_node_id",exist = true)
+    private String nextNodeId;
+
 	/**
 	 * 实例化
 	 */

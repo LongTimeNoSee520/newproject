@@ -36,7 +36,8 @@ public class FlowNodeInfoServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void selectAndInsert(String nodeCode, String businessId, String flowCode) {
+  public String selectAndInsert(String nodeCode, String businessId, String flowCode,String nextNodeId) {
+    String newNextNodeId = "";
     /**从流程节点表查询办结单/退减免单审核流程节点数据*/
     List<FlowNodeInfo> flowNodeInfos = flowNodeService.selectNodes(nodeCode, flowCode);
     /**从流程线表查询办结单/退减免单审核流程线数据*/
@@ -65,12 +66,16 @@ public class FlowNodeInfoServiceImpl extends
             }
           }
         }
+        /**在审核创建时，提交来的下一环节id是节点表(配置的id)，需要更新为流程信息表的id，即uuid生成的id*/
+        if(flowNodeId.equals(nextNodeId)){
+          newNextNodeId = flowNodeInfo.getId();//此时的id已经是重新生成的uuid
+        }
       }
       /**插入重新设置了flow_node_id，next_node_id的"流程线表"数据到"流程线信息表"*/
       flowNodeLineInfoService.add(flowNodeLineInfos);
       this.insertBatch(flowNodeInfos);
     }
-
+    return newNextNodeId;
   }
 
   @Override

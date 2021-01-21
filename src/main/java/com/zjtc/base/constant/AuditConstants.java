@@ -62,4 +62,17 @@ public class AuditConstants {
    */
   public static final String AFTER_TODO_STATUS = "1";
 
+  /***************************************************************************
+   * ****************************待办标题**************************************
+   * *************************************************************************
+   */
+  /**
+   * 办结单待办标题
+   */
+  public static final String ENDPAPER_TODO_TITLE = "计划调整申请";
+  /**
+   * 退、减免单标题
+   */
+  public static final String PAY_TODO_TITLE = "退、减免申请";
+
 }
