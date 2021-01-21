@@ -25,7 +25,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
   @Override
   public void create(User user, String businessId, String opinions, String auditorName,
       String auditorId) {
-    /**办结单提交(审核创建)*/
+    /**办结单/退、减免单提交(审核创建)*/
     FlowProcess commit = new FlowProcess();
     commit.setAuditContent(opinions);
     commit.setAuditStatus("0");//审核状态(0:短信/办结单/退减免单创建1:待审核,2:审核通过,3:审核不通过)
@@ -35,6 +35,16 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     commit.setNodeCode(user.getNodeCode());
     commit.setBusinessId(businessId);
     commit.setOperationTime(commit.getCreateTime());
+    /**办结单退、减免单提交(审核通过)*/
+    FlowProcess commitAudit = new FlowProcess();
+    commitAudit.setAuditContent(opinions);
+    commitAudit.setAuditStatus("2");//审核状态(0:短信/办结单/退减免单创建1:待审核,2:审核通过,3:审核不通过)
+    commitAudit.setCreateTime(new Date());
+    commitAudit.setOperatorId(user.getId());
+    commitAudit.setOperator(user.getUsername());
+    commitAudit.setNodeCode(user.getNodeCode());
+    commitAudit.setBusinessId(businessId);
+    commitAudit.setOperationTime(commit.getCreateTime());
     /**提交后的下一环节数据*/
     FlowProcess next = new FlowProcess();
     next.setAuditStatus("1");
@@ -45,6 +55,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     next.setNodeCode(user.getNodeCode());
     List<FlowProcess> flowProcesses =new ArrayList<>();
     flowProcesses.add(commit);
+    flowProcesses.add(commitAudit);
     flowProcesses.add(next);
     this.insertBatch(flowProcesses);
   }
