@@ -1,6 +1,7 @@
 package com.zjtc.service.impl;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.mapper.TodoMapper;
@@ -43,5 +44,17 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     todo.setStatus(AuditConstants.BEFORE_TODO_STATUS);
     todo.setCreateTime(new Date());
     this.baseMapper.insert(todo);
+  }
+
+  @Override
+  public boolean edit(String businessId, String nodeCode,String executePersonId) {
+    EntityWrapper wrapper=new EntityWrapper();
+    wrapper.eq("business_id",businessId);
+    wrapper.eq("node_code",nodeCode);
+    wrapper.eq("execute_personId",executePersonId);
+    Todo todo= this.selectOne(wrapper);
+    todo.setStatus("1");
+    todo.setOperationTime(new Date());
+    return this.updateById(todo);
   }
 }

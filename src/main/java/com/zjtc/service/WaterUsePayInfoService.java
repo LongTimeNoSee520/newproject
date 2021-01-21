@@ -65,4 +65,12 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
 	 * @return
 	 */
 	boolean updateinvoiceNumRef(WaterUsePayInfo waterUsePayInfo);
+
+	/**
+	 * 修改缴费记录
+	 * @param id 主键id
+	 * @param moeny 退减免金额
+	 * @return
+	 */
+	boolean updateMoney(String id,double moeny);
 }

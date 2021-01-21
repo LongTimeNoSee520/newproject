@@ -1,6 +1,8 @@
 package com.zjtc.service.impl;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.mapper.FlowProcessMapper;
 import com.zjtc.model.FlowProcess;
@@ -53,10 +55,32 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     next.setOperatorId(auditorId);
     next.setBusinessId(businessId);
     next.setNodeCode(user.getNodeCode());
-    List<FlowProcess> flowProcesses =new ArrayList<>();
+    List<FlowProcess> flowProcesses = new ArrayList<>();
     flowProcesses.add(commit);
     flowProcesses.add(commitAudit);
     flowProcesses.add(next);
     this.insertBatch(flowProcesses);
   }
+
+  @Override
+  public FlowProcess getLastData(String nodeCode, String businessId) {
+    Wrapper auditWrapper = new EntityWrapper();
+    auditWrapper.eq("business_id", businessId);
+    auditWrapper.orderBy("create_time", false);
+    FlowProcess flowProcess = this.selectOne(auditWrapper);
+    return flowProcess;
+  }
+
+  @Override
+  public void add(String nodeCode, String businessId, String operator, String operatorId) {
+    FlowProcess flowProcess = new FlowProcess();
+    flowProcess.setNodeCode(nodeCode);
+    flowProcess.setAuditStatus("1");
+    flowProcess.setOperator(operator);
+    flowProcess.setOperatorId(operatorId);
+    flowProcess.setCreateTime(new Date());
+    flowProcess.setBusinessId(businessId);
+    this.insert(flowProcess);
+  }
+
 }

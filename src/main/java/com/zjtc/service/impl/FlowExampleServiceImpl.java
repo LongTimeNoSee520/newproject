@@ -1,6 +1,7 @@
 package com.zjtc.service.impl;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.mapper.FlowExampleMapper;
@@ -35,5 +36,15 @@ public class FlowExampleServiceImpl extends ServiceImpl<FlowExampleMapper, FlowE
       flowExample.setExampleTitile(user.getUsername()+"办结单审核");
     }
     this.baseMapper.insert(flowExample);
+  }
+
+  @Override
+  public boolean edit(String nodeCode, String businessId) {
+    EntityWrapper entityWrapper=new EntityWrapper();
+    entityWrapper.eq("node_code",nodeCode);
+    entityWrapper.eq("business_id",businessId);
+    FlowExample flowExample= this.selectOne(entityWrapper);
+    flowExample.setFlowStatus("2");
+    return this.updateById(flowExample);
   }
 }

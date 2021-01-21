@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.zjtc.base.constant.ResponseMsgConstants;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.RefundOrRefund;
+import com.zjtc.model.User;
 import com.zjtc.service.RefundOrRefundService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ public class RefundOrRefundController {
 	/** RefundOrRefundService服务 */
 	@Autowired
 	private RefundOrRefundService refundOrRefundService;
+	@Autowired
+	private JWTUtil jwtUtil;
 
 	@RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "分页查询xxx内容")
@@ -54,44 +58,13 @@ public class RefundOrRefundController {
 		}
 		return apiResponse;
     }
-
-	/**
-	 * 插入RefundOrRefund属性不为空的数据方法
-	 * @param
-	 * @return
-	 */
-	@ResponseBody
-	@ApiOperation(value = "新增")
-	@RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ApiResponse add(@RequestHeader("token")String token,@RequestBody JSONObject jsonObject) {
-		log.info("新增==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
-		ApiResponse apiResponse = new ApiResponse();
-		if (null != jsonObject) {
-			try {
-				boolean result = refundOrRefundService.saveModel(jsonObject);
-				if (result) {
-					apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
-				} else {
-					apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
-				}
-			} catch (Exception e) {
-				log.error("新增错误,errMsg==={}", e.getMessage());
-				e.printStackTrace();
-				apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
-			}
-		} else {
-			apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
-		}
-		return apiResponse;
-	}
-
 	/**
 	 * 修改
 	 * @param
 	 * @return
 	 */
     @ResponseBody
-    @ApiOperation(value = "修改")
+    @ApiOperation(value = "保存")
     @RequestMapping(value = "edit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ApiResponse edit(@RequestHeader("token")String token,@RequestBody JSONObject jsonObject) {
 		log.info("修改==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
@@ -121,14 +94,15 @@ public class RefundOrRefundController {
 	 * @return
 	 */
     @ResponseBody
-    @ApiOperation(value = "删除")
-    @RequestMapping(value = "remove", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ApiResponse remove(@RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
+    @ApiOperation(value = "审核")
+    @RequestMapping(value = "audit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ApiResponse audit(@RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
 		log.info("删除 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
 		ApiResponse apiResponse = new ApiResponse();
-		if (null != jsonObject) {
+			User user= jwtUtil.getUserByToken(token);
+		if (null != jsonObject && user !=null) {
 			try {
-				boolean result = refundOrRefundService.deleteModel(jsonObject);
+				boolean result = refundOrRefundService.audit(jsonObject,user);
 				if (result) {
 					apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
 				} else {

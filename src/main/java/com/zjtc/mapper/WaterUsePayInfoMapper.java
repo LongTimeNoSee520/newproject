@@ -44,4 +44,6 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
    * @return
    */
    List<WaterUsePayInfo> initPayInfo(JSONObject jsonObject);
+
+   boolean updateMoney(String id ,double money);
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.RefundOrRefund;
+import com.zjtc.model.User;
 
 
 /**
@@ -40,4 +41,10 @@ public interface RefundOrRefundService extends IService<RefundOrRefund> {
 	* @return
 	*/
 	Page<RefundOrRefund> queryPage(JSONObject jsonObject);
+
+	boolean audit(JSONObject jsonObject, User user);
+	/**
+	 *
+	 */
+	boolean	revoke(JSONObject jsonObject);
 }

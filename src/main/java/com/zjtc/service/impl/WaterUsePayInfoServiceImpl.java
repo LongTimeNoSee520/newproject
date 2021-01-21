@@ -11,6 +11,7 @@ import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
+import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.RefundOrRefundService;
@@ -41,6 +42,8 @@ public class WaterUsePayInfoServiceImpl extends
   private FlowProcessService flowProcessService;
   @Autowired
   private TodoService todoService;
+  @Autowired
+  private FlowExampleService flowExampleService;
 
   @Override
   public boolean saveModel(JSONObject jsonObject) {
@@ -103,7 +106,7 @@ public class WaterUsePayInfoServiceImpl extends
     String nextPersonName = jsonObject.getString("nextPersonName");
     String content = jsonObject.getString("content");
     String businessJson = jsonObject.getString("businessJson");
-    String detailConfig=jsonObject.getString("detailConfig");
+    String detailConfig = jsonObject.getString("detailConfig");
     RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
     /**查询流程节点记录第一个流程*/
     List<Map<String, Object>> firStAudit = flowNodeInfoService
@@ -111,36 +114,72 @@ public class WaterUsePayInfoServiceImpl extends
     /**退减免单新增一条数据*/
     entity.setNodeCode(user.getNodeCode());
     refundOrRefundService.insert(entity);
-    //发起审核流程
-    //创建流程节点记录表
-    //流程节点线记录表
+    /**流程节点记录表、流程节点线记录表创建数据*/
     String newFirStCodeId = flowNodeInfoService
         .selectAndInsert(user.getNodeCode(), entity.getId(), AuditConstants.PAY_FLOW_CODE,
             firStAudit.get(0).get("flowNodeId").toString());
     entity.setNextNodeId(newFirStCodeId);
-    //修改
+    /**修改业务表数据*/
     refundOrRefundService.updateById(entity);
-    //流程进度（操作记录）表 新增三条数据
+    /**流程进度（操作记录）表 新增三条数据*/
     flowProcessService.create(user, entity.getId(), content, nextPersonId, nextPersonName);
-    //发起待办
+    /**发起待办*/
     String todoContent =
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请退款" + entity.getMoney()
             + "元";
     todoService
-        .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, businessJson, detailConfig,
+        .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, businessJson,
+            detailConfig,
             AuditConstants.PAY_TODO_TYPE);
-    //流程实例表 todo:
-    return false;
+    /**新增流程实例表数据*/
+    flowExampleService.add(user, entity.getId(), AuditConstants.PAY_TODO_TYPE);
+    return true;
   }
 
   @Override
   public boolean toStartReduction(JSONObject jsonObject, User user) {
-    return false;
+    String nextPersonId = jsonObject.getString("nextPersonId");
+    String nextPersonName = jsonObject.getString("nextPersonName");
+    String content = jsonObject.getString("content");
+    String businessJson = jsonObject.getString("businessJson");
+    String detailConfig = jsonObject.getString("detailConfig");
+    RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
+    /**查询流程节点记录第一个流程*/
+    List<Map<String, Object>> firStAudit = flowNodeInfoService
+        .firStAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
+    /**退减免单新增一条数据*/
+    entity.setNodeCode(user.getNodeCode());
+    refundOrRefundService.insert(entity);
+    /**流程节点记录表、流程节点线记录表创建数据*/
+    String newFirStCodeId = flowNodeInfoService
+        .selectAndInsert(user.getNodeCode(), entity.getId(), AuditConstants.PAY_FLOW_CODE,
+            firStAudit.get(0).get("flowNodeId").toString());
+    entity.setNextNodeId(newFirStCodeId);
+    /**修改业务表数据*/
+    refundOrRefundService.updateById(entity);
+    /**流程进度（操作记录）表 新增三条数据*/
+    flowProcessService.create(user, entity.getId(), content, nextPersonId, nextPersonName);
+    /**发起待办*/
+    String todoContent =
+        "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请减免" + entity.getMoney()
+            + "元";
+    todoService
+        .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, businessJson,
+            detailConfig,
+            AuditConstants.PAY_TODO_TYPE);
+    /**新增流程实例表数据*/
+    flowExampleService.add(user, entity.getId(), AuditConstants.PAY_TODO_TYPE);
+    return true;
   }
 
   @Override
   public boolean updateinvoiceNumRef(WaterUsePayInfo waterUsePayInfo) {
     return this.updateById(waterUsePayInfo);
+  }
+
+  @Override
+  public boolean updateMoney(String id, double moeny) {
+    return baseMapper.updateMoney(id,moeny);
   }
 
 

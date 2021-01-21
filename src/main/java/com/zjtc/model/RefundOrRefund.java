@@ -130,7 +130,7 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
     /**
     * 
     */
-    @ApiModelProperty("状态,0:初始状态")
+    @ApiModelProperty("状态,1:待审核，2：同意，3：不同意")
     @TableField(value = "status",exist = true)
     private String status;
     /**

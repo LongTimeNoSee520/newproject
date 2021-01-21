@@ -13,4 +13,12 @@ public interface TodoService extends IService<Todo> {
 
   void add(String businessId, User user, String auditorId, String auditorName, String todoContent,
        String businessJson, String detailConfig,String todoType);
+
+  /**
+   * "待办"改为"已办"
+   * @param businessId 业务id
+   * @param nodeCode 节点编码
+   * @param executePersonId 执行人员
+   */
+  boolean edit(String businessId,String nodeCode,String executePersonId);
 }

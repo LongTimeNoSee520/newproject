@@ -535,4 +535,10 @@
 		</foreach>
 		</if>
 	</select>
+
+	<update id="updateMoney">
+		update t_w_water_use_pay_info
+		set amountReceivable=amountReceivable-#{money},actualAmount=actualAmount-#{money}
+		where id=#{id}
+	</update>
 </mapper>

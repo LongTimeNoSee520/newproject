@@ -15,4 +15,17 @@ public interface FlowProcessService extends IService<FlowProcess> {
    * */
   void create(User user, String businessId, String opinions, String auditorName,
       String auditorId);
+  /**
+   * 查询最后一条记录
+   */
+  FlowProcess getLastData(String nodeCode,String businessId);
+
+  /**
+   * 新增一条记录
+   * @param nodeCode 节点编码
+   * @param businessId 业务id
+   * @param operator 操作人
+   * @param operatorId  操作人id
+   */
+  void add(String nodeCode ,String businessId,String operator,String operatorId);
 }
