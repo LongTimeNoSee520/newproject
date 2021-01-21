@@ -10,6 +10,7 @@ import com.zjtc.model.User;
  */
 public interface TodoService extends IService<Todo> {
 
+
   void add(String businessId, User user, String auditorId, String auditorName, String todoContent,
        String businessJson, String detailConfig,String todoType);
 }

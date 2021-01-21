@@ -11,5 +11,5 @@ import com.zjtc.model.User;
  */
 public interface FlowExampleService extends IService<FlowExample> {
   /**新增*/
-  void add(User user, String businessId);
+  void add(User user, String businessId,String type);
 }

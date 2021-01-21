@@ -2,6 +2,7 @@ package com.zjtc.service.impl;
 
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.mapper.FlowExampleMapper;
 import com.zjtc.model.FlowExample;
 import com.zjtc.model.User;
@@ -19,7 +20,7 @@ public class FlowExampleServiceImpl extends ServiceImpl<FlowExampleMapper, FlowE
 
 
   @Override
-  public void add(User user, String businessId) {
+  public void add(User user, String businessId,String type) {
     FlowExample flowExample = new FlowExample();
     flowExample.setBusinessId(businessId);
     flowExample.setCreateTime(new Date());
@@ -27,7 +28,12 @@ public class FlowExampleServiceImpl extends ServiceImpl<FlowExampleMapper, FlowE
     flowExample.setCreatorId(user.getId());
     flowExample.setNodeCode(user.getNodeCode());
     flowExample.setFlowStatus("1");//1-正在流转;2-已结束
-    flowExample.setExampleTitile(user.getUsername()+"办结单审核");
+    if (type.equals(AuditConstants.PAY_TODO_TYPE)) {
+      flowExample.setExampleTitile(user.getUsername()+"退减免单审核");
+    }
+    if (type.equals(AuditConstants.END_PAPER_TODO_TYPE)) {
+      flowExample.setExampleTitile(user.getUsername()+"办结单审核");
+    }
     this.baseMapper.insert(flowExample);
   }
 }
