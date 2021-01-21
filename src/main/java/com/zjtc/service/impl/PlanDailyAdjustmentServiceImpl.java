@@ -5,17 +5,23 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.PlanDailyAdjustmentMapper;
 import com.zjtc.model.EndPaper;
+import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.PlanDailyAdjustmentVO;
 import com.zjtc.model.vo.PrintVO;
 import com.zjtc.service.EndPaperService;
+import com.zjtc.service.FlowExampleService;
+import com.zjtc.service.FlowNodeInfoService;
+import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.PlanDailyAdjustmentService;
+import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +29,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +51,14 @@ public class PlanDailyAdjustmentServiceImpl extends
   private UseWaterPlanAddService useWaterPlanAddService;
   @Autowired
   private EndPaperService endPaperService;
+  @Autowired
+  private FlowNodeInfoService flowNodeInfoService;
+  @Autowired
+  private FlowExampleService flowExampleService;
+  @Autowired
+  private FlowProcessService flowProcessService;
+  @Autowired
+  private TodoService todoService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -419,7 +434,11 @@ public class PlanDailyAdjustmentServiceImpl extends
     List<String> auditFileIds = jsonObject.getJSONArray("auditFileIds").toJavaList(String.class);
     List<String> waterProofFileIds = jsonObject.getJSONArray("waterProofFileIds").toJavaList(String.class);
     List<String> otherFileIds = jsonObject.getJSONArray("otherFileIds").toJavaList(String.class);
-
+    String auditorName =jsonObject.getString("auditorName");//审核人员名称
+    String auditorId =jsonObject.getString("auditorId");//审核人员id
+    String businessJson = jsonObject.getString("businessJson");
+    String detailConfig = jsonObject.getString("detailConfig");
+    String nextNodeId = jsonObject.getString("nextNodeId");
 
     /**查询该用水单位是否存在没有走完办结流程的办结单*/
     Wrapper wrapper = new EntityWrapper();
@@ -433,6 +452,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       return response;
     }
     EndPaper endPaper = new EndPaper();
+    endPaper.setId(UUID.randomUUID().toString().replace("-", ""));
     endPaper.setNodeCode(user.getNodeCode());
     endPaper.setUseWaterUnitId(useWaterPlan.getUseWaterUnitId());
     endPaper.setUnitName(unitName);
@@ -454,10 +474,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       endPaper.setThirdQuarter(thirdQuarter);
       endPaper.setFourthQuarter(fourthQuarter);
       endPaper.setCurYearPlan(firstQuarter + secondQuarter + thirdQuarter + fourthQuarter);
-    }
-    if (null != firstWater && null != secondWater) {
-      endPaper.setFirstWater(firstWater);
-      endPaper.setSecondWater(secondWater);
+      endPaper.setAuditStatus("1");//修改4个季度的数据，默认审核通过
     }
     endPaper.setMinusPayStatus(useWaterPlan.getMinusPayStatus());
     endPaper.setBalanceTest(useWaterPlan.getBalanceTest());
@@ -474,8 +491,29 @@ public class PlanDailyAdjustmentServiceImpl extends
       String otherFileId = StringUtils.strip(otherFileIds.toString(),"[]").replace(" ", "");
       endPaper.setOtherFileId(otherFileId);
     }
+    if (null != firstWater && null != secondWater) {
+      endPaper.setFirstWater(firstWater);
+      endPaper.setSecondWater(secondWater);
+      /**审核流程信息新增(在增加水量时才有审核流程)*/
+      /**1.查询办结单审核流程的流程节点数据、流程线数据并复制到流程节点记录表、流程节点线记录表*/
+      final  String flowCode="endPaperFlow";
+      String nextNodeInfoId = flowNodeInfoService.selectAndInsert(user.getNodeCode(),endPaper.getId(),flowCode,nextNodeId);
+//      flowNodeLineInfoService.selectAndInsert(user.getNodeCode(),flowCode);
+      /**2.流程实例表添加数据*/
+      String type = AuditConstants.END_PAPER_TODO_TYPE;
+      flowExampleService.add(user,endPaper.getId(),type);
+      /**3.审核流新增(3条数据)*/
+      flowProcessService.create(user,endPaper.getId(),opinions,auditorName,auditorId);
+      /**4.待办表加数据*/
+      String todoType = AuditConstants.END_PAPER_TODO_TYPE;
+      String todoContent =
+          "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划：第一水量"
+              + firstWater + "方，第二水量" + secondWater+"方。";
+      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, businessJson, detailConfig,todoType);
+      endPaper.setAuditStatus("0");//增加水量时，需要走审核流程，发起时设置为未审核
+      endPaper.setNextNodeId(nextNodeInfoId);
+    }
     endPaperService.insert(endPaper);
-    /**TODO 审核流程信息新增*/
 
     /**发起办结单后，将计划表中的“是否存在没有走完办结流程的办结单”的状态改为是(办结流程走完后或者撤销办结单后，改为否)。*/
     this.updateExistSettlement("1",unitCode,user.getNodeCode(),planYear);

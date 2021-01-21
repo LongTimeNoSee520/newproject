@@ -312,9 +312,14 @@ public class PlanDailyAdjustmentController {
           + "\"secondWater\":\"第二水量\",\n"
           + "\"quarter\":\"季度\",\n"
           + "\"opinions\":\"具体意见\",\n"
-          + "\"auditFileIds\":[\"审批申请附件id列表\"], \n"
-          + "\"waterProofFileIds\":[\"近2月水量凭证附件id列表\"], \n"
-          + "\"otherFileIds\":[\"其他证明材料id列表\"]   \n"
+          + "\"auditFileIds\":[\"审批申请附件id列表\"]没有时传[], \n"
+          + "\"waterProofFileIds\":[\"近2月水量凭证附件id列表\"]没有时传[], \n"
+          + "\"otherFileIds\":[\"其他证明材料id列表\"]没有时传[],\n"
+          + "\"auditorName\":\"审核人员名称\",\n"
+          + "\"auditorId\":\"审核人员id\",\n"
+          + "\"businessJson\":\"关联业务json数据(待办相关)\",\n"
+          + "\"detailConfig\":\"详情配置文件(待办相关)\",\n"
+          + "\"nextNodeId\":\"下一审核环节id\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("发起办结单==== 参数{" + jsonObject.toJSONString()+ "}");
     ApiResponse response = new ApiResponse();

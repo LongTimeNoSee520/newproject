@@ -14,6 +14,11 @@ public interface FlowNodeInfoService extends IService<FlowNodeInfo> {
   /**
    * 查询办结单/退减免单审核流程的流程节点数据、流程线数据
    * 并复制到流程节点记录表、流程节点线记录表
+   ** @param businessId 业务id
+   * @param flowCode 业务表名
+   * @param nodeCode 节点编码
+   * @param nextNodeId 下一环节id(流程节点表配置的id)
+   * @return 复制到流程节点信息表后 下一环节id对应的新生成的id
    * */
   String selectAndInsert(String nodeCode,String businessId,String flowCode,String nextNodeId);
 

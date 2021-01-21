@@ -28,10 +28,10 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     todo.setExecutePersonName(auditorName);
     todo.setTodoContent(todoContent);
     todo.setTodoType(todoType);
-    if ("1".equals(todoType)){
+    if (AuditConstants.PAY_TODO_TYPE.equals(todoType)){
       todo.setTodoTitle(AuditConstants.PAY_TODO_TITLE);
       todo.setTableName(AuditConstants.PAY_TABLE);
-    }else if("2".equals(todoType)){
+    }else if(AuditConstants.END_PAPER_TODO_TYPE.equals(todoType)){
       todo.setTodoTitle(AuditConstants.ENDPAPER_TODO_TITLE);
       todo.setTableName(AuditConstants.END_PAPER_TABLE);
     }
@@ -42,5 +42,6 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     todo.setDetailConfig(detailConfig);
     todo.setStatus(AuditConstants.BEFORE_TODO_STATUS);
     todo.setCreateTime(new Date());
+    this.baseMapper.insert(todo);
   }
 }

@@ -78,6 +78,7 @@
 		<result column="executor_id" property="executorId" jdbcType="VARCHAR"/>
 		<result column="algorithm_rules" property="algorithmRules" jdbcType="VARCHAR"/>
 		<result column="result" property="result" jdbcType="VARCHAR"/>
+		<result column="next_node_id" property="nextNodeId" jdbcType="VARCHAR"/>
 		<collection property="auditFiles" ofType="java.util.LinkedHashMap" column="id"
 		select="queryAuditFiles">
 		</collection>
@@ -144,7 +145,7 @@
 		confirm_time,
 		CASE t1.audit_status WHEN '0' THEN '否' WHEN '1' THEN '是' END AS audit_status,
 		CASE t1.executed WHEN '0' THEN '否' WHEN '1' THEN '是' END AS executed,
-		t1.execute_time,t1.executor,t1.executor_id,t1.algorithm_rules,t1.result
+		t1.execute_time,t1.executor,t1.executor_id,t1.algorithm_rules,t1.result,t1.next_node_id
 		FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,*
 		FROM
 		t_w_end_paper
