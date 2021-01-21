@@ -57,4 +57,9 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     todo.setOperationTime(new Date());
     return this.updateById(todo);
   }
+
+  @Override
+  public boolean deleteByBusinessId(String businessId) {
+    return this.baseMapper.deleteByBusinessId(businessId);
+  }
 }
