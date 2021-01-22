@@ -16,6 +16,10 @@ import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.EndPaperVO;
 import com.zjtc.service.EndPaperService;
+import com.zjtc.service.FlowExampleService;
+import com.zjtc.service.FlowNodeInfoService;
+import com.zjtc.service.FlowProcessService;
+import com.zjtc.service.MessageService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
@@ -50,6 +54,17 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   @Autowired
   private TodoService todoService;
 
+  @Autowired
+  private FlowNodeInfoService flowNodeInfoService;
+
+  @Autowired
+  private FlowProcessService flowProcessService;
+
+  @Autowired
+  private FlowExampleService flowExampleService;
+
+  @Autowired
+  private MessageService messageService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -130,6 +145,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public void examineSettlement(User user, JSONObject jsonObject) {
     String id = jsonObject.getString("id");
 //    Double firstQuarter =jsonObject.getDouble("firstQuarter");
@@ -148,10 +164,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     String auditorId =jsonObject.getString("auditorId");//审核人员id
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
-    String nextNodeId = jsonObject.getString("nextNodeId");
 
     EndPaper endPaper = this.baseMapper.selectById(id);
-
     if (null != year && year) {
       /**选择了年计划*/
      endPaper.setAlgorithmRules("1");
@@ -161,24 +175,74 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     endPaper.setAddWay(addWay);
     endPaper.setChangeQuarter(quarter.toString());
     endPaper.setAddNumber(addNumber);
-
-    //如果流程走完了或者不通过则更新状态
-//    if("0".equals(auditStatus) || "流程走完".equals("1")){
-//      endPaper.setAuditStatus(auditStatus);
-//    }
-
-    if ("1".equals(endPaper.getPaperType())){//网上申报
-      UseWaterPlanAddWX waterPlanAddWX = new UseWaterPlanAddWX();
-      waterPlanAddWX.setId(endPaper.getWaterPlanWXId());
-      //如果通过,审核流程走完
-      waterPlanAddWX.setAuditStatus("4");//微信端提交审核通过后办结单审核也通过
-      //不通过
-      useWaterPlanAddWXService.update(waterPlanAddWX);
+    //查询审核流程下一环节信息
+    List<Map<String, Object>> hasNext = flowNodeInfoService
+        .nextAuditRole(id, AuditConstants.END_PAPER_TABLE, user.getNodeCode(), auditStatus);
+    //获取当前环节的审核操作记录
+    FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), endPaper.getId());
+    if (hasNext.isEmpty() && "1".equals(auditStatus)) { //审核流程结束(本次通过且没有下一环节)
+      //设置办结单审核下一环节id为""
+      endPaper.setNextNodeId("");
+      if ("1".equals(auditStatus)) {//本次审核通过
+        //审核操作记录审核状态更新
+        flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
+        //设置办结单审核状态
+        endPaper.setAuditStatus("1");//通过
+        //网上申报的办结单
+        if ("1".equals(endPaper.getPaperType())){
+          UseWaterPlanAddWX waterPlanAddWX = new UseWaterPlanAddWX();
+          waterPlanAddWX.setId(endPaper.getWaterPlanWXId());
+          //如果通过(且审核流程走完)，不通过则不修改
+          waterPlanAddWX.setAuditStatus("4");//微信端提交审核通过后办结单审核也通过
+          useWaterPlanAddWXService.update(waterPlanAddWX);
+        }
+      }
+      if ("0".equals(auditStatus)) {//本次审核不通过
+        flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
+        endPaper.setAuditStatus("2");//2处于审核中(已有审核记录的只要不是最终环节通过都为审核中状态)
+      }
+      //修改代办状态
+      todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
+      //修改实例表数据
+      flowExampleService.edit(user.getNodeCode(), user.getId());
+      //新增通知给发起人
+      //查询 流程的发起人
+      FlowProcess firstProcess = flowProcessService.selectFirstRecords(id);
+      //通知表新增
+      String messageContent =
+          "您发起的[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"+addNumber+"方(第一水量"
+              + firstWater + "方，第二水量" + secondWater+"方)]办结单审核已通过。";
+      messageService.add(user.getNodeCode(),firstProcess.getOperatorId(),firstProcess.getOperator(),AuditConstants.END_PAPER_MESSAGE_TYPE,messageContent);
+      //TODO 微信通知 短信通知用水单位
+    } else {//审核流程继续
+      //修改当前办结单下一环节id
+      endPaper.setNextNodeId(hasNext.get(0).get("flowNodeId").toString());
+      //修改办结单状态为2处于审核中
+      endPaper.setAuditStatus("2");
+      //当前操作记录修改状态
+      if ("0".equals(auditStatus)) {
+        flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
+      }
+      if ("1".equals(auditStatus)) {
+        flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
+      }
+      //新增审核流程下一环节记录
+      flowProcessService.add(user.getNodeCode(), endPaper.getId(), auditorName, auditorId);
+      //修改待办状态
+      todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
+      //新增一条待办
+      String todoContent =
+          "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"+addNumber+"方(第一水量"
+              + firstWater + "方，第二水量" + secondWater+"方)。";
+      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, businessJson,
+          detailConfig, AuditConstants.END_PAPER_TODO_TYPE);
     }
-
-    /**TODO 审核流程信息新增*/
-
-
+    //更新审核流程数据
+    flowProcess.setAuditContent(opinions);
+    flowProcess.setOperationTime(new Date());
+    flowProcessService.updateById(flowProcess);
+    //更新办结单数据
+    this.baseMapper.updateById(endPaper);
   }
 
   @Override

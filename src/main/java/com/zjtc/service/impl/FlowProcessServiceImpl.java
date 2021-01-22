@@ -27,11 +27,12 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
   @Override
   public void create(User user, String businessId, String opinions, String auditorName,
       String auditorId) {
+    long start = System.currentTimeMillis();
     /**办结单/退、减免单提交(审核创建)*/
     FlowProcess commit = new FlowProcess();
     commit.setAuditContent(opinions);
     commit.setAuditStatus("0");//审核状态(0:短信/办结单/退减免单创建1:待审核,2:审核通过,3:审核不通过)
-    commit.setCreateTime(new Date());
+    commit.setCreateTime(new Date(start));//
     commit.setOperatorId(user.getId());
     commit.setOperator(user.getUsername());
     commit.setNodeCode(user.getNodeCode());
@@ -41,7 +42,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     FlowProcess commitAudit = new FlowProcess();
     commitAudit.setAuditContent(opinions);
     commitAudit.setAuditStatus("2");//审核状态(0:短信/办结单/退减免单创建1:待审核,2:审核通过,3:审核不通过)
-    commitAudit.setCreateTime(new Date());
+    commitAudit.setCreateTime(new Date(start+50));//时间增加50毫秒，用于查询流程信息时排序
     commitAudit.setOperatorId(user.getId());
     commitAudit.setOperator(user.getUsername());
     commitAudit.setNodeCode(user.getNodeCode());
@@ -50,7 +51,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     /**提交后的下一环节数据*/
     FlowProcess next = new FlowProcess();
     next.setAuditStatus("1");
-    next.setCreateTime(new Date());
+    next.setCreateTime(new Date(start+100));
     next.setOperator(auditorName);
     next.setOperatorId(auditorId);
     next.setBusinessId(businessId);

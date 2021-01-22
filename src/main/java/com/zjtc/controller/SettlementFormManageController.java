@@ -89,7 +89,7 @@ public class SettlementFormManageController {
     return response;
   }
   @RequestMapping(value = "cancelSettlement", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation(value = "撤销")
+  @ApiOperation(value = "撤销(审核中的增加计划办结单不能撤销)")
   public ApiResponse cancelSettlement(@RequestHeader("token") String token,
       @ApiParam("{\n"
           + "  \"ids\":[\"办结单id列表\"]\n"
@@ -104,7 +104,7 @@ public class SettlementFormManageController {
           response.recordError("撤销办结单id列表不能为空");
           return response;
         }
-        endPaperService.cancelSettlement(ids);
+        response = endPaperService.cancelSettlement(ids);
       } catch (Exception e) {
         log.error("撤销失败,errMsg==={}" + e.getMessage());
         response.recordError(500);
@@ -125,7 +125,12 @@ public class SettlementFormManageController {
           + " \"quarter\":\"季度，数字\",\n"
           + " \"year\":\"是否勾选年计划 0否，1是\",\n"
           + " \"addNumber\":\"增加水量，数字\",\n"
-          + " \"opinions\":\"审核意见\"\n"
+          + " \"auditStatus\":\"审核是否通过0否1是\",\n"
+          + " \"opinions\":\"审核意见\",\n"
+          + "\"auditorName\":\"下一环节审核人员名称\",\n"
+          + "\"auditorId\":\"下一环节审核人员id\",\n"
+          + "\"businessJson\":\"关联业务json数据(待办相关)\",\n"
+          + "\"detailConfig\":\"详情配置文件(待办相关)\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("办结单审核 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();

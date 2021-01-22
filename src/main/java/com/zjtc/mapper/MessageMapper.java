@@ -3,6 +3,7 @@ package com.zjtc.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.Message;
+import java.util.Date;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,5 +14,5 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface MessageMapper extends BaseMapper<Message> {
 
-  void updateStatus(@Param("id") String id);
+  void updateStatus(@Param("id") String id,@Param("operationTime") Date operationTime);
 }

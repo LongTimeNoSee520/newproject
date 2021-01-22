@@ -40,6 +40,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
 
   @Override
   public void updateStatus(String id) {
-    this.baseMapper.updateStatus(id);
+    Date operationTime = new Date();
+    this.baseMapper.updateStatus(id,operationTime);
   }
 }

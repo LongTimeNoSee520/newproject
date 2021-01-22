@@ -100,9 +100,9 @@ public class EndPaperVO extends Model<EndPaperVO>{
     @ApiModelProperty("第四季度计划")
     private Double fourthQuarter;
 
-//    @ApiModelProperty("是否确认")
-//    private String confirmed;
-//
+    @ApiModelProperty("是否确认")
+    private String confirmed;
+
 //    @ApiModelProperty("确认时间")
 //    private Date confirmTime;
 
@@ -126,6 +126,8 @@ public class EndPaperVO extends Model<EndPaperVO>{
 
     @ApiModelProperty("处理结果")
     private String result;
+    @ApiModelProperty("审核下一流程id")
+    private String nextNodeId;
 
     @ApiModelProperty("审批申请附件(调整申请表等)信息列表")
     List<Map<String,Object>> auditFiles;
@@ -136,11 +138,17 @@ public class EndPaperVO extends Model<EndPaperVO>{
     @ApiModelProperty("其他证明材料信息列表")
     List<Map<String,Object>> otherFiles;
 
-    @ApiModelProperty("未缴费情况")
-    List<Map<String,Object>> unpaidList;
+//    @ApiModelProperty("未缴费情况")
+//    List<Map<String,Object>> unpaidList;
 
     @ApiModelProperty("审核流程信息")
     List<Map<String,Object>> auditMessages;
+
+    @ApiModelProperty("能否执行")
+    private boolean canExecute;
+
+    @ApiModelProperty("是否需要审核")
+    private boolean needAudit;
 
 
 	@Override
