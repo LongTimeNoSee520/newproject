@@ -8,6 +8,8 @@ import com.zjtc.model.UseWaterBasePlan;
 import com.zjtc.model.User;
 import com.zjtc.service.UseWaterBasePlanService;
 import com.zjtc.service.UseWaterUnitRoleService;
+import com.zjtc.service.WaterUsePayInfoService;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -30,6 +32,8 @@ public class UseWaterBasePlanServiceImpl extends
 
   @Autowired
   private UseWaterUnitRoleService useWaterUnitRoleService;
+  @Autowired
+  private WaterUsePayInfoService waterUsePayInfoService;
 
   @Override
   @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
@@ -53,8 +57,13 @@ public class UseWaterBasePlanServiceImpl extends
     useWaterBasePlan.setDeleted("0");
     useWaterBasePlan.setNodeCode(user.getNodeCode());
     this.insert(useWaterBasePlan);
-    /**TODO 调整该用水单位该年加价费算法*/
-
+    /** 重算该用水单位该年加价费*/
+    List<String>  unitIds = new ArrayList<>();
+    unitIds.add(useWaterBasePlan.getUseWaterUnitId());
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("countYear", useWaterBasePlan.getPlanYear());
+    jsonObject.put("unitIds",unitIds);
+    waterUsePayInfoService.initPayInfo(jsonObject);
     return response;
   }
 
@@ -79,8 +88,13 @@ public class UseWaterBasePlanServiceImpl extends
       this.baseMapper.updateById(useWaterBasePlan);
     }
 
-    /**TODO 调整该用水单位该年加价费算法*/
-
+    /** 重算该用水单位该年加价费*/
+    List<String>  unitIds = new ArrayList<>();
+    unitIds.add(useWaterBasePlan.getUseWaterUnitId());
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("countYear", useWaterBasePlan.getPlanYear());
+    jsonObject.put("unitIds",unitIds);
+    waterUsePayInfoService.initPayInfo(jsonObject);
     return response;
   }
 
@@ -92,8 +106,19 @@ public class UseWaterBasePlanServiceImpl extends
   @Override
   @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
   public boolean delete(List<String> ids) {
+    List<UseWaterBasePlan> basePlans = this.selectBatchIds(ids);
+    /**重算该用水单位该年加价费*/
+    /**删除的数据年份前端会控制只会为同一年(分页查询时会给一个默认年份)*/
+    //取第一条数据的年份即可
+    Integer year = basePlans.get(0).getPlanYear();
+    List<String> unitIds = new ArrayList<>();
+    unitIds.addAll(ids);
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("countYear", year);
+    jsonObject.put("unitIds", unitIds);
+    /**重算加价*/
+    waterUsePayInfoService.initPayInfo(jsonObject);
     return this.baseMapper.delete(ids);
-    /**TODO 调整该用水单位该年加价费算法*/
   }
 
   @Override
