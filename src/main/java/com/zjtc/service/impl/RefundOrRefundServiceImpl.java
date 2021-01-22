@@ -2,6 +2,7 @@ package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
@@ -65,9 +66,9 @@ public class RefundOrRefundServiceImpl extends
   }
 
   @Override
-  public Page<RefundOrRefund> queryPage(JSONObject jsonObject) {
-    List<Map<String, Object>> list = baseMapper.queryPage(jsonObject);
-    return null;
+  public List<RefundOrRefund> queryAll(JSONObject jsonObject) {
+    List<RefundOrRefund> list = baseMapper.queryAll(jsonObject);
+    return list;
   }
 
   @Override
@@ -97,11 +98,12 @@ public class RefundOrRefundServiceImpl extends
       entity.setNextNodeId("");
       this.updateById(entity);
       //操作记录修改状态
+      //不通过
+      if ("0".equals(auditBtn)) {
+        flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
+      }
       if ("1".equals(auditBtn)) {
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
-      }
-      if ("2".equals(auditBtn)) {
-        flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
       }
       flowProcessService.updateById(flowProcess);
       //修改代办状态
@@ -117,10 +119,10 @@ public class RefundOrRefundServiceImpl extends
       entity.setNextNodeId(hasNext.get(0).get("flowNodeId").toString());
       this.updateById(entity);
       //当前操作记录修改状态
-      if ("1".equals(auditBtn)) {
+      if ("0".equals(auditBtn)) {
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
       }
-      if ("2".equals(auditBtn)) {
+      if ("1".equals(auditBtn)) {
         flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
       }
       flowProcessService.updateById(flowProcess);
@@ -152,6 +154,15 @@ public class RefundOrRefundServiceImpl extends
   public boolean revoke(JSONObject jsonObject) {
     //
     return false;
+  }
+
+  @Override
+  public boolean auditCount(String payId,String nodeCode) {
+    Wrapper entityWrapper=new EntityWrapper();
+    entityWrapper.eq("pay_id",payId);
+    entityWrapper.eq("node_code",nodeCode);
+    entityWrapper.eq("status",AuditConstants.AWAIT_APPROVED);
+    return this.selectCount(entityWrapper)>0 ? true: false;
   }
 
 }

@@ -10,6 +10,7 @@ import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
 import com.zjtc.service.WaterUsePayInfoService;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,6 +137,77 @@ public class WaterUsePayInfoController {
 				}
 			} catch (Exception e) {
 				log.error("重算加价错误,errMsg==={}", e.getMessage());
+				e.printStackTrace();
+				apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+			}
+		} else {
+			apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+		}
+		return apiResponse;
+	}
+
+	@ResponseBody
+	@ApiOperation(value = "发起减免单")
+	@RequestMapping(value = "toStartReduction", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ApiResponse toStartReduction(@RequestHeader("token") String token,@ApiParam("") @RequestBody JSONObject jsonObject) {
+		log.info("发起减免单， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+		ApiResponse apiResponse = new ApiResponse();
+		User user=jwtUtil.getUserByToken(token);
+		if (null != jsonObject && null !=user) {
+			try {
+				jsonObject.put("nodeCode",user.getNodeCode());
+				ApiResponse result = waterUsePayInfoService.toStartReduction(jsonObject,user);
+				if (result.getCode()!=200) {
+					return result;
+				}
+			} catch (Exception e) {
+				log.error("发起减免单,errMsg==={}", e.getMessage());
+				e.printStackTrace();
+				apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+			}
+		} else {
+			apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+		}
+		return apiResponse;
+	}
+
+	@ResponseBody
+	@ApiOperation(value = "发起退款单")
+	@RequestMapping(value = "toStartRefund", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ApiResponse toStartRefund(@RequestHeader("token") String token,@ApiParam("") @RequestBody JSONObject jsonObject) {
+		log.info("发起退款单， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+		ApiResponse apiResponse = new ApiResponse();
+		User user=jwtUtil.getUserByToken(token);
+		if (null != jsonObject && null !=user) {
+			try {
+				ApiResponse result = waterUsePayInfoService.toStartRefund(jsonObject,user);
+				if (result.getCode()!=200) {
+					return result;
+				}
+			} catch (Exception e) {
+				log.error("发起退款单,errMsg==={}", e.getMessage());
+				e.printStackTrace();
+				apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+			}
+		} else {
+			apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+		}
+		return apiResponse;
+	}
+
+	@ResponseBody
+	@ApiOperation(value = "查询退缴费第一个提交流程的角色信息")
+	@RequestMapping(value = "firstRole", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ApiResponse firstRole(@RequestHeader("token") String token,@ApiParam("") @RequestBody JSONObject jsonObject) {
+		log.info("查询， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+		ApiResponse apiResponse = new ApiResponse();
+		User user=jwtUtil.getUserByToken(token);
+		if (null != jsonObject && null !=user) {
+			try {
+				List<Map<String, Object>> result = waterUsePayInfoService.firstRole(jsonObject,user);
+				apiResponse.setData(result);
+			} catch (Exception e) {
+				log.error("查询,errMsg==={}", e.getMessage());
 				e.printStackTrace();
 				apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
 			}

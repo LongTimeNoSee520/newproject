@@ -8,6 +8,7 @@ import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.User;
 import com.zjtc.service.RefundOrRefundService;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -38,14 +39,17 @@ public class RefundOrRefundController {
 	@Autowired
 	private JWTUtil jwtUtil;
 
-	@RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "分页查询xxx内容")
-	public ApiResponse queryPage(@RequestBody JSONObject jsonObject) {
-		log.info("分页查询 ==== 参数{" + jsonObject.toJSONString() + "}");
+	@RequestMapping(value = "queryAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "查询xxx内容")
+	public ApiResponse queryPage(@RequestBody JSONObject jsonObject,@RequestHeader("token")String token) {
+		User user= jwtUtil.getUserByToken(token);
+		log.info("查询 ==== 参数{" + jsonObject.toJSONString() + "}");
 		ApiResponse apiResponse = new ApiResponse();
-		if (null != jsonObject) {
+		if (null != jsonObject && null !=user) {
 			try {
-				Page<RefundOrRefund> result = refundOrRefundService.queryPage(jsonObject);
+				jsonObject.put("nodeCode",user.getNodeCode());
+				jsonObject.put("userId",user.getId());
+				List<RefundOrRefund> result = refundOrRefundService.queryAll(jsonObject);
 				apiResponse.setData(result);
 				apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
 			} catch (Exception e) {

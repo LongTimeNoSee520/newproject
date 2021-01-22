@@ -16,6 +16,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface RefundOrRefundMapper extends BaseMapper<RefundOrRefund> {
-  List<Map<String,Object>> queryPage(JSONObject jsonObject);
+  List<RefundOrRefund> queryAll(JSONObject jsonObject);
 
 }

@@ -139,6 +139,19 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
     @ApiModelProperty("下一环节id")
     @TableField(value = "next_node_id",exist = true)
     private String nextNodeId;
+    /**
+     *
+     */
+    @ApiModelProperty("是否撤销，0否，1是")
+    @TableField(value = "is_revoke",exist = true)
+    private String isRevoke;
+    /**
+     *
+     */
+    @ApiModelProperty("服务人员处理意见")
+    @TableField(value = "treatment_advice",exist = true)
+    private String treatmentAdvice;
+
 	/**
 	 * 实例化
 	 */

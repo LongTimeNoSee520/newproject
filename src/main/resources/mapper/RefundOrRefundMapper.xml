@@ -23,7 +23,7 @@
 		<result column="status" property="status" />
 	</resultMap>
 
-	<select id="queryPage">
+	<select id="queryAll" resultMap="result_RefundOrRefund_Map">
 			select
 			t1.id,
 			t1.type,
@@ -42,14 +42,14 @@
 			t1.money,
 			t1.reason
 			from t_w_refund_or_refund t1
-			where nodeCode=#{nodeCode}
+			where node_code=#{nodeCode}
 			<!--待审核-->
 		<if test="keyWrod==1">
-			and id in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
+			and id in(select busIness_id as id  from t_audit_flow where audit_status='1' and operator_id=#{userId})
 		</if>
 		<!--已审核-->
 		<if test="keyWrod==2">
-			and id in(select busIness_id as id  from t_flow_process where (audit_status='2' or audit_status='3') and operator_id=#{userId})
+			and id in(select busIness_id as id  from t_audit_flow where (audit_status='2' or audit_status='3') and operator_id=#{userId})
 		</if>
 		<if test="null !=unitCode">
 			and unit_code like '%${unitCode}%'

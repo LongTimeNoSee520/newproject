@@ -45,5 +45,11 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
    */
    List<WaterUsePayInfo> initPayInfo(JSONObject jsonObject);
 
+  /**
+   *
+   * @param id 缴费记录id
+   * @param money 退减免金额
+   * @return
+   */
    boolean updateMoney(String id ,double money);
 }

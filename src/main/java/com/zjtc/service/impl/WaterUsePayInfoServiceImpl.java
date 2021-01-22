@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
+import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.WaterUsePayInfoMapper;
 import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.RefundOrRefund;
@@ -20,6 +21,7 @@ import com.zjtc.service.WaterUsePayInfoService;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +58,9 @@ public class WaterUsePayInfoServiceImpl extends
   public boolean updateModel(JSONObject jsonObject) {
     //todo:绑定发票号
     WaterUsePayInfo entity = jsonObject.toJavaObject(WaterUsePayInfo.class);
+    if (StringUtils.isNotBlank(entity.getInvoiceNum())) {
+      //绑定发票号
+    }
     boolean result = this.updateById(entity);
     return result;
   }
@@ -85,6 +90,7 @@ public class WaterUsePayInfoServiceImpl extends
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public boolean initPayInfo(JSONObject jsonObject) {
     boolean result = true;
     /**重算加价前先删除之前的数据*/
@@ -101,13 +107,18 @@ public class WaterUsePayInfoServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public boolean toStartRefund(JSONObject jsonObject, User user) {
+  public ApiResponse toStartRefund(JSONObject jsonObject, User user) {
+    ApiResponse apiResponse = new ApiResponse();
+    RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
+    /**判断当前缴费记录是否有退减免流程*/
+    if (refundOrRefundService.auditCount(entity.getPayId(), user.getNodeCode())) {
+      apiResponse.recordError("当前缴费记录退减免流程尚未结束");
+      return apiResponse;
+    }
     String nextPersonId = jsonObject.getString("nextPersonId");
     String nextPersonName = jsonObject.getString("nextPersonName");
-    String content = jsonObject.getString("content");
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
-    RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
     /**查询流程节点记录第一个流程*/
     List<Map<String, Object>> firStAudit = flowNodeInfoService
         .firStAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
@@ -119,10 +130,13 @@ public class WaterUsePayInfoServiceImpl extends
         .selectAndInsert(user.getNodeCode(), entity.getId(), AuditConstants.PAY_FLOW_CODE,
             firStAudit.get(0).get("flowNodeId").toString());
     entity.setNextNodeId(newFirStCodeId);
+    entity.setIsRevoke("0");
+    entity.setStatus("1");
+    entity.setType("1");
     /**修改业务表数据*/
     refundOrRefundService.updateById(entity);
     /**流程进度（操作记录）表 新增三条数据*/
-    flowProcessService.create(user, entity.getId(), content, nextPersonId, nextPersonName);
+    flowProcessService.create(user, entity.getId(), entity.getTreatmentAdvice(), nextPersonId, nextPersonName);
     /**发起待办*/
     String todoContent =
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请退款" + entity.getMoney()
@@ -133,22 +147,31 @@ public class WaterUsePayInfoServiceImpl extends
             AuditConstants.PAY_TODO_TYPE);
     /**新增流程实例表数据*/
     flowExampleService.add(user, entity.getId(), AuditConstants.PAY_TODO_TYPE);
-    return true;
+    return apiResponse;
   }
 
   @Override
-  public boolean toStartReduction(JSONObject jsonObject, User user) {
+  @Transactional(rollbackFor = Exception.class)
+  public ApiResponse toStartReduction(JSONObject jsonObject, User user) {
+    RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
+    ApiResponse apiResponse = new ApiResponse();
+    if (refundOrRefundService.auditCount(entity.getPayId(), user.getNodeCode())) {
+      apiResponse.recordError("当前缴费记录退减免流程尚未结束");
+      return apiResponse;
+    }
     String nextPersonId = jsonObject.getString("nextPersonId");
     String nextPersonName = jsonObject.getString("nextPersonName");
     String content = jsonObject.getString("content");
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
-    RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
     /**查询流程节点记录第一个流程*/
     List<Map<String, Object>> firStAudit = flowNodeInfoService
         .firStAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
     /**退减免单新增一条数据*/
     entity.setNodeCode(user.getNodeCode());
+    entity.setIsRevoke("0");
+    entity.setStatus("1");
+    entity.setType("2");
     refundOrRefundService.insert(entity);
     /**流程节点记录表、流程节点线记录表创建数据*/
     String newFirStCodeId = flowNodeInfoService
@@ -169,17 +192,26 @@ public class WaterUsePayInfoServiceImpl extends
             AuditConstants.PAY_TODO_TYPE);
     /**新增流程实例表数据*/
     flowExampleService.add(user, entity.getId(), AuditConstants.PAY_TODO_TYPE);
-    return true;
+    return apiResponse;
   }
 
   @Override
   public boolean updateinvoiceNumRef(WaterUsePayInfo waterUsePayInfo) {
+    waterUsePayInfo.setInvoiceNum(null);
+    waterUsePayInfo.setInvoicePrintTime(null);
     return this.updateById(waterUsePayInfo);
   }
 
   @Override
   public boolean updateMoney(String id, double moeny) {
-    return baseMapper.updateMoney(id,moeny);
+    return baseMapper.updateMoney(id, moeny);
+  }
+
+  @Override
+  public List<Map<String, Object>> firstRole(JSONObject jsonObject, User user) {
+    List<Map<String, Object>> result = flowNodeInfoService
+        .firStAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
+    return result;
   }
 
 
