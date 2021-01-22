@@ -18,6 +18,7 @@ import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.RefundOrRefundService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.WaterUsePayInfoService;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -214,5 +215,16 @@ public class WaterUsePayInfoServiceImpl extends
     return result;
   }
 
+  @Override
+  public List<Map<String, Object>> findPayBefor(String unitId) {
+    return baseMapper.findPayBefor(unitId);
+  }
 
+  @Override
+  public List<Map<String, Object>> ThreePayMess(String unitId) {
+    //查询当年
+    Calendar date = Calendar.getInstance();
+    int year = Integer.valueOf(date.get(Calendar.YEAR));
+    return baseMapper.ThreePayMess(year, unitId);
+  }
 }

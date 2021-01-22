@@ -6,6 +6,8 @@ import com.zjtc.model.WaterUsePayInfo;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.omg.CORBA.OBJ_ADAPTER;
 import springfox.documentation.spring.web.json.Json;
 
 /**
@@ -52,4 +54,8 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
    * @return
    */
    boolean updateMoney(String id ,double money);
+
+  List<Map<String, Object>> findPayBefor(@Param("unitId") String unitId);
+
+  List<Map<String, Object>> ThreePayMess(@Param("year") Integer year,@Param("unitId") String unitId);
 }

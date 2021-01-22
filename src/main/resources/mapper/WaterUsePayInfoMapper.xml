@@ -293,7 +293,9 @@
 		printed=0,
 		unit_name as unitName,
 		unit_code as unitCode,
-		editedActual=0
+		editedActual=0,
+		cashCheck ='0'
+		transferCheck='0'
 		from
 		(
 		SELECT
@@ -542,4 +544,127 @@
 		set amountReceivable=amountReceivable-#{money},actualAmount=actualAmount-#{money}
 		where id=#{id}
 	</update>
+
+	<select id="findPayBefor" resultType="java.util.LinkedHashMap">
+		select
+			unit_code as unitCode,
+			unit_name as unitName,
+			count_quarter as countQuarter,
+			count_year  as countYear
+		from
+		t_w_water_use_pay_info
+		where use_water_unit_id=#{unitId}
+		and  pay_status != 1
+		and pay_status != 5
+	  order by count_year desc,count_quarter desc
+	</select>
+	<select id="ThreePayMess" resultType="java.util.LinkedHashMap">
+
+		select
+		*
+		from
+			(
+			select
+			t1.year,
+			t1.quarter,
+			case
+			when t2.payStatus is null then '无加价'
+			else t2.payStatus
+			end payStatus
+			from
+				(
+				select
+				year=#{year},
+				quarter
+				from
+				t_quarter_conf
+				) t1
+				left join (
+				select
+				count_year as countYear,
+				countQuarter=count_quarter,
+				case
+				when  pay_status != 1 and pay_status != 5 THEN '未缴纳'
+				else '已缴纳' end payStatus
+				from
+				t_w_water_use_pay_info
+				where count_year=#{year}
+				and use_water_unit_id=#{unitId}
+				) as t2 on t1.quarter=t2.countQuarter and t1.year=t2.countYear
+
+			) bb  PIVOT( max(payStatus) FOR [quarter] IN ([1], [2], [3],[4]) ) a
+
+			UNION ALL
+		select
+		*
+		from
+			(
+			select
+			t1.year,
+			t1.quarter,
+			case
+			when t2.payStatus is null then '无加价'
+			else t2.payStatus
+			end payStatus
+			from
+				(
+				select
+				year=#{year}-1,
+				quarter
+				from
+				t_quarter_conf
+				) t1
+				left join (
+				select
+				count_year as countYear,
+				countQuarter=count_quarter,
+				case
+				when  pay_status != 1 and pay_status != 5 THEN '未缴纳'
+				else '已缴纳' end payStatus
+				from
+				t_w_water_use_pay_info
+				where count_year=#{year}-1
+				and use_water_unit_id=#{unitId}
+				) as t2 on t1.quarter=t2.countQuarter and t1.year=t2.countYear
+
+			) bb  PIVOT( max(payStatus) FOR [quarter] IN ([1], [2], [3],[4]) ) a
+
+			UNION
+
+		select
+		*
+		from
+			(
+			select
+			t1.year,
+			t1.quarter,
+			case
+			when t2.payStatus is null then '无加价'
+			else t2.payStatus
+			end payStatus
+			from
+				(
+				select
+				year=#{year}-2,
+				quarter
+				from
+				t_quarter_conf
+				) t1
+				left join (
+				select
+				count_year as countYear,
+				countQuarter=count_quarter,
+				case
+				when  pay_status != 1 and pay_status != 5 THEN '未缴纳'
+				else '已缴纳' end payStatus
+				from
+				t_w_water_use_pay_info
+				where count_year=#{year}-2
+				 and use_water_unit_id=#{unitId}
+				) as t2 on t1.quarter=t2.countQuarter and t1.year=t2.countYear
+
+			) bb  PIVOT( max(payStatus) FOR [quarter] IN ([1], [2], [3],[4]) ) a
+		order by year
+			;
+	</select>
 </mapper>

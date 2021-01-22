@@ -216,4 +216,51 @@ public class WaterUsePayInfoController {
 		}
 		return apiResponse;
 	}
+	@ResponseBody
+	@ApiOperation(value = "查询近3年加价记录")
+	@RequestMapping(value = "ThreePayMess", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ApiResponse ThreePayMess(@RequestHeader("token") String token,@ApiParam("{\n"
+			+ "  \"useWaterUnitId\":\"单位id\"\n"
+			+ "}") @RequestBody JSONObject jsonObject) {
+		log.info("查询， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+		ApiResponse apiResponse = new ApiResponse();
+		User user=jwtUtil.getUserByToken(token);
+		if (null != jsonObject && null !=user) {
+			try {
+				List<Map<String, Object>> result = waterUsePayInfoService.ThreePayMess(jsonObject.getString("useWaterUnitId"));
+				apiResponse.setData(result);
+			} catch (Exception e) {
+				log.error("查询,errMsg==={}", e.getMessage());
+				e.printStackTrace();
+				apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+			}
+		} else {
+			apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+		}
+		return apiResponse;
+	}
+	@ResponseBody
+	@ApiOperation(value = "查询近3年加价记录")
+	@RequestMapping(value = "findPayBefor", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ApiResponse findPayBefor(@RequestHeader("token") String token,@ApiParam("{\n"
+			+ "  \"useWaterUnitId\":\"单位id\"\n"
+			+ "}") @RequestBody JSONObject jsonObject) {
+		log.info("查询， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+		ApiResponse apiResponse = new ApiResponse();
+		User user=jwtUtil.getUserByToken(token);
+		if (null != jsonObject && null !=user) {
+			try {
+				List<Map<String, Object>> result = waterUsePayInfoService.findPayBefor(jsonObject.getString("useWaterUnitId"));
+				apiResponse.setData(result);
+			} catch (Exception e) {
+				log.error("查询,errMsg==={}", e.getMessage());
+				e.printStackTrace();
+				apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+			}
+		} else {
+			apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+		}
+		return apiResponse;
+	}
+
 }

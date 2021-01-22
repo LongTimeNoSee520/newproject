@@ -66,9 +66,20 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
 
   /**
    * 查询退缴费第一个提交流程的角色信息
-   * @param jsonObject
-   * @param user
-   * @return
    */
-  List<Map<String, Object>> firstRole(JSONObject jsonObject,User user);
+  List<Map<String, Object>> firstRole(JSONObject jsonObject, User user);
+
+  /**
+   * 查询当前单位所有未缴费记录
+   *
+   * @param unitId 单位id
+   */
+  List<Map<String, Object>> findPayBefor(String unitId);
+
+  /**
+   * 查询近3年加价记录
+   *
+   * @param unitId 单位id
+   */
+  List<Map<String, Object>> ThreePayMess(String unitId);
 }
