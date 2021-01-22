@@ -109,48 +109,6 @@
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
   </resultMap>
 
-
-  <resultMap id="BaseResultMap" type="com.zjtc.model.EndPaper">
-    <id column="id" property="id" jdbcType="VARCHAR"/>
-    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
-    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
-    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
-    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
-    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
-    <result column="paper_type" property="paperType" jdbcType="VARCHAR"/>
-    <result column="data_sources" property="dataSources" jdbcType="VARCHAR"/>
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
-    <result column="creater_id" property="createrId" jdbcType="VARCHAR"/>
-    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
-    <result column="change_quarter" property="changeQuarter" jdbcType="VARCHAR"/>
-    <result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
-    <result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
-    <result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
-    <result column="add_number" property="addNumber" jdbcType="DOUBLE"/>
-    <result column="add_way" property="addWay" jdbcType="VARCHAR"/>
-    <result column="minus_pay_status" property="minusPayStatus" jdbcType="VARCHAR"/>
-    <result column="balance_test" property="balanceTest" jdbcType="VARCHAR"/>
-    <result column="create_type" property="createType" jdbcType="VARCHAR"/>
-    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
-    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
-    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
-    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
-    <result column="confirmed" property="confirmed" jdbcType="VARCHAR"/>
-    <result column="confirm_time" property="confirmTime" jdbcType="TIMESTAMP"/>
-    <result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
-    <result column="executed" property="executed" jdbcType="VARCHAR"/>
-    <result column="execute_time" property="executeTime" jdbcType="TIMESTAMP"/>
-    <result column="executor" property="executor" jdbcType="VARCHAR"/>
-    <result column="executor_id" property="executorId" jdbcType="VARCHAR"/>
-    <result column="audit_file_id" property="auditFileId" jdbcType="VARCHAR"/>
-    <result column="water_proof_file_id" property="waterProofFileId" jdbcType="VARCHAR"/>
-    <result column="other_file_id" property="otherFileId" jdbcType="VARCHAR"/>
-    <result column="algorithm_rules" property="algorithmRules" jdbcType="VARCHAR"/>
-    <result column="creater_name" property="createrName" jdbcType="VARCHAR"/>
-    <result column="result" property="result" jdbcType="VARCHAR"/>
-  </resultMap>
-
-
   <select id="queryList" resultMap="UseWaterPlanAddWXVOModel">
     SELECT TOP
     ${pageSize} c.*
@@ -410,11 +368,4 @@
     where id = #{useWaterPlanAddWX.id}
   </update>
 
-
-  <select id="selectEndPaper" resultMap="BaseResultMap">
-    select * from t_w_end_paper
-    where node_code = #{nodeCode}
-    and unit_code = #{unitCode}
-    and plan_year = #{planYear}
-  </select>
 </mapper>

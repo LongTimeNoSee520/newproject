@@ -107,7 +107,7 @@ public class UseWaterPlanAddWXController {
       + "    \"auditStatus\":\"审核状态(1:不通过,2:通过)\",\n"
       + "    \"auditResult\":\"这个单位太浪费水,洗漱的时候一直开着水龙头\",\n"
       + "    \"firstWater\":\"第一水量\",\n"
-      + "    \"secondWater\":\"secondWater\",\n"
+      + "    \"secondWater\":\"第二水量\",\n"
       + "    \"auditorName\":\"审核人\",\n"
       + "    \"auditorId\":\"审核人id\",\n"
       + "    \"businessJson\":\"关联业务json数据(待办相关)\",\n"

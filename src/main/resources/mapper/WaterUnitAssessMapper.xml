@@ -208,7 +208,7 @@
     MIN ( [3] ) AS threeStatus,
     MIN ( [4] ) AS fourStatus
     FROM
-    t_w_water_use_pay_info --水使用量季度缴费表
+    t_w_water_use_pay_info --
     PIVOT (
     MIN ( pay_status ) FOR [count_quarter] IN ( [1], [2], [3], [4] )) AS pvt
     WHERE

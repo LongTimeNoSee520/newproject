@@ -13,12 +13,11 @@ import com.zjtc.service.EndPaperService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterPlanService;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,13 +129,6 @@ public class UseWaterPlanAddWXServiceImpl extends
 //审核通过后进入办结单审核流程,向办结单中增加数据
     UseWaterPlanAddWX useWaterPlanAddWX = this.baseMapper.selectById(id);
     if ("2".equals(useWaterPlanAddWX.getAuditStatus())) {
-      UseWaterPlan useWaterPlans = this.baseMapper
-          .selectEndPaper(useWaterPlanAddWX.getNodeCode(), useWaterPlanAddWX.getUnitCode(),
-              useWaterPlanAddWX.getPlanYear());//实际上只有一条数据
-      if (null == useWaterPlans) {
-        response.recordError("系统异常,操作失败");
-        return response;
-      }
       JSONObject jsonObject = new JSONObject();
 //      单位编号
       jsonObject.put("unitCode", useWaterPlanAddWX.getUnitCode());
@@ -157,7 +149,7 @@ public class UseWaterPlanAddWXServiceImpl extends
 //      三季度水量
       jsonObject.put("thirdQuarter", useWaterPlanAddWX.getThirdQuarter());
 //      四季度水量
-      jsonObject.put("四季度水量", useWaterPlanAddWX.getFourthQuarter());
+      jsonObject.put("fourthQuarter", useWaterPlanAddWX.getFourthQuarter());
 //      第一水量
       jsonObject.put("firstWater", useWaterPlanAddWX.getFirstWater());
 //      第二水量
@@ -167,20 +159,35 @@ public class UseWaterPlanAddWXServiceImpl extends
 //      具体意见
       jsonObject.put("opinions", useWaterPlanAddWX.getAuditResult());
 //       审批申请附件id列表\"]没有时传[]
-      jsonObject.put("auditFileIds", useWaterPlanAddWX.getAuditFileId());
+      String[] split = useWaterPlanAddWX.getAuditFileId().split(",");
+      List<String> list = new ArrayList<>(16);
+      for (String dd : split){
+        list.add(dd);
+      }
+      jsonObject.put("auditFileIds", list);
 //       近2月水量凭证附件id列表\"]没有时传[]
-      jsonObject.put("waterProofFileIds", useWaterPlanAddWX.getWaterProofFileId());
+      String[] split1 = useWaterPlanAddWX.getWaterProofFileId().split(",");
+      List<String> list1 = new ArrayList<>(16);
+      for (String ss : split1){
+        list1.add(ss);
+      }
+      jsonObject.put("waterProofFileIds", list1);
 //        其他证明材料id列表\"]没有时传[]
-      jsonObject.put("otherFileIds", useWaterPlanAddWX.getOtherFileId());
+      String[] split2 = useWaterPlanAddWX.getOtherFileId().split(",");
+      List<String> list2 = new ArrayList<>(16);
+      for (String aa : split2){
+        list2.add(aa);
+      }
+      jsonObject.put("otherFileIds", list2);
 //      审核人员名称
       jsonObject.put("auditorName", auditorName);
 //      审核人员id
       jsonObject.put("auditorId", businessJson);
       // TODO: 2021/1/21 待办相关数据来源,增加办结单表的对应数据
-////      关联业务json数据(待办相关)
-//      jsonObject.put("businessJson",detailConfig);
-////      详情配置文件(待办相关)
-//      jsonObject.put("detailConfig",detailConfig);
+//      关联业务json数据(待办相关)
+      jsonObject.put("businessJson",detailConfig);
+//      详情配置文件(待办相关)
+      jsonObject.put("detailConfig",detailConfig);
 //     下一审核环节id
       jsonObject.put("nextNodeId", nextNodeId);
       try {
