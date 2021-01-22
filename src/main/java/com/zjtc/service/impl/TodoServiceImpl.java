@@ -33,7 +33,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
       todo.setTodoTitle(AuditConstants.PAY_TODO_TITLE);
       todo.setTableName(AuditConstants.PAY_TABLE);
     }else if(AuditConstants.END_PAPER_TODO_TYPE.equals(todoType)){
-      todo.setTodoTitle(AuditConstants.ENDPAPER_TODO_TITLE);
+      todo.setTodoTitle(AuditConstants.END_PAPER_TODO_TITLE);
       todo.setTableName(AuditConstants.END_PAPER_TABLE);
     }
     todo.setBusinessJson(businessJson);

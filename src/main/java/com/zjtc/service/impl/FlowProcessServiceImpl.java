@@ -83,4 +83,13 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     this.insert(flowProcess);
   }
 
+  @Override
+  public FlowProcess selectFirstRecords(String businessId) {
+    Wrapper auditWrapper = new EntityWrapper();
+    auditWrapper.eq("business_id", businessId);
+    auditWrapper.eq("audit_status", "0");
+    FlowProcess flowProcess = this.selectOne(auditWrapper);
+    return flowProcess;
+  }
+
 }

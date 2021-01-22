@@ -70,7 +70,7 @@ public class AuditConstants {
   /**
    * 办结单待办标题
    */
-  public static final String ENDPAPER_TODO_TITLE = "计划调整申请";
+  public static final String END_PAPER_TODO_TITLE = "计划调整申请";
   /**
    * 退、减免单标题
    */
@@ -81,7 +81,7 @@ public class AuditConstants {
    */
 
   /**
-   *短信创建
+   *短信/办结单/退减免单审核创建
    */
   private static final String AWAIT_CREATE = "0";
 
@@ -99,5 +99,28 @@ public class AuditConstants {
    * 审核不通过
    */
   public static final String NOT_APPROVED = "3";
+
+  /***************************************************************************
+   * ****************************审核后消息通知相关***************************
+   * *************************************************************************
+   */
+
+  /**
+   * 退、减免通知类型
+   */
+  public static final String PAY_MESSAGE_TYPE = "1";
+  /**
+   * 办结单通知类型
+   */
+  public static final String END_PAPER_MESSAGE_TYPE = "2";
+
+  /**
+   * 退、减免通知标题
+   */
+  public static final String PAY_MESSAGE_TITLE = "退、减免单审核通知";
+  /**
+   * 办结单通知标题
+   */
+  public static final String END_PAPER_MESSAGE_TITLE = "办结单审核通知";
 
 }
