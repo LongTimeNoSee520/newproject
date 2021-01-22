@@ -119,14 +119,14 @@ public interface UseWaterUnitInvoiceMapper extends BaseMapper<UseWaterUnitInvoic
    * 单位信息关联发票
    * @return 影响行数
    */
-  int updateInvoicesUnitMessage(@Param("useWaterUnitInvoice") UseWaterUnitInvoice useWaterUnitInvoice,@Param("userName") String userName);
+  int updateInvoicesUnitMessage(@Param("useWaterUnitInvoice") UseWaterUnitInvoice useWaterUnitInvoice,@Param("userName") String userName,@Param("nodeCode") String nodeCode);
 
   /**
    * 根据id查询是否有相同单位id的作废状态
    * @param id 单位id
    * @return 集合
    */
-  List<String> selectEnabledStatus(@Param("id") String id);
+  List<String> selectEnabledStatus(@Param("id") String id,@Param("nodeCode") String nodeCode);
 
   /**
    * 根据id修改作废状态

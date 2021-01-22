@@ -20,9 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * UseWaterPlanAdd的路由接口服务
- * 
- * @author Justin DaBo
  *
+ * @author Justin DaBo
  */
 @RestController
 @RequestMapping("useWaterPlanAddWX/")
@@ -59,7 +58,7 @@ public class UseWaterPlanAddWXController {
       return response;
     }
     try {
-      response = useWaterPlanAddWXService.queryPage(jsonObject, user.getNodeCode(),user.getId());
+      response = useWaterPlanAddWXService.queryPage(jsonObject, user.getNodeCode(), user.getId());
       return response;
     } catch (Exception e) {
       response.setCode(500);
@@ -103,9 +102,18 @@ public class UseWaterPlanAddWXController {
 
   @RequestMapping(value = "audit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("用水计划调整审核")
-  public ApiResponse audit(@ApiParam("   {\n"
-      + "     \"id\":\"审核id\",\"auditStatus\":\"审核状态(1:未通过,2:通过)\",\"auditResult\":\"审核意见\"\n"
-      + "   }") @RequestBody JSONObject jsonObject,
+  public ApiResponse audit(@ApiParam("{\n"
+      + "    \"id\":\"主键\",\n"
+      + "    \"auditStatus\":\"审核状态(1:不通过,2:通过)\",\n"
+      + "    \"auditResult\":\"这个单位太浪费水,洗漱的时候一直开着水龙头\",\n"
+      + "    \"firstWater\":\"第一水量\",\n"
+      + "    \"secondWater\":\"secondWater\",\n"
+      + "    \"auditorName\":\"审核人\",\n"
+      + "    \"auditorId\":\"审核人id\",\n"
+      + "    \"businessJson\":\"关联业务json数据(待办相关)\",\n"
+      + "    \"detailConfig\":\"详情配置文件(待办相关)\",\n"
+      + "    \"nextNodeId\":\"下一审核环节id\"\n"
+      + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("用水计划调整审核,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
@@ -118,19 +126,29 @@ public class UseWaterPlanAddWXController {
       response.recordError("系统异常");
       return response;
     }
-//    {
-//      "id":"1","auditStatus":"2","auditResult":"浪费水,洗漱的时候一直开着水龙头"
-//    }
     String id = jsonObject.getString("id");
 //    审核状态(0:为审核,1:审核不通过,2:审核通过)
     String auditStatus = jsonObject.getString("auditStatus");
+//    审核结果
     String auditResult = jsonObject.getString("auditResult");
 //    第一水量
     Double firstWater = jsonObject.getDouble("firstWater");
 //    第二水量
     Double secondWater = jsonObject.getDouble("secondWater");
+//    审核人
+    String auditorName = jsonObject.getString("auditorName");
+//    审核人id
+    String auditorId = jsonObject.getString("auditorId");
+//    关联业务json数据(待办相关)
+    String businessJson = jsonObject.getString("businessJson");
+//    详情配置文件(待办相关)
+    String detailConfig = jsonObject.getString("detailConfig");
+//    下一审核环节id
+    String nextNodeId = jsonObject.getString("nextNodeId");
     try {
-      response = useWaterPlanAddWXService.audit(user.getId(),user.getUsername(),id,auditStatus,auditResult,firstWater,secondWater);
+      response = useWaterPlanAddWXService
+          .audit(user.getId(), user.getUsername(), id, auditStatus, auditResult, firstWater,
+              secondWater, user,auditorName,auditorId,businessJson,detailConfig,nextNodeId);
       return response;
     } catch (Exception e) {
       response.setCode(500);

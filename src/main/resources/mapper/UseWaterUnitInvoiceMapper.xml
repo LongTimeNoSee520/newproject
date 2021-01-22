@@ -208,10 +208,10 @@
     FROM
     t_w_use_water_unit_invoice
     WHERE
-    pay_info_id IN ( SELECT pay_info_id FROM t_w_use_water_unit_invoice WHERE pay_info_id = #{id} AND enabled = '1' AND deleted = '0')
-    AND enabled = '1' AND deleted = '0'
+    pay_info_id IN ( SELECT pay_info_id FROM t_w_use_water_unit_invoice WHERE pay_info_id = #{id} AND enabled = '1' AND deleted = '0' and node_code = #{nodeCode})
+    AND enabled = '1' AND deleted = '0' and node_code = #{nodeCode}
     )
-    AND enabled = '1' AND deleted = '0' ORDER BY invoice_number desc
+    AND enabled = '1' AND deleted = '0' and node_code = #{nodeCode} ORDER BY invoice_number desc
   </select>
 
   <update id="updateEnabledStatus" >

@@ -46,7 +46,7 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
    * @param ids  发票id集
    * @return 响应结果
    */
-  ApiResponse cancelAbolish(List<String> ids);
+  ApiResponse cancelAbolish(List<String> ids,String nodeCode);
 
     /**
    * 重置发票
@@ -94,5 +94,5 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
    * @param userName 经手人
    * @return 结果集
    */
-  ApiResponse updateInvoicesUnitMessage(UseWaterUnitInvoice useWaterUnitInvoice,String userName);
+  ApiResponse updateInvoicesUnitMessage(UseWaterUnitInvoice useWaterUnitInvoice,String userName,String nodeCode);
 }

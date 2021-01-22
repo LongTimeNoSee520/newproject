@@ -124,7 +124,6 @@ public class UseWaterUnitInvoiceServiceImpl extends
     UseWaterUnitInvoice unitInvoice;
     List<UseWaterUnitInvoice> list = new ArrayList<>();
     boolean b = false;
-    // TODO: 2021/1/19 取消发票作废之前判断是否也有其他被作废的状态,如果有,就根据开票时间选择留最先选择的发票号
     for (String id : ids) {
       unitInvoice = new UseWaterUnitInvoice();
       unitInvoice.setId(id);
@@ -142,13 +141,19 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public ApiResponse cancelAbolish(List<String> ids) {
+  public ApiResponse cancelAbolish(List<String> ids,String nodeCode) {
     ApiResponse response = new ApiResponse();
+    if (ids.isEmpty() || StringUtils.isBlank(nodeCode)){
+      response.recordError("系统异常");
+      return response;
+    }
     int b = 0;
     for (String id : ids) {
+//      取消作废时判断之前是有被作废状态的数据,如果有,就根据开票时间提示取消该时间之后的数据
       UseWaterUnitInvoice unitInvoice1 = this.baseMapper.selectById(id);
-      List<String> invoiceNumberList = this.baseMapper.selectEnabledStatus(unitInvoice1.getPayInfoId());
+      List<String> invoiceNumberList = this.baseMapper.selectEnabledStatus(unitInvoice1.getPayInfoId(),nodeCode);
       if (!invoiceNumberList.isEmpty()) {
+//        拼接发票号
         String invoiceNumbers = StringUtils.strip(invoiceNumberList.toString(), "[]")
             .replace(" ", "");
         response.recordError("请先取消作废发票号为:" + invoiceNumbers + "的数据");
@@ -316,7 +321,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
 
   @Override
   public ApiResponse updateInvoicesUnitMessage(UseWaterUnitInvoice useWaterUnitInvoice,
-      String userName) {
+      String userName,String nodeCode) {
     ApiResponse response = new ApiResponse();
     if (null == useWaterUnitInvoice || StringUtils.isBlank(userName)) {
       response.recordError("系统异常");
@@ -331,7 +336,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
 //      return response;
 //    }
     useWaterUnitInvoice.setInvoiceDate(new Date());
-    int i = this.baseMapper.updateInvoicesUnitMessage(useWaterUnitInvoice, userName);
+    int i = this.baseMapper.updateInvoicesUnitMessage(useWaterUnitInvoice, userName,nodeCode);
     if (i > 0) {
       response.setCode(200);
       return response;

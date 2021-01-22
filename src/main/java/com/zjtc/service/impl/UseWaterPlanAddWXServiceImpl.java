@@ -1,5 +1,6 @@
 package com.zjtc.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
@@ -7,10 +8,12 @@ import com.zjtc.mapper.UseWaterPlanAddWXMapper;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAddWX;
+import com.zjtc.model.User;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterPlanService;
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -112,7 +115,8 @@ public class UseWaterPlanAddWXServiceImpl extends
 
   @Override
   public ApiResponse audit(String auditPersonId, String userName, String id, String auditStatus,
-      String auditResult, Double firstWater, Double secondWater) {
+      String auditResult, Double firstWater, Double secondWater, User user, String auditorName,
+      String auditorId, String businessJson, String detailConfig, String nextNodeId) {
     ApiResponse response = new ApiResponse();
     if (StringUtils.isBlank(auditPersonId) || StringUtils.isBlank(userName) || StringUtils
         .isBlank(id) || StringUtils.isBlank(auditStatus)) {
@@ -125,7 +129,6 @@ public class UseWaterPlanAddWXServiceImpl extends
             secondWater);
 //审核通过后进入办结单审核流程,向办结单中增加数据
     UseWaterPlanAddWX useWaterPlanAddWX = this.baseMapper.selectById(id);
-    EndPaper endPaper = new EndPaper();
     if ("2".equals(useWaterPlanAddWX.getAuditStatus())) {
       UseWaterPlan useWaterPlans = this.baseMapper
           .selectEndPaper(useWaterPlanAddWX.getNodeCode(), useWaterPlanAddWX.getUnitCode(),
@@ -134,71 +137,58 @@ public class UseWaterPlanAddWXServiceImpl extends
         response.recordError("系统异常,操作失败");
         return response;
       }
-      endPaper.setId(UUID.randomUUID().toString().replace("-", ""));
-//      节点编码
-      endPaper.setNodeCode(useWaterPlanAddWX.getNodeCode());
-//      单位id
-      endPaper.setUseWaterUnitId(useWaterPlanAddWX.getUseWaterUnitId());
-//      单位名称
-      endPaper.setUnitName(useWaterPlanAddWX.getUnitName());
+      JSONObject jsonObject = new JSONObject();
 //      单位编号
-      endPaper.setUnitCode(useWaterPlanAddWX.getUnitCode());
+      jsonObject.put("unitCode", useWaterPlanAddWX.getUnitCode());
+//      单位名称
+      jsonObject.put("unitName", useWaterPlanAddWX.getUnitName());
+//      数据来源
+      jsonObject.put("dataSources", "1");
 //      水表档案号
-      endPaper.setWaterMeterCode(useWaterPlanAddWX.getWaterMeterCode());
-//      办结单类型((增加计划).调整计划.临时用水.......)
-      endPaper.setPaperType(useWaterPlanAddWX.getChangeType());
-//      数据来源(1:网上申报,2:现场申报)
-      endPaper.setDataSources("1");
-//      创建时间
-      endPaper.setCreateTime(useWaterPlanAddWX.getCreateTime());
-//      经办人id
-      endPaper.setCreaterId(useWaterPlanAddWX.getAuditPersonId());
-//      经办人名字
-      endPaper.setCreaterName(useWaterPlanAddWX.getAuditPerson());
-//      调整年份
-      endPaper.setPlanYear(useWaterPlanAddWX.getPlanYear());
-//      调整季度
-      endPaper.setChangeQuarter(useWaterPlanAddWX.getChangeQuarter());
-//      本年计划（当前年计划）
-      endPaper.setCurYearPlan(useWaterPlanAddWX.getCurYearPlan());
+      jsonObject.put("waterMeterCode", useWaterPlanAddWX.getWaterMeterCode());
+//      编制年度
+      jsonObject.put("planYear", useWaterPlanAddWX.getPlanYear());
+//      调整类型
+      jsonObject.put("paperType", useWaterPlanAddWX.getChangeType());
+//      一季度水量
+      jsonObject.put("firstQuarter", useWaterPlanAddWX.getFirstQuarter());
+//      二季度水量
+      jsonObject.put("secondQuarter", useWaterPlanAddWX.getSecondQuarter());
+//      三季度水量
+      jsonObject.put("thirdQuarter", useWaterPlanAddWX.getThirdQuarter());
+//      四季度水量
+      jsonObject.put("四季度水量", useWaterPlanAddWX.getFourthQuarter());
 //      第一水量
-      endPaper.setFirstWater(useWaterPlanAddWX.getFirstWater());
+      jsonObject.put("firstWater", useWaterPlanAddWX.getFirstWater());
 //      第二水量
-      endPaper.setSecondWater(useWaterPlanAddWX.getSecondWater());
-//      增加水量(定额)
-      endPaper.setAddNumber(useWaterPlanAddWX.getCheckAdjustWater());
-//      创建类型(奖/扣创建)
-      endPaper.setCreateType(useWaterPlans.getCreateType());
-//      第一季度计划
-      endPaper.setFirstQuarter(useWaterPlanAddWX.getFirstQuarter());
-//      第二季度计划
-      endPaper.setSecondQuarter(useWaterPlanAddWX.getSecondQuarter());
-//      第三季度计划
-      endPaper.setThirdQuarter(useWaterPlanAddWX.getThirdQuarter());
-//      第四季度计划
-      endPaper.setFourthQuarter(useWaterPlanAddWX.getFourthQuarter());
-//      是否确认
-//      endPaper.setConfirmed(useWaterPlanAddWX.getConfirmed());
-//      确认时间
-//      endPaper.setConfirmTime(useWaterPlanAddWX.getConfirmTime());
-//      是否审核
-      //     endPaper.setAuditStatus("1");
-//      是否执行
-//      endPaper.setExecuted(useWaterPlanAddWX.getExecuted());
-//      审批申请附件id
-      endPaper.setAuditFileId(useWaterPlanAddWX.getAuditFileId());
-//      近2月水量凭证附件id
-      endPaper.setWaterProofFileId(useWaterPlanAddWX.getWaterProofFileId());
-//      其他证明材料
-      endPaper.setOtherFileId(useWaterPlanAddWX.getOtherFileId());
-//      计划调整微信表Id
-      endPaper.setWaterPlanWXId(useWaterPlanAddWX.getId());
-      endPaperService.insert(endPaper);
-      planDailyAdjustmentService
-          .updateExistSettlement("1", endPaper.getUnitCode(), endPaper.getNodeCode(),
-              endPaper.getPlanYear());
+      jsonObject.put("secondWater", useWaterPlanAddWX.getSecondWater());
+//      季度
+      jsonObject.put("quarter", useWaterPlanAddWX.getChangeQuarter());
+//      具体意见
+      jsonObject.put("opinions", useWaterPlanAddWX.getAuditResult());
+//       审批申请附件id列表\"]没有时传[]
+      jsonObject.put("auditFileIds", useWaterPlanAddWX.getAuditFileId());
+//       近2月水量凭证附件id列表\"]没有时传[]
+      jsonObject.put("waterProofFileIds", useWaterPlanAddWX.getWaterProofFileId());
+//        其他证明材料id列表\"]没有时传[]
+      jsonObject.put("otherFileIds", useWaterPlanAddWX.getOtherFileId());
+//      审核人员名称
+      jsonObject.put("auditorName", auditorName);
+//      审核人员id
+      jsonObject.put("auditorId", businessJson);
+      // TODO: 2021/1/21 待办相关数据来源,增加办结单表的对应数据
+////      关联业务json数据(待办相关)
+//      jsonObject.put("businessJson",detailConfig);
+////      详情配置文件(待办相关)
+//      jsonObject.put("detailConfig",detailConfig);
+//     下一审核环节id
+      jsonObject.put("nextNodeId", nextNodeId);
+      try {
+        planDailyAdjustmentService.initiateSettlement(user, jsonObject);
+      } catch (Exception e) {
+        log.error("转换json数据异常" + e.getMessage());
+      }
     }
-
     if (i > 0) {
       response.setCode(200);
       return response;

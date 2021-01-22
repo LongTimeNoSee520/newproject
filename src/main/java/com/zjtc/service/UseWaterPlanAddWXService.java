@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterPlanAddWX;
+import com.zjtc.model.User;
 import java.util.List;
 
 /**
@@ -43,7 +44,7 @@ public interface UseWaterPlanAddWXService extends IService<UseWaterPlanAddWX> {
    * @return 响应结果
    */
   ApiResponse audit(String auditPersonId, String userName, String id, String auditStatus,
-      String auditResult, Double firstWater, Double secondWater);
+      String auditResult, Double firstWater, Double secondWater, User user,String auditorName,String auditorId,String businessJson,String detailConfig,String nextNodeId);
 
   /**
    * 修改审核 \ 执行状态,执行后增加核定水量
