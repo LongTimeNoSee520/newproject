@@ -252,6 +252,11 @@ public class  EndPaper extends Model<EndPaper>{
     @TableField(value = "next_node_id",exist = true)
     private String nextNodeId;
 
+    @ApiModelProperty("是否已撤销")
+    @TableField(value = "rescinded",exist = true)
+    private String rescinded;
+
+
 	/**
 	 * 实例化
 	 */
