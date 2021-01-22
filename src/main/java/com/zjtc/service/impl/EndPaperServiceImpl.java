@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.EndPaperMapper;
 import com.zjtc.model.EndPaper;
+import com.zjtc.model.FlowProcess;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterPlanAddWX;
@@ -15,6 +17,7 @@ import com.zjtc.model.User;
 import com.zjtc.model.vo.EndPaperVO;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.PlanDailyAdjustmentService;
+import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import java.util.Date;
@@ -43,6 +46,10 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Autowired
   private UseWaterPlanAddWXService useWaterPlanAddWXService;
+
+  @Autowired
+  private TodoService todoService;
+
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -97,17 +104,29 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   }
 
   @Override
-  public void cancelSettlement(List<String> ids) {
+  public ApiResponse cancelSettlement(List<String> ids) {
+    ApiResponse response = new ApiResponse();
     /**根据id查询*/
     List<EndPaper> endPapers = this.selectBatchIds(ids);
     for (EndPaper endPaper : endPapers) {
-      /**根据单位编号更新是否存在办结单状态为否*/
-      planDailyAdjustmentService
-          .updateExistSettlement("0", endPaper.getUnitCode(), endPaper.getNodeCode(),
-              endPaper.getPlanYear());
-    }
-    /**删除表中数据*/
-    this.deleteBatchIds(ids);
+         /**类型为增加水量的办结单且处于审核中的办结单不能撤销*/
+        if ("1".equals(endPaper.getPaperType()) && !"0".equals(endPaper.getAuditStatus())) {//0为办结单提交审核还未经过下一环节审核的状态
+          //如果不是提交未审核状态，则不能撤销
+          response.recordError("处于审核中或者审核通过的增加计划办结单不能撤销");
+          return response;
+        }else{
+          /**根据单位编号更新是否存在办结单状态为否*/
+          planDailyAdjustmentService
+            .updateExistSettlement("0", endPaper.getUnitCode(), endPaper.getNodeCode(),
+                endPaper.getPlanYear());
+          /**更新撤销状态*/
+          endPaper.setRescinded("1");
+          this.updateById(endPaper);
+          /**删除待办数据*/
+          todoService.deleteByBusinessId(endPaper.getId());
+        }
+      }
+    return response;
   }
 
   @Override
@@ -123,23 +142,39 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     Integer quarter = jsonObject.getInteger("quarter");
     Boolean year = jsonObject.getBoolean("year"); //是否在年计划上增加
     Double addNumber = jsonObject.getDouble("addNumber");
+    String auditStatus = jsonObject.getString("auditStatus");
     String opinions = jsonObject.getString("opinions");//意见
+    String auditorName =jsonObject.getString("auditorName");//审核人员名称
+    String auditorId =jsonObject.getString("auditorId");//审核人员id
+    String businessJson = jsonObject.getString("businessJson");
+    String detailConfig = jsonObject.getString("detailConfig");
+    String nextNodeId = jsonObject.getString("nextNodeId");
 
-    Map<String, Object> map = new HashMap<>();
+    EndPaper endPaper = this.baseMapper.selectById(id);
+
     if (null != year && year) {
       /**选择了年计划*/
-      map.put("algorithmRules", "1");
+     endPaper.setAlgorithmRules("1");
     }
-    map.put("id", id);
-    map.put("firstWater", firstWater);
-    map.put("secondWater", secondWater);
-    map.put("addWay", addWay);
-    map.put("quarter", quarter.toString());
-    map.put("addNumber", addNumber);
-    /**更新数据（如果审核流程走完，则修改办结单审核状态）*/
-    //map.put("auditStatus", "1");//已审核通过
-    this.baseMapper.update(map);
-    /**TODO 如果审核流程走完，更新微信调整表审核状态和数据()*/
+    endPaper.setFirstWater(firstWater);
+    endPaper.setSecondWater(secondWater);
+    endPaper.setAddWay(addWay);
+    endPaper.setChangeQuarter(quarter.toString());
+    endPaper.setAddNumber(addNumber);
+
+    //如果流程走完了或者不通过则更新状态
+//    if("0".equals(auditStatus) || "流程走完".equals("1")){
+//      endPaper.setAuditStatus(auditStatus);
+//    }
+
+    if ("1".equals(endPaper.getPaperType())){//网上申报
+      UseWaterPlanAddWX waterPlanAddWX = new UseWaterPlanAddWX();
+      waterPlanAddWX.setId(endPaper.getWaterPlanWXId());
+      //如果通过,审核流程走完
+      waterPlanAddWX.setAuditStatus("4");//微信端提交审核通过后办结单审核也通过
+      //不通过
+      useWaterPlanAddWXService.update(waterPlanAddWX);
+    }
 
     /**TODO 审核流程信息新增*/
 
