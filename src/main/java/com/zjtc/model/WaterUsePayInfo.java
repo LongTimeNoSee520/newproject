@@ -66,7 +66,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     */
     @ApiModelProperty("发票号")
     @TableField(value = "invoice_num",exist = true)
-    private String invoiceNum;
+        private String invoiceNum;
     /**
     * 
     */
@@ -170,7 +170,8 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     @TableField(value = "actual_amount",exist = true)
     private Double actualAmount;
     /**
-    * 
+    * 页面勾选了托收已缴费后，缴费状态改为1
+     * 勾选现金、转账复核后，改为状态改为5，反之1
     */
     @ApiModelProperty("缴费状态,// 0未缴费 1托收已缴费  5非托收已缴费")
     @TableField(value = "pay_status",exist = true)
@@ -178,7 +179,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     /**
     * 
     */
-    @ApiModelProperty("是否打印")
+    @ApiModelProperty("是否打印,0否，1是")
     @TableField(value = "printed",exist = true)
     private String printed;
     /**

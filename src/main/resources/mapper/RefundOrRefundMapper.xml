@@ -3,76 +3,112 @@
 <mapper namespace="com.zjtc.mapper.RefundOrRefundMapper">
 	<!-- RefundOrRefund的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
 	<resultMap id="result_RefundOrRefund_Map" type="com.zjtc.model.RefundOrRefund">
-		<id column="id" property="id" />
-		<result column="node_code" property="nodeCode" />
-		<result column="use_water_unit_id" property="useWaterUnitId" />
-		<result column="unit_name" property="unitName" />
-		<result column="unit_code" property="unitCode" />
-		<result column="water_meter_code" property="waterMeterCode" />
-		<result column="pay_id" property="payId" />
-		<result column="type" property="type" />
-		<result column="quarter" property="quarter" />
-		<result column="year" property="year" />
-		<result column="actual_amount" property="actualAmount" />
-		<result column="money" property="money" />
-		<result column="reason" property="reason" />
-		<result column="drawer" property="drawer" />
-		<result column="create_time" property="createTime" />
-		<result column="audit_person" property="auditPerson" />
-		<result column="audit_ttime" property="auditTtime" />
-		<result column="status" property="status" />
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+		<result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+		<result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+		<result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+		<result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+		<result column="pay_id" property="payId" jdbcType="VARCHAR"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="typeName" property="typeName" jdbcType="VARCHAR"/>
+		<result column="quarter" property="quarter" jdbcType="VARCHAR"/>
+		<result column="year" property="year" jdbcType="INTEGER"/>
+		<result column="actual_amount" property="actualAmount" jdbcType="FLOAT"/>
+		<result column="money" property="money" jdbcType="FLOAT"/>
+		<result column="reason" property="reason" jdbcType="VARCHAR"/>
+		<result column="drawer" property="drawer" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="audit_person" property="auditPerson" jdbcType="VARCHAR"/>
+		<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP"/>
+		<result column="status" property="status" jdbcType="VARCHAR"/>
+		<result column="next_node_id" property="nextNodeId" jdbcType="VARCHAR"/>
+		<result column="is_revoke" property="isRevoke" jdbcType="VARCHAR"/>
+		<result column="treatment_advice" property="treatmentAdvice" jdbcType="VARCHAR"/>
+		<collection property="auditFlow" ofType="com.zjtc.model.FlowProcess" column="{id=id,nodeCode=node_code}"
+			select="queryAuditList">
+		</collection>
+		<collection property="sysFiles" column="{id=id,nodeCode=node_code}" select="selectsysFile"
+			ofType="com.zjtc.model.File">
+		</collection>
+	</resultMap>
+
+	<resultMap id="sysAttrFileMap" type="com.zjtc.model.File">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="creater_id" property="createrId" jdbcType="VARCHAR"/>
+		<result column="file_type" property="fileType" jdbcType="VARCHAR"/>
+		<result column="size" property="size" jdbcType="VARCHAR"/>
+		<result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+		<result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+		<result column="business_id" property="businessId" jdbcType="VARCHAR"/>
+		<result column="deleted" property="deleted" jdbcType="VARCHAR"/>
 	</resultMap>
 
 	<select id="queryAll" resultMap="result_RefundOrRefund_Map">
-			select
-			t1.id,
-			t1.type,
-			case
-			t1.type
-			when'1' then '退款单'
-			when '2' then '减免单'
-			else '未知' end as typeName,
-			t1.unit_code,
-			t1.unit_name,
-      t1.water_meter_code,
-			t1.create_time,
-			t1.drawer,
-			t1.year,
-			t1.quarter,
-			t1.money,
-			t1.reason
-			from t_w_refund_or_refund t1
-			where node_code=#{nodeCode}
+    select
+    t1.*,
+		case
+		t1.type
+		when'1' then '退款单'
+		when '2' then '减免单'
+		else '未知' end as typeName
+		from t_w_refund_or_refund t1
+		where node_code=#{nodeCode}
 			<!--待审核-->
 		<if test="keyWrod==1">
-			and id in(select busIness_id as id  from t_audit_flow where audit_status='1' and operator_id=#{userId})
+				and id in(select busIness_id as id  from t_sms_audit_flow where audit_status='1' and operator_id=#{userId})
 		</if>
 		<!--已审核-->
 		<if test="keyWrod==2">
-			and id in(select busIness_id as id  from t_audit_flow where (audit_status='2' or audit_status='3') and operator_id=#{userId})
+			and id in(select busIness_id as id  from t_sms_audit_flow where (audit_status='2' or audit_status='3') and operator_id=#{userId})
 		</if>
-		<if test="null !=unitCode">
+		<if test="null !=unitCode and unitCode !=''">
 			and unit_code like '%${unitCode}%'
 		</if>
-		<if test="null !=unitName">
+		<if test="null !=unitName and unitName !=''" >
 			and unit_name like '%${unitName}%'
 		</if>
-		<if test="null !=waterMeterCode">
+		<if test="null !=waterMeterCode and waterMeterCode !=''">
 			and water_meter_code like '%${waterMeterCode}%'
 		</if>
-		<if test="null !=year">
+		<if test="null !=year and year !=''">
 			and t1.year =#{year}
 		</if>
-		<if test="null !=type">
+		<if test="null !=type and type !=''">
 			and t1.type =#{type}
 		</if>
-		<if test="null !=startTime">
-			and t1.create_time &gt;={startTime}
+		<if test="null !=startTime and startTime !=''">
+			and t1.create_time &gt;= #{startTime}
 		</if>
-		<if test="null !=endTime">
-			and t1.create_time &lt;{endTime}
+		<if test="null !=endTime and endTime !=''">
+			and t1.create_time &lt; #{endTime}
 		</if>
 	</select>
 
+	<select id="queryAuditList" resultType="java.util.LinkedHashMap">
+    SELECT
+    t1.id AS id,
+    t1.operation_time AS operationTime,
+    CASE  t1.audit_status WHEN '0' THEN  '提交审核' WHEN '1' THEN  '待审核' WHEN '2' THEN  '审核通过' WHEN '3' THEN '审核不通过' END audit_status,
+    t1.operator AS operator, t1.operator_id AS operatorId,  t3.org_name AS orgName,
+    audit_content as auditContent
+    FROM
+    (
+    SELECT id,operator_id, node_code, audit_status, operator ,operation_time,create_time,audit_content
+    FROM t_sms_audit_flow WHERE business_id = #{id} and node_code=#{nodeCode}) AS t1
+    LEFT JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t1.operator_id = t2.id
+    LEFT JOIN ( SELECT id, org_name FROM t_org  where  node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
+    order by t1.create_time ASC
+  </select>
+	<select id="selectsysFile" resultMap="sysAttrFileMap">
+    select *
+    from t_file
+    where business_id =#{id}
+    and deleted='0'
+    and node_code=#{nodeCode}
+    order by create_time desc
+  </select>
 
 </mapper>

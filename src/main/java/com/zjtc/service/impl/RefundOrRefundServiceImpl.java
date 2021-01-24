@@ -11,14 +11,18 @@ import com.zjtc.model.FlowExample;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.User;
+import com.zjtc.service.FileService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
+import com.zjtc.service.MessageService;
 import com.zjtc.service.RefundOrRefundService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.WaterUsePayInfoService;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +47,10 @@ public class RefundOrRefundServiceImpl extends
   private FlowExampleService flowExampleService;
   @Autowired
   private WaterUsePayInfoService waterUsePayInfoService;
+  @Autowired
+  private FileService fileService;
+  @Autowired
+  private MessageService messageService;
 
   @Override
   public boolean saveModel(JSONObject jsonObject) {
@@ -54,8 +62,12 @@ public class RefundOrRefundServiceImpl extends
   @Override
   public boolean updateModel(JSONObject jsonObject) {
     RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
+    boolean flag = false;
+    if (!entity.getSysFiles().isEmpty()) {
+      flag = fileService.updateBusinessId(entity.getId(), entity.getSysFiles());
+    }
     boolean result = this.updateById(entity);
-    return result;
+    return flag && result;
   }
 
   @Override
@@ -67,6 +79,14 @@ public class RefundOrRefundServiceImpl extends
 
   @Override
   public List<RefundOrRefund> queryAll(JSONObject jsonObject) {
+    String startTime = jsonObject.getString("startTime");
+    String endTime = jsonObject.getString("endTime");
+    if (StringUtils.isNotBlank(startTime)) {
+      jsonObject.put("startTime", startTime + " 00:00:00");
+    }
+    if (StringUtils.isNotBlank(endTime)) {
+      jsonObject.put("endTime", endTime + " 23:59:59");
+    }
     List<RefundOrRefund> list = baseMapper.queryAll(jsonObject);
     return list;
   }
@@ -89,48 +109,69 @@ public class RefundOrRefundServiceImpl extends
     String detailConfig = jsonObject.getString("detailConfig");
     List<Map<String, Object>> hasNext = flowNodeInfoService
         .nextAuditRole(id, AuditConstants.PAY_TABLE, user.getNodeCode(), auditBtn);
-    //最后环节
     //获取当前环节的审核操作记录
     FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), entity.getId());
-    if (hasNext.isEmpty() && "1".equals(auditBtn)) {
-      //审核流程结束
-      //修改当前退减免单下一环节id
-      entity.setNextNodeId("");
-      this.updateById(entity);
-      //操作记录修改状态
+    //查询流程的发起人
+    FlowProcess firstProcess = flowProcessService.selectFirstRecords(id);
+    /**当前环节为最后环节：审核流程结束*/
+    if (hasNext.isEmpty()) {
       //不通过
       if ("0".equals(auditBtn)) {
+        entity.setStatus(AuditConstants.NOT_APPROVED);
         flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
       }
+      //通过
       if ("1".equals(auditBtn)) {
+        entity.setStatus(AuditConstants.GET_APPROVED);
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
       }
+      /**1.修改当前退减免单：下一环节id、审核人、审核时间、审核状态*/
+      entity.setAuditPerson(user.getId());
+      entity.setAuditTime(new Date());
+      entity.setNextNodeId("");
+      this.updateById(entity);
+      /**2.修改当前审核操作记录表：当前环节审核状态，操作时间*/
+      flowProcess.setOperationTime(new Date());
       flowProcessService.updateById(flowProcess);
-      //修改代办状态
+      /**3.修改代办表：状态改为已办*/
       todoService.edit(entity.getId(), user.getNodeCode(), user.getId());
-      //修改实例表数据
-      flowExampleService.edit(user.getNodeCode(), user.getId());
-      //修改缴费记录
+      /**4.修改实例表数据：流转状态*/
+      flowExampleService.edit(user.getNodeCode(), entity.getId());
+      /**5.修改缴费记录表数据：修改应收、实收金额*/
       waterUsePayInfoService.updateMoney(entity.getPayId(), entity.getMoney());
-      //发起通知 todo:
+      /**6.流程结束：通知发起人*/
+      String messageContent = "";
+      if ("1".equals(entity.getType())) {
+        messageContent =
+            "您发起的[用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ")" + "申请退款" + entity
+                .getMoney() + " 元，审核已通过。";
+      }
+      if ("2".equals(entity.getType())) {
+        messageContent =
+            "您发起的[用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ")" + "申请减免" + entity
+                .getMoney() + " 元，审核已通过。";
+      }
+      messageService
+          .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
+              AuditConstants.PAY_MESSAGE_TYPE, messageContent);
     } else {
-      //审核流程继续
-      //修改当前退减免单下一环节id
+      /**审核流程继续*/
+      /**1.修改当前退减免单:下一环节id*/
       entity.setNextNodeId(hasNext.get(0).get("flowNodeId").toString());
       this.updateById(entity);
-      //当前操作记录修改状态
+      /**2.流程操作记录表：修改当前环节审核状态*/
       if ("0".equals(auditBtn)) {
-        flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
-      }
-      if ("1".equals(auditBtn)) {
         flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
       }
+      if ("1".equals(auditBtn)) {
+        flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
+      }
       flowProcessService.updateById(flowProcess);
-      //新增下一环节操作记录
-      flowProcessService.add(user.getNodeCode(), entity.getId(), nextPersonId, nextPersonName);
-      //修改待办状态
+      /**3.流程操作记录表:新增下一环节操作记录*/
+      flowProcessService.add(user.getNodeCode(), entity.getId(),nextPersonName, nextPersonId);
+      /**4：待办表：修改当前待办状态*/
       todoService.edit(entity.getId(), user.getNodeCode(), user.getId());
-      //新增一条待办
+      /**待办表：新增一条待办*/
       String todoContent = "";
       if ("1".equals(entity.getType())) {
         todoContent =
@@ -157,12 +198,17 @@ public class RefundOrRefundServiceImpl extends
   }
 
   @Override
-  public boolean auditCount(String payId,String nodeCode) {
-    Wrapper entityWrapper=new EntityWrapper();
-    entityWrapper.eq("pay_id",payId);
-    entityWrapper.eq("node_code",nodeCode);
-    entityWrapper.eq("status",AuditConstants.AWAIT_APPROVED);
-    return this.selectCount(entityWrapper)>0 ? true: false;
+  public boolean auditCount(String payId, String nodeCode) {
+    Wrapper entityWrapper = new EntityWrapper();
+    entityWrapper.eq("pay_id", payId);
+    entityWrapper.eq("node_code", nodeCode);
+    entityWrapper.eq("status", AuditConstants.AWAIT_APPROVED);
+    return this.selectCount(entityWrapper) > 0 ? true : false;
+  }
+
+  @Override
+  public List<Map<String, Object>> nextAuditRole(String id,String nodeCode,String auditBtn) {
+    return flowNodeInfoService.nextAuditRole(id,AuditConstants.PAY_TABLE,nodeCode,auditBtn);
   }
 
 }

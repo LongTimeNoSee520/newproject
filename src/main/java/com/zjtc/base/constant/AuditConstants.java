@@ -117,7 +117,7 @@ public class AuditConstants {
   /**
    * 退、减免通知标题
    */
-  public static final String PAY_MESSAGE_TITLE = "退、减免单审核通知";
+  public static final String PAY_MESSAGE_TITLE = "退减免单审核通知";
   /**
    * 办结单通知标题
    */

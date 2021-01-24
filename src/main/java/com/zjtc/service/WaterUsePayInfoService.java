@@ -24,7 +24,7 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
   /**
    * 修改
    */
-  boolean updateModel(JSONObject jsonObject);
+  boolean updateModel(JSONObject jsonObject,User user);
 
   /**
    * 删除
@@ -67,7 +67,7 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
   /**
    * 查询退缴费第一个提交流程的角色信息
    */
-  List<Map<String, Object>> firstRole(JSONObject jsonObject, User user);
+  List<Map<String, Object>> firstRole( User user);
 
   /**
    * 查询当前单位所有未缴费记录

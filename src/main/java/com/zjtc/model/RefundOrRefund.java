@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.util.Date;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -73,6 +74,12 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
     @ApiModelProperty("单据类型,单据类型：1退款单，2：减免单")
     @TableField(value = "type",exist = true)
     private String type;
+    /**
+     *
+     */
+    @ApiModelProperty("单据类型名称")
+    @TableField(exist = false)
+    private String typeName;
     /**
     * 
     */
@@ -151,6 +158,21 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
     @ApiModelProperty("服务人员处理意见")
     @TableField(value = "treatment_advice",exist = true)
     private String treatmentAdvice;
+
+    /**
+     *
+     */
+    @ApiModelProperty("附件集合")
+    @TableField(exist = false)
+    private List<File> sysFiles;
+
+    /**
+     *
+     */
+    @ApiModelProperty("审核流程")
+    @TableField(exist = false)
+    private List<FlowProcess> auditFlow;
+
 
 	/**
 	 * 实例化

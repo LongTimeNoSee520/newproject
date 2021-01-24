@@ -51,7 +51,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     EntityWrapper wrapper=new EntityWrapper();
     wrapper.eq("business_id",businessId);
     wrapper.eq("node_code",nodeCode);
-    wrapper.eq("execute_personId",executePersonId);
+    wrapper.eq("execute_person_id",executePersonId);
     Todo todo= this.selectOne(wrapper);
     todo.setStatus("1");
     todo.setOperationTime(new Date());

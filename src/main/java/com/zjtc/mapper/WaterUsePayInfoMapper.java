@@ -53,7 +53,7 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
    * @param money 退减免金额
    * @return
    */
-   boolean updateMoney(String id ,double money);
+   boolean updateMoney(@Param("id") String id ,@Param("money") double money);
 
   List<Map<String, Object>> findPayBefor(@Param("unitId") String unitId);
 

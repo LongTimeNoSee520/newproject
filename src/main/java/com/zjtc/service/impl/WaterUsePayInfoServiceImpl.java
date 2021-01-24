@@ -10,6 +10,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.WaterUsePayInfoMapper;
 import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.RefundOrRefund;
+import com.zjtc.model.UseWaterUnitInvoice;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
 import com.zjtc.service.FlowExampleService;
@@ -17,8 +18,11 @@ import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.RefundOrRefundService;
 import com.zjtc.service.TodoService;
+import com.zjtc.service.UseWaterUnitInvoiceService;
 import com.zjtc.service.WaterUsePayInfoService;
+import io.swagger.annotations.ApiParam;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +51,8 @@ public class WaterUsePayInfoServiceImpl extends
   private TodoService todoService;
   @Autowired
   private FlowExampleService flowExampleService;
+  @Autowired
+  private UseWaterUnitInvoiceService useWaterUnitInvoiceService;
 
   @Override
   public boolean saveModel(JSONObject jsonObject) {
@@ -56,11 +62,24 @@ public class WaterUsePayInfoServiceImpl extends
   }
 
   @Override
-  public boolean updateModel(JSONObject jsonObject) {
-    //todo:绑定发票号
+  public boolean updateModel(JSONObject jsonObject, User user) {
     WaterUsePayInfo entity = jsonObject.toJavaObject(WaterUsePayInfo.class);
-    if (StringUtils.isNotBlank(entity.getInvoiceNum())) {
-      //绑定发票号
+    String invoiceId = jsonObject.getString("invoiceId");
+    //勾选了财务转账、现金复核
+    if ("1".equals(entity.getCashCheck()) || "1".equals(entity.getTransferCheck())) {
+      entity.setPayStatus("5");
+    }
+    //勾选了托收缴费状态
+    if ("1".equals(entity.getPayStatus())) {
+      entity.setPayStatus("1");
+    }
+    if (StringUtils.isNotBlank(invoiceId)) {
+      /**绑定发票号*/
+      UseWaterUnitInvoice useWaterUnitInvoice = new UseWaterUnitInvoice();
+      useWaterUnitInvoice.setInvoiceDate(new Date());
+      useWaterUnitInvoice.setPayInfoId(entity.getId());
+      useWaterUnitInvoiceService
+          .updateInvoicesUnitMessage(useWaterUnitInvoice, user.getUsername(), user.getNodeCode());
     }
     boolean result = this.updateById(entity);
     return result;
@@ -137,7 +156,8 @@ public class WaterUsePayInfoServiceImpl extends
     /**修改业务表数据*/
     refundOrRefundService.updateById(entity);
     /**流程进度（操作记录）表 新增三条数据*/
-    flowProcessService.create(user, entity.getId(), entity.getTreatmentAdvice(), nextPersonId, nextPersonName);
+    flowProcessService
+        .create(user, entity.getId(), entity.getTreatmentAdvice(), nextPersonName, nextPersonId);
     /**发起待办*/
     String todoContent =
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请退款" + entity.getMoney()
@@ -182,7 +202,7 @@ public class WaterUsePayInfoServiceImpl extends
     /**修改业务表数据*/
     refundOrRefundService.updateById(entity);
     /**流程进度（操作记录）表 新增三条数据*/
-    flowProcessService.create(user, entity.getId(), content, nextPersonId, nextPersonName);
+    flowProcessService.create(user, entity.getId(), content, nextPersonName, nextPersonId);
     /**发起待办*/
     String todoContent =
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请减免" + entity.getMoney()
@@ -209,7 +229,7 @@ public class WaterUsePayInfoServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> firstRole(JSONObject jsonObject, User user) {
+  public List<Map<String, Object>> firstRole(User user) {
     List<Map<String, Object>> result = flowNodeInfoService
         .firStAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
     return result;
