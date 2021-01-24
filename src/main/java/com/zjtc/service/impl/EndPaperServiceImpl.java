@@ -24,6 +24,8 @@ import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanAddWXService;
+import com.zjtc.service.WaterUsePayInfoService;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -65,6 +67,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Autowired
   private MessageService messageService;
+
+  @Autowired
+  private WaterUsePayInfoService waterUsePayInfoService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -326,6 +331,13 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     useWaterPlan.setUpdateTime(new Date());
     useWaterPlan.setExistSettlementForm("0");//执行办结单后将是否存在未完成的办结单状态设置为否
     planDailyAdjustmentService.updateById(useWaterPlan);
+    /**重算加价*/
+    JSONObject jsonObject1 = new JSONObject();
+    jsonObject.put("countYear",useWaterPlanAdd.getPlanYear());
+    List<String> unitIds = new ArrayList<>();
+    unitIds.add(useWaterPlanAdd.getUseWaterUnitId());
+    jsonObject.put("unitIds",unitIds);
+    waterUsePayInfoService.initPayInfo(jsonObject1);
     /**调整表新增*/
     useWaterPlanAddService.insert(useWaterPlanAdd);
     /**更新办结单信息*/

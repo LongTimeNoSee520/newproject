@@ -112,7 +112,10 @@ public class UseWaterBasePlanServiceImpl extends
     //取第一条数据的年份即可
     Integer year = basePlans.get(0).getPlanYear();
     List<String> unitIds = new ArrayList<>();
-    unitIds.addAll(ids);
+    for (UseWaterBasePlan basePlan :basePlans){
+      unitIds.add(basePlan.getUseWaterUnitId());
+    }
+
     JSONObject jsonObject = new JSONObject();
     jsonObject.put("countYear", year);
     jsonObject.put("unitIds", unitIds);

@@ -23,6 +23,7 @@ import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
+import com.zjtc.service.WaterUsePayInfoService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,6 +60,8 @@ public class PlanDailyAdjustmentServiceImpl extends
   private FlowProcessService flowProcessService;
   @Autowired
   private TodoService todoService;
+  @Autowired
+  private WaterUsePayInfoService waterUsePayInfoService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -366,6 +369,13 @@ public class PlanDailyAdjustmentServiceImpl extends
       useWaterPlan.setUpdateTime(new Date());
       useWaterPlan.setUpdateUserId(user.getId());
       this.baseMapper.updateById(useWaterPlan);
+      /**重算加价*/
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put("countYear",useWaterPlanAdd.getPlanYear());
+      List<String> unitIds = new ArrayList<>();
+      unitIds.add(useWaterPlanAdd.getUseWaterUnitId());
+      jsonObject.put("unitIds",unitIds);
+      waterUsePayInfoService.initPayInfo(jsonObject);
     }else {
       log.error("更新调整表累加状态失败");
       response.recordError("更新调整表累加状态失败");
