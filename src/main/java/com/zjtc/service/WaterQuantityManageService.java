@@ -52,6 +52,9 @@ public interface WaterQuantityManageService extends IService<WaterUseData> {
 
 	/**
 	 *原始数据导入完后，将导入的数据写入水量月使用数据表中
-	 *  */
-  void importEnd();
+	 *
+   * @param user
+   * @param fileProcessId
+	 * */
+  void importEnd(User user, String fileProcessId);
 }

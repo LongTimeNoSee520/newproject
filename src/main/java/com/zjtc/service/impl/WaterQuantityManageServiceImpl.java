@@ -17,6 +17,7 @@ import com.zjtc.service.FileService;
 import com.zjtc.service.ImportLogService;
 import com.zjtc.service.UseWaterUnitMeterService;
 import com.zjtc.service.WaterQuantityManageService;
+import com.zjtc.service.WaterUsePayInfoService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,6 +41,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -82,6 +84,9 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 
   @Autowired
   private FileService fileService;
+
+  @Autowired
+  private WaterUsePayInfoService waterUsePayInfoService;
 
   /**
    * 错误文件信息
@@ -225,6 +230,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public ApiResponse checkAndInsertData(User user,String fileProcessId,String fileName) throws Exception {
 	  ApiResponse response =new ApiResponse();
     Map beans = new HashMap<String, List>();
@@ -273,6 +279,8 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
      * key:水表档案号+年份+月份
      * value：保存重复数据出现在excel中的第几行，有几条相同的就把他们出现的位置存入list*/
     Map<String,List<Integer>> existMap = new HashMap<>();
+    /**存放水表有对应的单位id，用于导入完成后初始化加价*/
+    List<String> unitIds = new ArrayList<>();
     for (int i = 1; i <= infos.size(); i++) {
       if (sendSocketIndex.contains(i)){
         double percent = (double)(sendSocketIndex.indexOf(i)+1)/10;
@@ -284,6 +292,9 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
       waterUseData.setId(UUID.randomUUID().toString().replace("-", ""));
       waterUseData.setNodeCode(nodeCode);
       waterUseData.setUseWaterUnitId(meterMap.get(waterUseDataVO.getWaterMeterCode()));
+      if(null != waterUseData.getUseWaterUnitId()){
+        unitIds.add(waterUseData.getUseWaterUnitId());
+      }
       waterUseData.setUnitCode(waterUseDataVO.getWaterMeterCode());//水表档案号作原始数据的单位编号
       waterUseData.setUnitNames(waterUseDataVO.getUserName());
       waterUseData.setUnitAddress(waterUseDataVO.getAddress());
@@ -357,14 +368,28 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     }
     /**日志写入数据库*/
     importLogService.add(importLog);
+    /**将年份与unitIds存入redis*/
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("countYear",waterUseDataList.get(0).getUseYear());
+    jsonObject.put("unitIds",unitIds);
+    redisUtil.set(fileProcessId,jsonObject,60*60*24*3);//保存3天
     /**TODO 将完成百分比(100%)通过webSocket推送给前端(最后一次)*/
     return response;
   }
 
   @Override
-  public void importEnd() {
-	 Integer year =Integer.parseInt(TimeUtil.formatTimeStr(new Date()).substring(0,4)) ;
+  @Transactional(rollbackFor = Exception.class)
+  public void importEnd(User user, String fileProcessId) {
+	// Integer year =Integer.parseInt(TimeUtil.formatTimeStr(new Date()).substring(0,4)) ;
+    JSONObject jsonObject = (JSONObject) redisUtil.get(fileProcessId,JSONObject.class);
+    Integer year = jsonObject.getInteger("countYear");
+//    List<String> unitIds =jsonObject.getJSONArray("unitIds").toJavaList(String.class);
+    /**将导入的数据写入月使用表*/
     this.baseMapper.insertOrUpdateToMonthData(year);
+    /**重算加价*/
+    waterUsePayInfoService.initPayInfo(jsonObject);
+    /**删除缓存*/
+    redisUtil.del(fileProcessId);
   }
 
   /**解析excel数据到bean*/

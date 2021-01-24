@@ -155,14 +155,17 @@ public class WaterQuantityManageController {
     return response;
   }
   @RequestMapping(value = "importEnd", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation(value = "导入完毕后往月使用表更新或者插入数据")
+  @ApiOperation(value = "导入完毕后往月使用表更新或者插入数据并重算加价")
   public ApiResponse importEnd(@RequestHeader("token") String token,
-      @ApiParam("{}") @RequestBody JSONObject jsonObject) {
+      @ApiParam("{\n"
+          + "\"fileProcessId\":\"文件上传的UUID\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
     log.info("数据检查 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
       try {
-       // User user = jwtUtil.getUserByToken(token);
-         waterQuantityManageService.importEnd();
+         User user = jwtUtil.getUserByToken(token);
+         String fileProcessId =jsonObject.getString("fileProcessId");
+         waterQuantityManageService.importEnd(user,fileProcessId);
       } catch (Exception e) {
         log.error("数据错误:errMsg==={}" + e.getMessage());
         response.recordError(500);
