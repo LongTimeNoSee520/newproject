@@ -124,7 +124,7 @@ public class RefundOrRefundController {
       + "\"businessJson\":\"关联业务json数据(待办相关)\",\n"
       + "\"detailConfig\":\"详情配置文件(待办相关)\"\n"
       + "  \n"
-      + "}")@RequestHeader("token") String token,
+      + "}") @RequestHeader("token") String token,
       @RequestBody JSONObject jsonObject) {
     log.info("审核 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -155,7 +155,7 @@ public class RefundOrRefundController {
       + "  \"id\":\"退减免单id\",\n"
       + "  \"auditBtn\":\"审核是否通过，0：不通过，1:通过\"\n"
       + "  \n"
-      + "}")@RequestHeader("token") String token,
+      + "}") @RequestHeader("token") String token,
       @RequestBody JSONObject jsonObject) {
     log.info("查询 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -165,6 +165,37 @@ public class RefundOrRefundController {
         List<Map<String, Object>> result = refundOrRefundService
             .nextAuditRole(jsonObject.getString("id"), user.getNodeCode(),
                 jsonObject.getString("auditBtn"));
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("查询错误,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "撤销")
+  @RequestMapping(value = "revoke", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse revoke(@ApiParam("{\n"
+      + "  \"ids\":[\"退减免单id数组\"]\n"
+      + "}") @RequestHeader("token") String token,
+      @RequestBody JSONObject jsonObject) {
+    log.info("撤销 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != jsonObject) {
+      try {
+        boolean result = refundOrRefundService
+            .revoke(jsonObject);
+        if (result) {
+          apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
+        } else {
+          apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+        }
         apiResponse.setData(result);
       } catch (Exception e) {
         log.error("查询错误,errMsg==={}", e.getMessage());

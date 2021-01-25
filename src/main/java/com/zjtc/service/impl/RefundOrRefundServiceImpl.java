@@ -168,7 +168,7 @@ public class RefundOrRefundServiceImpl extends
       }
       flowProcessService.updateById(flowProcess);
       /**3.流程操作记录表:新增下一环节操作记录*/
-      flowProcessService.add(user.getNodeCode(), entity.getId(),nextPersonName, nextPersonId);
+      flowProcessService.add(user.getNodeCode(), entity.getId(), nextPersonName, nextPersonId);
       /**4：待办表：修改当前待办状态*/
       todoService.edit(entity.getId(), user.getNodeCode(), user.getId());
       /**待办表：新增一条待办*/
@@ -193,8 +193,16 @@ public class RefundOrRefundServiceImpl extends
 
   @Override
   public boolean revoke(JSONObject jsonObject) {
-    //
-    return false;
+    boolean result = false;
+    List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
+    Wrapper wrapper = new EntityWrapper();
+    wrapper.in("id", ids);
+    RefundOrRefund refundOrRefund = new RefundOrRefund();
+    refundOrRefund.setIsRevoke("1");
+    result = this.update(refundOrRefund, wrapper);
+    /**更新撤销状态*/
+    /**删除待办数据*/
+    return result && todoService.deleteBatchIds(ids);
   }
 
   @Override
@@ -207,8 +215,8 @@ public class RefundOrRefundServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> nextAuditRole(String id,String nodeCode,String auditBtn) {
-    return flowNodeInfoService.nextAuditRole(id,AuditConstants.PAY_TABLE,nodeCode,auditBtn);
+  public List<Map<String, Object>> nextAuditRole(String id, String nodeCode, String auditBtn) {
+    return flowNodeInfoService.nextAuditRole(id, AuditConstants.PAY_TABLE, nodeCode, auditBtn);
   }
 
 }
