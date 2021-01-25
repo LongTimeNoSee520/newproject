@@ -36,6 +36,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     }
     message.setMsgContent(messageContent);
     message.setMsgStatus("0");//未读
+    this.baseMapper.insert(message);
   }
 
   @Override
