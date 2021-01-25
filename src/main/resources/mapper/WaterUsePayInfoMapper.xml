@@ -541,7 +541,7 @@
 
 	<update id="updateMoney">
 		update t_w_water_use_pay_info
-		set amount_receivable=amount_receivable-#{money},actual_amount=actual_amount-#{money}
+		set amount_receivable=amount_receivable-#{money},actual_amount=actual_amount-#{money},edited_actual='1'
 		where id=#{id}
 	</update>
 

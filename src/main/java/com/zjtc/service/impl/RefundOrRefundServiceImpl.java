@@ -137,7 +137,7 @@ public class RefundOrRefundServiceImpl extends
       todoService.edit(entity.getId(), user.getNodeCode(), user.getId());
       /**4.修改实例表数据：流转状态*/
       flowExampleService.edit(user.getNodeCode(), entity.getId());
-      /**5.修改缴费记录表数据：修改应收、实收金额*/
+      /**5.修改缴费记录表数据：修改应收、实收金额,是否修改过实收*/
       waterUsePayInfoService.updateMoney(entity.getPayId(), entity.getMoney());
       /**6.流程结束：通知发起人*/
       String messageContent = "";
