@@ -194,8 +194,12 @@
     inner join (select use_water_unit_id from t_w_use_water_original_plan where
     node_code=#{nodeCode} and plan_year=#{year}-1 ) t8 on t1.id =t8.use_water_unit_id
     left join(
-      select use_water_unit_id,sum(quota_value * amount * time_param * quota_rate) as nextYearQuotaStartPlan from t_w_use_water_quota
-      group by use_water_unit_id
+        select
+        a.use_water_unit_id,
+        sum(b.common_value * a.amount * b.quota_rate) as nextYearQuotaStartPlan
+        from t_w_use_water_quota as a
+        inner join t_w_quota_info as b on a.product=b.id
+        group by a.use_water_unit_id
     ) t9 on t9.use_water_unit_id=t1.id
     ,
     (select * from t_w_algorithm where
@@ -435,7 +439,7 @@
     left join(
     select
      a.use_water_unit_id,
-     sum(a.quota_value * a.amount * b.time_param * b.quota_rate) as nextYearQuotaStartPlan
+     sum(b.common_value * a.amount * b.quota_rate) as nextYearQuotaStartPlan
      from t_w_use_water_quota as a
      inner join t_w_quota_info as b on a.product=b.id
       group by a.use_water_unit_id

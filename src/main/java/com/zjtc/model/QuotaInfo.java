@@ -40,6 +40,10 @@ public class QuotaInfo extends Model<QuotaInfo> {
   @TableField(value = "industry_name", exist = true)
   private String industryName;
 
+  @ApiModelProperty(value = "行业/定额编码")
+  @TableField(value = "industry_code", exist = true)
+  private String industryCode;
+
   @ApiModelProperty(value = "定额单位")
   @TableField(value = "quota_unit", exist = true)
   private String quotaUnit;
@@ -60,11 +64,11 @@ public class QuotaInfo extends Model<QuotaInfo> {
   @TableField(value = "remark", exist = true)
   private String remark;
 
-  @ApiModelProperty(value ="先进值")
+  @ApiModelProperty(value ="定额单位先进值")
   @TableField(value = "advance_value", exist = true)
   private Float advanceValue;
 
-  @ApiModelProperty(value = "定额通用值")
+  @ApiModelProperty(value = "定额单位通用值")
   @TableField(value = "common_value", exist = true)
   private Float commonValue;
 
