@@ -241,11 +241,11 @@ public class PlanDailyAdjustmentController {
   }
 
   @RequestMapping(value = "signPrinted'", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation(value = "打印后标记修改打印状态(只有调整的数据可以打印)")
+  @ApiOperation(value = "打印后标记修改打印状态")
   public ApiResponse signPrinted(@RequestHeader("token") String token,
       @ApiParam("{\n"
           + "\"printList\": 打印列表: [{\n"
-          + "\"id\": \"id\",\n"
+          + "\"id\": \"主数据id或者展开数据id\",\n"
           + "\"printType\": \"打印的类型0为主数据，1为展开列表的调整数据\"\n"
           + "}]\n"
           + "}") @RequestBody JSONObject jsonObject) {

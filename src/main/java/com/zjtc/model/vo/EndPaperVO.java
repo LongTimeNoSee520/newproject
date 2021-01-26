@@ -76,8 +76,8 @@ public class EndPaperVO extends Model<EndPaperVO>{
     @ApiModelProperty("加计划的方式：1-平均，2-最高")
     private String addWay;
 
-    @ApiModelProperty("是否在年计划上增加")
-    private String year;
+//    @ApiModelProperty("是否在年计划上增加")
+//    private String year;
 
     @ApiModelProperty("扣加价")
     private String minusPayStatus;

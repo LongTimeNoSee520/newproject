@@ -89,9 +89,9 @@
     <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
     <result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
     <result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
-    <collection property="unpaidList" ofType="java.util.LinkedHashMap" column="unit_code"
-      select="queryUnpaidList">
-    </collection>
+    <!--<collection property="unpaidList" ofType="java.util.LinkedHashMap" column="unit_code"-->
+      <!--select="queryUnpaidList">-->
+    <!--</collection>-->
   </resultMap>
   <select id="queryNum" resultType="int">
     SELECT COUNT (id)

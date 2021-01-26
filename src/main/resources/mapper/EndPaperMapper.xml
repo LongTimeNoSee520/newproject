@@ -237,7 +237,7 @@
   <select id="queryAuditList" resultType="java.util.LinkedHashMap">
     SELECT
     t1.id AS id, t1.operation_time AS operationTime,
-    CASE  t1.audit_status WHEN '0' THEN  '提交审核' WHEN '1' THEN  '待审核' WHEN '2' THEN  '审核通过' WHEN '3' THEN '审核不通过' END audit_status,
+    CASE  t1.audit_status WHEN '0' THEN  '提交审核' WHEN '1' THEN  '待审核' WHEN '2' THEN  '审核通过' WHEN '3' THEN '审核不通过' END auditStatus,
     t1.operator AS operator, t1.operator_id AS operatorId,  t3.org_name AS orgName
     FROM
     (
