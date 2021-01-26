@@ -141,10 +141,10 @@
 		SELECT
 			row_number ( ) over ( ORDER BY t1.unit_code, unit_code_group, count_quarter DESC ) AS rownumber,
 			t1.id,
-			t1.pay_type,
+			t1.pay_type as payType,
 			t1.unit_code AS unitCode,
 			t1.unit_name AS unitName,
-			t2.unit_code_group,
+			t2.unit_code_group as unitCodeGroup,
 			t1.count_year AS countYear,
 			t1.count_quarter AS countQuarter,
 			t1.price,
@@ -153,7 +153,7 @@
 			t1.water_num1 AS waterNum1,
 			t1.water_num2 AS waterNum2,
 			t1.water_num2 AS waterNum3,
-			t1.water_num_amount AS wateNumAmount,
+			t1.water_num_amount AS waterNumAmount,
 			t1.exceed_water AS exceedWater,
 			t1.pay_ratio AS payRatio,
 			t1.multiple,
@@ -161,6 +161,10 @@
 			t1.amount_receivable AS amountReceivable,
 			t1.actual_amount AS actualAmount,
 			t1.pay_status AS payStatus,
+			<!--托收缴费状态，满足pay_status=1 -->
+			case t1.pay_status
+			when '1' then 'Y'
+			else 'N' end as payStatusName,
 			t1.entrusted,
 			t1.cash_check AS cashCheck,
 			t1.transfer_check AS transferCheck,
@@ -173,9 +177,18 @@
 			t2.responsibility_code AS responsibilityCode,
 		  t2.water_meter_code as waterMeterCode,
 			t4.bank_code AS bankCode,
-			t4.signed,
-			t5.cur_year_plan AS curYearPlan
-		FROM
+			<!--基建季计划-->
+			case #{countQuarter}
+		  when '1' then t5.one_quarter
+		  when '2' then t5.two_quarter
+			when '3' then t5.three_quarter
+			when '4' then t5.four_quarter
+			else '0' end as  baseQuarterPlan,
+			<!--是否签约，条件：绑定的银行账号都没有签约-->
+			case
+			when t4.signed is null then '0'
+			else '1' end signed
+ 		FROM
 			( SELECT * FROM t_w_water_use_pay_info WHERE 1 = 1
 		<!--单位名称关键字查询-->
 		<if test="null !=unitName and unitName !=''">
@@ -234,7 +247,7 @@
 					and unit_code_type=#{userType}
 				</if>
 			 ) t2 on t2.id=t1.use_water_unit_id
-			LEFT JOIN ( SELECT * FROM t_w_bank WHERE main = '1' AND deleted = '0' ) t4 ON t4.use_water_unit_id = t1.use_water_unit_id
+			LEFT JOIN ( SELECT * FROM t_w_bank WHERE deleted = '0' and signed='1' ) t4 ON t4.use_water_unit_id = t1.use_water_unit_id
 			LEFT JOIN ( SELECT * FROM t_w_use_water_base_plan WHERE deleted = '0' ) t5 ON t5.use_water_unit_id = t1.use_water_unit_id
 			AND t5.plan_year = t1.count_year
 		<!--LEFT JOIN ( SELECT pay_id, max( audit_time ) AS audit_time, max( audit_person ) AS audit_person FROM t_w_refund_or_refund GROUP BY pay_id ) t6 ON t6.pay_id = t1.id
@@ -320,7 +333,7 @@
 		t5.waterNumber2,
 		t5.waterNumber3,
 		t5.waterNumberCount,
-		t5.yearPlan
+		t5.basePlan
 		FROM
 		(
 		SELECT

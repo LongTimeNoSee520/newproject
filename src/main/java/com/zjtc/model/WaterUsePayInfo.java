@@ -86,7 +86,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     @TableField(value = "count_year",exist = true)
     private Integer countYear;
     /**
-    * 
+    * 年计划=年基建计划+年用水计划
     */
     @ApiModelProperty("年计划")
     @TableField(value = "year_plan",exist = true)
@@ -98,7 +98,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     @TableField(value = "quarter_plan",exist = true)
     private Double quarterPlan;
     /**
-    * 
+    *一期没有这个字段，分页带出来的，这里也不存
     */
     @ApiModelProperty("基建计划")
     @TableField(value = "base_plan",exist = true)
