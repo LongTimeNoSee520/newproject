@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,11 +72,15 @@ public class SettlementFormManageController {
 
   @RequestMapping(value = "updateFromWeChat", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "微信端办结单确认后更新")
-  public ApiResponse updateFromWeChat(@RequestHeader("token") String token,
+  public ApiResponse updateFromWeChat(@RequestHeader("openId") String openId,
       @ApiParam("EndPaper实体been") @RequestBody EndPaper endPaper) {
     log.info("办结单确认后更新 ==== 参数{" + endPaper.toString()+ "}");
     ApiResponse response = new ApiResponse();
     if (null != endPaper) {
+      if (StringUtils.isBlank(openId)){
+        response.recordError("系统错误");
+        return response;
+      }
       try {
         //User user = jwtUtil.getUserByToken(token);
          endPaperService.updateFromWeChat(endPaper);
