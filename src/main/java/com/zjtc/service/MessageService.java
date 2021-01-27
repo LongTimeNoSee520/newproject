@@ -19,5 +19,12 @@ public interface MessageService extends IService<Message> {
   void add(String nodeCode, String operatorId, String operator, String messageType,
       String messageContent);
 
+  /**
+   * @param unitCode 单位编号
+   * @param messageContent 消息内容
+   * @param msgTitle 消息标题
+   */
+  void messageToUnit(String unitCode, String messageContent,String msgTitle);
+
   void updateStatus(String id);
 }

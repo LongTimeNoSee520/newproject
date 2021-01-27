@@ -40,6 +40,18 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
   }
 
   @Override
+  public void messageToUnit(String unitCode, String messageContent,String msgTitle) {
+    Message message = new Message();
+    message.setCreateTime(new Date());
+    message.setUnitCode(unitCode);
+    message.setMsgType(AuditConstants.EXTERNALS_MESSAGE_TYPE);
+    message.setMsgTitle(msgTitle);
+    message.setMsgContent(messageContent);
+    message.setMsgStatus("0");//未读
+    this.baseMapper.insert(message);
+  }
+
+  @Override
   public void updateStatus(String id) {
     Date operationTime = new Date();
     this.baseMapper.updateStatus(id,operationTime);
