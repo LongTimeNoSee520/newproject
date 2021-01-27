@@ -26,7 +26,7 @@
     ORDER BY  main DESC
   </select>
   <update id="delete" >
-    UPDATE t_w_use_water_unit_contacts SET deleted ='1'
+    UPDATE t_w_use_water_unit_contacts SET deleted ='1',open_id= ''
     WHERE id IN
     <foreach collection="ids" item="id" separator="," open="(" close=")">
       #{id}
