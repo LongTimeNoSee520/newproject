@@ -13,6 +13,7 @@ import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterSelfDefinePlan;
 import com.zjtc.model.User;
 import com.zjtc.service.AlgorithmService;
+import com.zjtc.service.MessageService;
 import com.zjtc.service.UseWaterOriginalPlanService;
 import com.zjtc.service.UseWaterPlanService;
 import com.zjtc.service.UseWaterSelfDefinePlanMapperService;
@@ -20,8 +21,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +45,8 @@ public class UseWaterOriginalPlanServiceImpl extends
   private UseWaterPlanService useWaterPlanService;
   @Autowired
   private UseWaterSelfDefinePlanMapperService useWaterSelfDefinePlanMapperService;
+  @Autowired
+  private MessageService messageService;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -80,8 +85,12 @@ public class UseWaterOriginalPlanServiceImpl extends
     ApiResponse apiResponse = new ApiResponse();
     List<UseWaterOriginalPlan> entity = jsonObject.getJSONArray("data")
         .toJavaList(UseWaterOriginalPlan.class);
+    //用水计划数据
     List<UseWaterPlan> useWaterPlanList = new ArrayList<>();
+    //自平表数据
     List<UseWaterSelfDefinePlan> selfDefinePlanList = new ArrayList<>();
+    //保存用水单位编号的集合
+    List<Map<String, Object>> unitCodeList = new ArrayList<>();
     //判断当前要编制的数据是否存在已编制的数据
     for (UseWaterOriginalPlan item : entity) {
       if (item.getPlaned().equals("1")) {
@@ -164,6 +173,11 @@ public class UseWaterOriginalPlanServiceImpl extends
       useWaterSelfDefinePlan.setExecuted("0");
       selfDefinePlanList.add(useWaterSelfDefinePlan);
       useWaterPlanList.add(useWaterPlan);
+      //通知需要的单位编号
+      Map<String, Object> map = new HashMap<>(2);
+      map.put("unitCode", item.getUnitCode());
+      map.put("planYear", item.getPlanYear());
+      unitCodeList.add(map);
     }
     if (200 != apiResponse.getCode()) {
       return apiResponse;
@@ -174,8 +188,13 @@ public class UseWaterOriginalPlanServiceImpl extends
     useWaterPlanService.insertBatch(useWaterPlanList);
     /**4.保存至自平表*/
     useWaterSelfDefinePlanMapperService.insertBatch(selfDefinePlanList);
-    /**待办：Todo*/
-    /**公众号：Todo*/
+    /**微信公众号：通知用水单位*/
+    if (!unitCodeList.isEmpty()) {
+      for (Map map : unitCodeList) {
+        String content = "您" + map.get("planYear") + "年年计划已经下达，请前往公共服务管理平台与微信公众号年度自平管理模块进行计划自平。";
+        messageService.messageToUnit(map.get("unitCode").toString(), content, "业务通知");
+      }
+    }
     return apiResponse;
   }
 

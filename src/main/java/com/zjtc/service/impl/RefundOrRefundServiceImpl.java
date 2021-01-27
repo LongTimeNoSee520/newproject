@@ -137,23 +137,28 @@ public class RefundOrRefundServiceImpl extends
       todoService.edit(entity.getId(), user.getNodeCode(), user.getId());
       /**4.修改实例表数据：流转状态*/
       flowExampleService.edit(user.getNodeCode(), entity.getId());
-      /**5.修改缴费记录表数据：修改应收、实收金额,是否修改过实收*/
-      waterUsePayInfoService.updateMoney(entity.getPayId(), entity.getMoney());
-      /**6.流程结束：通知发起人*/
-      String messageContent = "";
-      if ("1".equals(entity.getType())) {
-        messageContent =
-            "您发起的[用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ")" + "申请退款" + entity
-                .getMoney() + " 元，审核已通过。";
+      if ("1".equals(auditBtn)) {
+        /**5.修改缴费记录表数据：修改应收、实收金额,是否修改过实收*/
+        waterUsePayInfoService.updateMoney(entity.getPayId(), entity.getMoney());
+        /**6.流程结束：通知发起人*/
+        String messageContent = "";
+        if ("1".equals(entity.getType())) {
+          messageContent =
+              "您发起的[用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ")" + "申请退款"
+                  + entity
+                  .getMoney() + " 元，审核已通过。";
+        }
+        if ("2".equals(entity.getType())) {
+          messageContent =
+              "您发起的[用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ")" + "申请减免"
+                  + entity
+                  .getMoney() + " 元，审核已通过。";
+        }
+        messageService
+            .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
+                AuditConstants.PAY_MESSAGE_TYPE, messageContent);
+        /**短信通知发起人: todo*/
       }
-      if ("2".equals(entity.getType())) {
-        messageContent =
-            "您发起的[用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ")" + "申请减免" + entity
-                .getMoney() + " 元，审核已通过。";
-      }
-      messageService
-          .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
-              AuditConstants.PAY_MESSAGE_TYPE, messageContent);
     } else {
       /**审核流程继续*/
       /**1.修改当前退减免单:下一环节id*/
