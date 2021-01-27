@@ -113,6 +113,10 @@ public class AuditConstants {
    * 办结单通知类型
    */
   public static final String END_PAPER_MESSAGE_TYPE = "2";
+  /**
+   * 外部通知（用水单位）
+   */
+  public static final String EXTERNALS_MESSAGE_TYPE = "3";
 
   /**
    * 退、减免通知标题

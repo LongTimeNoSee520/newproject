@@ -13,6 +13,7 @@
 		<result column="msg_status" property="msgStatus" />
 		<result column="create_time" property="createTime" />
 		<result column="operation_time" property="operationTime" />
+		<result column="unit_code" property="unitCode" />
 	</resultMap>
 
 	<update id="updateMessageById">

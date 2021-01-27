@@ -64,6 +64,10 @@ public class Message extends Model<Message> {
   @TableField(value = "operation_time", exist = true)
   private Date operationTime;
 
+  @ApiModelProperty("单位编号")
+  @TableField(value = "unit_code", exist = true)
+  private String unitCode;
+
   /**
    * 实例化
    */
