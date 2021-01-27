@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.UseWaterSelfDefinePlanMapper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;
 import com.zjtc.model.vo.UseWaterSelfDefinePlanVO;
+import com.zjtc.service.MessageService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanService;
 import com.zjtc.service.UseWaterSelfDefinePlanService;
@@ -42,6 +44,9 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 
   @Autowired
   private UseWaterPlanService useWaterPlanService;
+
+  @Autowired
+  private MessageService messageService;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -128,6 +133,31 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     if (StringUtils.isBlank(id) || StringUtils.isBlank(auditPerson) || StringUtils
         .isBlank(auditPersonId) || StringUtils.isBlank(auditStatus)) {
       response.recordError("审核失败");
+    }
+    UseWaterSelfDefinePlan useWaterSelfDefinePlan = this.baseMapper.selectById(id);
+    String messageContent;
+    if ("1".equals(auditStatus)) {
+      messageContent =
+          "用水单位" + useWaterSelfDefinePlan.getUnitCode() +
+              "(" + useWaterSelfDefinePlan.getUnitName() + ")" +
+              "自平水量申请,第一季度计划:" + useWaterSelfDefinePlan.getFirstQuarter() +
+              " 方,第二季度计划:" + useWaterSelfDefinePlan.getSecondQuarter() +
+              "方,第三季度计划:" + useWaterSelfDefinePlan.getThirdQuarter() +
+              "方,第四季度计划:" + useWaterSelfDefinePlan.getFourthQuarter() + "方,审核已驳回。";
+      messageService
+          .add(useWaterSelfDefinePlan.getNodeCode(), auditPersonId, auditPerson,
+              AuditConstants.NOT_APPROVED, messageContent);
+    } else if ("2".equals(auditStatus)) {
+      messageContent =
+          "用水单位" + useWaterSelfDefinePlan.getUnitCode() +
+              "(" + useWaterSelfDefinePlan.getUnitName() + ")" +
+              "自平水量申请,第一季度计划:" + useWaterSelfDefinePlan.getFirstQuarter() +
+              " 方,第二季度计划:" + useWaterSelfDefinePlan.getSecondQuarter() +
+              "方,第三季度计划:" + useWaterSelfDefinePlan.getThirdQuarter() +
+              "方,第四季度计划:" + useWaterSelfDefinePlan.getFourthQuarter() + "方,审核已通过。";
+      messageService
+          .add(useWaterSelfDefinePlan.getNodeCode(), auditPersonId, auditPerson,
+              AuditConstants.GET_APPROVED, messageContent);
     }
     UseWaterSelfDefinePlan waterSelfDefinePlan = new UseWaterSelfDefinePlan();
     waterSelfDefinePlan.setId(id);
@@ -274,8 +304,17 @@ public class UseWaterSelfDefinePlanServiceImpl extends
                 useWaterSelfDefinePlan.getFourthQuarter(), useWaterSelfDefinePlan.getCurYearPlan(),
                 executorId, new Date());
       }
+      String messageContent =
+          "您发起的[用水单位" + useWaterSelfDefinePlan.getUnitCode() +
+              "(" + useWaterSelfDefinePlan.getUnitName() + ")" +
+              "自平水量申请,第一季度计划:" + useWaterSelfDefinePlan.getFirstQuarter() +
+              " 方,第二季度计划:" + useWaterSelfDefinePlan.getSecondQuarter() +
+              "方,第三季度计划:" + useWaterSelfDefinePlan.getThirdQuarter() +
+              "方,第四季度计划:" + useWaterSelfDefinePlan.getFourthQuarter() + "方],已执行。";
+    messageService.messageToUnit(useWaterSelfDefinePlan.getUnitCode(), messageContent, "自平计划执行");
     }
     if (zp > 0 && planAdd && water > 0) {
+
       response.setCode(200);
       return response;
     } else {

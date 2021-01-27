@@ -1,15 +1,14 @@
 package com.zjtc.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.UseWaterPlanAddWXMapper;
-import com.zjtc.model.EndPaper;
-import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
 import com.zjtc.service.EndPaperService;
+import com.zjtc.service.MessageService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterPlanService;
@@ -41,6 +40,9 @@ public class UseWaterPlanAddWXServiceImpl extends
 
   @Autowired
   private PlanDailyAdjustmentService planDailyAdjustmentService;
+
+  @Autowired
+  private MessageService messageService;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -128,6 +130,28 @@ public class UseWaterPlanAddWXServiceImpl extends
             secondWater);
 //审核通过后进入办结单审核流程,向办结单中增加数据
     UseWaterPlanAddWX useWaterPlanAddWX = this.baseMapper.selectById(id);
+    String messageContent;
+    if ("1".equals(auditStatus)) {
+      messageContent =
+          "您发起的[用水单位" + useWaterPlanAddWX.getUnitCode() +
+              "(" + useWaterPlanAddWX.getUnitName() + ")" +
+              "用水计划调整申请,第一季度计划:" + useWaterPlanAddWX.getFirstQuarter() +
+              " 方,第二季度计划:" + useWaterPlanAddWX.getSecondQuarter() +
+              "方,第三季度计划:" + useWaterPlanAddWX.getThirdQuarter() +
+              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,审核已驳回。";
+      messageService
+          .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName, AuditConstants.NOT_APPROVED, messageContent);
+    } else if ("2".equals(auditStatus)) {
+      messageContent =
+          "您发起的[用水单位" + useWaterPlanAddWX.getUnitCode() +
+              "(" + useWaterPlanAddWX.getUnitName() + ")" +
+              "用水计划调整申请,第一季度计划:" + useWaterPlanAddWX.getFirstQuarter() +
+              " 方,第二季度计划:" + useWaterPlanAddWX.getSecondQuarter() +
+              "方,第三季度计划:" + useWaterPlanAddWX.getThirdQuarter() +
+              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,审核已通过。";
+      messageService
+          .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName, AuditConstants.GET_APPROVED, messageContent);
+    }
     if ("2".equals(useWaterPlanAddWX.getAuditStatus())) {
       JSONObject jsonObject = new JSONObject();
 //      单位编号
@@ -185,9 +209,9 @@ public class UseWaterPlanAddWXServiceImpl extends
       jsonObject.put("auditorId", businessJson);
       // TODO: 2021/1/21 待办相关数据来源,增加办结单表的对应数据
 //      关联业务json数据(待办相关)
-      jsonObject.put("businessJson",detailConfig);
-//      详情配置文件(待办相关)
-      jsonObject.put("detailConfig",detailConfig);
+//      jsonObject.put("businessJson",detailConfig);
+////      详情配置文件(待办相关)
+//      jsonObject.put("detailConfig",detailConfig);
 //     下一审核环节id
       jsonObject.put("nextNodeId", nextNodeId);
       try {
@@ -195,6 +219,9 @@ public class UseWaterPlanAddWXServiceImpl extends
       } catch (Exception e) {
         log.error("转换json数据异常" + e.getMessage());
       }
+//      审核不通过
+    }else if ("1".equals(useWaterPlanAddWX.getAuditStatus())){
+
     }
     if (i > 0) {
       response.setCode(200);
