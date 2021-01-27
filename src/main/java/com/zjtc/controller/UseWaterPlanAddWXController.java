@@ -101,7 +101,7 @@ public class UseWaterPlanAddWXController {
   }
 
   @RequestMapping(value = "audit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation("用水计划调整审核")
+  @ApiOperation("用水计划增加或调整审核")
   public ApiResponse audit(@ApiParam("{\n"
       + "    \"id\":\"主键\",\n"
       + "    \"auditStatus\":\"审核状态(1:不通过,2:通过)\",\n"

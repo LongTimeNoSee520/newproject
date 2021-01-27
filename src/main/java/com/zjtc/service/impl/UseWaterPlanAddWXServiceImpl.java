@@ -135,20 +135,22 @@ public class UseWaterPlanAddWXServiceImpl extends
       messageContent =
           "您发起的[用水单位" + useWaterPlanAddWX.getUnitCode() +
               "(" + useWaterPlanAddWX.getUnitName() + ")" +
-              "用水计划调整申请,第一季度计划:" + useWaterPlanAddWX.getFirstQuarter() +
+              "用水计划增加或调整申请,第一季度计划:" + useWaterPlanAddWX.getFirstQuarter() +
               " 方,第二季度计划:" + useWaterPlanAddWX.getSecondQuarter() +
               "方,第三季度计划:" + useWaterPlanAddWX.getThirdQuarter() +
-              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,审核已驳回。";
+              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,年计划水量:"+
+              useWaterPlanAddWX.getCurYearPlan()+"审核已通过。";
       messageService
           .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName, AuditConstants.NOT_APPROVED, messageContent);
     } else if ("2".equals(auditStatus)) {
       messageContent =
           "您发起的[用水单位" + useWaterPlanAddWX.getUnitCode() +
               "(" + useWaterPlanAddWX.getUnitName() + ")" +
-              "用水计划调整申请,第一季度计划:" + useWaterPlanAddWX.getFirstQuarter() +
+              "用水计划增加或调整申请,第一季度计划:" + useWaterPlanAddWX.getFirstQuarter() +
               " 方,第二季度计划:" + useWaterPlanAddWX.getSecondQuarter() +
               "方,第三季度计划:" + useWaterPlanAddWX.getThirdQuarter() +
-              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,审核已通过。";
+              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,年计划水量:"+
+              useWaterPlanAddWX.getCurYearPlan()+"审核已通过。";
       messageService
           .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName, AuditConstants.GET_APPROVED, messageContent);
     }
@@ -219,9 +221,6 @@ public class UseWaterPlanAddWXServiceImpl extends
       } catch (Exception e) {
         log.error("转换json数据异常" + e.getMessage());
       }
-//      审核不通过
-    }else if ("1".equals(useWaterPlanAddWX.getAuditStatus())){
-
     }
     if (i > 0) {
       response.setCode(200);
