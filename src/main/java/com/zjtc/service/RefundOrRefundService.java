@@ -50,7 +50,7 @@ public interface RefundOrRefundService extends IService<RefundOrRefund> {
 	 * @param user
 	 * @return
 	 */
-	boolean audit(JSONObject jsonObject, User user);
+	boolean audit(JSONObject jsonObject, User user) throws Exception;
 
 	/**
 	 * 撤销

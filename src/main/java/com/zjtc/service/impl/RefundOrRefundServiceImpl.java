@@ -17,6 +17,7 @@ import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.RefundOrRefundService;
+import com.zjtc.service.SmsService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.WaterUsePayInfoService;
 import java.util.Date;
@@ -51,6 +52,8 @@ public class RefundOrRefundServiceImpl extends
   private FileService fileService;
   @Autowired
   private MessageService messageService;
+  @Autowired
+  private SmsService smsService;
 
   @Override
   public boolean saveModel(JSONObject jsonObject) {
@@ -93,7 +96,7 @@ public class RefundOrRefundServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public boolean audit(JSONObject jsonObject, User user) {
+  public boolean audit(JSONObject jsonObject, User user) throws Exception {
     //退减免单id
     String id = jsonObject.getString("id");
     RefundOrRefund entity = this.selectById(id);
@@ -157,7 +160,10 @@ public class RefundOrRefundServiceImpl extends
         messageService
             .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
                 AuditConstants.PAY_MESSAGE_TYPE, messageContent);
-        /**短信通知发起人: todo*/
+        /**短信通知发起人:*/
+        smsService
+            .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(), messageContent,
+                "退减免通知");
       }
     } else {
       /**审核流程继续*/
