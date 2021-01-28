@@ -34,7 +34,7 @@ public class UseWaterBasePlan extends Model<UseWaterBasePlan> {
 
   @ApiModelProperty("当前年基础计划")
   @TableField(value = "cur_year_plan", exist = true)
-  private Float curYearPlan;
+  private Double curYearPlan;
 
   @ApiModelProperty(value = "计划年度")
   @TableField(value = "plan_year", exist = true)
@@ -42,19 +42,19 @@ public class UseWaterBasePlan extends Model<UseWaterBasePlan> {
 
   @ApiModelProperty(value = "第一季度计划")
   @TableField(value = "one_quarter", exist = true)
-  private Float  oneQuarter;
+  private Double  oneQuarter;
 
   @ApiModelProperty(value = "第二季度计划")
   @TableField(value = "two_quarter", exist = true)
-  private Float  twoQuarter;
+  private Double  twoQuarter;
 
   @ApiModelProperty(value = "第三季度计划")
   @TableField(value = "three_quarter", exist = true)
-  private Float  threeQuarter;
+  private Double  threeQuarter;
 
   @ApiModelProperty(value = "第四季度计划")
   @TableField(value = "four_quarter", exist = true)
-  private Float  fourQuarter;
+  private Double  fourQuarter;
 
   @ApiModelProperty(value = "创建时间")
   @TableField(value = "create_time", exist = true)

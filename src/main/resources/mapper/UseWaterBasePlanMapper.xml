@@ -5,12 +5,12 @@
   <resultMap id="BaseResultMap" type="com.zjtc.model.UseWaterBasePlan">
     <id column="id" property="id" jdbcType="VARCHAR"/>
     <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
-    <result column="cur_year_plan" property="curYearPlan" jdbcType="FLOAT"/>
+    <result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
     <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
-    <result column="one_quarter" property="oneQuarter" jdbcType="FLOAT"/>
-    <result column="two_quarter" property="twoQuarter" jdbcType="FLOAT"/>
-    <result column="three_quarter" property="threeQuarter" jdbcType="FLOAT"/>
-    <result column="four_quarter" property="fourQuarter" jdbcType="FLOAT"/>
+    <result column="one_quarter" property="oneQuarter" jdbcType="DOUBLE"/>
+    <result column="two_quarter" property="twoQuarter" jdbcType="DOUBLE"/>
+    <result column="three_quarter" property="threeQuarter" jdbcType="DOUBLE"/>
+    <result column="four_quarter" property="fourQuarter" jdbcType="DOUBLE"/>
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
     <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
@@ -102,4 +102,26 @@
       #{id}
     </foreach>
   </update>
+  <select id="selectExportData" resultMap="BaseResultMap">
+    SELECT ROUND(cur_year_plan, 2,1) AS cur_year_plan,plan_year,ROUND(one_quarter, 2,1) AS one_quarter,
+    ROUND(two_quarter,2,1)AS two_quarter,ROUND(three_quarter, 2,1) AS three_quarter,ROUND(four_quarter, 2,1)
+    AS four_quarter,remarks,unit_code,unit_name
+    FROM
+    t_w_use_water_base_plan
+    WHERE id IN
+    (SELECT id
+    FROM t_w_use_water_base_plan
+    WHERE deleted = '0'
+    AND node_code = #{nodeCode}
+    AND SUBSTRING(unit_code,5,2) <!--类型-->
+    IN (
+    SELECT unit_type_code
+    FROM t_w_use_water_unit_role
+    WHERE person_id = #{userId}
+    )
+    <if test="planYear != null">AND plan_year = #{planYear} </if>
+    <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
+    <if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
+    )
+  </select>
 </mapper>

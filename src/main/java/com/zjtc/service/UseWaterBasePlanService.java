@@ -7,6 +7,8 @@ import com.zjtc.model.UseWaterBasePlan;
 import com.zjtc.model.User;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author lianghao
@@ -30,4 +32,12 @@ public interface UseWaterBasePlanService extends IService<UseWaterBasePlan> {
 
   /**分页查询*/
   Map<String,Object> queryPage(User user, JSONObject jsonObject);
+
+  /**
+   * 导出按条件查询后的基建计划数据
+   * @param user
+   * @param jsonObject
+   */
+  ApiResponse export(User user, JSONObject jsonObject,HttpServletRequest request,
+      HttpServletResponse response);
 }

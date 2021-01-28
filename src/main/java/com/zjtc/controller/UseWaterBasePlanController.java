@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -171,5 +173,25 @@ public class UseWaterBasePlanController {
       response.recordError(500);
     }
     return response;
+  }
+
+  @RequestMapping(value = "export", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  @ApiOperation(value = "用水基建计划导出")
+  public ApiResponse export(@RequestHeader("token") String token,
+      @ApiParam("{\"unitCode\": \"单位编码\",\n"
+          + "\"unitName\":\"单位名称\",\n"
+          + "\"planYear\":\"查询年份,数字类型\"\n"
+          + "}") @RequestBody JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    ApiResponse apiResponse = new ApiResponse();
+    log.debug("用水基建计划导出，参数param==={" + jsonObject.toString() + "}");
+    try {
+      User user =  jwtUtil.getUserByToken(token);
+      apiResponse = useWaterBasePlanService.export(user,jsonObject,request,response);
+    } catch (Exception e) {
+      log.error("用水基建计划导出失败,errMsg==={}" + e.getMessage());
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
   }
 }
