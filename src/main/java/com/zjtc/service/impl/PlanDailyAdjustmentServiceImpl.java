@@ -9,6 +9,7 @@ import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.PlanDailyAdjustmentMapper;
+import com.zjtc.model.Contacts;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.UseWaterPlan;
@@ -16,11 +17,14 @@ import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.PlanDailyAdjustmentVO;
 import com.zjtc.model.vo.PrintVO;
+import com.zjtc.service.ContactsService;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
+import com.zjtc.service.MessageService;
 import com.zjtc.service.PlanDailyAdjustmentService;
+import com.zjtc.service.SmsService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.WaterUsePayInfoService;
@@ -62,6 +66,10 @@ public class PlanDailyAdjustmentServiceImpl extends
   private TodoService todoService;
   @Autowired
   private WaterUsePayInfoService waterUsePayInfoService;
+  @Autowired
+  private MessageService messageService;
+  @Autowired
+  private SmsService smsService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -425,7 +433,7 @@ public class PlanDailyAdjustmentServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public ApiResponse initiateSettlement(User user,JSONObject jsonObject) {
+  public ApiResponse initiateSettlement(User user,JSONObject jsonObject) throws Exception {
 
     ApiResponse response = new ApiResponse();
     String unitCode = jsonObject.getString("unitCode");
@@ -451,6 +459,8 @@ public class PlanDailyAdjustmentServiceImpl extends
     String nextNodeId = jsonObject.getString("nextNodeId");
     String dataSources = jsonObject.getString("dataSources");
 
+    /**短信或者消息内容*/
+    String messageContent ="";
     /**查询该用水单位是否存在没有走完办结流程的办结单*/
     Wrapper wrapper = new EntityWrapper();
     wrapper.eq("node_code", user.getNodeCode());
@@ -490,6 +500,12 @@ public class PlanDailyAdjustmentServiceImpl extends
       endPaper.setFourthQuarter(fourthQuarter);
       endPaper.setCurYearPlan(firstQuarter + secondQuarter + thirdQuarter + fourthQuarter);
       endPaper.setAuditStatus("1");//修改4个季度的数据，默认审核通过
+      /**对用水单位发起通知(通知表加数据)*/
+      messageContent =
+          "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")"
+              + "调整计划审核通过,调整后4个季度水量分别为：一季度" + firstQuarter + "方,二季度"
+              + secondQuarter + "方,三季度" + thirdQuarter + "方,四季度" + fourthQuarter + "方，请到微信端确认。";
+      messageService.messageToUnit(unitCode,messageContent,AuditConstants.END_PAPER_TODO_TITLE);
     }
     endPaper.setMinusPayStatus(useWaterPlan.getMinusPayStatus());
     endPaper.setBalanceTest(useWaterPlan.getBalanceTest());
@@ -530,9 +546,13 @@ public class PlanDailyAdjustmentServiceImpl extends
     }
     endPaper.setRescinded("0");//未撤销
     endPaperService.insert(endPaper);
-
     /**发起办结单后，将计划表中的“是否存在没有走完办结流程的办结单”的状态改为是(办结流程走完后或者撤销办结单后，改为否)。*/
     this.updateExistSettlement("1",unitCode,user.getNodeCode(),planYear);
+    /**发短信*/
+    if(StringUtils.isNotBlank(messageContent)){
+      smsService.sendMsgToUnit(user,unitCode,messageContent,"计划通知");
+      //TODO wbeSocket向公共服务平台推送
+    }
     return response;
   }
 
@@ -575,6 +595,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     List<PlanDailyAdjustmentVO> records = this.baseMapper.queryList(map);
     return records;
   }
+
 
   /**
    * 向上十位取整

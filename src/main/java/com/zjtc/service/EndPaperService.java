@@ -28,12 +28,12 @@ public interface EndPaperService extends IService<EndPaper> {
   /**
       * 办结单审核
    */
-  void examineSettlement(User user, JSONObject jsonObject);
+  void examineSettlement(User user, JSONObject jsonObject) throws Exception;
 
   /**
    * 办结单执行
    */
-  ApiResponse executeSettlement(User user, JSONObject jsonObject);
+  ApiResponse executeSettlement(User user, JSONObject jsonObject) throws Exception;
 
   /**
    * 微信办结单

@@ -25,4 +25,8 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * 批量删除
    * */
   boolean delete(@Param("ids")List<String> ids);
+
+  Contacts selectByUnitCode(@Param("unitCode")String unitCode);
+
+  String selectByUserId(@Param("operatorId")String operatorId);
 }

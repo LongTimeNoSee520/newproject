@@ -73,3 +73,5 @@ file:
   importErrorFilePath : importError
   #文件上下文
   preViewRealPath: http://120.79.162.253:8082
+waterSms:
+  sendUrl: http://localhost:8080:/water/sms/smsManage/sendMessages

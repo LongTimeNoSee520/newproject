@@ -34,4 +34,14 @@ public interface ContactsService extends IService<Contacts> {
    * 批量新增
    * */
   boolean add(List<Contacts> contactsList,String useWaterUnitId,String unitCode,String nodeCode);
+
+  /**
+   * 通过单位编号查询主要联系人信息
+   * */
+  Contacts selectByUnitCode(String unitCode);
+
+  /**
+   * 通过发起人id查询其电话号码
+   * */
+  String selectByUserId(String operatorId);
 }

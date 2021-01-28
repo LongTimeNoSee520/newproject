@@ -69,7 +69,7 @@ public interface PlanDailyAdjustmentService extends IService<UseWaterPlan> {
 	 */
 	List<Map<String,Object>> queryMessage(User user, String unitCode);
 
-	ApiResponse initiateSettlement(User user,JSONObject jsonObject);
+	ApiResponse initiateSettlement(User user,JSONObject jsonObject) throws Exception;
 
 	/**
 	 * 更新是否存在办结单状态

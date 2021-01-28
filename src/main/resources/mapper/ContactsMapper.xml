@@ -32,4 +32,15 @@
       #{id}
     </foreach>
   </update>
+  <select id="selectByUnitCode" resultMap="BaseResultMap">
+    SELECT mobile_number,contacts
+    FROM t_w_use_water_unit_contacts
+    WHERE unit_code = #{unitCode}
+    AND main ='1'
+  </select>
+  <select id="selectByUserId" resultType="string">
+    SELECT mobile_phone
+    FROM t_user
+    WHERE id=#{operatorId}
+  </select>
 </mapper>

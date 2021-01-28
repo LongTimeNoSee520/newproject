@@ -21,6 +21,7 @@ import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.PlanDailyAdjustmentService;
+import com.zjtc.service.SmsService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanAddWXService;
@@ -70,6 +71,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Autowired
   private WaterUsePayInfoService waterUsePayInfoService;
+
+  @Autowired
+  private SmsService smsService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -151,7 +155,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void examineSettlement(User user, JSONObject jsonObject) {
+  public void examineSettlement(User user, JSONObject jsonObject) throws Exception {
     String id = jsonObject.getString("id");
 //    Double firstQuarter =jsonObject.getDouble("firstQuarter");
 //    Double secondQuarter = jsonObject.getDouble("secondQuarter");
@@ -185,7 +189,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         .nextAuditRole(id, AuditConstants.END_PAPER_TABLE, user.getNodeCode(), auditStatus);
     //获取当前环节的审核操作记录
     FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), endPaper.getId());
-    if (hasNext.isEmpty() && "1".equals(auditStatus)) { //审核流程结束(本次通过且没有下一环节)
+    if (hasNext.isEmpty()) { //审核流程结束(本次通过且没有下一环节)
       //设置办结单审核下一环节id为""
       endPaper.setNextNodeId("");
       if ("1".equals(auditStatus)) {//本次审核通过
@@ -197,29 +201,56 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         if ("1".equals(endPaper.getPaperType())){
           UseWaterPlanAddWX waterPlanAddWX = new UseWaterPlanAddWX();
           waterPlanAddWX.setId(endPaper.getWaterPlanWXId());
-          //如果通过(且审核流程走完)，不通过则不修改
+          //只有通过时(且审核流程走完)，不通过则不修改
           waterPlanAddWX.setAuditStatus("4");//微信端提交审核通过后办结单审核也通过
           useWaterPlanAddWXService.update(waterPlanAddWX);
         }
+        /**新增通知给发起人*/
+        //查询 流程的发起人
+        FlowProcess firstProcess = flowProcessService.selectFirstRecords(id);
+        //通知表新增
+        String messageContent =
+            "您发起的[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
+                + addNumber + "方(第一水量"
+                + firstWater + "方，第二水量" + secondWater + "方)]办结单审核已通过。";
+        messageService
+            .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
+                AuditConstants.END_PAPER_MESSAGE_TYPE, messageContent);
+        /**短信通知给发起人*/
+        smsService.sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
+            messageContent, "计划通知");
+        //TODO ,webSocket推送到前端
+        /**新增通知给用水单位*/
+        String messageContent1 =
+            "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
+                + addNumber + "方(第一水量"
+                + firstWater + "方，第二水量" + secondWater + "方)]审核已通过,请到微信端确认。";
+        messageService.messageToUnit(endPaper.getUnitCode(), messageContent1,
+            AuditConstants.END_PAPER_TODO_TITLE);
+        /**短信通知给用水单位*/
+        smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent1, "计划通知");
+        //TODO webSocket推送到公共服务端
       }
-      if ("0".equals(auditStatus)) {//本次审核不通过
+      if ("0".equals(auditStatus)) {//本次审核不通过(没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知)
         flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
         endPaper.setAuditStatus("2");//2处于审核中(已有审核记录的只要不是最终环节通过都为审核中状态)
+        // 没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知和发短信给提交人
+        /**通知发给用水单位*/
+        String messageContent =
+            "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
+                + addNumber + "方(第一水量"
+                + firstWater + "方，第二水量" + secondWater + "方)]审核未通过。";
+        messageService.messageToUnit(endPaper.getUnitCode(), messageContent,
+            AuditConstants.END_PAPER_TODO_TITLE);
+        /**短信通知给用水单位*/
+        smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent, "计划通知");
+        //TODO webSocket推送到公共服务端
       }
       //修改代办状态
       todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
       //修改实例表数据
       flowExampleService.edit(user.getNodeCode(), user.getId());
-      //新增通知给发起人
-      //查询 流程的发起人
-      FlowProcess firstProcess = flowProcessService.selectFirstRecords(id);
-      //通知表新增
-      String messageContent =
-          "您发起的[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"+addNumber+"方(第一水量"
-              + firstWater + "方，第二水量" + secondWater+"方)]办结单审核已通过。";
-      messageService.add(user.getNodeCode(),firstProcess.getOperatorId(),firstProcess.getOperator(),AuditConstants.END_PAPER_MESSAGE_TYPE,messageContent);
-      //TODO 微信通知 短信通知用水单位
-    } else {//审核流程继续
+    } else if (!hasNext.isEmpty()){//审核流程继续
       //修改当前办结单下一环节id
       endPaper.setNextNodeId(hasNext.get(0).get("flowNodeId").toString());
       //修改办结单状态为2处于审核中
@@ -252,7 +283,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public ApiResponse executeSettlement(User user, JSONObject jsonObject) {
+  public ApiResponse executeSettlement(User user, JSONObject jsonObject) throws Exception {
     ApiResponse response = new ApiResponse();
     String id = jsonObject.getString("id");
     Double firstQuarter = (null ==jsonObject.getDouble("firstQuarter")? 0:jsonObject.getDouble("firstQuarter"));
@@ -308,7 +339,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       /**调整结果*/
       endPaper.setResult(
           "增加计划" + endPaper.getAddNumber() + "m3(" + endPaper.getChangeQuarter() + "季度)");
-    } else {//调整计划、自来水、专供水等(4个季度间调整)
+    } else {//调整计划(4个季度间调整)
       /**调整表“计划调整”的年计划、4个季度数据(相对于计划表数据的改变量)*/
       useWaterPlanAdd.setCurYearPlan(0d);//double
       useWaterPlanAdd.setFirstQuarter(firstQuarter - useWaterPlan.getFirstQuarter());
@@ -362,6 +393,17 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       useWaterPlanAddWX.setExecuted("1");//已执行
       useWaterPlanAddWXService.update(useWaterPlanAddWX);
     }
+    /**向用水单位发起通知*/
+    String messageContent =
+        "用水单位" + useWaterPlan.getUnitCode() + "(" + useWaterPlan.getUnitName() + ")"
+            + "调整计划/增加计划已执行,调整后水量分别为：年计划" + useWaterPlan.getCurYearPlan() + "方,一季度" + useWaterPlan
+            .getFirstQuarter() + "方,二季度"
+            + useWaterPlan.getSecondQuarter() + "方,三季度" + useWaterPlan.getThirdQuarter() + "方,四季度"
+            + useWaterPlan.getFourthQuarter() + "方。";
+    messageService.messageToUnit(useWaterPlan.getUnitCode(),messageContent,AuditConstants.END_PAPER_TODO_TITLE);
+    /**向用水单位发送短信*/
+    smsService.sendMsgToUnit(user,useWaterPlan.getUnitCode(),messageContent,"计划通知");
+    //TODO webSocket向公共服务平台推送消息
     return response;
   }
 

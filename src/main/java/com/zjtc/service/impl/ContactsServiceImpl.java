@@ -7,6 +7,7 @@ import com.zjtc.service.ContactsService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -70,5 +71,23 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
     }
     return this.insertBatch(contactsList);
   }
+  }
+
+  @Override
+  public Contacts selectByUnitCode(String unitCode) {
+    if (StringUtils.isNotBlank(unitCode)){
+      return this.baseMapper.selectByUnitCode(unitCode);
+    }else {
+      return null;
+    }
+  }
+
+  @Override
+  public String selectByUserId(String operatorId) {
+    if (StringUtils.isNotBlank(operatorId)){
+      return this.baseMapper.selectByUserId(operatorId);
+    }else {
+      return null;
+    }
   }
 }
