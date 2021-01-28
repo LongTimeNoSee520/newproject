@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterSelfDefinePlan;
+import com.zjtc.model.User;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public interface UseWaterSelfDefinePlanService extends IService<UseWaterSelfDefi
    * @param auditResult 审核结果(不通过理由)
    * @return 结果集
    */
-  ApiResponse audit(String id, String auditPerson, String auditPersonId, String auditStatus,
+  ApiResponse audit(User user,String id, String auditPerson, String auditPersonId, String auditStatus,
       String auditResult);
 
   /**
@@ -43,5 +44,5 @@ public interface UseWaterSelfDefinePlanService extends IService<UseWaterSelfDefi
    * @param executorId 审核人id
    * @return 响应结果
    */
-  ApiResponse execute(List<String> ids, String executor, String executorId, String codeNode);
+  ApiResponse execute(User user,List<String> ids, String executor, String executorId, String codeNode);
 }

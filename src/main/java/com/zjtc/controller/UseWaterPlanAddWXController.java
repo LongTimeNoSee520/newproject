@@ -137,7 +137,7 @@ public class UseWaterPlanAddWXController {
     Double secondWater = jsonObject.getDouble("secondWater");
 //    审核人
     String auditorName = jsonObject.getString("auditorName");
-//    审核人id
+//    下一环节审核人id
     String auditorId = jsonObject.getString("auditorId");
 //    关联业务json数据(待办相关)
     String businessJson = jsonObject.getString("businessJson");

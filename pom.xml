@@ -181,8 +181,15 @@
 			<artifactId>jxls-jexcel</artifactId>
 			<version>1.0.9</version>
 		</dependency>
+
+    <dependency>
+      <groupId>com.belerweb</groupId>
+      <artifactId>pinyin4j</artifactId>
+      <version>2.5.1</version>
+    </dependency>
 		<!--jxls excel导入导出支持结束 -->
 	</dependencies>
+
 
 	<build>
 		<plugins>

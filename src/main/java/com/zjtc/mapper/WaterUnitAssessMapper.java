@@ -47,4 +47,13 @@ public interface WaterUnitAssessMapper {
       @Param("endYear")Integer endYear,
       @Param("nodeCode")String nodeCode,
       @Param("loginId")String loginId);
+
+  /**
+   * 按条件查询
+   * @param unitName
+   * @param beginYear
+   * @param endYear
+   * @return
+   */
+  List<WaterUnitAssessVO> selectList(String unitName, Integer beginYear, Integer endYear);
 }

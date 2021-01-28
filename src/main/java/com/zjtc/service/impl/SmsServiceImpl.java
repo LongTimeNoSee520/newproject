@@ -33,6 +33,7 @@ public class SmsServiceImpl  implements SmsService {
   @Autowired
   private ContactsService contactsService;
 
+  @Override
   public void sendMsgToUnit(User user, String unitCode, String messageContent,String messageType) throws Exception {
     /**通过单位编号查询主要联系人信息*/
     Contacts contacts = contactsService.selectByUnitCode(unitCode);

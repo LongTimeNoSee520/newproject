@@ -11,8 +11,10 @@ import com.zjtc.mapper.UseWaterSelfDefinePlanMapper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;
+import com.zjtc.model.User;
 import com.zjtc.model.vo.UseWaterSelfDefinePlanVO;
 import com.zjtc.service.MessageService;
+import com.zjtc.service.SmsService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanService;
 import com.zjtc.service.UseWaterSelfDefinePlanService;
@@ -47,6 +49,9 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 
   @Autowired
   private MessageService messageService;
+
+  @Autowired
+  private SmsService smsService;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -127,7 +132,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
   }
 
   @Override
-  public ApiResponse audit(String id, String auditPerson, String auditPersonId,
+  public ApiResponse audit(User user, String id, String auditPerson, String auditPersonId,
       String auditStatus, String auditResult) {
     ApiResponse response = new ApiResponse();
     if (StringUtils.isBlank(id) || StringUtils.isBlank(auditPerson) || StringUtils
@@ -137,6 +142,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     UseWaterSelfDefinePlan useWaterSelfDefinePlan = this.baseMapper.selectById(id);
     String messageContent;
     if ("1".equals(auditStatus)) {
+//      消息推送用水单位
       messageContent =
           "用水单位" + useWaterSelfDefinePlan.getUnitCode() +
               "(" + useWaterSelfDefinePlan.getUnitName() + ")" +
@@ -147,7 +153,13 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       messageService
           .add(useWaterSelfDefinePlan.getNodeCode(), auditPersonId, auditPerson,
               AuditConstants.NOT_APPROVED, messageContent);
+      try {
+        smsService.sendMsgToPromoter(user, auditPersonId, auditPerson, messageContent, "计划通知");
+      } catch (Exception e) {
+        log.error("用水计划自平审核消息推送失败");
+      }
     } else if ("2".equals(auditStatus)) {
+//      消息推送用水单位
       messageContent =
           "用水单位" + useWaterSelfDefinePlan.getUnitCode() +
               "(" + useWaterSelfDefinePlan.getUnitName() + ")" +
@@ -158,6 +170,11 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       messageService
           .add(useWaterSelfDefinePlan.getNodeCode(), auditPersonId, auditPerson,
               AuditConstants.GET_APPROVED, messageContent);
+      try {
+        smsService.sendMsgToPromoter(user, auditPersonId, auditPerson, messageContent, "计划通知");
+      } catch (Exception e) {
+        log.error("用水计划自平审核消息推送失败");
+      }
     }
     UseWaterSelfDefinePlan waterSelfDefinePlan = new UseWaterSelfDefinePlan();
     waterSelfDefinePlan.setId(id);
@@ -183,7 +200,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
-  public ApiResponse execute(List<String> ids, String executor, String executorId,
+  public ApiResponse execute(User user, List<String> ids, String executor, String executorId,
       String codeNode) {
     ApiResponse response = new ApiResponse();
     if (ids.isEmpty() || StringUtils.isBlank(executor) || StringUtils.isBlank(executorId)
@@ -304,14 +321,21 @@ public class UseWaterSelfDefinePlanServiceImpl extends
                 useWaterSelfDefinePlan.getFourthQuarter(), useWaterSelfDefinePlan.getCurYearPlan(),
                 executorId, new Date());
       }
+//      消息通知用水单位
       String messageContent =
-          "您发起的[用水单位" + useWaterSelfDefinePlan.getUnitCode() +
+          "用水单位" + useWaterSelfDefinePlan.getUnitCode() +
               "(" + useWaterSelfDefinePlan.getUnitName() + ")" +
               "自平水量申请,第一季度计划:" + useWaterSelfDefinePlan.getFirstQuarter() +
               " 方,第二季度计划:" + useWaterSelfDefinePlan.getSecondQuarter() +
               "方,第三季度计划:" + useWaterSelfDefinePlan.getThirdQuarter() +
-              "方,第四季度计划:" + useWaterSelfDefinePlan.getFourthQuarter() + "方],已执行。";
-    messageService.messageToUnit(useWaterSelfDefinePlan.getUnitCode(), messageContent, "自平计划执行");
+              "方,第四季度计划:" + useWaterSelfDefinePlan.getFourthQuarter() + "方,已执行。";
+      messageService.messageToUnit(useWaterSelfDefinePlan.getUnitCode(), messageContent, "自平计划执行");
+      try {
+//        短信通知用水单位
+        smsService.sendMsgToUnit(user, codeNode, messageContent, "计划通知");
+      } catch (Exception e) {
+        log.error("用水计划自平审核消息推送失败");
+      }
     }
     if (zp > 0 && planAdd && water > 0) {
 

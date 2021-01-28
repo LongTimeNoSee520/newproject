@@ -104,7 +104,7 @@ public class UseWaterSelfDefinePlanController {
     }
     try {
       response = tWUseWaterSelfDefinePlanService
-          .audit(id, user.getUsername(), user.getId(),auditStatus, auditResult);
+          .audit(user,id, user.getUsername(), user.getId(),auditStatus, auditResult);
       return response;
     } catch (Exception e) {
       log.error("审核自平申请异常==" + e.getMessage());
@@ -130,7 +130,7 @@ public class UseWaterSelfDefinePlanController {
 //  执行的数据id
     List<String> list = jsonObject.getJSONArray("ids").toJavaList(String.class);
     try {
-      response = tWUseWaterSelfDefinePlanService.execute(list, user.getUsername(), user.getId(),user.getNodeCode());
+      response = tWUseWaterSelfDefinePlanService.execute(user,list, user.getUsername(), user.getId(),user.getNodeCode());
       return response;
     } catch (Exception e) {
       log.error("执行自平申请异常==" + e.getMessage());

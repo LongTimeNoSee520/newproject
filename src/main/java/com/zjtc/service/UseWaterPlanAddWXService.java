@@ -42,7 +42,7 @@ public interface UseWaterPlanAddWXService extends IService<UseWaterPlanAddWX> {
    * @param firstWater    第一水量
    * @param secondWater   第二水量
    * @param auditorName   审核人
-   * @param auditorId     审核人id
+   * @param auditorId     下一环节审核人id
    * @param businessJson  关联业务json数据(待办相关)
    * @param detailConfig  详情配置文件(待办相关)
    * @param nextNodeId    下一审核环节id

@@ -8,6 +8,8 @@ import com.zjtc.service.WaterUnitAssessService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -55,7 +58,7 @@ public class WaterUnitAssessController {
       return response;
     }
     try {
-      response = waterUnitAssessService.queryPage(jsonObject, user.getNodeCode(),user.getId());
+      response = waterUnitAssessService.queryPage(jsonObject, user.getNodeCode(), user.getId());
       return response;
     } catch (Exception e) {
       response.setCode(500);
@@ -64,5 +67,33 @@ public class WaterUnitAssessController {
       e.printStackTrace();
     }
     return response;
+  }
+
+
+  /**
+   * 导出
+   */
+  @ResponseBody
+  @ApiOperation(value = "导出")
+  @RequestMapping(value = "export", method = RequestMethod.POST)
+  public ApiResponse excelExport(@RequestBody JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response, @RequestHeader("token") String token) {
+    log.info("证书导出 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null == user) {
+      apiResponse.recordError("系统异常");
+      return apiResponse;
+    }
+    if (null == jsonObject) {
+      apiResponse.recordError("系统异常");
+      return apiResponse;
+    }
+    try {
+      waterUnitAssessService.export(jsonObject, request, response, user);
+    } catch (Exception e) {
+      apiResponse.recordError("系统异常:" + e.getMessage());
+    }
+    return apiResponse;
   }
 }
