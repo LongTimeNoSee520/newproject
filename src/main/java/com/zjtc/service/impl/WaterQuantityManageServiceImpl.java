@@ -36,6 +36,9 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jxls.reader.ReaderBuilder;
+import org.jxls.reader.XLSReadStatus;
+import org.jxls.reader.XLSReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -407,13 +410,12 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
       inputXML = getClass().getClassLoader()
           .getResourceAsStream(xmlConfig);//非静态方法可以用此方法获取xml配置文件流
       // 执行解析
-//      XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
-//      //按照xml中的配置将数据从文件中读入beens中对应key的value中
-//      XLSReadStatus readStatus = mainReader.read(inputXLS, beans);
-//      if (readStatus.isStatusOK()) {
-//        log.debug("读取excel文件成功: 【{}】", fileName);
-//
-//      }
+      XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
+      //按照xml中的配置将数据从文件中读入beens中对应key的value中
+      XLSReadStatus readStatus = mainReader.read(inputXLS, beans);
+      if (readStatus.isStatusOK()) {
+        log.debug("读取excel文件成功: 【{}】", fileName);
+      }
     } catch (Exception e) {
       handleException(e, isThrowException,uploadFileName,nodeCode);
     } finally {
