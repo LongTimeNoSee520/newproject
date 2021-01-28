@@ -15,6 +15,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
+import javax.jws.soap.SOAPBinding.Use;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -394,6 +398,33 @@ public class UseWaterUnitController {
     }
 
     return response;
+  }
+
+  /**
+   * 导出
+   */
+  @ResponseBody
+  @ApiOperation(value = "导出账户审核表")
+  @RequestMapping(value = "exportAccountAudit", method = RequestMethod.POST)
+  public ApiResponse exportAccountAudit(
+      HttpServletRequest request,
+      HttpServletResponse response, @RequestHeader("token") String token) {
+    JSONObject jsonObject=new JSONObject();
+    log.info("导出账户审核表 ==== 参数{" + token != null ? token.toString() : "null" + "}");
+    User user = jwtUtil.getUserByToken(token);
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != user) {
+      try {
+        jsonObject.put("nodeCode",user.getNodeCode());
+        useWaterUnitService.exportAccountAudit(jsonObject, request, response);
+      } catch (Exception e) {
+        log.error("导出账户审核表错误,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
   }
 
 }

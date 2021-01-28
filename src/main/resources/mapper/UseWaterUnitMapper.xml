@@ -469,4 +469,41 @@
     </foreach>
 
   </update>
+
+  <select id="exportAccountAudit" resultType="java.util.LinkedHashMap">
+    select
+    b.agreement_number as agreementNumber,
+    sBankName = '建行一行',
+    sBankNum = '105651002108',
+    sUnitName = '成都市节约用水监管事务中心',
+    sBankAccount = '51001416108050735062',
+    b.bank_of_deposit as bankOfDeposit,
+    b.people_bank_pay_sys_number as peopleBankPaySysNumber,
+    b.bank_code as bankCode,
+    CASE
+      b.entrust_unit_name
+      WHEN '' THEN
+      a.unit_name
+    WHEN NULL THEN
+      a.unit_name
+      ELSE b.entrust_unit_name
+      END AS accountUnitName,
+    b.bank_account as bankAccount
+    from
+    (select id, unit_name from t_w_use_water_unit where deleted='0' and node_code=#{nodeCode}) as a
+    inner join
+    (select
+     use_water_unit_Id,
+     agreement_number,
+     bank_of_deposit,
+     people_bank_pay_sys_number,
+     bank_code,entrust_unit_name,
+     bank_account
+     from t_w_bank
+     where deleted='0'
+     and signed='0'
+     and bank_account is not null
+     and bank_account !=''
+    )  as b on a.id =b.use_water_unit_Id
+  </select>
 </mapper>

@@ -7,6 +7,8 @@ import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.User;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 
 /**
@@ -79,4 +81,14 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    */
   UseWaterUnit selectByUnitCode(String unitCode,User user);
 
+  /**
+   *导出账户审核表
+   * @param jsonObject
+   * @param request
+   * @param response
+   */
+  void exportAccountAudit(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+  //导出开通格式
+  //导出查询结果
+  //导出用水单位增减情况表
 }

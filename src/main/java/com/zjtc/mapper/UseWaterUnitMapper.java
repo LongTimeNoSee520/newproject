@@ -67,4 +67,9 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
       @Param("refs") List<String> ids,
       @Param("sql") String updateSql
   );
+/**
+ * 计划用水户账户审查表导出数据查询
+ * 所有未签约、且存在银行账号的数据
+ */
+  List<Map<String,Object>> exportAccountAudit(String nodeCode);
 }

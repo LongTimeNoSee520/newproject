@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.CommonUtil;
+import com.zjtc.base.util.JxlsUtils;
 import com.zjtc.mapper.UseWaterUnitMapper;
 import com.zjtc.model.Bank;
 import com.zjtc.model.File;
@@ -27,19 +29,28 @@ import com.zjtc.service.UseWaterUnitRoleService;
 import com.zjtc.service.UseWaterUnitService;
 import com.zjtc.service.WaterMonthUseDataService;
 import java.beans.PropertyDescriptor;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.text.html.parser.Entity;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,8 +95,17 @@ public class UseWaterUnitServiceImpl extends
   private UseWaterQuotaService useWaterQuotaService;
   @Autowired
   private UseWaterUnitModifyService useWaterUnitModifyService;
-  @Autowired
-  private WaterMonthUseDataService waterMonthUseDataService;
+  /**
+   * 附件上传盘符
+   */
+  @Value("${file.fileUploadRootPath}")
+  private String fileUploadRootPath;
+
+  /**
+   * 附件上传目录
+   */
+  @Value("${file.fileUploadPath}")
+  private String fileUploadPath;
   /**
    * 所属区域字典码
    */
@@ -533,6 +553,41 @@ public class UseWaterUnitServiceImpl extends
       return result.get(0);
     }
     return null;
+  }
+
+  @Override
+  public void exportAccountAudit(JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    List<Map<String, Object>> list = baseMapper
+        .exportAccountAudit(jsonObject.getString("nodeCode"));
+    Map<String, Object> data = new HashMap<>();
+    list.addAll(list);
+    list.addAll(list);
+    data.put("excelData", list);
+    data.put("nowDate",new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
+    try {
+      String fileName = "计划用水户账户审核表.xlsx";
+      String saveFilePath =
+          fileUploadRootPath + java.io.File.separator + fileUploadPath + java.io.File.separator + fileName;
+      InputStream inputStream = getClass().getClassLoader()
+          .getResourceAsStream("template/accountAudit.xlsx");
+      OutputStream os = new FileOutputStream(saveFilePath);
+      //调用封装的工具类，传入模板路径，输出流，和装有数据的Map,按照模板导出
+      JxlsUtils.exportExcel(inputStream, os, data);
+      os.close();
+      java.io.File getPath = new java.io.File(saveFilePath);
+      boolean downloadSuccess = CommonUtil.writeBytes(getPath, fileName, request, response);
+      //下载完毕删除文件
+      if (downloadSuccess && (getPath.exists() && getPath.isFile())) {
+        getPath.delete();
+      }
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
