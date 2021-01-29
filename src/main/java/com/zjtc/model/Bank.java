@@ -52,7 +52,7 @@ public class Bank extends Model<Bank> {
   @TableField(value = "agreement_number", exist = true)
   private String agreementNumber;
 
-  @ApiModelProperty(value = "是否他行")
+  @ApiModelProperty(value = "是否他行[银行代码]，排除银行代码为1，都是他行")
   @TableField(value = "other_bank", exist = true)
   private String otherBank;
 
@@ -80,9 +80,6 @@ public class Bank extends Model<Bank> {
   @TableField(value = "deleted", exist = true)
   private String deleted;
 
-  @ApiModelProperty(value = "银行代码")
-  @TableField(value = "bank_code", exist = true)
-  private String bankCode;
 
   @Override
   protected Serializable pkVal() {

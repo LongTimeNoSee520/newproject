@@ -176,7 +176,7 @@
 			t2.id as useWaterUnitId,
 			t2.responsibility_code AS responsibilityCode,
 		  t2.water_meter_code as waterMeterCode,
-			t4.bank_code AS bankCode,
+			t4.other_bank AS other_bank,
 			<!--基建季计划-->
 			case #{countQuarter}
 		  when '1' then t5.one_quarter

@@ -88,7 +88,14 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param response
    */
   void exportAccountAudit(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
-  //导出开通格式
+
+  /**
+   * 导出开通格式
+   * @param jsonObject
+   * @param request
+   * @param response
+   */
+  void exportForm(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
   //导出查询结果
   //导出用水单位增减情况表
 }

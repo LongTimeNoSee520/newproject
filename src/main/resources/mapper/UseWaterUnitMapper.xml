@@ -118,7 +118,6 @@
     <result column="revocation_date" property="revocationDate" jdbcType="TIMESTAMP"/>
     <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
     <result column="use_water_unit_Id" property="useWaterUnitId" jdbcType="VARCHAR"/>
-    <result column="bank_code" property="bankCode" jdbcType="VARCHAR"/>
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
   </resultMap>
 
@@ -479,7 +478,7 @@
     sBankAccount = '51001416108050735062',
     b.bank_of_deposit as bankOfDeposit,
     b.people_bank_pay_sys_number as peopleBankPaySysNumber,
-    b.bank_code as bankCode,
+    b.other_bank as bankCode,
     CASE
       b.entrust_unit_name
       WHEN '' THEN
@@ -497,7 +496,8 @@
      agreement_number,
      bank_of_deposit,
      people_bank_pay_sys_number,
-     bank_code,entrust_unit_name,
+     other_bank,
+     entrust_unit_name,
      bank_account
      from t_w_bank
      where deleted='0'
@@ -505,5 +505,25 @@
      and bank_account is not null
      and bank_account !=''
     )  as b on a.id =b.use_water_unit_Id
+  </select>
+
+  <select id="exportForm">
+     select
+     *
+     from
+     (
+       select
+       *
+       from
+       where delete='0'
+     ) as a
+     inner join
+     (
+       select
+       *
+       from t_w_bank as b
+       where deleted='0'
+       and signed='1'
+     ) as b on a.id =b.use_water_unit_Id
   </select>
 </mapper>
