@@ -399,7 +399,7 @@ public class UseWaterUnitController {
   }
 
   /**
-   * 导出
+   * 导出账户审核表
    */
   @ResponseBody
   @ApiOperation(value = "导出账户审核表")
@@ -417,6 +417,31 @@ public class UseWaterUnitController {
         useWaterUnitService.exportAccountAudit(jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出账户审核表错误,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "导出开通格式")
+  @RequestMapping(value = "exportForm", method = RequestMethod.POST)
+  public ApiResponse exportForm
+      (
+      HttpServletRequest request,
+      HttpServletResponse response, @RequestHeader("token") String token) {
+    JSONObject jsonObject=new JSONObject();
+    log.info("导出开通格式 ==== 参数{" + token != null ? token.toString() : "null" + "}");
+    User user = jwtUtil.getUserByToken(token);
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != user) {
+      try {
+        jsonObject.put("nodeCode",user.getNodeCode());
+        useWaterUnitService.exportForm(jsonObject, request, response);
+      } catch (Exception e) {
+        log.error("导出开通格式错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
       }
     } else {

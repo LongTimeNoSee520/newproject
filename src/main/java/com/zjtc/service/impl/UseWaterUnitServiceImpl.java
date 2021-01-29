@@ -19,6 +19,7 @@ import com.zjtc.model.WaterMonthUseData;
 import com.zjtc.model.vo.RefEditData;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.service.BankService;
+import com.zjtc.service.CommonService;
 import com.zjtc.service.ContactsService;
 import com.zjtc.service.FileService;
 import com.zjtc.service.UseWaterQuotaService;
@@ -95,6 +96,8 @@ public class UseWaterUnitServiceImpl extends
   private UseWaterQuotaService useWaterQuotaService;
   @Autowired
   private UseWaterUnitModifyService useWaterUnitModifyService;
+  @Autowired
+  private CommonService commonService;
   /**
    * 附件上传盘符
    */
@@ -561,33 +564,29 @@ public class UseWaterUnitServiceImpl extends
     List<Map<String, Object>> list = baseMapper
         .exportAccountAudit(jsonObject.getString("nodeCode"));
     Map<String, Object> data = new HashMap<>();
-    list.addAll(list);
-    list.addAll(list);
     data.put("excelData", list);
-    data.put("nowDate",new Date());
+    data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    try {
-      String fileName = "计划用水户账户审核表.xlsx";
-      String saveFilePath =
-          fileUploadRootPath + java.io.File.separator + fileUploadPath + java.io.File.separator + fileName;
-      InputStream inputStream = getClass().getClassLoader()
-          .getResourceAsStream("template/accountAudit.xlsx");
-      OutputStream os = new FileOutputStream(saveFilePath);
-      //调用封装的工具类，传入模板路径，输出流，和装有数据的Map,按照模板导出
-      JxlsUtils.exportExcel(inputStream, os, data);
-      os.close();
-      java.io.File getPath = new java.io.File(saveFilePath);
-      boolean downloadSuccess = CommonUtil.writeBytes(getPath, fileName, request, response);
-      //下载完毕删除文件
-      if (downloadSuccess && (getPath.exists() && getPath.isFile())) {
-        getPath.delete();
-      }
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    String fileName = "计划用水户账户审核表.xlsx";
+    String templateName="template/accountAudit.xlsx";
+    commonService.export(fileName,templateName,request,response,data);
+
+  }
+
+  @Override
+  public void exportForm(JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    List<Map<String, Object>> list = baseMapper
+        .exportForm(jsonObject.getString("nodeCode"));
+    Map<String, Object> data = new HashMap<>();
+    data.put("excelData", list);
+    data.put("nowDate", new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
+    String fileName = "计划用水户开通格式.xlsx";
+    String templateName="template/form.xlsx";
+    commonService.export(fileName,templateName,request,response,data);
   }
 
   /**

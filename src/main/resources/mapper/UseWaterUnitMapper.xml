@@ -507,23 +507,30 @@
     )  as b on a.id =b.use_water_unit_Id
   </select>
 
-  <select id="exportForm">
+  <select id="exportForm" resultType="java.util.LinkedHashMap">
      select
-     *
+       *
      from
      (
        select
-       *
-       from
-       where delete='0'
+       use_water_unit_Id,
+       bank_account as bankAccount,
+       bank_of_deposit as bankOfDeposit,
+       people_bank_pay_sys_number as peopleBankPaySysNumber,
+       agreement_number as agreementNumber,
+       other_bank as otherBank
+       from t_w_bank
+       where deleted='0'
+       and signed='1'
      ) as a
      inner join
      (
        select
-       *
-       from t_w_bank as b
+       id
+       from t_w_use_water_unit as b
        where deleted='0'
-       and signed='1'
-     ) as b on a.id =b.use_water_unit_Id
+        and node_code=#{nodeCode}
+     ) as b on a.use_water_unit_Id =b.id
+
   </select>
 </mapper>

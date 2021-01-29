@@ -72,4 +72,13 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
  * 所有未签约、且存在银行账号的数据
  */
   List<Map<String,Object>> exportAccountAudit(String nodeCode);
+
+  /**
+   * 计划用水户导出格式查询：签约成功的用水户;
+   * 付款人名称一期取的法人名称，这里不再取
+   * @param nodeCode 节点编码
+   * @return
+   */
+  List<Map<String,Object>> exportForm(String nodeCode);
+
 }
