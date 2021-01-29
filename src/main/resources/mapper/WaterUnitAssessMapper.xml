@@ -117,62 +117,62 @@
     s2.water_meter_code,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     0 ELSE january_count
     END AS january_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     0 ELSE february_count
     END AS february_count,
     CASE
 
-    WHEN SUBSTRING(s1.unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(s1.unit_code, 5, 2) 	= '33' THEN
     0 ELSE march_count
     END AS march_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     january_count + april_count ELSE april_count
     END AS april_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     february_count + may_count ELSE may_count
     END AS may_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     march_count + june_count ELSE june_count
     END AS june_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     0 ELSE july_count
     END AS july_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     0 ELSE august_count
     END AS august_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     0 ELSE september_count
     END AS september_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     july_count + october_count ELSE october_count
     END AS october_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     august_count + november_count ELSE november_count
     END AS november_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     september_count + december_count ELSE december_count
     END AS december_count
     FROM
@@ -320,62 +320,62 @@
     s2.water_meter_code,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     0 ELSE january_count
     END AS january_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     0 ELSE february_count
     END AS february_count,
     CASE
 
-    WHEN SUBSTRING(s1.unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(s1.unit_code, 5, 2) 	= '33' THEN
     0 ELSE march_count
     END AS march_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     january_count + april_count ELSE april_count
     END AS april_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     february_count + may_count ELSE may_count
     END AS may_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     march_count + june_count ELSE june_count
     END AS june_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     0 ELSE july_count
     END AS july_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     0 ELSE august_count
     END AS august_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     0 ELSE september_count
     END AS september_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     july_count + october_count ELSE october_count
     END AS october_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     august_count + november_count ELSE november_count
     END AS november_count,
     CASE
 
-    WHEN SUBSTRING(unit_code, 3, 2) 	= '33' THEN
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
     september_count + december_count ELSE december_count
     END AS december_count
     FROM

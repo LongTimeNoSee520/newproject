@@ -158,7 +158,7 @@
       and t1.unit_name like '%${unitName}%'
     </if>
     <if test="userType != null and userType != ''">
-      and SUBSTRING(t1.unit_code,3,2) like '%${userType}%'
+      and SUBSTRING(t1.unit_code, 5, 2) like '%${userType}%'
     </if>
     <if test="areaCode != null and areaCode != ''">
       and SUBSTRING(t1.unit_code,1,2) like '%${areaCode}%'
@@ -182,7 +182,7 @@
     t_w_use_water_self_define_plan
     WHERE
     node_code = #{nodeCode}
-    AND SUBSTRING ( unit_code, 3, 2 )
+    AND SUBSTRING ( unit_code,5,2 )
     IN ( SELECT unit_type_code
     FROM t_w_use_water_unit_role WHERE person_id = #{userId}))
     ) c
@@ -202,7 +202,7 @@
       and t1.unit_name like '%${unitName}%'
     </if>
     <if test="userType != null and userType != ''">
-      and SUBSTRING(t1.unit_code,3,2) like '%${userType}%'
+      and SUBSTRING(t1.unit_code, 5, 2) like '%${userType}%'
     </if>
     <if test="areaCode != null and areaCode != ''">
       and SUBSTRING(t1.unit_code,1,2) like '%${areaCode}%'
@@ -226,7 +226,7 @@
     t_w_use_water_self_define_plan
     WHERE
     node_code = #{nodeCode}
-    AND SUBSTRING ( unit_code, 3, 2 )
+    AND SUBSTRING ( unit_code,5,2 )
     IN ( SELECT unit_type_code
     FROM t_w_use_water_unit_role WHERE person_id = #{userId}))
   </select>
