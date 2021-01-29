@@ -3,18 +3,13 @@ package com.zjtc.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
-import com.zjtc.base.util.CommonUtil;
-import com.zjtc.base.util.JxlsUtils;
 import com.zjtc.mapper.UseWaterBasePlanMapper;
 import com.zjtc.model.UseWaterBasePlan;
 import com.zjtc.model.User;
+import com.zjtc.service.CommonService;
 import com.zjtc.service.UseWaterBasePlanService;
 import com.zjtc.service.UseWaterUnitRoleService;
 import com.zjtc.service.WaterUsePayInfoService;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,18 +38,8 @@ public class UseWaterBasePlanServiceImpl extends
   private UseWaterUnitRoleService useWaterUnitRoleService;
   @Autowired
   private WaterUsePayInfoService waterUsePayInfoService;
-
-  /**
-   * 附件上传盘符
-   */
-  @Value("${file.fileUploadRootPath}")
-  private String fileUploadRootPath;
-
-  /**
-   * 附件上传目录
-   */
-  @Value("${file.fileUploadPath}")
-  private String fileUploadPath;
+  @Autowired
+  private CommonService commonService;
 
   @Override
   @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
@@ -216,27 +200,9 @@ public class UseWaterBasePlanServiceImpl extends
     data.put("exportTime", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    try {
-      final String fileName = "计划用水基建计划.xls";
-      String saveFilePath =
-          fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName;
-      //模板 流(此方式读取文件流必须将文件放到resource目录下)
-      InputStream inputStream = getClass().getClassLoader()
-          .getResourceAsStream("template/baseWaterPlan.xls");
-      OutputStream outputStream = new FileOutputStream(saveFilePath);
-      JxlsUtils.exportExcel(inputStream, outputStream, data);
-      outputStream.close();
-//      上面步骤是将导出文件写入服务器磁盘，下面操作是将文件写入到客服端，并将服务器上的文件删除
-      File getPath = new File(saveFilePath);
-      boolean downloadSuccess = CommonUtil.writeBytes(getPath, fileName, request, response);
-      //下载完毕删除文件
-      boolean canDelFile = downloadSuccess && (getPath.exists() && getPath.isFile());
-      if (canDelFile) {
-        getPath.delete();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    final String fileName = "计划用水基建计划.xls";
+    final String template = "template/baseWaterPlan.xls";
+    commonService.export(fileName,template,request,response,data);
     return apiResponse;
   }
 }
