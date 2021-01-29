@@ -533,4 +533,26 @@
      ) as b on a.use_water_unit_Id =b.id
 
   </select>
+  <select id="exportRevoca" resultType="java.util.LinkedHashMap">
+    select
+    type='d',
+    agreement_number as agreementNumber,
+    sBankName=#{sBankName},
+    sBankNum=#{sBankNum},
+    sUnitName=#{sUnitName},
+    sBankAccount=#{sBankAccount},
+    bank_of_deposit as bankOfDeposit,
+    people_bank_pay_sys_number as peopleBankPaySysNumber,
+    entrust_unit_name as entrustUnitName,
+    bank_account as bankAccount
+    from t_w_bank
+    where deleted='0'
+    and main='3'
+    <if test="null !=startTime and startTime !=''">
+      and revocation_date &gt;= #{startTime}
+    </if>
+    <if test="null !=endTime and endTime !=''">
+      and revocation_date &lt; #{endTime}
+    </if>
+  </select>
 </mapper>

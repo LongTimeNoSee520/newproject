@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.CommonUtil;
+import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.JxlsUtils;
 import com.zjtc.mapper.UseWaterUnitMapper;
 import com.zjtc.model.Bank;
@@ -98,6 +99,8 @@ public class UseWaterUnitServiceImpl extends
   private UseWaterUnitModifyService useWaterUnitModifyService;
   @Autowired
   private CommonService commonService;
+  @Autowired
+  DictUtils dictUtils;
   /**
    * 附件上传盘符
    */
@@ -569,8 +572,8 @@ public class UseWaterUnitServiceImpl extends
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
     String fileName = "计划用水户账户审核表.xlsx";
-    String templateName="template/accountAudit.xlsx";
-    commonService.export(fileName,templateName,request,response,data);
+    String templateName = "template/accountAudit.xlsx";
+    commonService.export(fileName, templateName, request, response, data);
 
   }
 
@@ -585,8 +588,46 @@ public class UseWaterUnitServiceImpl extends
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
     String fileName = "计划用水户开通格式.xlsx";
-    String templateName="template/form.xlsx";
-    commonService.export(fileName,templateName,request,response,data);
+    String templateName = "template/form.xlsx";
+    commonService.export(fileName, templateName, request, response, data);
+  }
+
+  @Override
+  public void exportRevoca(JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    String nodeCode = jsonObject.getString("nodeCode");
+    //开始时间
+    String startTime = jsonObject.getString("startTime");
+    //结束时间
+    String endTime = jsonObject.getString("endTime");
+    //开户行行名
+    String sBankName = dictUtils.getDictItemName("receive_user_info", "1", nodeCode);
+    jsonObject.put("sBankName", sBankName);
+    //开户行号
+    String sBankNum = dictUtils.getDictItemName("receive_user_info", "2", nodeCode);
+    jsonObject.put("sBankNum", sBankNum);
+    //户名
+    String sUnitName = dictUtils.getDictItemName("receive_user_info", "3", nodeCode);
+    jsonObject.put("sUnitName", sUnitName);
+    //账号
+    String sBankAccount = dictUtils.getDictItemName("receive_user_info", "4", nodeCode);
+    jsonObject.put("sBankAccount", sBankAccount);
+    if (StringUtils.isNotBlank(startTime)) {
+      jsonObject.put("startTime", startTime + " 00:00:00");
+    }
+    if (StringUtils.isNotBlank(endTime)) {
+      jsonObject.put("endTime", endTime + " 23:59:59");
+    }
+    List<Map<String, Object>> list = baseMapper
+        .exportRevoca(jsonObject);
+    Map<String, Object> data = new HashMap<>();
+    data.put("excelData", list);
+    data.put("nowDate", new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
+    String fileName = "计划用水户撤销格式.xlsx";
+    String templateName = "template/Revoca.xlsx";
+    commonService.export(fileName, templateName, request, response, data);
   }
 
   /**

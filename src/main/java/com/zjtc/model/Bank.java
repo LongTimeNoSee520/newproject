@@ -52,7 +52,7 @@ public class Bank extends Model<Bank> {
   @TableField(value = "agreement_number", exist = true)
   private String agreementNumber;
 
-  @ApiModelProperty(value = "是否他行[银行代码]，排除银行代码为1，都是他行")
+  @ApiModelProperty(value = "是否他行(银行代码)，排除银行代码为1，都是他行")
   @TableField(value = "other_bank", exist = true)
   private String otherBank;
 
@@ -60,7 +60,7 @@ public class Bank extends Model<Bank> {
   @TableField(value = "signed", exist = true)
   private String signed;
 
-  @ApiModelProperty(value = "是否主账号")
+  @ApiModelProperty(value = "是否主账号,0否，1是，3撤销")
   @TableField(value = "main", exist = true)
   private String main;
 

@@ -91,11 +91,19 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
 
   /**
    * 导出开通格式
-   * @param jsonObject
+   * @param jsonObject startTime开始时间,endTime结束时间
    * @param request
    * @param response
    */
   void exportForm(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+
+  /**
+   * 导出撤销格式
+   * @param jsonObject
+   * @param request
+   * @param response
+   */
+  void exportRevoca(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
   //导出查询结果
   //导出用水单位增减情况表
 }

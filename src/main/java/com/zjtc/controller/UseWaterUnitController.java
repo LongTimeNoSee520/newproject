@@ -407,13 +407,13 @@ public class UseWaterUnitController {
   public ApiResponse exportAccountAudit(
       HttpServletRequest request,
       HttpServletResponse response, @RequestHeader("token") String token) {
-    JSONObject jsonObject=new JSONObject();
+    JSONObject jsonObject = new JSONObject();
     log.info("导出账户审核表 ==== 参数{" + token != null ? token.toString() : "null" + "}");
     User user = jwtUtil.getUserByToken(token);
     ApiResponse apiResponse = new ApiResponse();
     if (null != user) {
       try {
-        jsonObject.put("nodeCode",user.getNodeCode());
+        jsonObject.put("nodeCode", user.getNodeCode());
         useWaterUnitService.exportAccountAudit(jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出账户审核表错误,errMsg==={}", e.getMessage());
@@ -430,15 +430,15 @@ public class UseWaterUnitController {
   @RequestMapping(value = "exportForm", method = RequestMethod.POST)
   public ApiResponse exportForm
       (
-      HttpServletRequest request,
-      HttpServletResponse response, @RequestHeader("token") String token) {
-    JSONObject jsonObject=new JSONObject();
+          HttpServletRequest request,
+          HttpServletResponse response, @RequestHeader("token") String token) {
+    JSONObject jsonObject = new JSONObject();
     log.info("导出开通格式 ==== 参数{" + token != null ? token.toString() : "null" + "}");
     User user = jwtUtil.getUserByToken(token);
     ApiResponse apiResponse = new ApiResponse();
     if (null != user) {
       try {
-        jsonObject.put("nodeCode",user.getNodeCode());
+        jsonObject.put("nodeCode", user.getNodeCode());
         useWaterUnitService.exportForm(jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出开通格式错误,errMsg==={}", e.getMessage());
@@ -450,4 +450,31 @@ public class UseWaterUnitController {
     return apiResponse;
   }
 
+  @ResponseBody
+  @ApiOperation(value = "导出撤销格式")
+  @RequestMapping(value = "exportRevoca", method = RequestMethod.POST)
+  public ApiResponse exportRevoca
+      (
+          @ApiParam("{\n"
+              + "  \"startTime\":\"开始时间：yyyy-MM-dd\",\n"
+              + "  \"endTime\":\"结束时间：yyyy-MM-dd\"\n"
+              + "}")@RequestBody JSONObject jsonObject,
+          HttpServletRequest request,
+          HttpServletResponse response, @RequestHeader("token") String token) {
+    log.info("导出撤销格式 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    User user = jwtUtil.getUserByToken(token);
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != user) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        useWaterUnitService.exportRevoca(jsonObject, request, response);
+      } catch (Exception e) {
+        log.error("导出撤销格式错误,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
 }
