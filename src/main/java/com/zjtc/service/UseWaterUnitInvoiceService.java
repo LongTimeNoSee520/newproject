@@ -4,8 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterUnitInvoice;
+import com.zjtc.model.User;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Author: ZhouDaBo
@@ -95,4 +98,12 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
    * @return 结果集
    */
   ApiResponse updateInvoicesUnitMessage(UseWaterUnitInvoice useWaterUnitInvoice,String userName,String nodeCode);
+
+  /**
+   * 导出发票
+   * @param jsonObject 参数
+   * @param request 请求
+   * @param response 转发
+   */
+  void export(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response, User user);
 }

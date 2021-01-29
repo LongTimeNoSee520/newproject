@@ -23,6 +23,7 @@
     <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
     <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+    <result column="rownumber" property="rownumber" jdbcType="VARCHAR"/>
   </resultMap>
 
   <select id="selectInvoiceNumber" resultType="int">
@@ -85,13 +86,15 @@
     <if test="received != null and received != ''">
       and  received = #{received}
     </if>
-    and id IN (
+    and invoice_unit_code IN (
     SELECT
-    id
+    unit_code
     FROM
-    t_w_use_water_plan
+    t_w_use_water_unit
     WHERE
-    node_code = #{nodeCode} 	AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{loginId} ))
+    node_code = #{nodeCode}
+    AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{loginId} ))
+
   </select>
 
   <select id="queryList" parameterType="java.util.Map" resultMap="UseWaterUnitInvoiceModel">
@@ -137,13 +140,14 @@
     <if test="received != null and received != ''">
       and  received = #{received}
     </if>
-    and id IN (
+    and invoice_unit_code IN (
     SELECT
-    id
+    unit_code
     FROM
-    t_w_use_water_plan
+    t_w_use_water_unit
     WHERE
-    node_code = #{nodeCode} 	AND SUBSTRING ( unit_code, 3, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{loginId} ))
+    node_code = #{nodeCode}
+    AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{loginId} ))
     ) c
     WHERE
     rownumber > (${pageSize}*(${currPage}-1))
@@ -221,5 +225,59 @@
     </set>
     where id = #{id}
   </update>
+
+  <select id="export" resultMap="UseWaterUnitInvoiceModel">
+    SELECT
+    row_number () OVER ( ORDER BY [invoice_number] DESC ) AS rownumber,
+    id,
+    pay_info_id,
+    invoice_date,
+    invoice_number,
+    invoice_money,
+    invoice_unit_name,
+    enabled,
+    drawer,
+    create_time,
+    invoice_type,
+    invoice_unit_code,
+    CASE
+    received
+    WHEN '0' THEN
+    '未领取'
+    WHEN '1' THEN
+    '已领取' ELSE '未知状态'
+    END received,
+    person,
+    received,
+    receive_time,
+    remarks,
+    node_code
+    FROM
+    t_w_use_water_unit_invoice t1
+    WHERE
+    t1.deleted = '0'
+    AND t1.person = #{loginId}
+    AND t1.node_code = #{nodeCode}
+    <if test="invoiceNumber != null and invoiceNumber != ''">
+      and  invoice_number like '%${invoiceNumber}%'
+    </if>
+    <if test="(begin != null and begin != '') or (end != null and end != '') ">
+      and   (convert(int,invoice_number) &gt;= #{begin} AND convert(int,invoice_number) &lt;= #{end})
+    </if>
+    <if test="enabled != null and enabled != ''">
+      and  enabled = #{enabled}
+    </if>
+    <if test="received != null and received != ''">
+      and  received = #{received}
+    </if>
+    and invoice_unit_code IN (
+    SELECT
+    unit_code
+    FROM
+    t_w_use_water_unit
+    WHERE
+    node_code = #{nodeCode}
+    AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{loginId} ))
+  </select>
 
 </mapper>

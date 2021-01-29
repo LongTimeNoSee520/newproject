@@ -131,6 +131,10 @@ public class UseWaterUnitInvoice extends Model<UseWaterUnitInvoice>{
   @ApiModelProperty("是否删除")
   @TableField(value = "deleted",exist = true)
   private String deleted;
+
+  @ApiModelProperty("序号")
+  @TableField(value = "rownumber",exist = false)
+  private String rownumber;
 	/**
 	 * 实例化
 	 */

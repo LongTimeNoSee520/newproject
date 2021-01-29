@@ -74,11 +74,14 @@ public class WaterUnitAssessController {
    * 导出
    */
   @ResponseBody
-  @ApiOperation(value = "导出")
+  @ApiOperation(value = "导出用水单位考核")
   @RequestMapping(value = "export", method = RequestMethod.POST)
-  public ApiResponse excelExport(@RequestBody JSONObject jsonObject, HttpServletRequest request,
+  public ApiResponse excelExport(@ApiParam(""
+      + "{\n"
+      + "\"unitName\":\"单位名称\",\n"
+      + "\"planYear\":\"年度\"\n"
+      + "}\n")@RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response, @RequestHeader("token") String token) {
-    log.info("证书导出 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     if (null == user) {

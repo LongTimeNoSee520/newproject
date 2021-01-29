@@ -4,6 +4,7 @@ import com.zjtc.model.vo.WaterUnitAssessVO;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.poi.ss.formula.functions.T;
 
 /**
  * @Author: ZhouDaBo
@@ -26,7 +27,9 @@ public interface WaterUnitAssessMapper {
       @Param("beginYear")Integer beginYear,
       @Param("endYear")Integer endYear,
       @Param("nodeCode")String nodeCode,
-      @Param("loginId")String loginId);
+      @Param("loginId")String loginId,
+      @Param("planYear")Integer planYear
+  );
 
   /**
    * 分页查询
@@ -46,14 +49,8 @@ public interface WaterUnitAssessMapper {
       @Param("beginYear")Integer beginYear,
       @Param("endYear")Integer endYear,
       @Param("nodeCode")String nodeCode,
-      @Param("loginId")String loginId);
+      @Param("loginId")String loginId,
+      @Param("planYear")Integer planYear);
 
-  /**
-   * 按条件查询
-   * @param unitName
-   * @param beginYear
-   * @param endYear
-   * @return
-   */
-  List<WaterUnitAssessVO> selectList(String unitName, Integer beginYear, Integer endYear);
+
 }

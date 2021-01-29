@@ -3,15 +3,28 @@ package com.zjtc.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.CommonUtil;
+import com.zjtc.base.util.JxlsUtils;
 import com.zjtc.mapper.UseWaterUnitInvoiceMapper;
 import com.zjtc.model.UseWaterUnitInvoice;
+import com.zjtc.model.User;
 import com.zjtc.service.UseWaterUnitInvoiceService;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
@@ -22,9 +35,16 @@ import org.springframework.stereotype.Service;
  * @Date: 2020/12/23 计划用水户发票表
  */
 @Service
+@Slf4j
 public class UseWaterUnitInvoiceServiceImpl extends
     ServiceImpl<UseWaterUnitInvoiceMapper, UseWaterUnitInvoice> implements
     UseWaterUnitInvoiceService {
+
+  @Value("${file.fileUploadRootPath}")
+  private String fileUploadRootPath;
+
+  @Value("${file.fileUploadPath}")
+  private String fileUploadPath;
 
   @Override
   public ApiResponse saveModel(JSONObject jsonObject, String nodeCode) {
@@ -141,9 +161,9 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public ApiResponse cancelAbolish(List<String> ids,String nodeCode) {
+  public ApiResponse cancelAbolish(List<String> ids, String nodeCode) {
     ApiResponse response = new ApiResponse();
-    if (ids.isEmpty() || StringUtils.isBlank(nodeCode)){
+    if (ids.isEmpty() || StringUtils.isBlank(nodeCode)) {
       response.recordError("系统异常");
       return response;
     }
@@ -151,7 +171,8 @@ public class UseWaterUnitInvoiceServiceImpl extends
     for (String id : ids) {
 //      取消作废时判断之前是有被作废状态的数据,如果有,就根据开票时间提示取消该时间之后的数据
       UseWaterUnitInvoice unitInvoice1 = this.baseMapper.selectById(id);
-      List<String> invoiceNumberList = this.baseMapper.selectEnabledStatus(unitInvoice1.getPayInfoId(),nodeCode);
+      List<String> invoiceNumberList = this.baseMapper
+          .selectEnabledStatus(unitInvoice1.getPayInfoId(), nodeCode);
       if (!invoiceNumberList.isEmpty()) {
 //        拼接发票号
         String invoiceNumbers = StringUtils.strip(invoiceNumberList.toString(), "[]")
@@ -159,16 +180,16 @@ public class UseWaterUnitInvoiceServiceImpl extends
         response.recordError("请先取消作废发票号为:" + invoiceNumbers + "的数据");
         return response;
       }
-      if ("0".equals(unitInvoice1.getEnabled())){
+      if ("0".equals(unitInvoice1.getEnabled())) {
         response.recordError("请先选择已作废的数据");
         return response;
       }
-      b =  this.baseMapper.updateEnabledStatus(id);
+      b = this.baseMapper.updateEnabledStatus(id);
     }
     if (b > 0) {
       response.setCode(200);
       return response;
-    }else {
+    } else {
       response.recordError("操作失败失败");
       return response;
     }
@@ -208,14 +229,15 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public ApiResponse shift(String begin, String end, String personId, String loginId,String nodeCode) {
+  public ApiResponse shift(String begin, String end, String personId, String loginId,
+      String nodeCode) {
     ApiResponse response = new ApiResponse();
     if (StringUtils.isBlank(begin) || StringUtils.isBlank(end) || StringUtils.isBlank(personId)) {
       response.recordError("系统异常");
     }
 
     int i = this.baseMapper
-        .updateUid(Integer.parseInt(begin), Integer.parseInt(end), personId, loginId,nodeCode);
+        .updateUid(Integer.parseInt(begin), Integer.parseInt(end), personId, loginId, nodeCode);
     if (i > 0) {
       response.setCode(200);
       response.setMessage("已移交:" + i + "张发票");
@@ -321,7 +343,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
 
   @Override
   public ApiResponse updateInvoicesUnitMessage(UseWaterUnitInvoice useWaterUnitInvoice,
-      String userName,String nodeCode) {
+      String userName, String nodeCode) {
     ApiResponse response = new ApiResponse();
     if (null == useWaterUnitInvoice || StringUtils.isBlank(userName)) {
       response.recordError("系统异常");
@@ -336,13 +358,68 @@ public class UseWaterUnitInvoiceServiceImpl extends
 //      return response;
 //    }
     useWaterUnitInvoice.setInvoiceDate(new Date());
-    int i = this.baseMapper.updateInvoicesUnitMessage(useWaterUnitInvoice, userName,nodeCode);
+    int i = this.baseMapper.updateInvoicesUnitMessage(useWaterUnitInvoice, userName, nodeCode);
     if (i > 0) {
       response.setCode(200);
       return response;
     } else {
       response.recordError(" 单位信息关联发票失败");
       return response;
+    }
+  }
+
+  @Override
+  public void export(JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response, User user) {
+//    发票号
+    String invoiceNumber = null;
+    if (null != jsonObject.getString("invoiceNumber")) {
+      invoiceNumber = jsonObject.getString("invoiceNumber").trim();
+    }
+    //    开始票段
+    Integer begin = null;
+    if (null != jsonObject.getInteger("begin")) {
+      begin = jsonObject.getInteger("begin");
+    }
+    //    结束票段
+    Integer end = null;
+    if (null != jsonObject.getInteger("end")) {
+      end = jsonObject.getInteger("end");
+    }
+    //    是否作废
+    String enabled = null;
+    if (null != jsonObject.getString("enabled")) {
+      enabled = jsonObject.getString("enabled").trim();
+    }
+    //    是否领取
+    String received = null;
+    if (null != jsonObject.getString("received")) {
+      received = jsonObject.getString("received").trim();
+    }
+    List<UseWaterUnitInvoice> export = this.baseMapper
+        .export(invoiceNumber, begin, end, enabled, received, user.getNodeCode(), user.getId());
+    Map<String, Object> data = new HashMap<>(16);
+    data.put("export", export);
+    data.put("nowDate", new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
+    try {
+      String fileName = "发票管理.xlsx";
+      String saveFilePath =
+          fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName;
+      InputStream inputStream = getClass().getClassLoader()
+          .getResourceAsStream("template/invoiceRecord.xlsx");
+      OutputStream os = new FileOutputStream(saveFilePath);
+      JxlsUtils.exportExcel(inputStream, os, data);
+      os.close();
+      File getPath = new File(saveFilePath);
+      boolean downloadSuccess = CommonUtil.writeBytes(getPath, fileName, request, response);
+      //下载完毕删除文件
+      if (downloadSuccess && (getPath.exists() && getPath.isFile())) {
+        getPath.delete();
+      }
+    } catch (Exception e) {
+      log.error("发票管理导出异常:" + e.getMessage());
     }
   }
 }

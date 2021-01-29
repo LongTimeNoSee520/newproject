@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -70,12 +72,12 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
     }
 //    总条数
     Integer total = waterUnitAssessMapper
-        .selectCount(unitName, beginYear, endYear, nodeCode, loginId);
+        .selectCount(unitName, beginYear, endYear, nodeCode, loginId,null);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<WaterUnitAssessVO> waterUnitAssessVOS = waterUnitAssessMapper
-        .queryList(currPage, pageSize, unitName, beginYear, endYear, nodeCode, loginId);
+        .queryList(currPage, pageSize, unitName, beginYear, endYear, nodeCode, loginId,null);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -94,27 +96,30 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
     if (null != jsonObject.getString("unitName")) {
       unitName = jsonObject.getString("unitName");
     }
-//    开始年份
-    Integer beginYear = null;
-    if (null != jsonObject.getInteger("beginYear")) {
-      beginYear = jsonObject.getInteger("beginYear");
+//    年份
+    Integer planYear = null;
+    if (null != jsonObject.getInteger("planYear")) {
+      planYear = jsonObject.getInteger("planYear");
     }
-//    结束年份
-    Integer endYear = null;
-    if (null != jsonObject.getInteger("endYear")) {
-      endYear = jsonObject.getInteger("endYear");
-    }
+////    结束年份
+//    Integer endYear = null;
+//    if (null != jsonObject.getInteger("endYear")) {
+//      endYear = jsonObject.getInteger("endYear");
+//    }
     Integer integer = this.waterUnitAssessMapper
-        .selectCount(unitName, beginYear, endYear, user.getNodeCode(), user.getId());
+        .selectCount(unitName, null, null, user.getNodeCode(), user.getId(),planYear);
     List<WaterUnitAssessVO> waterUnitAssess = this.waterUnitAssessMapper
-        .queryList(1, integer + 1, unitName, beginYear, endYear, user.getNodeCode(), user.getId());
+        .queryList(1, integer + 1, unitName, null, null, user.getNodeCode(), user.getId(),planYear);
     Map<String, Object> data = new HashMap<>(16);
-    data.put("excelData", waterUnitAssess);
+    data.put("waterUnitAssess", waterUnitAssess);
+    data.put("nowDate",new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
     try {
-      String fileName = "用水单位考核.xlsx";
+      String fileName = "计划户用水单位考核表.xlsx";
       String saveFilePath =
           fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName;
-      InputStream inputStream = getClass().getClassLoader().getResourceAsStream("template/PlanUserExamInfo.xls");
+      InputStream inputStream = getClass().getClassLoader().getResourceAsStream("template/PlanUserExamInfo.xlsx");
       OutputStream os = new FileOutputStream(saveFilePath);
       JxlsUtils.exportExcel(inputStream, os, data);
       os.close();

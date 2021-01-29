@@ -10,6 +10,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -328,7 +330,7 @@ public class UseWaterUnitInvoiceController {
       return response;
     }
     try {
-      response = useWaterUnitInvoiceService.queryPage(jsonObject, user.getNodeCode(),user.getLoginId());
+      response = useWaterUnitInvoiceService.queryPage(jsonObject, user.getNodeCode(),user.getId());
       return response;
     } catch (Exception e) {
       response.recordError("分页查询人员信息异常");
@@ -390,5 +392,39 @@ public class UseWaterUnitInvoiceController {
       e.printStackTrace();
     }
     return response;
+  }
+
+
+  /**
+   * 导出
+   */
+  @ResponseBody
+  @ApiOperation(value = "导出发票管理")
+  @RequestMapping(value = "export", method = RequestMethod.POST)
+  public ApiResponse excelExport(@ApiParam(""
+      + "{\n"
+      + "    \"invoiceNumber\":\"发票号\",\n"
+      + "    \"begin\":\"开始票段(Integer类型)\",\n"
+      + "    \"end\":\"结束票段(Integer类型)\"\n"
+      + "    \"enabled\":\"是否作废(0代表否)\",\n"
+      + "    \"received\":\"是否领取(0代表否)\",\n"
+      + "}\n") @RequestBody JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response, @RequestHeader("token") String token) {
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null == user) {
+      apiResponse.recordError("系统异常");
+      return apiResponse;
+    }
+    if (null == jsonObject) {
+      apiResponse.recordError("系统异常");
+      return apiResponse;
+    }
+    try {
+      useWaterUnitInvoiceService.export(jsonObject, request, response, user);
+    } catch (Exception e) {
+      apiResponse.recordError("系统异常:" + e.getMessage());
+    }
+    return apiResponse;
   }
 }

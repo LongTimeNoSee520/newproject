@@ -227,6 +227,9 @@
     <if test="unitName != null and unitName != ''">
       and  t6.unitName like '%${unitName}%'
     </if>
+    <if test="planYear != null and planYear != ''">
+      and  t6.planYear = #{planYear}
+    </if>
   </select>
 
   <select id="queryList" resultMap="WaterUnitAssessModel">
@@ -426,6 +429,9 @@
     </if>
     <if test="unitName != null and unitName != ''">
     and  t6.unitName like '%${unitName}%'
+    </if>
+    <if test="planYear != null and planYear != ''">
+      and  t6.planYear = #{planYear}
     </if>
     ) c
     WHERE
