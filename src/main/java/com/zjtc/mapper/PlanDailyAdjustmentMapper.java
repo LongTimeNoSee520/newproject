@@ -4,6 +4,7 @@ package com.zjtc.mapper;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.vo.PlanDailyAdjustmentVO;
+import com.zjtc.model.vo.UseWaterPlanExportVO;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -35,4 +36,11 @@ public interface PlanDailyAdjustmentMapper extends BaseMapper<UseWaterPlan> {
       @Param("planYear") Integer planYear);
 
   List<PlanDailyAdjustmentVO> queryList(Map<String, Object> map);
+
+  /**
+   * 查询导出数据
+   * @param map
+   * @return
+   */
+  List<UseWaterPlanExportVO> selectExportData(Map<String, Object> map);
 }

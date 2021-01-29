@@ -23,10 +23,10 @@
     <result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
     <result column="next_year_start_plan" property="nextYearBaseStartPlan" jdbcType="DOUBLE"/>
     <result column="next_year_end_plan" property="nextYearBaseEndPlan" jdbcType="DOUBLE"/>
-    <result column="first_quarter" property="firstQuarterBase" jdbcType="DOUBLE"/>
-    <result column="second_quarter" property="secondQuarterBase" jdbcType="DOUBLE"/>
-    <result column="third_quarter" property="thirdQuarterBase" jdbcType="DOUBLE"/>
-    <result column="fourth_quarter" property="fourthQuarterBase" jdbcType="DOUBLE"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
     <result column="plan_type" property="planType" jdbcType="VARCHAR"/>
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     <result column="update_user_id" property="updateUserId" jdbcType="VARCHAR"/>
@@ -92,6 +92,19 @@
     <!--<collection property="unpaidList" ofType="java.util.LinkedHashMap" column="unit_code"-->
       <!--select="queryUnpaidList">-->
     <!--</collection>-->
+  </resultMap>
+  <resultMap id="ExportResultMap" type="com.zjtc.model.vo.UseWaterPlanExportVO">
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="plan_type" property="planType" jdbcType="VARCHAR"/>
+    <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
   </resultMap>
   <select id="queryNum" resultType="int">
     SELECT COUNT (id)
@@ -259,6 +272,44 @@
   </select>
   <select id="queryUnpaidList" resultType="java.util.LinkedHashMap">
     SELECT 1 AS a
+  </select>
+  <select id="selectExportData" resultMap="ExportResultMap">
+    SELECT
+    uu.unit_code,
+    MAX (m.water_meter_code) AS water_meter_code,
+    uu.unit_name,
+    p.plan_year,
+    p.cur_year_plan,
+    p.first_quarter,
+    p.second_quarter,
+    p.third_quarter,
+    p.fourth_quarter,
+    CONVERT(varchar(100), p.update_time, 23) as update_time,
+    MAX ('当前计划') AS plan_type,
+    p.remarks
+    FROM
+    t_w_use_water_unit uu,
+    t_w_use_water_plan p,
+    t_w_use_water_unit_meter m
+    WHERE
+    uu.id = p.use_water_unit_id
+    AND uu.id = m.use_water_unit_id
+    AND uu.id IN
+    (SELECT id
+    FROM t_w_use_water_unit
+    WHERE node_code = #{nodeCode}
+    AND SUBSTRING(unit_code,5,2)<!--类型-->
+    IN (
+        SELECT unit_type_code
+        FROM t_w_use_water_unit_role
+        WHERE person_id = #{userId}
+      )
+    )
+    AND p.plan_year = #{planYear}
+    AND p.plan_type = '0'
+    group by uu.unit_code,uu.unit_name,p.plan_year,p.cur_year_plan,p.first_quarter,
+    p.second_quarter,p.third_quarter,p.fourth_quarter,p.update_time,p.remarks
+    order by uu.unit_code
   </select>
   <update id="updateRemarks">
     UPDATE t_w_use_water_plan

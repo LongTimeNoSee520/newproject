@@ -9,15 +9,14 @@ import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.PlanDailyAdjustmentMapper;
-import com.zjtc.model.Contacts;
 import com.zjtc.model.EndPaper;
-import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.PlanDailyAdjustmentVO;
 import com.zjtc.model.vo.PrintVO;
-import com.zjtc.service.ContactsService;
+import com.zjtc.model.vo.UseWaterPlanExportVO;
+import com.zjtc.service.CommonService;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
@@ -35,6 +34,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,8 @@ public class PlanDailyAdjustmentServiceImpl extends
   private MessageService messageService;
   @Autowired
   private SmsService smsService;
+  @Autowired
+  private CommonService commonService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -594,6 +597,33 @@ public class PlanDailyAdjustmentServiceImpl extends
     /**查出满足条件的数据*/
     List<PlanDailyAdjustmentVO> records = this.baseMapper.queryList(map);
     return records;
+  }
+
+  @Override
+  public ApiResponse export(User user, Integer planYear, HttpServletRequest request,
+      HttpServletResponse response) {
+    ApiResponse apiResponse = new ApiResponse();
+    /**查询导出数据*/
+    String nodeCode = user.getNodeCode();
+    String userId = user.getId();
+    Map<String, Object> map = new HashMap();
+    map.put("nodeCode", nodeCode);
+    map.put("userId", userId);
+    map.put("planYear", planYear);
+    List<UseWaterPlanExportVO>  useWaterPlans = this.baseMapper.selectExportData(map);
+    if (useWaterPlans.isEmpty()){
+      apiResponse.recordError("没有数据需要导出");
+      return apiResponse;
+    }
+    Map<String, Object> data = new HashMap<>(8);
+    data.put("useWaterPlans",useWaterPlans);
+//    data.put("exportTime", new Date());
+//    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd");
+//    data.put("dateFormat", dateFmt);
+    final String fileName = "计划户最新日常计划调整表.xls";
+    final String template = "template/PlanUserLatestPlanAdjust.xls";
+    commonService.export(fileName,template,request,response,data);
+    return apiResponse;
   }
 
 

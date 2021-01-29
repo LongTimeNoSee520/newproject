@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -336,5 +338,24 @@ public class PlanDailyAdjustmentController {
       response.recordError("发起办结单参数不能为空");
     }
     return response;
+  }
+
+  @RequestMapping(value = "export", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  @ApiOperation(value = "导出最新计划")
+  public ApiResponse export(@RequestHeader("token") String token,
+      @ApiParam("{\"planYear\":\"年份,数字类型\"\n"
+          + "}") @RequestBody JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    ApiResponse apiResponse = new ApiResponse();
+    log.debug("导出最新计划导出，参数param==={" + jsonObject.toString() + "}");
+    try {
+      Integer planYear = jsonObject.getInteger("planYear");
+      User user =  jwtUtil.getUserByToken(token);
+      apiResponse = planDailyAdjustmentService.export(user,planYear,request,response);
+    } catch (Exception e) {
+      log.error("导出最新计划失败,errMsg==={}" + e.getMessage());
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
   }
 }

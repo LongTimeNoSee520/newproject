@@ -10,6 +10,8 @@ import com.zjtc.model.vo.PlanDailyAdjustmentVO;
 import com.zjtc.model.vo.PrintVO;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
  * @author lianghao
  * @date 2021/01/04
@@ -81,4 +83,14 @@ public interface PlanDailyAdjustmentService extends IService<UseWaterPlan> {
 	 * @param
 	 */
 	List<PlanDailyAdjustmentVO> queryList(User user, JSONObject jsonObject);
+
+	/**
+	 * 导出最新计划
+	 * @param user
+	 * @param planYear
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	ApiResponse export(User user, Integer planYear, HttpServletRequest request, HttpServletResponse response);
 }
