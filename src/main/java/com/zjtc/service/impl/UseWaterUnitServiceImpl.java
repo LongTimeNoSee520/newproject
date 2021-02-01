@@ -711,6 +711,21 @@ public class UseWaterUnitServiceImpl extends
 
   }
 
+  @Override
+  public void exportMoreAndLess(JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    List<Map<String, Object>> list = baseMapper
+        .exportMoreAndLess(jsonObject.getString("nodeCode"));
+    Map<String, Object> data = new HashMap<>();
+    data.put("excelData", list);
+    data.put("nowDate", new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
+    String fileName = "用水单位增减情况表.xlsx";
+    String templateName = "template/useWaterUnitMoreAndLess.xlsx";
+    commonService.export(fileName, templateName, request, response, data);
+  }
+
   /**
    * 验证单位编号是否重复
    */

@@ -483,4 +483,28 @@ public class UseWaterUnitController {
     }
     return apiResponse;
   }
+
+  @ResponseBody
+  @ApiOperation(value = "导出用水单位增减情况表")
+  @RequestMapping(value = "exportMoreAndLess", method = RequestMethod.POST)
+  public ApiResponse exportMoreAndLess
+      (@RequestBody JSONObject jsonObject,
+          HttpServletRequest request,
+          HttpServletResponse response, @RequestHeader("token") String token) {
+    log.info("导出撤销格式 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    User user = jwtUtil.getUserByToken(token);
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != user) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        useWaterUnitService.exportMoreAndLess(jsonObject, request, response);
+      } catch (Exception e) {
+        log.error("导出撤销格式错误,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
 }

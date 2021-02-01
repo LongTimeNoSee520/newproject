@@ -571,4 +571,29 @@
       and revocation_date &lt; #{endTime}
     </if>
   </select>
+
+  <select id="exportMoreAndLess" resultType="java.util.LinkedHashMap">
+    SELECT
+    distinct
+    CASE
+      a.deleted
+      WHEN 0 THEN
+      '新增'
+      WHEN 1 THEN
+      '注销'
+      END AS userType,
+      unit_code as unitCode,
+      unit_name as unitName,
+      unit_address as unitAddress ,
+      contacts,
+      mobileNumber,
+      remark = '' ,
+      deleted
+    FROM
+      t_w_use_water_unit  as a
+    left join (SELECT use_water_unit_id,contacts,mobile_number as mobileNumber from t_w_use_water_unit_contacts where main='1' ) as b on a.id =b.use_water_unit_id
+    where a.node_code=#{nodeCode}
+    ORDER BY
+      a.deleted
+  </select>
 </mapper>

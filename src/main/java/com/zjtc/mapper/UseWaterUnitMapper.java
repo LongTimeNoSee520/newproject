@@ -95,5 +95,10 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
    * @return
    */
   List<Map<String,Object>> exportRevoca(JSONObject jsonObject);
-
+  /**
+   * 导出用水单位增减情况表
+   * @param nodeCode 节点编码
+   * @return
+   */
+  List<Map<String,Object>> exportMoreAndLess(String nodeCode);
 }
