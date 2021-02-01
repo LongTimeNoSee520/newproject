@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +56,7 @@ public class WaterMonthUseDataController {
           + "  \"caliberEnd\":\"口径结束\",\n"
           + "  \"sectorStart\":\"区段开始\",\n"
           + "  \"sectorEnd\":\"区段结束\",\n"
-          + "  \"useYear\":\"选择年份\"\n"
+          + "  \"useYear\":\"选择年份，必填，默认当前年\"\n"
           + "  \"unitCodeRank\":\"单位编号排序，asc：升序，desc：降序\"\n"
           + "  \"unitNameRank\":\"单位名称排序，asc：升序，desc：降序\"\n"
           + "  \n"
@@ -65,8 +67,8 @@ public class WaterMonthUseDataController {
     User user = jwtUtil.getUserByToken(token);
     log.info("删除部门,参数param==={" + jsonObject.toJSONString() + "}");
     if (null != user && null != jsonObject) {
-      jsonObject.put("nodeCode",user.getNodeCode());
-      Map<String,Object> result=waterMonthUseDataService.queryPage(jsonObject);
+      jsonObject.put("nodeCode", user.getNodeCode());
+      Map<String, Object> result = waterMonthUseDataService.queryPage(jsonObject);
       response.setData(result);
     } else {
       response.recordError(500);
@@ -74,4 +76,39 @@ public class WaterMonthUseDataController {
     return response;
   }
 
+  @RequestMapping(value = "export", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation("导出")
+  public ApiResponse export(
+      @ApiParam("{\n"
+          + "  \"useYear\":\"选择年份，必填，默认当前年\"\n"
+          + "  \"unitName\":\"单位名称\",\n"
+          + "  \"waterMeterCode\":\"水表档案号\",\n"
+          + "  \"waterNumberStart\":\"水量开始\",\n"
+          + "  \"waterNumberEnd\":\"水量结束\",\n"
+          + "  \"nowPriceStart\":\"水价开始\",\n"
+          + "  \"nowPriceEnd\":\"水价结束\",\n"
+          + "  \"caliberStart\":\"口径开始\",\n"
+          + "  \"caliberEnd\":\"口径结束\",\n"
+          + "  \"sectorStart\":\"区段开始\",\n"
+          + "  \"sectorEnd\":\"区段结束\"\n"
+          + "  \n"
+          + "}")
+      @RequestBody JSONObject jsonObject, @RequestHeader("token") String token,
+      HttpServletRequest request, HttpServletResponse response) {
+    log.info("导出月使用水量 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    User user = jwtUtil.getUserByToken(token);
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != user && null != jsonObject) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        waterMonthUseDataService.export(jsonObject, request, response);
+      } catch (Exception e) {
+        log.error("导出月使用水量错误,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
 }

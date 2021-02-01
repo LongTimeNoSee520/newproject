@@ -6,6 +6,8 @@ import com.zjtc.model.WaterMonthUseData;
 import com.zjtc.model.WaterUseData;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Author: ZhouDaBo
@@ -52,4 +54,6 @@ public interface WaterMonthUseDataService extends IService<WaterMonthUseData> {
    * @return 水表使用量信息
    */
   List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCode);
+
+  void export(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 }

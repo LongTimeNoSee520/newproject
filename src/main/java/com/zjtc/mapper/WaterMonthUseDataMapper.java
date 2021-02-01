@@ -42,7 +42,7 @@ public interface WaterMonthUseDataMapper extends BaseMapper<WaterMonthUseData> {
   /**
    * 分页
    */
-  List<Map<String,Object>> queryPage(JSONObject jsonObject);
+  List<WaterMonthUseData> queryPage(JSONObject jsonObject);
 
   /**
    * 分页查询出的数据总条数
@@ -50,4 +50,9 @@ public interface WaterMonthUseDataMapper extends BaseMapper<WaterMonthUseData> {
    * @return
    */
   long queryListTotal(JSONObject jsonObject);
+
+  /**
+   * 查询导出需要的数据
+   */
+  List<WaterMonthUseData> export(JSONObject jsonObject);
 }

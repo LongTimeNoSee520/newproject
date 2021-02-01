@@ -7,14 +7,21 @@ import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.WaterMonthUseDataMapper;
 import com.zjtc.model.WaterMonthUseData;
 import com.zjtc.model.WaterUseData;
+import com.zjtc.service.CommonService;
 import com.zjtc.service.WaterMonthUseDataService;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,6 +33,8 @@ import org.springframework.stereotype.Service;
 public class WaterMonthUseDataServiceImpl extends
     ServiceImpl<WaterMonthUseDataMapper, WaterMonthUseData> implements
     WaterMonthUseDataService {
+  @Autowired
+  private CommonService commonService;
 
 
   @Override
@@ -69,7 +78,7 @@ public class WaterMonthUseDataServiceImpl extends
       Calendar calendar = Calendar.getInstance();
       jsonObject.put("useYear",calendar.get(Calendar.YEAR));
     }
-    List<Map<String,Object>> result = baseMapper.queryPage(jsonObject);
+    List<WaterMonthUseData> result = baseMapper.queryPage(jsonObject);
     page.put("records", result);
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
@@ -86,5 +95,19 @@ public class WaterMonthUseDataServiceImpl extends
     EntityWrapper<WaterMonthUseData> wrapper = new EntityWrapper<>();
     wrapper.in("water_meter_code",waterMeterCode);
     return this.selectList(wrapper);
+  }
+
+  @Override
+  public void export(JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    List<WaterMonthUseData> list = baseMapper.export(jsonObject);
+    Map<String, Object> data = new HashMap<>();
+    data.put("excelData", list);
+    data.put("nowDate", new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
+    String fileName = "用水户水量查询结果.xlsx";
+    String templateName = "template/waterMonthUseData.xlsx";
+    commonService.export(fileName, templateName, request, response, data);
   }
 }
