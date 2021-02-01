@@ -295,28 +295,6 @@ public class UseWaterUnitController {
     return response;
   }
 
-  @RequestMapping(value = "selectById", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  @ApiOperation(value = "查询详情")
-  public ApiResponse selectById(
-      @ApiParam("{\\n\"\n"
-          + "          + \"\\\"id\\\":\\\"单位id\\\"\\n\"\n"
-          + "          + \"} ")
-      @RequestBody JSONObject jsonObject,
-      @RequestHeader("token") String token) {
-    ApiResponse response = new ApiResponse();
-    User user = jwtUtil.getUserByToken(token);
-    log.debug("用水单位新增，参数param==={" + jsonObject.toString() + "}");
-    if (null != jsonObject && null != user) {
-      UseWaterUnit result = useWaterUnitService.selectById(jsonObject, user);
-      response.setData(result);
-    } else {
-      response.recordError(500);
-    }
-
-    return response;
-  }
-
-
   @RequestMapping(value = "addUnitCodeList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "新增界面：相关编号下拉回填数据")
   public ApiResponse addUnitCodeList(@RequestBody JSONObject jsonObject,
@@ -458,7 +436,7 @@ public class UseWaterUnitController {
           @ApiParam("{\n"
               + "  \"startTime\":\"开始时间：yyyy-MM-dd\",\n"
               + "  \"endTime\":\"结束时间：yyyy-MM-dd\"\n"
-              + "}")@RequestBody JSONObject jsonObject,
+              + "}") @RequestBody JSONObject jsonObject,
           HttpServletRequest request,
           HttpServletResponse response, @RequestHeader("token") String token) {
     log.info("导出撤销格式 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
@@ -468,6 +446,34 @@ public class UseWaterUnitController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         useWaterUnitService.exportRevoca(jsonObject, request, response);
+      } catch (Exception e) {
+        log.error("导出撤销格式错误,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "导出查询结果")
+  @RequestMapping(value = "exportQueryData", method = RequestMethod.POST)
+  public ApiResponse exportQueryData
+      (
+          @ApiParam("{\n"
+              + "  \"startTime\":\"开始时间：yyyy-MM-dd\",\n"
+              + "  \"endTime\":\"结束时间：yyyy-MM-dd\"\n"
+              + "}") @RequestBody JSONObject jsonObject,
+          HttpServletRequest request,
+          HttpServletResponse response, @RequestHeader("token") String token) {
+    log.info("导出撤销格式 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    User user = jwtUtil.getUserByToken(token);
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != user) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        useWaterUnitService.exportQueryData(jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出撤销格式错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);

@@ -104,6 +104,13 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param response
    */
   void exportRevoca(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
-  //导出查询结果
+
+  /**
+   * 导出查询结果
+   * @param jsonObject
+   * @param request
+   * @param response
+   */
+  void exportQueryData(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
   //导出用水单位增减情况表
 }

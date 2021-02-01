@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
+import com.zjtc.model.vo.UseWaterUnitVo;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -27,7 +28,7 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   /**
    * 分页
    */
-  List<Map<String, Object>> queryPage(JSONObject jsonObject);
+  List<UseWaterUnitVo> queryPage(JSONObject jsonObject);
 
   /**
    * 分页查询出的数据总条数
@@ -41,6 +42,14 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
    */
   UseWaterUnit selectById(JSONObject jsonObject);
 
+  /**
+   *
+   * @param ids  单位id集合
+   * @param nodeCode
+   * @param UserId 用户id
+   * @param id  当前单位id
+   * @return
+   */
   List<UseWaterUnitRefVo> queryUnitRef(@Param("ids") List<String> ids,
       @Param("nodeCode") String nodeCode, @Param("userId") String UserId,
       @Param("notIn") String id

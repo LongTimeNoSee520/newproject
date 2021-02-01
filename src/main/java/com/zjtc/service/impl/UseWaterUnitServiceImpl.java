@@ -19,6 +19,7 @@ import com.zjtc.model.User;
 import com.zjtc.model.WaterMonthUseData;
 import com.zjtc.model.vo.RefEditData;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
+import com.zjtc.model.vo.UseWaterUnitVo;
 import com.zjtc.service.BankService;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.ContactsService;
@@ -439,9 +440,35 @@ public class UseWaterUnitServiceImpl extends
 
   @Override
   public Map<String, Object> queryPage(JSONObject jsonObject) {
+    String nodeCode = jsonObject.getString("nodeCode");
     Map<String, Object> page = new LinkedHashMap<>();
     jsonObject.put("dictCode", AREA_COUNTRY_CODE);
-    List<Map<String, Object>> result = baseMapper.queryPage(jsonObject);
+    List<UseWaterUnitVo> result = baseMapper.queryPage(jsonObject);
+    if (!result.isEmpty()) {
+      for (UseWaterUnitVo item : result) {
+        //查询相关编号
+        List<String> idList = useWaterUnitRefService
+            .findIdList(item.getId(), nodeCode);
+        if (!idList.isEmpty()) {
+          //相关编号集合
+          List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
+              .queryUnitRef(idList, nodeCode, jsonObject.getString("userId"),
+                  item.getId());
+          item.setUseWaterUnitRefList(useWaterUnitRefList);
+          //相关编号，用逗号隔开
+          String useWaterUnitIdRef ="";
+          if (!useWaterUnitRefList.isEmpty()) {
+            for (UseWaterUnitRefVo useWaterUnitRefVo : useWaterUnitRefList) {
+              useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
+            }
+          }
+          item.setUseWaterUnitIdRef(useWaterUnitIdRef.substring(0, useWaterUnitIdRef.length() - 1));
+        }
+        //查询所属区域
+        item.setAreaCountryName(
+            dictUtils.getDictItemName("area_country_code", item.getAreaCountry(), nodeCode));
+      }
+    }
     page.put("records", result);
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
@@ -628,6 +655,12 @@ public class UseWaterUnitServiceImpl extends
     String fileName = "计划用水户撤销格式.xlsx";
     String templateName = "template/Revoca.xlsx";
     commonService.export(fileName, templateName, request, response, data);
+  }
+
+  @Override
+  public void exportQueryData(JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+
   }
 
   /**
