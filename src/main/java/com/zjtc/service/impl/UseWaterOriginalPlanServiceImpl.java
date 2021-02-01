@@ -739,6 +739,16 @@ public class UseWaterOriginalPlanServiceImpl extends
   @Override
   public void exportNewData(JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
+    List<UseWaterOriginalPlan> list = jsonObject.getJSONArray("data")
+        .toJavaList(UseWaterOriginalPlan.class);
+    Map<String, Object> data = new HashMap<>();
+    data.put("excelData", list);
+    data.put("nowDate", new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
+    String fileName = "新增户计划编制汇总.xlsx";
+    String templateName = "template/useWaterOriginalPlanOld.xlsx";
+    commonService.export(fileName, templateName, request, response, data);
   }
 
   private List<Map<String, Object>> initPlanOld(int year, String userType, String unitCodeStart,

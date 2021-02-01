@@ -333,4 +333,28 @@ public class UseWaterOriginalPlanController {
     }
     return apiResponse;
   }
+  @ResponseBody
+  @ApiOperation(value = "新户导出")
+  @RequestMapping(value = "exportNewData", method = RequestMethod.POST)
+  public ApiResponse exportNewData
+      (@ApiParam("{\n"
+          + "\"data\":[\"页面查询的数据集合\"]\n"
+          + "}") @RequestBody JSONObject jsonObject,
+          HttpServletRequest request,
+          HttpServletResponse response, @RequestHeader("token") String token) {
+    log.info("导出新户数据 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    User user = jwtUtil.getUserByToken(token);
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != user) {
+      try {
+        useWaterOriginalPlanService.exportNewData(jsonObject, request, response);
+      } catch (Exception e) {
+        log.error("导出新户数据错误,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
 }
