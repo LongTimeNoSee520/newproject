@@ -10,6 +10,7 @@ import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.JxlsUtils;
 import com.zjtc.mapper.UseWaterUnitMapper;
 import com.zjtc.model.Bank;
+import com.zjtc.model.Contacts;
 import com.zjtc.model.File;
 import com.zjtc.model.UseWaterQuota;
 import com.zjtc.model.UseWaterUnit;
@@ -17,6 +18,7 @@ import com.zjtc.model.UseWaterUnitMeter;
 import com.zjtc.model.UseWaterUnitRef;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterMonthUseData;
+import com.zjtc.model.vo.ExportQueryDataVo;
 import com.zjtc.model.vo.RefEditData;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.model.vo.UseWaterUnitVo;
@@ -456,7 +458,7 @@ public class UseWaterUnitServiceImpl extends
                   item.getId());
           item.setUseWaterUnitRefList(useWaterUnitRefList);
           //相关编号，用逗号隔开
-          String useWaterUnitIdRef ="";
+          String useWaterUnitIdRef = "";
           if (!useWaterUnitRefList.isEmpty()) {
             for (UseWaterUnitRefVo useWaterUnitRefVo : useWaterUnitRefList) {
               useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
@@ -660,6 +662,52 @@ public class UseWaterUnitServiceImpl extends
   @Override
   public void exportQueryData(JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
+    List<ExportQueryDataVo> param = jsonObject.getJSONArray("records")
+        .toJavaList(ExportQueryDataVo.class);
+    if (!param.isEmpty()) {
+      for (ExportQueryDataVo item : param) {
+        //是否是节水单位
+        if ("1".equals(item.getSaveUnitType())) {
+          item.setSaveUnitType("是");
+        } else {
+          item.setSaveUnitType("否");
+        }
+        //是否签约
+        if ("1".equals(item.getSigned())) {
+          item.setSigned("是");
+        } else {
+          item.setSigned("否");
+        }
+        //银行信息
+        if (!item.getBankList().isEmpty()) {
+          item.setPeopleBankPaySysNumber(item.getBankList().get(0).getPeopleBankPaySysNumber());
+          item.setAgreementNumber(item.getBankList().get(0).getAgreementNumber());
+          item.setEntrustUnitName(item.getBankList().get(0).getEntrustUnitName());
+        }
+        //联系人
+        if (!item.getContactsList().isEmpty()) {
+          for (int i = 0; i < item.getContactsList().size(); i++) {
+            if (i == 1) {
+              item.setContacts2(item.getContactsList().get(i).getContacts());
+              item.setPhoneNumber2(item.getContactsList().get(i).getPhoneNumber());
+              item.setMobileNumber2(item.getContactsList().get(i).getMobileNumber());
+              break;
+            }
+            item.setContacts1(item.getContactsList().get(i).getContacts());
+            item.setPhoneNumber1(item.getContactsList().get(i).getPhoneNumber());
+            item.setMobileNumber1(item.getContactsList().get(i).getMobileNumber());
+          }
+        }
+      }
+    }
+    Map<String, Object> data = new HashMap<>();
+    data.put("excelData", param);
+    data.put("nowDate", new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
+    String fileName = "用水户界面查询结果.xlsx";
+    String templateName = "template/useWaterUnitData.xlsx";
+    commonService.export(fileName, templateName, request, response, data);
 
   }
 

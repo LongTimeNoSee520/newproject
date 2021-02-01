@@ -24,9 +24,12 @@
     <result column="bank_of_deposit" property="bankOfDeposit" jdbcType="VARCHAR"/>
     <result column="bank_account" property="bankAccount" jdbcType="VARCHAR"/>
     <result column="signed" property="signed" jdbcType="VARCHAR"/>
+    <result column="unit_code_group" property="unitCodeGroup" jdbcType="VARCHAR"/>
+    <result column="unit_code_type" property="unitCodeType" jdbcType="VARCHAR"/>
     <result column="contacts" property="contacts" jdbcType="VARCHAR"/>
     <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
     <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
     <collection property="meterList" column="{id=id,nodeCode=node_code}"
       select="selectUseWaterUnitMeter"
       ofType="com.zjtc.model.WaterMonthUseData">
@@ -191,6 +194,7 @@
     a.id,
     a.node_code,
     a.unit_code,
+    a.unit_code_type,
     STUFF((
     SELECT ',' + water_meter_code
     FROM t_w_use_water_unit_meter

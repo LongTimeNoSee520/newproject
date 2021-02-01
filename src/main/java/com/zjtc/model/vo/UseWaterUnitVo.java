@@ -41,6 +41,10 @@ public class UseWaterUnitVo extends Model<UseWaterUnitVo> {
   @TableField(value = "unit_name", exist = false)
   private String unitName;
 
+  @ApiModelProperty(value = "水表档案号")
+  @TableField(value = "water_meter_code", exist = false)
+  private String waterMeterCode;
+
   @ApiModelProperty(value = "单位地址")
   @TableField(value = "unit_address", exist = false)
   private String unitAddress;
