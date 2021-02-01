@@ -13,10 +13,12 @@ import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterSelfDefinePlan;
 import com.zjtc.model.User;
 import com.zjtc.service.AlgorithmService;
+import com.zjtc.service.CommonService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.UseWaterOriginalPlanService;
 import com.zjtc.service.UseWaterPlanService;
 import com.zjtc.service.UseWaterSelfDefinePlanMapperService;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +26,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +51,8 @@ public class UseWaterOriginalPlanServiceImpl extends
   private UseWaterSelfDefinePlanMapperService useWaterSelfDefinePlanMapperService;
   @Autowired
   private MessageService messageService;
+  @Autowired
+  private CommonService commonService;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -711,6 +717,28 @@ public class UseWaterOriginalPlanServiceImpl extends
     wrapper.eq("planed", "0");
     wrapper.eq("node_code", nodeCode);
     return this.delete(wrapper);
+  }
+
+  @Override
+  public void exportOldData(JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    List<UseWaterOriginalPlan> list = jsonObject.getJSONArray("data")
+        .toJavaList(UseWaterOriginalPlan.class);
+    Calendar now = Calendar.getInstance();
+    int nowYear = now.get(Calendar.YEAR);
+    Map<String, Object> data = new HashMap<>();
+    data.put("excelData", list);
+    data.put("nowDate", new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
+    String fileName = nowYear+"年度计划编制汇总.xlsx";
+    String templateName = "template/useWaterOriginalPlanOld.xlsx";
+    commonService.export(fileName, templateName, request, response, data);
+  }
+
+  @Override
+  public void exportNewData(JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
   }
 
   private List<Map<String, Object>> initPlanOld(int year, String userType, String unitCodeStart,

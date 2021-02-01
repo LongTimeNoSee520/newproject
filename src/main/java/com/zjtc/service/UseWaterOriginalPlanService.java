@@ -1,5 +1,6 @@
 package com.zjtc.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
@@ -9,6 +10,9 @@ import com.zjtc.model.UseWaterOriginalPlan;
 import com.zjtc.model.User;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * UseWaterOriginalPlan的服务接口
@@ -95,4 +99,20 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	 * 算法调整后，删除所有未编制的数据
 	 * */
 	boolean  deleteAllNotplaned(String nodeCode);
+
+	/**
+	 * 导出老户数据
+	 * @param jsonObject
+	 * @param request
+	 * @param response
+	 */
+	void exportOldData(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+
+	/**
+	 * 导出新户数据
+	 * @param jsonObject
+	 * @param request
+	 * @param response
+	 */
+	void exportNewData(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 }

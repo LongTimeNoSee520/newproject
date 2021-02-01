@@ -8,9 +8,12 @@ import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.UseWaterOriginalPlan;
 import com.zjtc.model.User;
 import com.zjtc.service.UseWaterOriginalPlanService;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -302,6 +305,31 @@ public class UseWaterOriginalPlanController {
       }
     } else {
       apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "老户导出")
+  @RequestMapping(value = "exportOldData", method = RequestMethod.POST)
+  public ApiResponse exportOldData
+      (@ApiParam("{\n"
+          + "\"data\":[\"页面查询的数据集合\"]\n"
+          + "}") @RequestBody JSONObject jsonObject,
+          HttpServletRequest request,
+          HttpServletResponse response, @RequestHeader("token") String token) {
+    log.info("导出老户数据 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    User user = jwtUtil.getUserByToken(token);
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != user) {
+      try {
+        useWaterOriginalPlanService.exportOldData(jsonObject, request, response);
+      } catch (Exception e) {
+        log.error("导出老户数据错误,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
     }
     return apiResponse;
   }
