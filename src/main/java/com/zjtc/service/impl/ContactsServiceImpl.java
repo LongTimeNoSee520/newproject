@@ -90,4 +90,9 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
       return null;
     }
   }
+
+  @Override
+  public int selectMaxCount(List<String> useWaterUnitIds) {
+    return baseMapper.selectMaxCount(useWaterUnitIds);
+  }
 }

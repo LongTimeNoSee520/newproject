@@ -55,5 +55,11 @@ public interface WaterMonthUseDataService extends IService<WaterMonthUseData> {
    */
   List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCode);
 
+  /**
+   * 导出
+   * @param jsonObject
+   * @param request
+   * @param response
+   */
   void export(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 }

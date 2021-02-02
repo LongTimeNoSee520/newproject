@@ -8,6 +8,8 @@ import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * WaterUsePayInfo的服务接口
@@ -82,4 +84,20 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @param unitId 单位id
    */
   List<Map<String, Object>> ThreePayMess(String unitId);
+
+  /**
+   * 导出查询结果
+   * @param jsonObject
+   * @param request
+   * @param response
+   */
+  void exportQueryData(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+
+  /**
+   * 导出用户信息
+   * @param jsonObject
+   * @param request
+   * @param response
+   */
+  void exportUser(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 }

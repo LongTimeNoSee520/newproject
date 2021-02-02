@@ -101,4 +101,9 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
    * @return
    */
   List<Map<String,Object>> exportMoreAndLess(String nodeCode);
+  /**
+   * 单位id集合
+   * @param ids
+   */
+  List<Map<String,Object>> selectByIds(@Param("ids") List<String> ids);
 }

@@ -44,4 +44,11 @@ public interface ContactsService extends IService<Contacts> {
    * 通过发起人id查询其电话号码
    * */
   String selectByUserId(String operatorId);
+
+  /**
+   * 查询当前单位编号中联系人最多的条数
+   * @param useWaterUnitIds
+   * @return
+   */
+  int selectMaxCount(List<String> useWaterUnitIds);
 }

@@ -596,4 +596,45 @@
     ORDER BY
       a.deleted
   </select>
+
+  <select id="selectByIds" resultType="java.util.LinkedHashMap">
+    select
+    a.id,
+    a.unit_code as unitCode,
+    a.unit_name as unitName,
+    a.unit_address as unitAddress,
+    a.area_country as areaCountry,
+    [waterMeterCode] = STUFF(( SELECT ',' + [water_meter_code] from t_w_use_water_unit_meter  WHERE use_water_unit_id = a.id FOR XML PATH ( '' )), 1, 1, '' ),
+    a.responsibility_code as responsibilityCode,
+    a.save_unit_type as saveUnitType,
+    <!--是否签约，条件：绑定的银行账号都没有签约-->
+    case
+    (select max(signed) as signed from t_w_bank where deleted='0' and use_water_unit_id=a.id )
+    when '1' then '1'
+    when '0' then '0'
+    else '0'end as signed,
+    b.bank_of_deposit as bankOfDeposit,
+    b.bank_account as bankAccount,
+    a.zip_name as zipName,
+    a.zip_address as zipAddress,
+    a.invoice_unit_name as invoiceUnitName,
+    a.unit_code_type as unitCodeType,
+    a.department ,
+    a.abnormal_cause,
+    c.industry_name as industryName,
+    b.people_bank_pay_sys_number as peopleBankPaySysNumber,
+    b.agreement_number as agreementNumber,
+    b.entrust_unit_name as entrustUnitName,
+    b.focus_user_remark as focusUserRemark,
+    b.other_bank as otherBank
+    from (select *from t_w_use_water_unit where deleted='0') as a
+    left join (
+         SELECT use_water_unit_id,bank_of_deposit,bank_account,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank FROM t_w_bank WHERE deleted = '0' and main='1'
+    ) b ON b.use_water_unit_id = a.id
+    left join (select id,industry_name from t_w_quota_info where deleted='0') as c on c.id=a.industry
+    where a.id in
+    <foreach item="id" collection="ids" index="index" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>
 </mapper>

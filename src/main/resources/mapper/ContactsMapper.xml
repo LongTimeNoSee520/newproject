@@ -43,4 +43,16 @@
     FROM t_user
     WHERE id=#{operatorId}
   </select>
+  <select id="selectMaxCount" resultType="java.lang.Integer">
+  SELECT
+	max( t.num ) AS num
+  FROM
+	( SELECT count( 0 ) AS num FROM t_w_use_water_unit_contacts WHERE
+    use_water_unit_id IN
+    <foreach collection="useWaterUnitIds" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+	 GROUP BY use_water_unit_id
+	 ) t
+  </select>
 </mapper>

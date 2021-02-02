@@ -248,6 +248,18 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time",exist = true,fill = FieldFill.INSERT)
     private Date createTime;
+
+    @ApiModelProperty("缴费时间")
+    @TableField(exist = false)
+    private String countDate;
+
+    @ApiModelProperty("是否托收")
+    @TableField(exist = false)
+    private String isSigning;
+
+    @ApiModelProperty("银行代码")
+    @TableField(exist = false)
+    private String otherBank;
 	/**
 	 * 实例化
 	 */
