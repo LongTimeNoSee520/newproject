@@ -10,14 +10,20 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+
 import java.util.Map;
+
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlEngine;
+import org.jxls.area.Area;
+import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.Context;
 import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.Transformer;
 import org.jxls.transform.poi.PoiTransformer;
+import org.jxls.transform.poi.WritableCellValue;
 import org.jxls.util.JxlsHelper;
-
 public class JxlsUtils {
 
   static {
@@ -39,15 +45,24 @@ public class JxlsUtils {
     }
     JxlsHelper jxlsHelper = JxlsHelper.getInstance();
     Transformer transformer = jxlsHelper.createTransformer(is, os);
+    //Transformer transformer = TransformerFactory.createTransformer(is, os);
     //获得配置
     JexlExpressionEvaluator evaluator = (JexlExpressionEvaluator) transformer
         .getTransformationConfig().getExpressionEvaluator();
-    //设置静默模式，不报警告
+//    //设置静默模式，不报警告
 //    evaluator.getJexlEngine().setSilent(true);
 //    //函数强制，自定义功能
 //    Map<String, Object> funcs = new HashMap<String, Object>();
 //    funcs.put("jx", new JxlsUtils());    //添加自定义功能
 //    evaluator.getJexlEngine().setFunctions(funcs);
+    //函数强制，自定义功能
+    Map<String, Object> funcs = new HashMap<String, Object>();
+    funcs.put("utils", new JxlsUtils()); //添加自定义功能
+    JexlBuilder jb = new JexlBuilder();
+    jb.namespaces(funcs);
+    //jb.silent(true); //设置静默模式，不报警告
+    JexlEngine je = jb.create();
+    evaluator.setJexlEngine(je);
     //必须要这个，否者表格函数统计会错乱
     jxlsHelper.setUseFastFormulaProcessor(false).processTemplate(context, transformer);
   }
@@ -109,6 +124,11 @@ public class JxlsUtils {
       countMap.put(var, 1);
     }
     return 1;
+  }
+
+  //自定义背景色
+  public static WritableCellValue showColor(String value) {
+    return new ColorCellValue(value);
   }
 }
 
