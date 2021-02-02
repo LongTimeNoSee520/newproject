@@ -35,7 +35,7 @@ public class CommonServiceImpl implements CommonService{
   private String fileUploadPath;
 
   @Override
-  public void export(String fileName, String template, HttpServletRequest request,
+  public boolean export(String fileName, String template, HttpServletRequest request,
       HttpServletResponse response, Map<String, Object> data) {
     try {
       String saveFilePath =
@@ -53,9 +53,11 @@ public class CommonServiceImpl implements CommonService{
       boolean canDelFile = downloadSuccess && (getPath.exists() && getPath.isFile());
       if (canDelFile) {
         getPath.delete();
+        return true;
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
+    return false;
   }
 }

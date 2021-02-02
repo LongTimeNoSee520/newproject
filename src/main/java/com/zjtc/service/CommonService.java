@@ -20,6 +20,6 @@ public interface CommonService  {
    * @param response
    * @param data 数据
    */
-  void export(String fileName, String template, HttpServletRequest request,
+  boolean export(String fileName, String template, HttpServletRequest request,
       HttpServletResponse response, Map<String, Object> data);
 }

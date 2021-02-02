@@ -2,6 +2,7 @@ package com.zjtc.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnitMonitor;
+import com.zjtc.model.vo.UseWaterMonitorExportVO;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -22,4 +23,11 @@ public interface UseWaterUnitMonitorMapper extends BaseMapper<UseWaterUnitMonito
 
   void initNextYear(@Param("userId") String userId, @Param("nodeCode") String nodeCode,
       @Param("monitorType") String monitorType);
+
+  /**
+   * 查询导出的数据
+   * @param map
+   * @return
+   */
+  List <UseWaterMonitorExportVO> selectExportData(Map<String, Object> map);
 }

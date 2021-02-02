@@ -622,7 +622,10 @@ public class PlanDailyAdjustmentServiceImpl extends
 //    data.put("dateFormat", dateFmt);
     final String fileName = "计划户最新日常计划调整表.xls";
     final String template = "template/PlanUserLatestPlanAdjust.xls";
-    commonService.export(fileName,template,request,response,data);
+    boolean result = commonService.export(fileName,template,request,response,data);
+    if (!result){
+      apiResponse.recordError("导出出错");
+    }
     return apiResponse;
   }
 

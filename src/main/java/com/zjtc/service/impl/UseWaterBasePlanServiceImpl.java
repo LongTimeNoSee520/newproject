@@ -202,7 +202,10 @@ public class UseWaterBasePlanServiceImpl extends
     data.put("dateFormat", dateFmt);
     final String fileName = "计划用水基建计划.xls";
     final String template = "template/baseWaterPlan.xls";
-    commonService.export(fileName,template,request,response,data);
+    boolean result = commonService.export(fileName,template,request,response,data);
+    if (!result){
+      apiResponse.recordError("导出出错");
+    }
     return apiResponse;
   }
 }

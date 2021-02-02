@@ -2,10 +2,13 @@ package com.zjtc.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.IService;
+import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterUnitMonitor;
 import com.zjtc.model.User;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author lianghao
@@ -40,4 +43,15 @@ public interface UseWaterUnitMonitorService extends IService<UseWaterUnitMonitor
    * @return
    */
   void initNextYear(User user, String monitorType);
+
+  /**
+   * 用水单位监控数据导出
+   * @param user,jsonObject
+   * @param request
+   * @param response
+   * @return
+   */
+  ApiResponse export(User user, JSONObject jsonObject,
+      HttpServletRequest request,
+      HttpServletResponse response);
 }

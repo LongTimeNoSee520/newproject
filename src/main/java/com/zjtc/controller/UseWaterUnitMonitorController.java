@@ -13,6 +13,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,5 +149,35 @@ public class UseWaterUnitMonitorController {
         response.recordError(500);
       }
     return response;
+  }
+
+  @RequestMapping(value = "export", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "用水单位监控数据导出")
+  public ApiResponse export(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "  \"current\":\"当前页,数字\", \n"
+          + "  \"size\":\"每页条数,数字\" ,\n"
+          + "  \"unitName\":\"单位名称\",\n"
+          + "  \"unitCode\":\"单位编号\",\n"
+          + "  \"unitCodeType\":\"用户类型\",\n"
+          + "  \"year\":\"年份,数字\",\n"
+          + "  \"industryId\":\"行业类型id\",\n"
+          + "  \"monitorType\":\"监控类型:1重点,2节水型\"\n"
+          + "}") @RequestBody JSONObject jsonObject,HttpServletRequest request,
+      HttpServletResponse response) {
+    log.info("用水单位监控数据导出 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        User user = jwtUtil.getUserByToken(token);
+        apiResponse = useWaterUnitMonitorService.export(user, jsonObject,request,response);
+      } catch (Exception e) {
+        log.error("用水单位监控数据导出失败,errMsg==={}" + e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError("用水单位监控数据导出参数不能为空");
+    }
+    return apiResponse;
   }
 }

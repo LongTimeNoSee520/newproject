@@ -1,15 +1,13 @@
 package com.zjtc.base.util;
 
-import static org.apache.poi.ss.usermodel.IndexedColors.BLACK;
 
 import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.jxls.common.Context;
 import org.jxls.transform.poi.WritableCellValue;
 
@@ -23,10 +21,14 @@ public class ColorCellValue implements WritableCellValue {
 
   private String value;
 
+  public  WritableCellValue showColor(String value) {
+    return new ColorCellValue(value);
+  }
   public ColorCellValue(String value) {
     this.value = value;
   }
-
+  public ColorCellValue() {
+  }
   @Override
   public Object writeToCell(Cell cell, Context context) {
     Workbook workbook = cell.getSheet().getWorkbook();
@@ -46,6 +48,7 @@ public class ColorCellValue implements WritableCellValue {
     bgCell.setFont(font);
     /*填充：立体前景*/
     bgCell.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+    bgCell.setBorderBottom(BorderStyle.THIN);
     cell.setCellStyle(bgCell);
     cell.setCellValue(value);
     return cell;
