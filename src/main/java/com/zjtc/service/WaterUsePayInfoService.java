@@ -100,4 +100,12 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @param response
    */
   void exportUser(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+
+  /**
+   *导出计划用水户超计划情况汇总
+   * @param jsonObject
+   * @param request
+   * @param response
+   */
+  void exportPayInfo(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 }

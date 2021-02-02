@@ -354,4 +354,76 @@ public class WaterUsePayInfoController {
     }
     return apiResponse;
   }
+
+  @ResponseBody
+  @ApiOperation(value = "导出计划用水户超计划情况汇总表")
+  @RequestMapping(value = "exportPayInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse exportPayInfo(@RequestHeader("token") String token,
+      @RequestBody JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    log.info("缴费管理：导出计划用水户超计划情况汇总表， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user && null != jsonObject) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        waterUsePayInfoService.exportPayInfo(jsonObject, request, response);
+      } catch (Exception e) {
+        log.error("缴费管理：导出计划用水户超计划情况汇总表失败,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "导出本行托收数据")
+  @RequestMapping(value = "exportBankInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse exportBankInfo(@RequestHeader("token") String token,
+      @RequestBody JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    log.info("缴费管理：导出本行托收数据， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user && null != jsonObject) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        waterUsePayInfoService.exportUser(jsonObject, request, response);
+      } catch (Exception e) {
+        log.error("缴费管理：导出本行托收数据失败,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "导出他行托收数据")
+  @RequestMapping(value = "exportOtherBankInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse exportOtherBankInfo(@RequestHeader("token") String token,
+      @RequestBody JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    log.info("缴费管理：导出他行托收数据， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user && null != jsonObject) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        waterUsePayInfoService.exportUser(jsonObject, request, response);
+      } catch (Exception e) {
+        log.error("缴费管理：导出他行托收数据失败,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
 }

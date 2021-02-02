@@ -1,9 +1,6 @@
 package com.zjtc.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
@@ -11,16 +8,13 @@ import com.zjtc.base.util.DictUtils;
 import com.zjtc.mapper.UseWaterUnitMapper;
 import com.zjtc.mapper.WaterUsePayInfoMapper;
 import com.zjtc.model.Contacts;
-import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.RefundOrRefund;
-import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.UseWaterUnitInvoice;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.ContactsService;
-import com.zjtc.service.DictService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
@@ -28,9 +22,7 @@ import com.zjtc.service.RefundOrRefundService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterUnitInvoiceService;
 import com.zjtc.service.UseWaterUnitRefService;
-import com.zjtc.service.UseWaterUnitService;
 import com.zjtc.service.WaterUsePayInfoService;
-import io.swagger.annotations.ApiParam;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,8 +35,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.jxls.common.Context;
-import org.jxls.util.JxlsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -410,5 +400,31 @@ public class WaterUsePayInfoServiceImpl extends
 //    context.putVar("data", map);
     commonService.export(fileName, templateName, request, response, data);
 
+  }
+
+  @Override
+  public void exportPayInfo(JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response) {
+    String year = jsonObject.getString("year");
+    String quarter = jsonObject.getString("quarter");
+    List<Map> list = jsonObject.getJSONArray("data").toJavaList(Map.class);
+    Map<String, Object> data = new HashMap<>();
+    if (!list.isEmpty()) {
+      for (Map item : list) {
+        //缴费状态
+        if("1".equals(item.get("payStatus")) || "5".equals(item.get("payStatus"))){
+          item.put("payStatus","已缴费");
+        }else{
+          item.put("payStatus","未缴费");
+        }
+      }
+    }
+    data.put("excelData", list);
+    data.put("nowDate", new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
+    String fileName = year + "年" + quarter + "季度计划用水户超计划用水情况汇总表.xlsx";
+    String templateName = "template/payInfo.xlsx";
+    commonService.export(fileName, templateName, request, response, data);
   }
 }
