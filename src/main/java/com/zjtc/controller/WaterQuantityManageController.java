@@ -114,7 +114,7 @@ public class WaterQuantityManageController {
   @ApiOperation("合并")
   @RequestMapping(value = "merge", method = RequestMethod.POST)
   public ApiResponse merge(@RequestHeader("token") String token,
-      @Param("{ \"fileProcessId\":\"文件上传的UUID\"}")@RequestBody JSONObject jsonObject) {
+      @ApiParam("{ \"fileProcessId\":\"文件上传的UUID\"}")@RequestBody JSONObject jsonObject) {
     ApiResponse apiResponse = new ApiResponse();
     String fileProcessId = jsonObject.getString("fileProcessId");
   //  String fileName = jsonObject.getString("fileName");
@@ -123,7 +123,7 @@ public class WaterQuantityManageController {
       return apiResponse;
     }
     //获取用户信息
-    User user = jwtUtil.getUserByToken(token);
+  //  User user = jwtUtil.getUserByToken(token);
     //合并分片文件
     boolean result = waterQuantityManageService.merge(fileProcessId);
     if (!result) {
@@ -147,7 +147,7 @@ public class WaterQuantityManageController {
         String fileName = jsonObject.getString("fileName");
         response = waterQuantityManageService.checkAndInsertData(user,fileProcessId,fileName);
       } catch (Exception e) {
-        log.error("检查到错误:errMsg==={}" + e.getMessage());
+        log.error("数据检查/入库出错:errMsg==={}" + e.getMessage());
         response.recordError(500);
       }
     } else {

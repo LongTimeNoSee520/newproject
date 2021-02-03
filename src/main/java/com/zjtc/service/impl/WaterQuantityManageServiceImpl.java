@@ -259,7 +259,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     file1.setBusinessId(importLog.getId());
     file1.setCreaterId(user.getId());
     file1.setCreateTime(new Date());
-    file1.setFileName(fileProcessId + ".xlsx");
+    file1.setFileName(fileName);
     file1.setNodeCode(user.getNodeCode());
     file1.setFilePath(fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx");
     List<com.zjtc.model.File> files = new ArrayList<>();
