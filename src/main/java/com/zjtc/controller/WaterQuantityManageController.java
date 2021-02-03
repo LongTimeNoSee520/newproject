@@ -78,7 +78,8 @@ public class WaterQuantityManageController {
 
   @ApiOperation(value = "下载模板")
   @RequestMapping(value = "downloadTemplate", method = RequestMethod.GET)
-  public ApiResponse downloadTemplate(HttpServletResponse response, HttpServletRequest request) {
+  public ApiResponse downloadTemplate(@RequestHeader("token") String token,
+      HttpServletResponse response, HttpServletRequest request) {
     ApiResponse apiResponse = new ApiResponse();
     try {
       waterQuantityManageService.downloadTemplate(request, response);
