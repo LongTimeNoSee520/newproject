@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.CommonUtil;
 import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.FileUtil;
 import com.zjtc.mapper.UseWaterUnitMapper;
@@ -28,6 +29,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +43,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -312,31 +317,19 @@ public class WaterUsePayInfoServiceImpl extends
 
   @Override
   public void exportUser(JSONObject jsonObject, HttpServletRequest request,
-      HttpServletResponse response) {
+      HttpServletResponse response) throws IOException {
     String nodeCode = jsonObject.getString("nodeCode");
     String year = jsonObject.getString("year");
     String quarter = jsonObject.getString("quarter");
     //所有单位编号
-    List<String> unitCodeList = jsonObject.getJSONArray("useWaterUnitIds").toJavaList(String.class);
-    //根据单位编号查询单位信息
-    List<Map<String, Object>> map = useWaterUnitMapper.selectByIds(unitCodeList);
-    if (!map.isEmpty()) {
-      for (Map item : map) {
+    List<Map<String, Object>> list = baseMapper.selectUser(jsonObject);
+//    //根据单位编号查询单位信息
+//    List<Map<String, Object>> map = useWaterUnitMapper.selectByIds(unitCodeList);
+    if (!list.isEmpty()) {
+      for (Map item : list) {
         //所属区域
-        dictUtils.getDictItemName("area_country_code", item.get("areaCountry").toString(),
-            nodeCode);
-        //是否节水单位
-        if ("1".equals(item.get("saveUnitType").toString())) {
-          item.put("saveUnitType", "是");
-        } else {
-          item.put("saveUnitType", "否");
-        }
-        //是否签约
-        if ("1".equals(item.get("signed").toString())) {
-          item.put("signed", "是");
-        } else {
-          item.put("signed", "否");
-        }
+        item.put("areaCountryName", dictUtils
+            .getDictItemName("area_country_code", item.get("areaCountry").toString(), nodeCode));
         //查询相关编号
         List<String> idList = useWaterUnitRefService
             .findIdList(item.get("id").toString(), nodeCode);
@@ -356,47 +349,17 @@ public class WaterUsePayInfoServiceImpl extends
         item.put("useWaterUnitIdRef", useWaterUnitIdRef);
         //查询电话号码
         List<Contacts> contactsList = contactsService.queryByUnitId(item.get("id").toString());
-        if (contactsList.isEmpty()) {
+        if (!contactsList.isEmpty()) {
           for (int i = 0; i < contactsList.size(); i++) {
-            item.put("contacts" + i + 1, contactsList.get(i).getContacts());
-            item.put("mobileNumber" + i + 1, contactsList.get(i).getMobileNumber());
-            item.put("phoneNumber" + i + 1, contactsList.get(i).getPhoneNumber());
+            item.put("contacts" + (i + 1), contactsList.get(i).getContacts());
+            item.put("mobileNumber" + (i + 1), contactsList.get(i).getMobileNumber());
+            item.put("phoneNumber" + (i + 1), contactsList.get(i).getPhoneNumber());
           }
         }
       }
     }
-    String[] titleName = {"单位编号", "单位名称", "单位地址", "所属区域", "水表档案号", "责任书编号", "是否节水单位", "是否签约", "开户行",
-        "开户行账号", "法定代表人", "邮寄地址", "邮寄单位名称", "开票单位名称", "用户类型", "部门", "所属行业", "支付号", "协议号", "托收单位名称",
-        "集中户备注号", "银行代码", "相关编码", "异常原因备注"};
-    String filedStr = "unitCode,unitName,unitAddress,areaCounty,waterMeterCode,responsibilityCode,isSaveTypeUnit,isSigning,bankOfDeposit,bankAccount,legalRepresentative,zipAddress,zipUnitName,invoiceName,userType,department,industry,peopleBankPaySysNumber,agreementNumber,entrustUnitName,focusUserRemark,isOtherBank,useWaterUnitIdRef,industryName";
-    String[] titleFiled = filedStr.split(",");
-    //数组转集合
-    List<String> titleNameList = new ArrayList(Arrays.asList(titleName));
-    List<String> titleFiledList = new ArrayList(Arrays.asList(titleFiled));
-    //取用水户联系方式最多的条数
-    int maxCount = contactsService.selectMaxCount(unitCodeList);
-    if (maxCount > 0) {
-      for (int i = maxCount; i > 0; i--) {
-        titleNameList.add(7, "座机电话" + i);
-        titleNameList.add(7, "手机号码" + i);
-        titleNameList.add(7, "联系人" + i);
-        titleFiledList.add(7, "phoneNumber" + i);
-        titleFiledList.add(7, "mobileNumber" + i);
-        titleFiledList.add(7, "contactMan" + i);
-      }
-    }
-    List<Map<String, String>> titleList = new ArrayList<Map<String, String>>();
-    Map<String, String> titleMap = null;
-    for (int i = 0; i < titleFiledList.size(); i++) {
-      titleMap = new HashMap<String, String>();
-      titleMap.put(titleNameList.get(i), titleFiledList.get(i));
-      titleList.add(titleMap);
-    }
     Map<String, Object> data = new HashMap<>();
-    data.put("excelData", map);
-    data.put("titleNameList", titleNameList);
-    data.put("titleFiledList", titleFiledList);
-    data.put("titleMap", titleMap);
+    data.put("excelData", list);
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
@@ -405,9 +368,6 @@ public class WaterUsePayInfoServiceImpl extends
       fileName = year + "年加价用户信息.xlsx";
     }
     String templateName = "template/waterUsePayInfoUserData.xlsx";
-//    org.jxls.common.Context context = new Context();
-//    context.putVar("headers",titleFiledList);
-//    context.putVar("data", map);
     commonService.export(fileName, templateName, request, response, data);
 
   }
@@ -468,10 +428,10 @@ public class WaterUsePayInfoServiceImpl extends
     String fileName = year + "年" + quarter + "季度本行托收数据.txt";
     File file = new File(
         fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName);
-    FileOutputStream  fos = new FileOutputStream(file.getPath());
+    FileOutputStream fos = new FileOutputStream(file.getPath());
     fos.write(str.getBytes());//注意字符串编码
-    boolean result= FileUtil.writeBytes(file,fileName, request,response);
-    if(result){
+    boolean result = FileUtil.writeBytes(file, fileName, request, response);
+    if (result) {
       //删除文件
       file.delete();
     }
@@ -522,10 +482,10 @@ public class WaterUsePayInfoServiceImpl extends
     String fileName = year + "年" + quarter + "季度他行托收数据.txt";
     File file = new File(
         fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName);
-    FileOutputStream  fos = new FileOutputStream(file.getPath());
+    FileOutputStream fos = new FileOutputStream(file.getPath());
     fos.write(str.getBytes());//注意字符串编码
-    boolean result= FileUtil.writeBytes(file,fileName, request,response);
-    if(result){
+    boolean result = FileUtil.writeBytes(file, fileName, request, response);
+    if (result) {
       //删除文件
       file.delete();
     }

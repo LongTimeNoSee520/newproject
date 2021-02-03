@@ -786,4 +786,57 @@
 			and other_bank ='1'
 		) as b on a.use_water_unit_id=b.use_water_unit_id
 	</select>
+
+
+	<select id="selectUser" resultType="java.util.LinkedHashMap">
+	select
+	id,
+	unit_code  as unitCode,
+	unit_name as unitName,
+	unit_address as unitAddress,
+	area_country as areaCountry,
+	responsibility_code as responsibilityCode,
+	case
+	when save_unit_type='1' then '是'
+	when save_unit_type is null then '否'
+	when save_unit_type='0' then '否'
+	else '否' end as saveUnitType,
+	case
+	when signed='1' then '是'
+	when signed is null then '否'
+	when signed='0' then '否'
+	else '否' end as signed,
+	bank_of_deposit as  bankOfDeposit,
+	bank_account as bankAccount,
+	zip_address as zipAddress,
+	zip_name as zipName,
+	invoice_unit_name as invoiceUnitName,
+	unit_code_type as userType,
+	department,
+	industry_name=(select industry_name  from t_w_quota_info where id=t2.industry),
+	people_bank_pay_sys_number as peopleBankPaySysNumber,
+	agreement_number as agreementNumber,
+	focus_user_remark as focusUserRemark,
+	other_bank as  otherBank,
+	abnormal_cause as abnormalCause,
+	STUFF((
+	SELECT ',' + [water_meter_code]
+	FROM t_w_use_water_unit_meter
+	WHERE use_water_unit_id=t2.id
+	FOR XML PATH('')), 1, 1, ''
+	) as waterMeterCode
+	from (
+	select use_water_unit_id
+	from t_w_water_use_pay_info
+	where 1=1
+		<if test="null !=year">
+			 and count_year=#{year}
+		</if>
+		<if test="null !=quarter">
+		   and count_quarter=#{quarter}
+		</if>
+	) t1
+	inner join (select id,unit_code,unit_name,unit_address,area_country,responsibility_code,save_unit_type,zip_address,zip_name,invoice_unit_name,unit_code_type,industry,department,abnormal_cause from t_w_use_water_unit where deleted='0' and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId}))t2 on t2.id=t1.use_water_unit_id
+	LEFT JOIN ( SELECT use_water_unit_id,signed,bank_of_deposit,bank_account,people_bank_pay_sys_number,agreement_number,focus_user_remark,other_bank FROM t_w_bank WHERE main = '1' AND deleted = '0' ) t3 ON t3.use_water_unit_id = t2.id
+	</select>
 </mapper>
