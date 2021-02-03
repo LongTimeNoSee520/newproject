@@ -73,18 +73,6 @@ public class UseWaterUnitVo extends Model<UseWaterUnitVo> {
   @TableField(value = "save_unit_type", exist = false)
   private String saveUnitType;
 
-  @ApiModelProperty(value = "是否已删除,0：否，1：是")
-  @TableField(value = "deleted", exist = false)
-  private String deleted;
-
-  @ApiModelProperty(value = "删除时间")
-  @TableField(value = "delete_time", exist = false)
-  private Date deleteTime;
-
-  @ApiModelProperty(value = "创建时间")
-  @TableField(value = "create_time", exist = false)
-  private Date createTime;
-
   @ApiModelProperty(value = "gisX")
   @TableField(value = "gisX", exist = false)
   private Double gisX;
@@ -132,6 +120,50 @@ public class UseWaterUnitVo extends Model<UseWaterUnitVo> {
   @TableField(value = "unit_code_type", exist = false)
   private String unitCodeType;
 
+  @ApiModelProperty(value = "开户行名称")
+  @TableField(value = "bank_of_deposit", exist = false)
+  private String bankOfDeposit;
+
+  @ApiModelProperty(value = "银行帐号")
+  @TableField(value = "bank_account", exist = false)
+  private String bankAccount;
+
+  @ApiModelProperty(value = "是否签约")
+  @TableField(value = "signed", exist = false)
+  private String signed;
+
+  @ApiModelProperty(value = "联系人")
+  @TableField(value = "contacts", exist = false)
+  private String  contacts;
+
+  @ApiModelProperty(value = "手机号")
+  @TableField(value = "mobile_number", exist = false)
+  private String  mobileNumber;
+
+  @ApiModelProperty(value = "座机号")
+  @TableField(value = "phone_number", exist = false)
+  private String  phoneNumber;
+
+  @ApiModelProperty(value = "开户行号")
+  @TableField( exist = false)
+  private String  peopleBankPaySysNumber;
+
+  @ApiModelProperty(value = "协议号")
+  @TableField( exist = false)
+  private String  agreementNumber;
+
+  @ApiModelProperty(value = "托收单位名称")
+  @TableField( exist = false)
+  private String  entrustUnitName;
+
+  @ApiModelProperty(value = "集中号备注")
+  @TableField( exist = false)
+  private String  focusUserRemark;
+
+  @ApiModelProperty(value = "银行代码")
+  @TableField( exist = false)
+  private String  otherBank;
+
   @ApiModelProperty(value = "水表信息")
   @TableField(exist = false)
   private List<UseWaterUnitMeter> meterList;
@@ -167,30 +199,6 @@ public class UseWaterUnitVo extends Model<UseWaterUnitVo> {
   @ApiModelProperty(value = "单位名称修改日志")
   @TableField(exist = false)
   private List<UseWaterUnitModify> ModifyList;
-
-  @ApiModelProperty(value = "开户行名称")
-  @TableField(value = "bank_of_deposit", exist = false)
-  private String bankOfDeposit;
-
-  @ApiModelProperty(value = "银行帐号")
-  @TableField(value = "bank_account", exist = false)
-  private String bankAccount;
-
-  @ApiModelProperty(value = "是否签约")
-  @TableField(value = "signed", exist = false)
-  private String signed;
-
-  @ApiModelProperty(value = "联系人")
-  @TableField(value = "contacts", exist = false)
-  private String  contacts;
-
-  @ApiModelProperty(value = "手机号")
-  @TableField(value = "mobile_number", exist = false)
-  private String  mobileNumber;
-
-  @ApiModelProperty(value = "座机号")
-  @TableField(value = "phone_number", exist = false)
-  private String  phoneNumber;
 
   @Override
   protected Serializable pkVal() {

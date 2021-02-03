@@ -77,7 +77,7 @@ public class UseWaterUnitController {
           + "            \"focusUserRemark\":\"集中户备注\",\n"
           + "            \"main\":\"是否是主账号：0否，1是\",\n"
           + "            \"otherBank\":\"银行代码\",\n"
-          + "            \"signed\":\"是否签约，0否，1是\"，\n"
+          + "            \"signed\":\"是否签约，0否，1是\"\n"
           + "        }\n"
           + "    ],\n"
           + "    \"contactsList\":[\n"
@@ -91,10 +91,10 @@ public class UseWaterUnitController {
           + "    \"quotaFile\":[\n"
           + "        {\n"
           + "            \"industry\":\"所属行业id\",\n"
-          + "            \"sub_industry\":\"行业id\",\n"
+          + "            \"subIndustry\":\"行业id\",\n"
           + "            \"product\":\"产品id\",\n"
-          + "            \"quota_unit\":\"定额单位\",\n"
-          + "            \"quota_value\":\"定额值\",\n"
+          + "            \"quotaUnit\":\"定额单位\",\n"
+          + "            \"quotaValue\":\"定额值\",\n"
           + "            \"amount\":\"数量\"\n"
           + "        }\n"
           + "    ],\n"
@@ -102,8 +102,6 @@ public class UseWaterUnitController {
           + "    \"sysFile\":[\n"
           + "        {\n"
           + "            \"id\":\"附件id\",\n"
-          + "            \"fileType\":\"文件类型\",\n"
-          + "            \"size\":\"大小\",\n"
           + "            \"filePath\":\"文件保存路径\",\n"
           + "            \"fileName\":\"文件名称\",\n"
           + "            \"deleted\":\"是否删除，0否，1是\"\n"
@@ -163,9 +161,9 @@ public class UseWaterUnitController {
           + "            \"agreementNumber\":\"协议号\",\n"
           + "            \"entrustUnitName\":\"托收单位名称\",\n"
           + "            \"focusUserRemark\":\"集中户备注\",\n"
-          + "            \"main\":\"是否是主账号：0否，1是\",\n"
+          + "            \"main\":\"是否是主账号：0否，1是,3撤销\",\n"
           + "            \"otherBank\":\"银行代码\",\n"
-          + "            \"signed\":\"是否签约，0否，1是\",\n"
+          + "            \"signed\":\"是否签约，0否，1是\"\n"
           + "        }\n"
           + "    ],\n"
           + "    \"contactsList\":[\n"
@@ -179,10 +177,10 @@ public class UseWaterUnitController {
           + "    \"quotaFile\":[\n"
           + "        {\n"
           + "            \"industry\":\"所属行业id\",\n"
-          + "            \"sub_industry\":\"行业id\",\n"
+          + "            \"subIndustry\":\"行业id\",\n"
           + "            \"product\":\"产品id\",\n"
-          + "            \"quota_unit\":\"定额单位\",\n"
-          + "            \"quota_value\":\"定额值\",\n"
+          + "            \"quotaUnit\":\"定额单位\",\n"
+          + "            \"quotaValue\":\"定额值\",\n"
           + "            \"amount\":\"数量\"\n"
           + "        }\n"
           + "    ],\n"
@@ -462,12 +460,11 @@ public class UseWaterUnitController {
   public ApiResponse exportQueryData
       (
           @ApiParam("{\n"
-              + "  \"startTime\":\"开始时间：yyyy-MM-dd\",\n"
-              + "  \"endTime\":\"结束时间：yyyy-MM-dd\"\n"
+              + "\"data\":[分页查询结果records下所有数据]\n"
               + "}") @RequestBody JSONObject jsonObject,
           HttpServletRequest request,
           HttpServletResponse response, @RequestHeader("token") String token) {
-    log.info("导出撤销格式 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    log.info("导出查询结果 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     User user = jwtUtil.getUserByToken(token);
     ApiResponse apiResponse = new ApiResponse();
     if (null != user) {
@@ -475,7 +472,7 @@ public class UseWaterUnitController {
         jsonObject.put("nodeCode", user.getNodeCode());
         useWaterUnitService.exportQueryData(jsonObject, request, response);
       } catch (Exception e) {
-        log.error("导出撤销格式错误,errMsg==={}", e.getMessage());
+        log.error("导出查询结果错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
       }
     } else {
@@ -491,7 +488,7 @@ public class UseWaterUnitController {
       (@RequestBody JSONObject jsonObject,
           HttpServletRequest request,
           HttpServletResponse response, @RequestHeader("token") String token) {
-    log.info("导出撤销格式 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    log.info("导出用水单位增减情况 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     User user = jwtUtil.getUserByToken(token);
     ApiResponse apiResponse = new ApiResponse();
     if (null != user) {
@@ -499,7 +496,7 @@ public class UseWaterUnitController {
         jsonObject.put("nodeCode", user.getNodeCode());
         useWaterUnitService.exportMoreAndLess(jsonObject, request, response);
       } catch (Exception e) {
-        log.error("导出撤销格式错误,errMsg==={}", e.getMessage());
+        log.error("导出用水单位增减情况错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
       }
     } else {

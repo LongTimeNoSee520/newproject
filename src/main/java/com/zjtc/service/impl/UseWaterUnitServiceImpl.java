@@ -212,8 +212,7 @@ public class UseWaterUnitServiceImpl extends
           .maxUnitCode(entity.getUnitCode(), entity.getId(), user.getNodeCode());
       maxCount = craeatRank(maxCount);
       apiResponse.setData(maxCount);
-      return apiResponse;
-    }
+      return apiResponse;    }
     /*********************************************************/
     /**1.修改数据*/
     /**1.1 修改用水单位信息*/
@@ -221,6 +220,10 @@ public class UseWaterUnitServiceImpl extends
     entity.setUnitCodeGroup(entity.getUnitCode().substring(2, 4));
     //类型
     entity.setUnitCodeType(entity.getUnitCode().substring(4, 6));
+    /**判断名称是否被修改，新增单位名称修改日志信息数据*/
+    useWaterUnitModifyService
+        .insertUnitName(entity.getId(), user.getNodeCode(), entity.getUnitName(),
+            user.getUsername(), user.getId());
     this.updateById(entity);
     /**1.2选择主户*/
     String userWaterUnitId = entity.getUseWaterUnitIdRef(); //选择的主户
@@ -318,10 +321,6 @@ public class UseWaterUnitServiceImpl extends
           .add(entity.getQuotaFile(), entity.getId(), user.getNodeCode());
     }
 
-    /**1.9.判断名称是否被修改，新增单位名称修改日志信息数据*/
-    useWaterUnitModifyService
-        .insertUnitName(entity.getId(), user.getNodeCode(), entity.getUnitName(),
-            user.getUsername(), user.getId());
     /************************************************************************/
     /*****************************关联修改************************************/
     /************************************************************************/
@@ -464,7 +463,9 @@ public class UseWaterUnitServiceImpl extends
               useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
             }
           }
-          item.setUseWaterUnitIdRef(useWaterUnitIdRef.substring(0, useWaterUnitIdRef.length() - 1));
+          if(useWaterUnitIdRef.length()>0){
+            item.setUseWaterUnitIdRef(useWaterUnitIdRef.substring(0, useWaterUnitIdRef.length() - 1));
+          }
         }
         //查询所属区域
         item.setAreaCountryName(
@@ -662,52 +663,41 @@ public class UseWaterUnitServiceImpl extends
   @Override
   public void exportQueryData(JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
-    List<ExportQueryDataVo> param = jsonObject.getJSONArray("records")
-        .toJavaList(ExportQueryDataVo.class);
-    if (!param.isEmpty()) {
-      for (ExportQueryDataVo item : param) {
+    List<Map> map = jsonObject.getJSONArray("data")
+        .toJavaList(Map.class);
+    if (!map.isEmpty()) {
+      for (Map item : map) {
         //是否是节水单位
-        if ("1".equals(item.getSaveUnitType())) {
-          item.setSaveUnitType("是");
+        if ("1".equals(item.get("saveUnitType"))) {
+          item.put("saveUnitType","是");
         } else {
-          item.setSaveUnitType("否");
+          item.put("saveUnitType","否");
         }
         //是否签约
-        if ("1".equals(item.getSigned())) {
-          item.setSigned("是");
+        if ("1".equals(item.get("signed"))) {
+          item.put("signed","是");
         } else {
-          item.setSigned("否");
+          item.put("signed","否");
         }
-        //银行信息
-        if (!item.getBankList().isEmpty()) {
-          item.setPeopleBankPaySysNumber(item.getBankList().get(0).getPeopleBankPaySysNumber());
-          item.setAgreementNumber(item.getBankList().get(0).getAgreementNumber());
-          item.setEntrustUnitName(item.getBankList().get(0).getEntrustUnitName());
-        }
-        //联系人
-        if (!item.getContactsList().isEmpty()) {
-          for (int i = 0; i < item.getContactsList().size(); i++) {
-            if (i == 1) {
-              item.setContacts2(item.getContactsList().get(i).getContacts());
-              item.setPhoneNumber2(item.getContactsList().get(i).getPhoneNumber());
-              item.setMobileNumber2(item.getContactsList().get(i).getMobileNumber());
-              break;
-            }
-            item.setContacts1(item.getContactsList().get(i).getContacts());
-            item.setPhoneNumber1(item.getContactsList().get(i).getPhoneNumber());
-            item.setMobileNumber1(item.getContactsList().get(i).getMobileNumber());
+        //查询电话号码
+        List<Contacts> contactsList = contactsService.queryByUnitId(item.get("id").toString());
+        if (!contactsList.isEmpty()) {
+          for (int i = 0; i < contactsList.size(); i++) {
+            item.put("contacts" + (i + 1), contactsList.get(i).getContacts());
+            item.put("mobileNumber" + (i + 1), contactsList.get(i).getMobileNumber());
+            item.put("phoneNumber" + (i + 1), contactsList.get(i).getPhoneNumber());
           }
         }
       }
     }
-    Map<String, Object> data = new HashMap<>();
-    data.put("excelData", param);
-    data.put("nowDate", new Date());
-    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
-    data.put("dateFormat", dateFmt);
-    String fileName = "用水户界面查询结果.xlsx";
-    String templateName = "template/useWaterUnitData.xlsx";
-    commonService.export(fileName, templateName, request, response, data);
+      Map<String, Object> data = new HashMap<>();
+      data.put("excelData", map);
+      data.put("nowDate", new Date());
+      SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+      data.put("dateFormat", dateFmt);
+      String fileName = "用水户界面查询结果.xlsx";
+      String templateName = "template/useWaterUnitData.xlsx";
+      commonService.export(fileName, templateName, request, response, data);
 
   }
 

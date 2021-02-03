@@ -8,6 +8,7 @@
     <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
     <result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
     <result column="industry" property="industry" jdbcType="VARCHAR"/>
+    <result column="industryName" property="industryName" jdbcType="VARCHAR"/>
     <result column="zip_name" property="zipName" jdbcType="VARCHAR"/>
     <result column="zip_address" property="zipAddress" jdbcType="VARCHAR"/>
     <result column="invoice_unit_name" property="invoiceUnitName" jdbcType="VARCHAR"/>
@@ -30,6 +31,11 @@
     <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
     <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
     <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="peopleBankPaySysNumber" property="peopleBankPaySysNumber" jdbcType="VARCHAR"/>
+    <result column="entrustUnitName" property="entrustUnitName" jdbcType="VARCHAR"/>
+    <result column="agreementNumber" property="agreementNumber" jdbcType="VARCHAR"/>
+    <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
+    <result column="other_bank" property="otherBank" jdbcType="VARCHAR"/>
     <collection property="meterList" column="{id=id,nodeCode=node_code}"
       select="selectUseWaterUnitMeter"
       ofType="com.zjtc.model.WaterMonthUseData">
@@ -195,6 +201,7 @@
     a.node_code,
     a.unit_code,
     a.unit_code_type,
+    a.unit_code_group,
     STUFF((
     SELECT ',' + water_meter_code
     FROM t_w_use_water_unit_meter
@@ -205,15 +212,11 @@
     a.responsibility_code,
     a.unit_name,
     a.industry,
+    industryName=(select industry_name from t_w_quota_info where id=a.industry),
     b.contacts,
     b.mobile_number,
     b.phone_number,
     save_unit_type,
-    case
-    (select max(signed) as signed from t_w_bank where deleted='0' and use_water_unit_id=a.id )
-    when '1' then '1'
-    when '0' then '0'
-    else '0'end as signed,
     unit_address,
     zip_name,
     zip_address,
@@ -225,8 +228,18 @@
     imain,
     abnormal ,
     abnormal_cause,
+    case signed
+    when '1' then '1'
+    when '0' then '0'
+    else '0'end as signed,
     bank_of_deposit,
-    bank_account
+    bank_account,
+    responsibility_code as responsibilityCode,
+    people_bank_pay_sys_number as peopleBankPaySysNumber,
+    agreement_number as agreementNumber,
+    entrust_unit_name as entrustUnitName,
+    focus_user_remark,
+    other_bank
     FROM
     t_w_use_water_unit as a
     <!--关联用水单位联系人联系人-->
@@ -240,7 +253,7 @@
     ) as b on a.id =b.use_water_unit_id
     <!--关联银行表取主户数据-->
     left join (
-      select use_water_unit_Id,bank_of_deposit,bank_account from t_w_bank where deleted='0' and main='1'
+      select use_water_unit_Id,bank_of_deposit,bank_account,signed,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank from t_w_bank where deleted='0' and main='1'
     ) as c on c.use_water_unit_Id=a.id
     WHERE
     a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
@@ -391,25 +404,25 @@
     and node_code=#{nodeCode}
   </select>
   <select id="selectUseWaterUnitMeter" resultMap="WaterMonthUseDataModel">
-    SELECT
-    id,
-    use_water_unit_id,
-    use_year,
-    water_meter_code,
-    now_price,
-    node_code,
-    is_warning,
-    caliber,
-    sector,
-    ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + october_count + november_count + december_count ) AS waterNumber
-    FROM
-    t_w_water_month_use_data
-    WHERE
-    node_code = #{nodeCode}
-      AND use_water_unit_id = #{id}
-    AND use_year = DateName(YEAR,GetDate())
-    ORDER BY
-    waterNumber DESC;
+      SELECT
+      id,
+      use_water_unit_id,
+      use_year,
+      water_meter_code,
+      now_price,
+      node_code,
+      is_warning,
+      caliber,
+      sector,
+      ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + october_count + november_count + december_count ) AS waterNumber
+      FROM
+      t_w_water_month_use_data
+      WHERE
+      node_code = #{nodeCode}
+        AND use_water_unit_id = #{id}
+      AND use_year = DateName(YEAR,GetDate())
+      ORDER BY
+      waterNumber DESC;
   </select>
   <select id="selectBank" resultMap="bankMapper">
     select *
