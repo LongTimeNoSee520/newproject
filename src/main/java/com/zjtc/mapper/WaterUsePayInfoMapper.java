@@ -58,4 +58,10 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
   List<Map<String, Object>> findPayBefor(@Param("unitId") String unitId);
 
   List<Map<String, Object>> ThreePayMess(@Param("year") Integer year,@Param("unitId") String unitId);
+
+  List<Map<String,Object>> exportPayInfo(JSONObject jsonObject);
+
+  List<Map<String,Object>> exportBankInfo(JSONObject jsonObject);
+
+  List<Map<String,Object>> exportOtherBankInfo(JSONObject jsonObject);
 }

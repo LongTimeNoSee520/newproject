@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
+import io.swagger.annotations.Api;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -108,4 +111,22 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @param response
    */
   void exportPayInfo(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+
+  /**
+   * 导出本行数据
+   * @param jsonObject
+   * @param request
+   * @param response
+   */
+  ApiResponse exportBankInfo(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
+      throws IOException;
+
+  /**
+   * 导出他行数据
+   * @param jsonObject
+   * @param request
+   * @param response
+   */
+  ApiResponse exportOtherBankInfo(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
+      throws IOException;
 }

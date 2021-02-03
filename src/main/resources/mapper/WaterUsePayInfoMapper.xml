@@ -682,4 +682,108 @@
 		order by year
 			;
 	</select>
+
+	<select id="exportPayInfo" resultType="java.util.LinkedHashMap">
+		select
+		unit_name as unitName,
+		price as price,
+		year_plan as yearPlan,
+		quarter_plan as quarterPlan,
+		water_num1 as waterNum1,
+		water_num2 as waterNum2,
+		water_num3 as waterNum3,
+		water_num_amount as waterNumAmount,
+		exceed_water as exceedWater,
+		pay_ratio as payRatio,
+		multiple,
+		actual_multiple AS actualMultiple,
+		amount_receivable AS amountReceivable,
+		actual_amount AS actualAmount,
+		<!--托收缴费状态，满足pay_status=1 -->
+		case pay_status
+		when '1' then '已缴费'
+		when '5' then '已缴费'
+		else '未缴费' end as payStatus,
+		entrusted,
+		t4.other_bank AS otherBank,
+		t4.bank_of_deposit as bankOfDeposit,
+		t4.bank_account as bankAccount,
+		<!--是否签约，条件：绑定的银行账号都没有签约-->
+		case
+		when t4.signed is null then '0'
+		else '1' end signed
+		from
+		t_w_water_use_pay_info as t1
+		LEFT JOIN ( SELECT * FROM t_w_bank WHERE deleted = '0' and signed='1') t4 ON t4.use_water_unit_id = t1.use_water_unit_id
+		where
+		count_year=#{year}
+		and count_quarter=#{quarter}
+	</select>
+
+	<select id="exportBankInfo" resultType="java.util.LinkedHashMap">
+		select
+		unit_code as unitCode,
+		agreement_number as agreementNumber,
+		bank_of_deposit as bankOfDeposit,
+		bank_account as bankAccount,
+		case
+    when entrust_unit_name is null then a.unit_name
+    when entrust_unit_name='' then a.unit_name
+    else entrust_unit_name end as entrustUnitName,
+    actual_amount as actualAmount,
+		remark = CAST(count_year as VARCHAR(10)) +'年' + count_quarter + '季度加价水费 ' +focus_user_remark
+		from
+		(
+			select
+			*
+			from
+			t_w_water_use_pay_info as t1
+			where
+			entrusted='1'
+			and count_year=#{year}
+			and count_quarter=#{quarter}
+		) as a
+		left join
+		(
+			select
+			*
+			from t_w_bank
+			where signed='1'
+			and other_bank='1'
+		) as b on a.use_water_unit_id=b.use_water_unit_id
+	</select>
+
+	<select id="exportOtherBankInfo" resultType="java.util.LinkedHashMap">
+		select
+		unit_code as unitCode,
+		agreement_number as agreementNumber,
+		bank_of_deposit as bankOfDeposit,
+		bank_account as bankAccount,
+		case
+    when entrust_unit_name is null then a.unit_name
+    when entrust_unit_name='' then a.unit_name
+    else entrust_unit_name end as entrustUnitName,
+    actual_amount as actualAmount,
+    signed,
+		remark = CAST(count_year as VARCHAR(10)) +'年' + count_quarter + '季度加价水费 ' +focus_user_remark
+		from
+		(
+			select
+			*
+			from
+			t_w_water_use_pay_info as t1
+			where
+			entrusted !='1'
+			and count_year=#{year}
+			and count_quarter=#{quarter}
+		) as a
+		left join
+		(
+			select
+			*
+			from t_w_bank
+			where signed='1'
+			and other_bank ='1'
+		) as b on a.use_water_unit_id=b.use_water_unit_id
+	</select>
 </mapper>

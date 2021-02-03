@@ -358,10 +358,14 @@ public class WaterUsePayInfoController {
   @ResponseBody
   @ApiOperation(value = "导出计划用水户超计划情况汇总表")
   @RequestMapping(value = "exportPayInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse exportPayInfo(@RequestHeader("token") String token,
+  public ApiResponse exportPayInfo(@ApiParam("{\n"
+      + "        \"year\":\"年份\",\n"
+      + "       \"quarter\":\"季度\"\n"
+      + "}") @RequestHeader("token") String token,
       @RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
-    log.info("缴费管理：导出计划用水户超计划情况汇总表， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    log.info(
+        "缴费管理：导出计划用水户超计划情况汇总表， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     if (null != user && null != jsonObject) {
@@ -392,7 +396,10 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        waterUsePayInfoService.exportUser(jsonObject, request, response);
+        ApiResponse result = waterUsePayInfoService.exportBankInfo(jsonObject, request, response);
+        if (result.getCode() == 500) {
+          return result;
+        }
       } catch (Exception e) {
         log.error("缴费管理：导出本行托收数据失败,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -416,9 +423,14 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        waterUsePayInfoService.exportUser(jsonObject, request, response);
+        ApiResponse result = waterUsePayInfoService
+            .exportOtherBankInfo(jsonObject, request, response);
+        if (500 == result.getCode()) {
+          return result;
+        }
       } catch (Exception e) {
         log.error("缴费管理：导出他行托收数据失败,errMsg==={}", e.getMessage());
+        e.printStackTrace();
         apiResponse.recordError(500);
       }
     } else {
