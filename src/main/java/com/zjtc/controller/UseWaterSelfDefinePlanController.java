@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("tWUseWaterSelfDefinePlan/")
-@Api("用水自平计划表服务")
+@Api("自平计划管理")
 @Slf4j
 public class UseWaterSelfDefinePlanController {
 
@@ -47,7 +47,7 @@ public class UseWaterSelfDefinePlanController {
       + "    \"unitName\":\"单位名称\",\n"
       + "    \"userType\":\"用户类型(截取的是3-4位)\",\n"
       + "    \"areaCode\":\"编号开头\",\n"
-      + "    \"beginYear\":\"是开始年份\",\n"
+      + "    \"beginYear\":\"开始年份\",\n"
       + "    \"endYear\":\"结束年份\",\n"
       + "    \"auditStatus\":\"是否审核(0:未审核,2:已审核)\",\n"
       + "    \"executed\":\"是否执行(0:未执行,1:已执行)\"\n"
@@ -81,7 +81,7 @@ public class UseWaterSelfDefinePlanController {
   @RequestMapping(value = "audit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse audit(@RequestHeader("token") String token,
       @ApiParam("{\n"
-          + " \"id\":\"审核id\",\"auditStatus\":\"审核结果(1:不同意,2:同意)\",\"auditResult\":\"审核条件\"\n"
+          + " \"id\":\"审核id\",\"auditStatus\":\"审核结果(1:不同意,2:同意)\",\"auditResult\":\"原因\"\n"
           + "}")
       @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();

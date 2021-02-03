@@ -129,7 +129,7 @@ public class FinanceController {
     return response;
   }
 
-  @RequestMapping(value = "queryPageFinance", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("加价费用管理分页查询")
   public ApiResponse queryPage(@ApiParam("{\n"
       + "    \"current\":\"页数\",\n"

@@ -47,8 +47,13 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String loginId) {
     ApiResponse response = new ApiResponse();
     Map<String, Object> map = new LinkedHashMap<>(10);
+
     if (StringUtils.isBlank(nodeCode) || StringUtils.isBlank(loginId)) {
       response.recordError("系统异常");
+      return response;
+    }
+    if (null == jsonObject.getInteger("current") || null == jsonObject.getInteger("size")) {
+      response.recordError("分页查询条数和页数不能为空");
       return response;
     }
 //    页数
@@ -72,12 +77,12 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
     }
 //    总条数
     Integer total = waterUnitAssessMapper
-        .selectCount(unitName, beginYear, endYear, nodeCode, loginId,null);
+        .selectCount(unitName, beginYear, endYear, nodeCode, loginId, null);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<WaterUnitAssessVO> waterUnitAssessVOS = waterUnitAssessMapper
-        .queryList(currPage, pageSize, unitName, beginYear, endYear, nodeCode, loginId,null);
+        .queryList(currPage, pageSize, unitName, beginYear, endYear, nodeCode, loginId, null);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -107,19 +112,21 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
 //      endYear = jsonObject.getInteger("endYear");
 //    }
     Integer integer = this.waterUnitAssessMapper
-        .selectCount(unitName, null, null, user.getNodeCode(), user.getId(),planYear);
+        .selectCount(unitName, null, null, user.getNodeCode(), user.getId(), planYear);
     List<WaterUnitAssessVO> waterUnitAssess = this.waterUnitAssessMapper
-        .queryList(1, integer + 1, unitName, null, null, user.getNodeCode(), user.getId(),planYear);
+        .queryList(1, integer + 1, unitName, null, null, user.getNodeCode(), user.getId(),
+            planYear);
     Map<String, Object> data = new HashMap<>(16);
     data.put("waterUnitAssess", waterUnitAssess);
-    data.put("nowDate",new Date());
+    data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
     try {
       String fileName = "计划户用水单位考核表.xlsx";
       String saveFilePath =
           fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName;
-      InputStream inputStream = getClass().getClassLoader().getResourceAsStream("template/PlanUserExamInfo.xlsx");
+      InputStream inputStream = getClass().getClassLoader()
+          .getResourceAsStream("template/PlanUserExamInfo.xlsx");
       OutputStream os = new FileOutputStream(saveFilePath);
       JxlsUtils.exportExcel(inputStream, os, data);
       os.close();
@@ -130,7 +137,7 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
         getPath.delete();
       }
     } catch (Exception e) {
-      log.error("用水单位考核导出异常:"+e.getMessage());
+      log.error("用水单位考核导出异常:" + e.getMessage());
     }
   }
 }

@@ -41,7 +41,7 @@ public class UseWaterPlanAddWXController {
       + "    \"current\":\"页数\",\n"
       + "    \"size\":\"条数\",\n"
       + "    \"unitName\":\"单位名称\",\n"
-      + "    \"userType\":\"用户类型(截取的是3-4位)\",\n"
+      + "    \"userType\":\"用户类型(截取的是5-6位)\",\n"
       + "    \"auditStatus\":\"审核状态(0:未审核,2:已审核)\",\n"
       + "    \"executed\":\"是否执行(0:未执行,1:已执行)\"\n"
       + "}") @RequestBody JSONObject jsonObject,
@@ -105,7 +105,7 @@ public class UseWaterPlanAddWXController {
   public ApiResponse audit(@ApiParam("{\n"
       + "    \"id\":\"主键\",\n"
       + "    \"auditStatus\":\"审核状态(1:不通过,2:通过)\",\n"
-      + "    \"auditResult\":\"这个单位太浪费水,洗漱的时候一直开着水龙头\",\n"
+      + "    \"auditResult\":\"审核结果\",\n"
       + "    \"firstWater\":\"第一水量\",\n"
       + "    \"secondWater\":\"第二水量\",\n"
       + "    \"auditorName\":\"审核人\",\n"
