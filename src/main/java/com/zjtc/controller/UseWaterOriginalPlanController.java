@@ -101,7 +101,9 @@ public class UseWaterOriginalPlanController {
   @ResponseBody
   @ApiOperation(value = "老户/新户保存")
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse addOld(@RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
+  public ApiResponse addOld(@ApiParam("{\n"
+      + "\"data\":[选择的保存数据集合]\n"
+      + "}")@RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
     log.info("老户/新户保存==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
     User user=jwtUtil.getUserByToken(token);
@@ -126,7 +128,9 @@ public class UseWaterOriginalPlanController {
   @ResponseBody
   @ApiOperation(value = "老户/新户编制")
   @RequestMapping(value = "saveOriginal", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse saveOriginal(@RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
+  public ApiResponse saveOriginal(@RequestHeader("token") String token, @ApiParam("{\n"
+      + "\"data\":[选择的编制数据集合]\n"
+      + "}")@RequestBody JSONObject jsonObject) {
     log.info("老户/新户编制==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
