@@ -17,7 +17,7 @@ import com.zjtc.service.CommonService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.UseWaterOriginalPlanService;
 import com.zjtc.service.UseWaterPlanService;
-import com.zjtc.service.UseWaterSelfDefinePlanMapperService;
+import com.zjtc.service.UseWaterSelfDefinePlanService;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,7 +48,7 @@ public class UseWaterOriginalPlanServiceImpl extends
   @Autowired
   private UseWaterPlanService useWaterPlanService;
   @Autowired
-  private UseWaterSelfDefinePlanMapperService useWaterSelfDefinePlanMapperService;
+  private UseWaterSelfDefinePlanService useWaterSelfDefinePlanService;
   @Autowired
   private MessageService messageService;
   @Autowired
@@ -193,7 +193,7 @@ public class UseWaterOriginalPlanServiceImpl extends
     /**3.保存至用水计划表*/
     useWaterPlanService.insertBatch(useWaterPlanList);
     /**4.保存至自平表*/
-    useWaterSelfDefinePlanMapperService.insertBatch(selfDefinePlanList);
+    useWaterSelfDefinePlanService.insertBatch(selfDefinePlanList);
     /**微信公众号：通知用水单位*/
     if (!unitCodeList.isEmpty()) {
       for (Map map : unitCodeList) {
@@ -201,6 +201,7 @@ public class UseWaterOriginalPlanServiceImpl extends
         messageService.messageToUnit(map.get("unitCode").toString(), content, "业务通知");
       }
     }
+    //todo:微信
     return apiResponse;
   }
 
@@ -374,6 +375,7 @@ public class UseWaterOriginalPlanServiceImpl extends
           if (nextYearBaseStartPlan > nextYearQuotaStartPlan) {
             nextYearBaseStartPlan = nextYearQuotaStartPlan;
             //标识
+            sign = "1";
             sign = "1";
           }
           /**4.下年终计划(基础) 默认等于下年初计划(基础)*/

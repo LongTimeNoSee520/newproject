@@ -192,10 +192,8 @@
     (
     SELECT
     row_number ( ) over (
-    ORDER BY a.create_time desc
-    <if test="null !=unitCodeRank">
-      ,a.unit_code ${unitCodeRank}
-    </if>
+    ORDER BY
+      a.unit_code
      ) AS rownumber,
     a.id,
     a.node_code,

@@ -275,7 +275,6 @@ public class UseWaterUnitController {
       + "  \"mobileMumber\":\"电话号码\",\n"
       + "  \"signed\":\"是否签约：0，否，1是\",\n"
       + "  \"abnormal\":\"是否异常：0，否，1是\"\n"
-      + "  \"unitCodeRank\":\"单位编号排序，asc：升序，desc：降序\"\n"
       + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
