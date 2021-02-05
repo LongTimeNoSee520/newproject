@@ -157,6 +157,7 @@ public class UseWaterOriginalPlanController {
      @ApiParam("{\n"
          + "  \"nowPrice\":\"水价\",\n"
          + "  \"threeYearAvg\":\"三年平均\",\n"
+         + "  \"nextYearBaseStartPlan\":\"下年初计划(基础)\",\n"
          + "  \"unitCode\":\"单位编号\"\n"
          + "}") @RequestBody JSONObject jsonObject) {
     log.info("老户/新户编制==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
@@ -240,7 +241,7 @@ public class UseWaterOriginalPlanController {
           + "  \"threeYearAvg\":\"三年平均\",\n"
           + "  \"unitCode\":\"单位编号\",\n"
           + "  \"n8\":\"n8\",\n"
-          + "  \"curYearPlan\":\"当年计划\",\n"
+          + "  \"curYearPlan\":\"当年计划\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("查询==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -265,7 +266,7 @@ public class UseWaterOriginalPlanController {
   public ApiResponse getOldByNextYearBase(@RequestHeader("token") String token,
       @ApiParam("{\n"
           + "  \"nextYearBaseEndPlan\":\"下年终计划(基础)\",\n"
-          + "  \"unitCode\":\"单位编号\",\n"
+          + "  \"unitCode\":\"单位编号\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("查询==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -293,7 +294,7 @@ public class UseWaterOriginalPlanController {
           + "  \"nowPrice\":\"水价\",\n"
           + "  \"threeYearAvg\":\"三年平均\",\n"
           + "  \"nextYearBaseStartPlan\":\"下年初计划(基础)\",\n"
-          + "  \"unitCode\":\"单位编号\",\n"
+          + "  \"unitCode\":\"单位编号\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("查询==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();

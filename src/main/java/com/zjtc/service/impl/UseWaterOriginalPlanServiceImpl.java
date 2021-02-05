@@ -434,6 +434,7 @@ public class UseWaterOriginalPlanServiceImpl extends
           thirdQuarterQuota = nextYearQuotaEndPlan2;
           fourthQuarterQuota = nextYearQuotaEndPlan1;
         }
+        map.put("n8",0);
         map.put("nextYearQuotaStartPlan", nextYearQuotaStartPlan);
         map.put("nextYearQuotaEndPlan", nextYearQuotaEndPlan);
         map.put("firstQuarterQuota", firstQuarterQuota);

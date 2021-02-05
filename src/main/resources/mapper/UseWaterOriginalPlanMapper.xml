@@ -377,8 +377,8 @@
     assessQuarter=0,
     planYear=#{year},
     ISNULL(t2.nowPrice,0) as nowPrice,
-    t3.cur_year_plan as curYearPlan,
-    t3.curYearBasePlan,
+    isnull(t3.cur_year_plan,0) as curYearPlan,
+    isnull(t3.curYearBasePlan,0) as curYearBasePlan,
     threeYearAvg = isnull( t2.baseWaterAmount * 2, 0 ),
     nextYearQuotaStartPlan=isnull(t4.nextYearQuotaStartPlan,0)
     from
