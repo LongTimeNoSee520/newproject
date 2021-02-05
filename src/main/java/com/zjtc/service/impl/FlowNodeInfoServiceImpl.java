@@ -85,7 +85,13 @@ public class FlowNodeInfoServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> firStAuditRole(String flowCode, String nodeCode) {
+  public List<Map<String, Object>> secondAuditRole(String flowCode, String nodeCode) {
+    return baseMapper.secondAuditRole(flowCode, nodeCode);
+  }
+
+  @Override
+  public List<Map<String, Object>> firstAuditRole(String flowCode, String nodeCode) {
     return baseMapper.firStAuditRole(flowCode, nodeCode);
+
   }
 }

@@ -201,22 +201,23 @@ public class WaterUsePayInfoController {
   @ResponseBody
   @ApiOperation(value = "发起退款单")
   @RequestMapping(value = "toStartRefund", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse toStartRefund(@RequestHeader("token") String token, @ApiParam(""
-      + "+ \"  \\\"payId\\\":\\\"缴费记录id\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"useWaterUnitId\\\":\\\"单位id\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"unitCode\\\":\\\"单位编号\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"unitName\\\":\\\"单位名称\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"waterMeterCode\\\":\\\"水表档案号\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"year\\\":\\\"年\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"quarter\\\":\\\"季度\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"actualAmount\\\":\\\"实收金额\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"money\\\":\\\"减免金额\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"reason\\\":\\\"减免原因\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"treatmentAdvice\\\":\\\"服务人员意见\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"nextPersonId\\\":\\\"下一环节审核人id\\\",\\n\"\n"
-      + "\t\t\t+ \"  \\\"nextPersonName\\\":\\\"下一环节审核人\\\",\\n\"\n"
-      + "\t\t\t+ \"\\\"businessJson\\\":\\\"关联业务json数据(待办相关)\\\",\\n\"\n"
-      + "\t\t\t+ \"\\\"detailConfig\\\":\\\"详情配置文件(待办相关)\\\"\\n\"") @RequestBody JSONObject jsonObject) {
+  public ApiResponse toStartRefund(@RequestHeader("token") String token, @ApiParam("{\n"
+      + "    \"payId\":\"缴费记录id\",\n"
+      + "    \"useWaterUnitId\":\"单位id\",\n"
+      + "    \"unitCode\":\"单位编号\",\n"
+      + "    \"unitName\":\"单位名称\",\n"
+      + "    \"waterMeterCode\":\"水表档案号\",\n"
+      + "    \"year\":\"年\",\n"
+      + "    \"quarter\":\"季度\",\n"
+      + "    \"actualAmount\":\"实收金额\",\n"
+      + "    \"money\":\"退款金额\",\n"
+      + "    \"reason\":\"退款原因\",\n"
+      + "    \"treatmentAdvice\":\"服务人员意见\",\n"
+      + "    \"nextPersonId\":\"下一环节审核人id\",\n"
+      + "    \"nextPersonName\":\"下一环节审核人\",\n"
+      + "    \"businessJson\":\"关联业务json数据(待办相关)\",\n"
+      + "    \"detailConfig\":\"详情配置文件(待办相关)\"\n"
+      + "}") @RequestBody JSONObject jsonObject) {
     log.info("发起退款单， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);

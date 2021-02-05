@@ -32,10 +32,18 @@ public interface FlowNodeInfoService extends IService<FlowNodeInfo> {
   List<Map<String,Object>> nextAuditRole(String id, String tableName,String nodeCode,String auditBtn);
 
   /**
-   * 查询第一个流程
+   * 查询第二个审核流程
    * @param flowCode 流程编码
    * @param nodeCode 节点编码
    * @return
    */
-  List<Map<String,Object>> firStAuditRole(String flowCode,String nodeCode);
+  List<Map<String,Object>> secondAuditRole(String flowCode,String nodeCode);
+
+  /**
+   * 查询第一个审核流程
+   * @param flowCode 流程编码
+   * @param nodeCode 节点编码
+   * @return
+   */
+  List<Map<String,Object>> firstAuditRole(String flowCode,String nodeCode);
 }

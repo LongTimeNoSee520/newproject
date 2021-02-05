@@ -172,9 +172,9 @@ public class WaterUsePayInfoServiceImpl extends
     String nextPersonName = jsonObject.getString("nextPersonName");
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
-    /**查询流程节点记录第一个流程*/
+    /**查询流程节点记录第二个流程*/
     List<Map<String, Object>> firStAudit = flowNodeInfoService
-        .firStAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
+        .secondAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
     /**退减免单新增一条数据*/
     entity.setNodeCode(user.getNodeCode());
     refundOrRefundService.insert(entity);
@@ -218,9 +218,9 @@ public class WaterUsePayInfoServiceImpl extends
     String content = jsonObject.getString("content");
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
-    /**查询流程节点记录第一个流程*/
+    /**查询流程节点记录第二个流程*/
     List<Map<String, Object>> firStAudit = flowNodeInfoService
-        .firStAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
+        .secondAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
     /**退减免单新增一条数据*/
     entity.setNodeCode(user.getNodeCode());
     entity.setIsRevoke("0");
@@ -264,7 +264,7 @@ public class WaterUsePayInfoServiceImpl extends
   @Override
   public List<Map<String, Object>> firstRole(User user) {
     List<Map<String, Object>> result = flowNodeInfoService
-        .firStAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
+        .secondAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
     return result;
   }
 
