@@ -171,6 +171,6 @@ public class UseWaterUnitMeterServiceImpl extends
       }
       return result;
     }
-    return null;
+    return result;
   }
 }

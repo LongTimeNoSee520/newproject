@@ -55,5 +55,5 @@ public interface UseWaterUnitMeterService extends IService<UseWaterUnitMeter> {
  /**
   * 查询所有档案号对应的单位id
   */
- public Map<String ,String> getMeterMap(String nodeCode);
+  Map<String ,String> getMeterMap(String nodeCode);
 }

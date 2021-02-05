@@ -584,11 +584,8 @@ public class UseWaterUnitServiceImpl extends
     wrapper.eq("deleted", "0");
     wrapper.eq("node_code", user.getNodeCode());
     wrapper.eq("unit_code", unitCode);
-    List<UseWaterUnit> result = this.selectList(wrapper);
-    if (!result.isEmpty()) {
-      return result.get(0);
-    }
-    return null;
+    UseWaterUnit result = this.selectOne(wrapper);
+    return result;
   }
 
   @Override
