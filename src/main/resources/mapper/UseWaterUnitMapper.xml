@@ -121,7 +121,6 @@
 
   <resultMap id="bankMapper" type="com.zjtc.model.Bank">
     <result column="id" property="id" jdbcType="VARCHAR"/>
-    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
     <result column="entrust_unit_name" property="entrustUnitName" jdbcType="VARCHAR"/>
     <result column="bank_of_deposit" property="bankOfDeposit" jdbcType="VARCHAR"/>
     <result column="bank_account" property="bankAccount" jdbcType="VARCHAR"/>
@@ -423,7 +422,7 @@
       waterNumber DESC;
   </select>
   <select id="selectBank" resultMap="bankMapper">
-    select *
+    select id,bank_of_deposit,bank_account,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank,main,signed
     from t_w_bank
     where use_water_unit_id =#{id}
     and deleted='0'
@@ -431,7 +430,7 @@
     order By main desc
   </select>
   <select id="selectContacts" resultMap="BaseResultMap_Contacts">
-    select *
+    select id,contacts,phone_number,mobile_number,main
     from t_w_use_water_unit_contacts
     where use_water_unit_id =#{id}
     and deleted='0'
@@ -439,7 +438,7 @@
     order by main desc
   </select>
   <select id="selectsysFile" resultMap="sysAttrFileMap">
-    select *
+    select id,file_name,file_path,deleted
     from t_file
     where business_id =#{id}
     and deleted='0'
@@ -448,7 +447,7 @@
   </select>
   <select id="selectUseWaterQuota" resultMap="BaseResultMap_UseWaterQuota">
     SELECT
-    a.*,
+    id,industry,sub_industry,product,quota_unit,quota_value,amount,
     (select industry_name as subIndustryName from t_w_quota_info where id=a.sub_industry)as subIndustryName,
     (select industry_name  as productName from t_w_quota_info where id=a.product) as productName
     FROM t_w_use_water_quota as a
@@ -457,10 +456,11 @@
     ORDER BY create_time desc
   </select>
   <select id="selectModifyList" resultMap="UseWaterUnitModify_map">
-    select *
+    select id,before_name,after_name,modify_time,modify_person
     from t_w_use_water_unit_modify
     where node_code=#{nodeCode}
     and use_water_unit_id=#{id}
+    order by modify_time desc
   </select>
   <select id="queryUnitRef" resultMap="useWaterUnitRefVo_map">
     select
