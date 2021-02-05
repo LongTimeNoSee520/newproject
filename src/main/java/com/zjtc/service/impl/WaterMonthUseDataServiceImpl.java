@@ -74,10 +74,6 @@ public class WaterMonthUseDataServiceImpl extends
   public Map<String, Object> queryPage(JSONObject jsonObject) {
     Map<String, Object> page = new LinkedHashMap<>();
 
-    if(StringUtils.isBlank(jsonObject.getString("useYear"))){
-      Calendar calendar = Calendar.getInstance();
-      jsonObject.put("useYear",calendar.get(Calendar.YEAR));
-    }
     List<WaterMonthUseData> result = baseMapper.queryPage(jsonObject);
     page.put("records", result);
     page.put("current", jsonObject.getInteger("current"));
