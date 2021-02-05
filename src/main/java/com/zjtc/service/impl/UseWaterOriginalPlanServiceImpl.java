@@ -165,7 +165,7 @@ public class UseWaterOriginalPlanServiceImpl extends
       UseWaterSelfDefinePlan useWaterSelfDefinePlan = new UseWaterSelfDefinePlan();
       useWaterSelfDefinePlan.setCreateTime(new Date());
       useWaterSelfDefinePlan.setAuditStatus("3");
-      useWaterSelfDefinePlan.setNodeCode(useWaterPlan.getNodeCode());
+      useWaterSelfDefinePlan.setNodeCode(user.getNodeCode());
       useWaterSelfDefinePlan.setUseWaterUnitId(useWaterPlan.getUseWaterUnitId());
       useWaterSelfDefinePlan.setUnitCode(useWaterPlan.getUnitCode());
       useWaterSelfDefinePlan.setUnitName(useWaterPlan.getUnitName());
