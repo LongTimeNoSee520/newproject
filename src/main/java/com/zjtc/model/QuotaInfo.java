@@ -60,6 +60,10 @@ public class QuotaInfo extends Model<QuotaInfo> {
   @TableField(value = "deleted", exist = true)
   private String deleted;
 
+  @ApiModelProperty(value = "删除时间")
+  @TableField(value = "delete_time", exist = true)
+  private Date deleteTime;
+
   @ApiModelProperty(value = "备注")
   @TableField(value = "remark", exist = true)
   private String remark;

@@ -256,6 +256,10 @@ public class  EndPaper extends Model<EndPaper>{
     @TableField(value = "rescinded",exist = true)
     private String rescinded;
 
+    @ApiModelProperty("撤销时间")
+    @TableField(value = "rescind_time",exist = true)
+    private Date rescindTime;
+
 
 	/**
 	 * 实例化

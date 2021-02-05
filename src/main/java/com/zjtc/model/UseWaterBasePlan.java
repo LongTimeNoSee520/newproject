@@ -76,13 +76,21 @@ public class UseWaterBasePlan extends Model<UseWaterBasePlan> {
   @TableField(value = "unit_name", exist = true)
   private String unitName;
 
-  @ApiModelProperty(value = "用水性质")
+  @ApiModelProperty(value = "用水性质字典code")
   @TableField(value = "nature", exist = true)
   private String nature;
+
+  @ApiModelProperty(value = "用水性质名称")
+  @TableField(value = "nature_name", exist = true)
+  private String natureName;
 
   @ApiModelProperty(value = "是否删除")
   @TableField(value = "deleted", exist = true)
   private String deleted;
+
+  @ApiModelProperty(value = "删除时间")
+  @TableField(value = "delete_time", exist = true)
+  private Date deleteTime;
 
 
   @Override

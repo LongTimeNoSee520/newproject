@@ -69,8 +69,8 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
   @Value("${file.fileUploadPath}")
   private String fileUploadPath;
 
-  @Value("${file.importErrorFilePath}")
-  private String importErrorFilePath;
+//  @Value("${file.importErrorFilePath}")
+//  private String importErrorFilePath;
 
   @Autowired
   private FileUtil fileUtil;
@@ -342,7 +342,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     }
     if (errorMsgs.length()>0){
       /**将所有错误写到txt文件*/
-      String filePath =fileUploadRootPath + importErrorFilePath + java.io.File.separator + TimeUtil
+      String filePath =fileUploadRootPath + fileUploadPath + java.io.File.separator + TimeUtil
           .formatTimeyyyyMMddHHmmss(new Date()) + ".txt";
       fileUtil.saveAsFileWriter(errorMsgs.toString(), filePath);
       /**记录日志*/
