@@ -629,6 +629,13 @@ public class PlanDailyAdjustmentServiceImpl extends
     return apiResponse;
   }
 
+  @Override
+  public List<Map<String, Object>> firstRole(User user) {
+    List<Map<String, Object>> result = flowNodeInfoService
+        .firStAuditRole(AuditConstants.END_PAPER_FLOW_CODE, user.getNodeCode());
+    return result;
+  }
+
 
   /**
    * 向上十位取整

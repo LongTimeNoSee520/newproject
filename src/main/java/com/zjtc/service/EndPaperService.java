@@ -39,4 +39,13 @@ public interface EndPaperService extends IService<EndPaper> {
    * 微信办结单
    */
   boolean updateFromWeChat(EndPaper endPaper);
+
+  /**
+   * 查询下一环节可提交审核的角色人员
+   * @param id 当前退减免单id
+   * @param nodeCode 节点便编码
+   * @param auditBtn 按钮 ：0 不同意，1 同意
+   * @return
+   */
+  List<Map<String,Object>> nextAuditRole(String id, String nodeCode, String auditBtn);
 }

@@ -3,10 +3,8 @@ package com.zjtc.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
-import com.zjtc.model.QuotaInfo;
 import com.zjtc.model.UseWaterUnitMonitor;
 import com.zjtc.model.User;
-import com.zjtc.service.ImportLogService;
 import com.zjtc.service.UseWaterUnitMonitorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,7 +51,7 @@ public class UseWaterUnitMonitorController {
           + "  \"unitCodeType\":\"用户类型\",\n"
           + "  \"year\":\"年份,数字\",\n"
           + "  \"industryId\":\"行业类型id\",\n"
-          + "  \"monitorType\":\"监控类型:1重点,2节水型\"\n"
+          + "  \"monitorType\":\"监控类型(必填):1重点,2节水型\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("分页查询用水单位监控信息 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
@@ -86,7 +84,7 @@ public class UseWaterUnitMonitorController {
           + "\"industryName\": \"所属行业\",\n"
           + "\"industry\": \"所属行业id\",\n"
           + "\"year\":\"年份，数字\",\n"
-          + "\"monitorType\":\"监控类型:1重点,2节水型\" \n"
+          + "\"monitorType\":\"监控类型(必填):1重点,2节水型\" \n"
           + "}") @RequestBody UseWaterUnitMonitor monitor) {
     log.info("用水单位监控新增参数{" + monitor != null ? monitor.toString() : "null" + "}");
     ApiResponse response = new ApiResponse();
@@ -132,7 +130,7 @@ public class UseWaterUnitMonitorController {
   @RequestMapping(value = "initNextYear", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse initNextYear(@RequestHeader("token") String token,
       @ApiParam("{\n"
-          + "\"monitorType\":\"监控类型:1重点,2节水型\"\n"
+          + "\"monitorType\":\"监控类型(必填):1重点,2节水型\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("初始化下一年数据 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse response = new ApiResponse();
@@ -155,14 +153,12 @@ public class UseWaterUnitMonitorController {
   @ApiOperation(value = "用水单位监控数据导出")
   public ApiResponse export(@RequestHeader("token") String token,
       @ApiParam("{\n"
-          + "  \"current\":\"当前页,数字\", \n"
-          + "  \"size\":\"每页条数,数字\" ,\n"
           + "  \"unitName\":\"单位名称\",\n"
           + "  \"unitCode\":\"单位编号\",\n"
           + "  \"unitCodeType\":\"用户类型\",\n"
           + "  \"year\":\"年份,数字\",\n"
           + "  \"industryId\":\"行业类型id\",\n"
-          + "  \"monitorType\":\"监控类型:1重点,2节水型\"\n"
+          + "  \"monitorType\":\"监控类型(必填):1重点,2节水型\"\n"
           + "}") @RequestBody JSONObject jsonObject,HttpServletRequest request,
       HttpServletResponse response) {
     log.info("用水单位监控数据导出 ==== 参数{" + jsonObject.toJSONString() + "}");

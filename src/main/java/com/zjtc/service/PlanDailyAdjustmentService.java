@@ -93,4 +93,10 @@ public interface PlanDailyAdjustmentService extends IService<UseWaterPlan> {
 	 * @return
 	 */
 	ApiResponse export(User user, Integer planYear, HttpServletRequest request, HttpServletResponse response);
+
+
+	/**
+	 * 查询退缴费第一个提交流程的角色信息
+	 */
+	List<Map<String, Object>> firstRole( User user);
 }

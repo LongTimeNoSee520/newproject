@@ -416,4 +416,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     }
     return this.baseMapper.updateFromWeChat(endPaper);
   }
+
+  @Override
+  public List<Map<String, Object>> nextAuditRole(String id, String nodeCode, String auditBtn) {
+    return flowNodeInfoService.nextAuditRole(id, AuditConstants.END_PAPER_TABLE, nodeCode, auditBtn);
+  }
 }

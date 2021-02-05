@@ -1,6 +1,7 @@
 package com.zjtc.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zjtc.base.constant.ResponseMsgConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.UseWaterPlanAdd;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -153,7 +155,7 @@ public class PlanDailyAdjustmentController {
     return response;
   }
 
-  @RequestMapping(value = "adjustPlan'", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "adjustPlan", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "计划调整")
   public ApiResponse adjustPlan(@RequestHeader("token") String token,
       @ApiParam("{\"id\": \"id\",\n"
@@ -183,7 +185,7 @@ public class PlanDailyAdjustmentController {
     }
     return response;
   }
-  @RequestMapping(value = "editPlanAdd'", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "editPlanAdd", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "行内编辑修改调整计划的4个季度水量")
   public ApiResponse editPlanAdd(@RequestHeader("token") String token,
       @ApiParam("{\n"
@@ -213,7 +215,7 @@ public class PlanDailyAdjustmentController {
       }
     return response;
   }
-  @RequestMapping(value = "accumulate'", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "accumulate", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "累加")
   public ApiResponse accumulate(@RequestHeader("token") String token,
       @ApiParam("{\"id\": \"id\",\n"
@@ -242,7 +244,7 @@ public class PlanDailyAdjustmentController {
     return response;
   }
 
-  @RequestMapping(value = "signPrinted'", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "signPrinted", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "打印后标记修改打印状态")
   public ApiResponse signPrinted(@RequestHeader("token") String token,
       @ApiParam("{\n"
@@ -297,7 +299,7 @@ public class PlanDailyAdjustmentController {
     return response;
   }
 
-  @RequestMapping(value = "initiateSettlement'", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "initiateSettlement", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "发起办结单")
   public ApiResponse initiateSettlement(@RequestHeader("token") String token,
       @ApiParam("{\n"
@@ -355,6 +357,27 @@ public class PlanDailyAdjustmentController {
     } catch (Exception e) {
       log.error("导出最新计划失败,errMsg==={}" + e.getMessage());
       apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "查询办结单第一个提交流程的角色信息")
+  @RequestMapping(value = "firstRole", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse firstRole(@RequestHeader("token") String token) {
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user) {
+      try {
+        List<Map<String, Object>> result = planDailyAdjustmentService.firstRole(user);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("查询,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
     }
     return apiResponse;
   }

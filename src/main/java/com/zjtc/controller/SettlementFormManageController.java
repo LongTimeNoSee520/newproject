@@ -1,6 +1,7 @@
 package com.zjtc.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zjtc.base.constant.ResponseMsgConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.EndPaper;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -176,5 +178,33 @@ public class SettlementFormManageController {
       response.recordError("办结单执行参数不能为空");
     }
     return response;
+  }
+  @ResponseBody
+  @ApiOperation(value = "查询下一环节可提交审核的角色人员")
+  @RequestMapping(value = "nextAuditRole", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse nextAuditRole(@ApiParam("{\n"
+      + "  \"id\":\"办结单id\",\n"
+      + "  \"auditBtn\":\"审核是否通过，0：不通过，1:通过\"\n"
+      + "  \n"
+      + "}") @RequestHeader("token") String token,
+      @RequestBody JSONObject jsonObject) {
+    log.info("查询 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != jsonObject && user != null) {
+      try {
+        List<Map<String, Object>> result = endPaperService
+            .nextAuditRole(jsonObject.getString("id"), user.getNodeCode(),
+                jsonObject.getString("auditBtn"));
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("查询错误,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
   }
 }
