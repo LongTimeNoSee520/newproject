@@ -1,10 +1,12 @@
 package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.UseWaterUnitRoleMapper;
 import com.zjtc.model.UseWaterUnitRole;
 import com.zjtc.service.UseWaterUnitRoleService;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -39,13 +41,21 @@ public class UseWaterUnitRoleServiceImpl extends
   @Override
   public List<String> selectUseWaterUnitRole(String personId, String nodeCode) {
 
-    if (StringUtils.isBlank(personId) ||  StringUtils
+    if (StringUtils.isBlank(personId) || StringUtils
         .isBlank(nodeCode)) {
       log.error("查看用户是否有权限进行操作传入参数有误,方法名为:+checkUserRight");
       return null;
     }
     return this.baseMapper.selectUseWaterUnitRole(personId, nodeCode);
+  }
 
-
+  @Override
+  public ApiResponse selectUserRelevanceRoleMessage(String nodeCode) {
+    ApiResponse response = new ApiResponse();
+    Map<Object, List<String>> message = this.baseMapper
+        .selectUserRelevanceRoleMessage(nodeCode);
+    response.setCode(200);
+    response.setData(message);
+    return response;
   }
 }

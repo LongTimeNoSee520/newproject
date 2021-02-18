@@ -3,6 +3,7 @@ package com.zjtc.mapper;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnitRole;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -31,4 +32,11 @@ public interface UseWaterUnitRoleMapper extends BaseMapper<UseWaterUnitRole> {
    * @return 批次结果集
    */
  List<String> selectUseWaterUnitRole(@Param("personId") String personId,@Param("nodeCode") String nodeCode);
+
+  /**
+   * 查询所有人员信息和关联的权限模块类型
+   * @param nodeCode 节点编码
+   * @return 集合
+   */
+  Map<Object,List<String>> selectUserRelevanceRoleMessage(@Param("nodeCode") String nodeCode);
 }

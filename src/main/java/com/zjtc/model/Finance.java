@@ -49,6 +49,10 @@ public class Finance extends Model<Finance> {
   @TableField(value = "invoice_state", exist = true)
   private String invoiceState;
 
+  @ApiModelProperty(value = "开票人Id")
+  @TableField(value = "drawer_id", exist = true)
+  private String drawerId;
+
   @ApiModelProperty(value = "开票人")
   @TableField(value = "drawer", exist = true)
   private String drawer;

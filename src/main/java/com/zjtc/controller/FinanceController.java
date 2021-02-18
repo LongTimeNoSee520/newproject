@@ -73,40 +73,39 @@ public class FinanceController {
 
   @RequestMapping(value = "deletedFinance", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "删除单位")
-  public ApiResponse deletedFinance(@ApiParam ("{\"ids\":[\"单位id集\"]}")@RequestBody JSONObject jsonObject,@RequestHeader("token") String token) {
+  public ApiResponse deletedFinance(
+      @ApiParam("{\"ids\":[\"单位id集\"]}") @RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     log.debug("删除单位失败，参数param==={" + jsonObject.toString() + "}");
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
-    if (ids.size() == 0){
+    if (ids.size() == 0) {
       response.recordError("系统错误");
       return response;
     }
-      try {
-        response = financeService.deletedFinance(ids);
-        return response;
-      } catch (Exception e) {
-        log.error("删除单位失败,errMsg==={}" + e.getMessage());
-        response.recordError(500);
-      }
+    try {
+      response = financeService.deletedFinance(ids);
+      return response;
+    } catch (Exception e) {
+      log.error("删除单位失败,errMsg==={}" + e.getMessage());
+      response.recordError(500);
+    }
     return response;
   }
-
 
 
   @RequestMapping(value = "updateFinance", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("修改加价费开票记录")
   public ApiResponse updateFinance(@ApiParam("{\n"
-      + "    \"finance\":[\n"
       + "        {\n"
       + "            \"id\":\"1\",\n"
       + "            \"unitName\":\"单位名称\",\n"
       + "            \"money\":\"缴费金额\",\n"
       + "            \"paymentDate\":\"十三位时间戳:入账时间\",\n"
       + "            \"invoiceState\":\"开票状态(0:否,1:是)\",\n"
+      + "            \"drawerId\":\"开票人Id\",\n"
       + "            \"drawer\":\"开票人\",\n"
       + "            \"unitCode\":\"单位编号\"\n"
-      + "        }\n"
-      + "    ]\n"
       + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     log.info("修改加价费开票记录,参数param==={" + jsonObject.toJSONString() + "}");
@@ -115,10 +114,10 @@ public class FinanceController {
       response.recordError("系统错误");
       return response;
     }
-    List<Finance> finances;
+    Finance finance;
     try {
-      finances = jsonObject.getJSONArray("finance").toJavaList(Finance.class);
-      response = financeService.updateFinance(finances);
+      finance = jsonObject.toJavaObject(Finance.class);
+      response = financeService.updateFinance(finance);
       return response;
     } catch (Exception e) {
       response.setMessage("修改加价费开票记录失败");
@@ -161,24 +160,4 @@ public class FinanceController {
   }
 
 
-//  @RequestMapping(value = "countMoney", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-//  @ApiOperation("统计金额")
-//  public ApiResponse countMoney(@RequestBody JSONObject jsonObject,@RequestHeader("token") String token) {
-//    ApiResponse response = new ApiResponse();
-//    User user = jwtUtil.getUserByToken(token);
-//    if (user == null) {
-//      response.setMessage("统计金额失败");
-//      return response;
-//    }
-//    try {
-//      response = financeService.countMoney(jsonObject,user.getNodeCode());
-//      return response;
-//    } catch (Exception e) {
-//      response.setCode(500);
-//      response.setMessage("统计金额失败查询异常");
-//      log.error("统计金额失败查询错误,errMsg==={}", e.getMessage());
-//      e.printStackTrace();
-//    }
-//    return response;
-//  }
 }

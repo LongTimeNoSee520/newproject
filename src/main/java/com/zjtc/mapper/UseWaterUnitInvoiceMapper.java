@@ -34,7 +34,7 @@ public interface UseWaterUnitInvoiceMapper extends BaseMapper<UseWaterUnitInvoic
    * @param id 发票id
    * @return 匹配的结果
    */
-  int selectReceived(@Param("id") String id);
+  String selectReceived(@Param("id") String id);
 
   /**
    * 根据id查询实体

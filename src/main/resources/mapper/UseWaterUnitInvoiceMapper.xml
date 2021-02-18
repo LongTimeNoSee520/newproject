@@ -39,13 +39,13 @@
     and deleted = '0'
   </select>
 
-  <select id="selectReceived" resultType="int">
-    SELECT COUNT ( 1 )
+  <select id="selectReceived" resultType="String">
+    SELECT invoice_number
     FROM
     t_w_use_water_unit_invoice
     WHERE 1 = 1
     <if test="id != null and id != ''">
-      and id = #{id}
+      and id IN ( #{id})
     </if>
     AND received = '1'
     and deleted = '0'
@@ -62,7 +62,7 @@
     WHERE
     (convert(int,invoice_number) &gt;= #{begin} AND convert(int,invoice_number) &lt;= #{end})
     AND person = #{loginId}
-    and deleted = '0' AND (pay_info_id = null or pay_info_id = '') and enabled = '0'  AND received = '0' and node_code = #{nodeCode}
+    and deleted = '0' AND pay_info_id IS NULL and enabled = '0'  AND received = '0' and node_code = #{nodeCode}
   </update>
 
   <select id="selectCount" resultType="int">
@@ -163,7 +163,7 @@
     FROM
     t_w_use_water_unit_invoice
     WHERE
-    ( pay_info_id = NULL OR pay_info_id = '' )
+    ( pay_info_id is NULL OR pay_info_id = '' )
     AND enabled = '0'
     AND received = '0'
     AND deleted = '0'

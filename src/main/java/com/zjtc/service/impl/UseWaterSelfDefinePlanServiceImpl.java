@@ -332,7 +332,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       messageService.messageToUnit(useWaterSelfDefinePlan.getUnitCode(), messageContent, "自平计划执行");
       try {
 //        短信通知用水单位
-        smsService.sendMsgToUnit(user, codeNode, messageContent, "计划通知");
+        smsService.sendMsgToUnit(user, useWaterSelfDefinePlan.getUnitCode(), messageContent, "计划通知");
       } catch (Exception e) {
         log.error("用水计划自平审核消息推送失败");
       }

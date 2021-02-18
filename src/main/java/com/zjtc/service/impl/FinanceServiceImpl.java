@@ -53,20 +53,18 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
   }
 
   @Override
-  public ApiResponse updateFinance(List<Finance> finances) {
+  public ApiResponse updateFinance(Finance finance) {
     ApiResponse response = new ApiResponse();
-    if (finances.size() == 0) {
+    if (null == finance) {
       response.setMessage("系统错误");
       return response;
     }
-    for (Finance finance : finances) {
-      String invoiceState = finance.getInvoiceState();
-      if ("1".equals(invoiceState)) {
-        response.setMessage("单位名称为:" + finance.getUnitName() + "的数据已开票不能修改");
-        return response;
-      }
+    String invoiceState = finance.getInvoiceState();
+    if ("1".equals(invoiceState)) {
+      response.setMessage("单位名称为:" + finance.getUnitName() + "的数据已开票不能修改");
+      return response;
     }
-    boolean b = this.updateBatchById(finances);
+    boolean b = this.updateById(finance);
     if (b) {
       response.setCode(200);
       return response;
@@ -181,7 +179,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
     map.put("pages", (int) (pages));
     map.put("current", currPage);
     map.put("records", templates);
-    map.put("sumMoney",sumMoney);
+    map.put("sumMoney", sumMoney);
     response.setData(map);
     return response;
   }

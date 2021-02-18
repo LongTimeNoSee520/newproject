@@ -46,22 +46,22 @@ public class UseWaterUnitInvoiceController {
   @RequestMapping(value = "saveModel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "新增发票管理")
   public ApiResponse saveModel(@ApiParam("{\n"
-      + "    \"unitInvoices\":[\n"
-      + "        {\n"
-      + "            \"invoiceNumber\":\"发票号\"\n"
-      + "        },\n"
-      + "        {\n"
-      + "            \"invoiceNumber\":\"发票号\"\n"
-      + "        }\n"
-      + "        \n"
+      + "    \"invoiceNumbers\":[\n"
+      + "        \"发票号\"\n"
       + "    ]\n"
       + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("新增发票管理 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
+
+    List<String> list = jsonObject.getJSONArray("invoiceNumbers").toJavaList(String.class);
+    if (list.isEmpty()){
+      response.recordError("参数错误");
+      return response;
+    }
     try {
-      response = useWaterUnitInvoiceService.saveModel(jsonObject, user.getNodeCode());
+      response = useWaterUnitInvoiceService.saveModel(list, user);
       return response;
     } catch (Exception e) {
       response.recordError("新增发票管理异常");
@@ -116,16 +116,17 @@ public class UseWaterUnitInvoiceController {
       + "    \"ids\":[\n"
       + "       \"id数据集\"\n"
       + "    ]\n"
-      + "}") @RequestBody JSONObject jsonObject) {
+      + "}") @RequestBody JSONObject jsonObject,@RequestHeader("token") String token) {
     log.info("作废发票信息 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse response = new ApiResponse();
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
+    User user = jwtUtil.getUserByToken(token);
     if (ids.isEmpty()) {
       response.recordError("参数错误");
       return response;
     }
     try {
-      response = useWaterUnitInvoiceService.abolish(ids);
+      response = useWaterUnitInvoiceService.abolish(ids,user.getNodeCode());
       return response;
     } catch (Exception e) {
       e.printStackTrace();
@@ -271,7 +272,7 @@ public class UseWaterUnitInvoiceController {
   }
 
   /**
-   * 移交票段
+   * 发票标记
    *
    * @param
    * @return
@@ -307,7 +308,7 @@ public class UseWaterUnitInvoiceController {
   }
 
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation("分页查询人员信息")
+  @ApiOperation("分页查询")
   public ApiResponse queryPage(@ApiParam(""
       + "{\n"
       + "    \"current\":\"页数\",\n"
@@ -322,7 +323,7 @@ public class UseWaterUnitInvoiceController {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     if (user == null) {
-      response.setMessage("人员分页查询失败");
+      response.setMessage("分页查询失败");
       return response;
     }
     if (null == jsonObject){
@@ -333,8 +334,8 @@ public class UseWaterUnitInvoiceController {
       response = useWaterUnitInvoiceService.queryPage(jsonObject, user.getNodeCode(),user.getId());
       return response;
     } catch (Exception e) {
-      response.recordError("分页查询人员信息异常");
-      log.error("分页查询人员信息错误,errMsg==={}", e.getMessage());
+      response.recordError("查询人员信息异常");
+      log.error("查询人员信息错误,errMsg==={}", e.getMessage());
       e.printStackTrace();
     }
     return response;
@@ -342,7 +343,7 @@ public class UseWaterUnitInvoiceController {
 
   @RequestMapping(value = "selectInvoices", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("查询未被使用的发票编号")
-  public ApiResponse selectInvoices( @RequestBody JSONObject jsonObject) {
+  public ApiResponse selectInvoices( @RequestHeader("token") String token,@RequestBody JSONObject jsonObject) {
     log.info("分页查询数据,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
     if (null == jsonObject){

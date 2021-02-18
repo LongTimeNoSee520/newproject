@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -47,31 +49,23 @@ public class UseWaterUnitInvoiceServiceImpl extends
   private String fileUploadPath;
 
   @Override
-  public ApiResponse saveModel(JSONObject jsonObject, String nodeCode) {
+  public ApiResponse saveModel(List<String> list, User user) {
     ApiResponse response = new ApiResponse();
-    if (null == jsonObject && StringUtils.isBlank(nodeCode)) {
-      response.recordError("系统错误");
-      return response;
-    }
-    assert jsonObject != null;
-    List<UseWaterUnitInvoice> unitInvoices = jsonObject.getJSONArray("unitInvoices")
-        .toJavaList(UseWaterUnitInvoice.class);
     List<UseWaterUnitInvoice> unitInvoiceList = new ArrayList<>();
-//    判断数据是否为空
-    if (unitInvoices.isEmpty()) {
-      return response;
-    }
-    for (UseWaterUnitInvoice unitInvoice : unitInvoices) {
-      String invoiceNumber = unitInvoice.getInvoiceNumber();
+    UseWaterUnitInvoice unitInvoice;
+    for (String invoiceNumber : list) {
 //      查看发票号是否为空
-      int i = this.baseMapper.selectInvoiceNumber(invoiceNumber, nodeCode);
+      int i = this.baseMapper.selectInvoiceNumber(invoiceNumber, user.getNodeCode());
       if (i > 0) {
 //        i不0的话说明已存在,直接退出
         response.recordError("发票号为:" + invoiceNumber + "已存在");
         return response;
       } else {
+        unitInvoice = new UseWaterUnitInvoice();
+        unitInvoice.setInvoiceNumber(invoiceNumber);
         unitInvoice.setCreateTime(new Date());
-        unitInvoice.setNodeCode(nodeCode);
+        unitInvoice.setPerson(user.getId());
+        unitInvoice.setNodeCode(user.getNodeCode());
         unitInvoice.setEnabled("0");
         unitInvoice.setReceived("0");
         unitInvoice.setDeleted("0");
@@ -93,9 +87,9 @@ public class UseWaterUnitInvoiceServiceImpl extends
       response.recordError("开票登记失败");
       return response;
     }
-    int i = this.baseMapper.selectReceived(unitInvoice.getId());
-    if (i > 0) {
-      response.recordError("发票已被领取,不能被登记");
+    String invoiceNumber = this.baseMapper.selectReceived(unitInvoice.getId());
+    if (StringUtils.isBlank(invoiceNumber)) {
+      response.recordError("发票" + invoiceNumber + "已被领取,不能被登记");
       return response;
     }
 //    经手人
@@ -115,17 +109,27 @@ public class UseWaterUnitInvoiceServiceImpl extends
     ApiResponse response = new ApiResponse();
     UseWaterUnitInvoice unitInvoice;
     List<UseWaterUnitInvoice> list = new ArrayList<>();
-    boolean b = false;
+    boolean b;
+    List<String> strings = new ArrayList<>();
     for (String id : ids) {
-      int i = this.baseMapper.selectReceived(id);
-      if (i > 0) {
-        response.recordError("有发票已领取的发票,不能删除");
-        return response;
+      String invoiceNumber = this.baseMapper.selectReceived(id);
+      strings.add(invoiceNumber);
+    }
+//    去除null值
+    List<String> newList = strings.stream().filter(Objects::nonNull)
+        .collect(Collectors.toList());
+    if (!newList.isEmpty()) {
+      String lists = StringUtils.strip(newList.toString(), "[]")
+          .replace(" ", "");
+      response.recordError("发票:" + lists + "已被领取,不能被删除");
+      return response;
+    } else {
+      for (String id : ids) {
+        unitInvoice = new UseWaterUnitInvoice();
+        unitInvoice.setId(id);
+        unitInvoice.setDeleted("1");
+        list.add(unitInvoice);
       }
-      unitInvoice = new UseWaterUnitInvoice();
-      unitInvoice.setId(id);
-      unitInvoice.setDeleted("1");
-      list.add(unitInvoice);
     }
     b = this.updateBatchById(list);
     if (b) {
@@ -139,7 +143,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public ApiResponse abolish(List<String> ids) {
+  public ApiResponse abolish(List<String> ids,String nodeCode) {
     ApiResponse response = new ApiResponse();
     UseWaterUnitInvoice unitInvoice;
     List<UseWaterUnitInvoice> list = new ArrayList<>();
@@ -190,7 +194,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
       response.setCode(200);
       return response;
     } else {
-      response.recordError("操作失败失败");
+      response.recordError("操作失败");
       return response;
     }
   }
@@ -349,14 +353,14 @@ public class UseWaterUnitInvoiceServiceImpl extends
       response.recordError("系统异常");
       return response;
     }
-//    UseWaterUnitInvoice unitInvoice = this.baseMapper.selectById(useWaterUnitInvoice.getId());
-//    if (unitInvoice.getPayInfoId() != null || !unitInvoice.getPayInfoId().isEmpty()) {
-//      response.recordError("发票号已被使用");
-//      return response;
-//    } else if ("1".equals(unitInvoice.getEnabled())) {
-//      response.recordError("发票号已经被作废,不能使用");
-//      return response;
-//    }
+    UseWaterUnitInvoice unitInvoice = this.baseMapper.selectById(useWaterUnitInvoice.getId());
+    if (unitInvoice.getPayInfoId() != null) {
+      response.recordError("发票号已被使用");
+      return response;
+    } else if ("1".equals(unitInvoice.getEnabled())) {
+      response.recordError("发票号已经被作废,不能使用");
+      return response;
+    }
     useWaterUnitInvoice.setInvoiceDate(new Date());
     int i = this.baseMapper.updateInvoicesUnitMessage(useWaterUnitInvoice, userName, nodeCode);
     if (i > 0) {

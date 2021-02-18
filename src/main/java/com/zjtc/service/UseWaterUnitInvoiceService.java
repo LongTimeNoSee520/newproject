@@ -18,10 +18,10 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
 
 	/**
 	* 批量新增
-	* @param jsonObject 数据集
+	* @param list 数据集
 	* @return 响应结果
 	*/
-	ApiResponse saveModel(JSONObject jsonObject,String nodeCode);
+	ApiResponse saveModel(List<String> list,User user);
 
 	/**
 	* 开票登记
@@ -42,7 +42,7 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
    * @param ids  发票id集
    * @return 响应结果
    */
-  ApiResponse abolish(List<String> ids);
+  ApiResponse abolish(List<String> ids,String nodeCode);
 
   /**
    * 取消作废

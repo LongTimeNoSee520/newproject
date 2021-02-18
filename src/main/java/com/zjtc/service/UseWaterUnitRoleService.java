@@ -1,8 +1,10 @@
 package com.zjtc.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterUnitRole;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: ZhouDaBo
@@ -27,4 +29,12 @@ public interface UseWaterUnitRoleService extends IService<UseWaterUnitRole> {
    * @return 批次号结果集
    */
   List<String> selectUseWaterUnitRole(String personId,String nodeCode);
+
+
+  /**
+   * 查询所有人员信息和关联的权限模块类型
+   * @param nodeCode 节点编码
+   * @return 集合
+   */
+  ApiResponse selectUserRelevanceRoleMessage(String nodeCode);
 }

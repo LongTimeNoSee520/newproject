@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("tWUseWaterSelfDefinePlan/")
-@Api("自平计划管理")
+@Api(tags = "自平计划管理")
 @Slf4j
 public class UseWaterSelfDefinePlanController {
 

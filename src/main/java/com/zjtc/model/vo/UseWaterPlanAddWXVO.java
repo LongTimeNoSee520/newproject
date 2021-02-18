@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
  * @Date: 2021/1/11
  */
 @Data
-@ApiModel(value = "用水计划调整申请表（微信公众号）", description = "用水计划调整申请表（微信公众号）")
+@ApiModel(value = "用水计划调整申请表", description = "用水计划调整申请表")
 @EqualsAndHashCode(callSuper = true)
 public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
 
@@ -108,9 +108,13 @@ public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
   /**
    *
    */
-  @ApiModelProperty("调整类型")
+  @ApiModelProperty("调整类型(0:调整计划,1:增加计划)")
   @TableField(value = "change_type", exist = true)
   private String changeType;
+
+  @ApiModelProperty("调整类型编码")
+  @TableField(value = "changeCode",exist = false)
+  private String changeCode;
   /**
    *
    */

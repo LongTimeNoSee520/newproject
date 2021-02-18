@@ -26,10 +26,10 @@ public interface FinanceService extends IService<Finance> {
   /**
    * 修改单位
    *
-   * @param finances 加价开票记录实体
+   * @param finance 加价开票记录实体
    * @return 响应状态
    */
-  ApiResponse updateFinance(List<Finance> finances);
+  ApiResponse updateFinance(Finance finance);
 
 
   /**

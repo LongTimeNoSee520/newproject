@@ -217,12 +217,12 @@ public class UseWaterPlanAddWXServiceImpl extends
 //      审核人员名称
       jsonObject.put("auditorName", auditorName);
 //      审核人员id
-      jsonObject.put("auditorId", businessJson);
+      jsonObject.put("auditorId", auditorId);
       // TODO: 2021/1/21 待办相关数据来源,增加办结单表的对应数据
 //      关联业务json数据(待办相关)
-//      jsonObject.put("businessJson",detailConfig);
-////      详情配置文件(待办相关)
-//      jsonObject.put("detailConfig",detailConfig);
+      jsonObject.put("businessJson",businessJson);
+//      详情配置文件(待办相关)
+      jsonObject.put("detailConfig",detailConfig);
 //     下一审核环节id
       jsonObject.put("nextNodeId", nextNodeId);
       try {

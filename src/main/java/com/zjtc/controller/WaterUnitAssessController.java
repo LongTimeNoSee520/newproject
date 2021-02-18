@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("waterUnitAssess/")
-@Api(description = "用水单位考核")
+@Api(tags = "用水单位考核")
 @Slf4j
 public class WaterUnitAssessController {
 
