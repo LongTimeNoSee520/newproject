@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.mapper.RefundOrRefundMapper;
+import com.zjtc.model.File;
 import com.zjtc.model.FlowExample;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.RefundOrRefund;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +56,17 @@ public class RefundOrRefundServiceImpl extends
   private MessageService messageService;
   @Autowired
   private SmsService smsService;
+  /**
+   * 附件存储目录
+   */
+  @Value("${server.servlet-path}")
+  private String contextPath;
+
+  /**
+   * 上下文
+   */
+  @Value("${file.preViewRealPath}")
+  private String preViewRealPath;
 
   @Override
   public boolean saveModel(JSONObject jsonObject) {
@@ -91,6 +104,15 @@ public class RefundOrRefundServiceImpl extends
       jsonObject.put("endTime", endTime + " 23:59:59");
     }
     List<RefundOrRefund> list = baseMapper.queryAll(jsonObject);
+    if (!list.isEmpty()) {
+      for (RefundOrRefund refundOrRefund : list) {
+        if (!refundOrRefund.getSysFiles().isEmpty()) {
+          for (File file : refundOrRefund.getSysFiles()) {
+            file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());
+          }
+        }
+      }
+    }
     return list;
   }
 
@@ -162,7 +184,8 @@ public class RefundOrRefundServiceImpl extends
                 AuditConstants.PAY_MESSAGE_TYPE, messageContent);
         /**短信通知发起人:*/
         smsService
-            .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(), messageContent,
+            .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
+                messageContent,
                 "退减免通知");
       }
     } else {
