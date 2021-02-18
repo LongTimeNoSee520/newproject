@@ -32,10 +32,14 @@ public class AuditConstants {
   public static final String PAY_FLOW_CODE = "payFlow";
 
   /**
-   * 推荐免单流程code
+   * 办结单(增加计划)流程code
    */
-  public static final String END_PAPER_FLOW_CODE = "endPaperFlow";
+  public static final String END_PAPER_ADD_FLOW_CODE = "endPaperAddFlow";
 
+  /**
+   * 办结单(四季度间调整)流程code
+   */
+  public static final String END_PAPER_ADJUST_FLOW_CODE = "endPaperAdjustFlow";
 /***************************************************************************
  * ****************************待办类型**************************************
  * *************************************************************************

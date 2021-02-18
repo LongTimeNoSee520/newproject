@@ -34,12 +34,13 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * @Author: ZhouDaBo
- * @Date: 2021/1/9
+ * @author lianghao
+ * @date 2021/01/09
  */
 @Service
 public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> implements
@@ -75,6 +76,12 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   @Autowired
   private SmsService smsService;
 
+  @Value("${file.preViewRealPath}")
+  private String preViewRealPath;
+
+  @Value("${server.servlet-path}")
+  private String contextPath;
+
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
 
@@ -94,6 +101,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     map.put("size", size);
     map.put("nodeCode", nodeCode);
     map.put("userId", userId);
+    map.put("preViewRealPath",preViewRealPath + contextPath + "/");
     if (StringUtils.isNotBlank(unitCode)) {
       map.put("unitCode", unitCode);
     }
@@ -158,32 +166,32 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   @Transactional(rollbackFor = Exception.class)
   public void examineSettlement(User user, JSONObject jsonObject) throws Exception {
     String id = jsonObject.getString("id");
-//    Double firstQuarter =jsonObject.getDouble("firstQuarter");
-//    Double secondQuarter = jsonObject.getDouble("secondQuarter");
-//    Double thirdQuarter = jsonObject.getDouble("thirdQuarter");
-//    Double fourthQuarter = jsonObject.getDouble("fourthQuarter");
+    Double firstQuarter = jsonObject.getDouble("firstQuarter");
+    Double secondQuarter = jsonObject.getDouble("secondQuarter");
+    Double thirdQuarter = jsonObject.getDouble("thirdQuarter");
+    Double fourthQuarter = jsonObject.getDouble("fourthQuarter");
     Double firstWater = jsonObject.getDouble("firstWater");
     Double secondWater = jsonObject.getDouble("secondWater");
     String addWay = jsonObject.getString("addWay");//加计划的方式：1-平均，2-最高
-    Integer quarter = jsonObject.getInteger("quarter");
+    String quarter = jsonObject.getString("quarter");
     Boolean year = jsonObject.getBoolean("year"); //是否在年计划上增加
     Double addNumber = jsonObject.getDouble("addNumber");
     String auditStatus = jsonObject.getString("auditStatus");
     String opinions = jsonObject.getString("opinions");//意见
-    String auditorName =jsonObject.getString("auditorName");//审核人员名称
-    String auditorId =jsonObject.getString("auditorId");//审核人员id
+    String auditorName = jsonObject.getString("auditorName");//审核人员名称
+    String auditorId = jsonObject.getString("auditorId");//审核人员id
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
 
     EndPaper endPaper = this.baseMapper.selectById(id);
     if (null != year && year) {
       /**选择了年计划*/
-     endPaper.setAlgorithmRules("1");
+      endPaper.setAlgorithmRules("1");
     }
     endPaper.setFirstWater(firstWater);
     endPaper.setSecondWater(secondWater);
     endPaper.setAddWay(addWay);
-    endPaper.setChangeQuarter(quarter.toString());
+    endPaper.setChangeQuarter(quarter);
     endPaper.setAddNumber(addNumber);
     //查询审核流程下一环节信息
     List<Map<String, Object>> hasNext = flowNodeInfoService
@@ -197,23 +205,48 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         //审核操作记录审核状态更新
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
         //设置办结单审核状态
-        endPaper.setAuditStatus("1");//通过
-        //网上申报的办结单
-        if ("1".equals(endPaper.getPaperType())){
+        endPaper.setAuditStatus("1");//通过(本次通过且没有下一环节)
+
+        if ("1".equals(endPaper.getDataSources())) {//网上申报的办结单
           UseWaterPlanAddWX waterPlanAddWX = new UseWaterPlanAddWX();
           waterPlanAddWX.setId(endPaper.getWaterPlanWXId());
           //只有通过时(且审核流程走完)，不通过则不修改
           waterPlanAddWX.setAuditStatus("4");//微信端提交审核通过后办结单审核也通过
           useWaterPlanAddWXService.update(waterPlanAddWX);
+          /**网上申报的 需要通知用户到微信端确认(现场的不发通知)*/
+          String messageContent1 ="";
+          if ("0".equals(endPaper.getPaperType())) {//调整计划
+            messageContent1 = "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")"
+                + "申请调整计划，调整后4个季度水量：第一季度" + firstQuarter + "方,第二季度" + secondQuarter + "方，第三季度"
+                + thirdQuarter + "方,第四季度" + fourthQuarter + "方]审核已通过,请到微信端确认。";
+          } else if ("1".equals(endPaper.getPaperType())) {//增加计划
+            messageContent1 =
+                "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
+                    + addNumber + "方(第一水量"
+                    + firstWater + "方，第二水量" + secondWater + "方)]审核已通过,请到微信端确认。";
+          }
+          /**新增通知给用水单位*/
+          messageService.messageToUnit(endPaper.getUnitCode(), messageContent1,
+              AuditConstants.END_PAPER_TODO_TITLE);
+          /**短信通知给用水单位*/
+          smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent1, "计划通知");
+          //TODO webSocket推送到公共服务端
         }
         /**新增通知给发起人*/
         //查询 流程的发起人
         FlowProcess firstProcess = flowProcessService.selectFirstRecords(id);
         //通知表新增
-        String messageContent =
-            "您发起的[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
-                + addNumber + "方(第一水量"
-                + firstWater + "方，第二水量" + secondWater + "方)]办结单审核已通过。";
+        String messageContent = "";
+        if ("0".equals(endPaper.getPaperType())) {//调整计划
+          messageContent = "您发起的[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")"
+              + "申请调整计划，调整后4个季度水量：第一季度" + firstQuarter + "方,第二季度" + secondQuarter + "方，第三季度"
+              + thirdQuarter + "方,第四季度" + fourthQuarter + "方]办结单审核已通过。";
+        } else if ("1".equals(endPaper.getPaperType())) {//增加计划
+          messageContent =
+              "您发起的[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
+                  + addNumber + "方(第一水量"
+                  + firstWater + "方，第二水量" + secondWater + "方)]办结单审核已通过。";
+        }
         messageService
             .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
                 AuditConstants.END_PAPER_MESSAGE_TYPE, messageContent);
@@ -221,37 +254,34 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         smsService.sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
             messageContent, "计划通知");
         //TODO ,webSocket推送到前端
-        /**新增通知给用水单位*/
-        String messageContent1 =
-            "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
-                + addNumber + "方(第一水量"
-                + firstWater + "方，第二水量" + secondWater + "方)]审核已通过,请到微信端确认。";
-        messageService.messageToUnit(endPaper.getUnitCode(), messageContent1,
-            AuditConstants.END_PAPER_TODO_TITLE);
-        /**短信通知给用水单位*/
-        smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent1, "计划通知");
-        //TODO webSocket推送到公共服务端
       }
       if ("0".equals(auditStatus)) {//本次审核不通过(没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知)
         flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
         endPaper.setAuditStatus("2");//2处于审核中(已有审核记录的只要不是最终环节通过都为审核中状态)
         // 没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知和发短信给提交人
         /**通知发给用水单位*/
-        String messageContent =
-            "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
-                + addNumber + "方(第一水量"
-                + firstWater + "方，第二水量" + secondWater + "方)]审核未通过。";
+        String messageContent ="";
+        if ("0".equals(endPaper.getPaperType())) {//调整计划
+          messageContent = "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")"
+              + "申请调整计划，调整后4个季度水量：第一季度" + firstQuarter + "方,第二季度" + secondQuarter + "方，第三季度"
+              + thirdQuarter + "方,第四季度" + fourthQuarter + "方]审核未通过。";
+        } else if ("1".equals(endPaper.getPaperType())) {//增加计划
+          messageContent =
+              "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
+                  + addNumber + "方(第一水量"
+                  + firstWater + "方，第二水量" + secondWater + "方)]审核未通过。";
+        }
         messageService.messageToUnit(endPaper.getUnitCode(), messageContent,
             AuditConstants.END_PAPER_TODO_TITLE);
         /**短信通知给用水单位*/
         smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent, "计划通知");
         //TODO webSocket推送到公共服务端
       }
-      //修改代办状态
+      //修改待办状态
       todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
       //修改实例表数据
-      flowExampleService.edit(user.getNodeCode(), user.getId());
-    } else if (!hasNext.isEmpty()){//审核流程继续
+      flowExampleService.edit(user.getNodeCode(), endPaper.getId());
+    } else if (!hasNext.isEmpty()) {//审核流程继续
       //修改当前办结单下一环节id
       endPaper.setNextNodeId(hasNext.get(0).get("flowNodeId").toString());
       //修改办结单状态为2处于审核中
@@ -268,9 +298,16 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       //修改待办状态
       todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
       //新增一条待办
-      String todoContent =
-          "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"+addNumber+"方(第一水量"
-              + firstWater + "方，第二水量" + secondWater+"方)。";
+      String todoContent = "";
+      if ("0".equals(endPaper.getPaperType())) {//调整计划
+        todoContent = "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")"
+            + "申请调整计划，调整后4个季度水量：第一季度" + firstQuarter + "方,第二季度" + secondQuarter + "方，第三季度"
+            + thirdQuarter + "方,第四季度" + fourthQuarter + "方。";
+      } else if ("1".equals(endPaper.getPaperType())) {//增加计划
+        todoContent =
+            "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
+                + addNumber + "方(第一水量" + firstWater + "方，第二水量" + secondWater + "方)。";
+      }
       todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, businessJson,
           detailConfig, AuditConstants.END_PAPER_TODO_TYPE);
     }
@@ -410,7 +447,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Override
   public boolean updateFromWeChat(EndPaper endPaper) {
-    /**来自办结单的更新或者新增*/
+    /**微信端确认后更新数据*/
     if (null != endPaper.getCurYearPlan()){//如果微信端传入的参数有年计划则表示是“增加计划”
       endPaper.setAddNumber(endPaper.getCurYearPlan());
     }

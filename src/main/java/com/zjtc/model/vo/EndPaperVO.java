@@ -130,13 +130,16 @@ public class EndPaperVO extends Model<EndPaperVO>{
     private String nextNodeId;
 
     @ApiModelProperty("审批申请附件(调整申请表等)信息列表")
-    List<Map<String,Object>> auditFiles;
+    List<FileVO> auditFiles;
 
     @ApiModelProperty("近2月水量凭证附件(水费发票)信息列表")
-    List<Map<String,Object>> waterProofFiles;
+    List<FileVO> waterProofFiles;
 
     @ApiModelProperty("其他证明材料信息列表")
-    List<Map<String,Object>> otherFiles;
+    List<FileVO> otherFiles;
+
+    @ApiModelProperty("预览路径")
+    private String preViewRealPath;
 
 //    @ApiModelProperty("未缴费情况")
 //    List<Map<String,Object>> unpaidList;

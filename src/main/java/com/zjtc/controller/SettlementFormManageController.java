@@ -125,13 +125,17 @@ public class SettlementFormManageController {
   @RequestMapping(value = "examineSettlement", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "办结单审核")
   public ApiResponse examineSettlement(@RequestHeader("token") String token,
-      @ApiParam("{\"id\":\"id\",\n"
-          + " \"firstWater\":\"第一水量,数字\" ,\n"
-          + " \"secondWater\":\"第二水量,数字\",\n"
-          + " \"addWay\":\"加计划的方式：1-平均，2-最高\",\n"
-          + " \"quarter\":\"季度，数字\",\n"
-          + " \"year\":\"是否勾选年计划 0否，1是\",\n"
-          + " \"addNumber\":\"增加水量，数字\",\n"
+      @ApiParam("{\"id\":\"办结单id\",\n"
+          + "\"firstQuarter\": \"一季度水量 数字(调整计划时才填)\",\n"
+          + "\"secondQuarter\": \"二季度水量 数字(调整计划时才填)\",\n"
+          + "\"thirdQuarter\": \"三季度水量 数字(调整计划时才填)\",\n"
+          + "\"fourthQuarter\": \"四季度水量 数字(调整计划时才填)\",\n"
+          + " \"firstWater\":\"第一水量,数字(增加计划时才填)\" ,\n"
+          + " \"secondWater\":\"第二水量,数字(增加计划时才填)\",\n"
+          + " \"addWay\":\"加计划的方式：1-平均，2-最高(增加计划时才填)\",\n"
+          + " \"quarter\":\"调整季度(增加计划时才填)\",\n"
+          + " \"year\":\"是否勾选年计划 0否，1是(增加计划时才填)\",\n"
+          + " \"addNumber\":\"增加水量，数字(增加计划时才填)\",\n"
           + " \"auditStatus\":\"审核是否通过0否1是\",\n"
           + " \"opinions\":\"审核意见\",\n"
           + "\"auditorName\":\"下一环节审核人员名称\",\n"
@@ -182,11 +186,12 @@ public class SettlementFormManageController {
   @ResponseBody
   @ApiOperation(value = "查询下一环节可提交审核的角色人员")
   @RequestMapping(value = "nextAuditRole", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse nextAuditRole(@ApiParam("{\n"
+  public ApiResponse nextAuditRole(@RequestHeader("token") String token,
+      @ApiParam("{\n"
       + "  \"id\":\"办结单id\",\n"
       + "  \"auditBtn\":\"审核是否通过，0：不通过，1:通过\"\n"
       + "  \n"
-      + "}") @RequestHeader("token") String token,
+      + "}")
       @RequestBody JSONObject jsonObject) {
     log.info("查询 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();

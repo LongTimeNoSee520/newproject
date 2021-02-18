@@ -81,13 +81,14 @@
 		<result column="next_node_id" property="nextNodeId" jdbcType="VARCHAR"/>
 		<result column="can_execute" property="canExecute" jdbcType="BOOLEAN"/>
 		<result column="need_audit" property="needAudit" jdbcType="BOOLEAN"/>
-		<collection property="auditFiles" ofType="java.util.LinkedHashMap" column="id"
+		<result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
+		<collection property="auditFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
 		select="queryAuditFiles">
 		</collection>
-		<collection property="waterProofFiles" ofType="java.util.LinkedHashMap" column="id"
+		<collection property="waterProofFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
 		select="queryWaterProofFiles">
 		</collection>
-		<collection property="otherFiles" ofType="java.util.LinkedHashMap" column="id"
+		<collection property="otherFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
 		select="queryOtherFiles">
 		</collection>
 	<!--<collection property="unpaidList" ofType="java.util.LinkedHashMap" column="id"-->
@@ -96,6 +97,12 @@
 		<collection property="auditMessages" ofType="java.util.LinkedHashMap" column="{id=id,nodeCode=node_code}"
 			select="queryAuditList">
 		</collection>
+	</resultMap>
+	<resultMap id="FileMap" type="com.zjtc.model.vo.FileVO">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+		<result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+		<result column="deleted" property="deleted" jdbcType="VARCHAR"/>
 	</resultMap>
 	<select id="queryNum" resultType="int">
 		SELECT COUNT (id)
@@ -133,7 +140,7 @@
 	</select>
 
 	<select id="queryPage" resultMap="PageResultMap">
-		SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_code,t1.unit_name,
+		SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_code,t1.unit_name,#{preViewRealPath} AS preViewRealPath,
 		t1.water_meter_code,t1.paper_type,<!--申报(调整)类型code-->
 		(SELECT dict_item_name
 		  FROM t_dict_item
@@ -189,8 +196,8 @@
 		WHERE  rownumber > (#{current}-1)* #{size}
 	</select>
 
-	<select id="queryAuditFiles" resultType="java.util.LinkedHashMap">
-		SELECT id AS id, file_name AS fileName,file_path AS filePath
+	<select id="queryAuditFiles" resultMap="FileMap">
+		SELECT id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
 		FROM t_file
 		WHERE deleted ='0'
 		AND id
@@ -204,8 +211,8 @@
 		and SUBSTRING(','+a.audit_file_id,number,1)=','
 		) <!--将逗号隔开的字符串拆分为行-->
 	</select>
-	<select id="queryWaterProofFiles" resultType="java.util.LinkedHashMap">
-		SELECT id AS id, file_name AS fileName,file_path AS filePath
+	<select id="queryWaterProofFiles" resultMap="FileMap">
+		SELECT id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
 		FROM t_file
 		WHERE deleted ='0'
 		AND id
@@ -219,8 +226,8 @@
 		and SUBSTRING(','+a.water_proof_file_id,number,1)=','
 		) <!--将逗号隔开的字符串拆分为行-->
 	</select>
-	<select id="queryOtherFiles" resultType="java.util.LinkedHashMap">
-		SELECT id AS id, file_name AS fileName,file_path AS filePath
+	<select id="queryOtherFiles" resultMap="FileMap">
+		SELECT id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
 		FROM t_file
 		WHERE deleted ='0'
 		AND id
@@ -237,7 +244,8 @@
   <select id="queryAuditList" resultType="java.util.LinkedHashMap">
     SELECT
     t1.id AS id, t1.operation_time AS operationTime,
-    CASE  t1.audit_status WHEN '0' THEN  '提交审核' WHEN '1' THEN  '待审核' WHEN '2' THEN  '审核通过' WHEN '3' THEN '审核不通过' END auditStatus,
+    t1.audit_status AS auditStatus,
+    CASE  t1.audit_status WHEN '0' THEN  '发起' WHEN '1' THEN  '待审核' WHEN '2' THEN  '审核通过' WHEN '3' THEN '审核不通过' END auditStatusName,
     t1.operator AS operator, t1.operator_id AS operatorId,  t3.org_name AS orgName
     FROM
     (

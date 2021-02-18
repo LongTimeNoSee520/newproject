@@ -10,14 +10,17 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.PlanDailyAdjustmentMapper;
 import com.zjtc.model.EndPaper;
+import com.zjtc.model.File;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.FileVO;
 import com.zjtc.model.vo.PlanDailyAdjustmentVO;
 import com.zjtc.model.vo.PrintVO;
 import com.zjtc.model.vo.UseWaterPlanExportVO;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.EndPaperService;
+import com.zjtc.service.FileService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
@@ -68,9 +71,7 @@ public class PlanDailyAdjustmentServiceImpl extends
   @Autowired
   private WaterUsePayInfoService waterUsePayInfoService;
   @Autowired
-  private MessageService messageService;
-  @Autowired
-  private SmsService smsService;
+  private FileService fileService;
   @Autowired
   private CommonService commonService;
 
@@ -452,9 +453,9 @@ public class PlanDailyAdjustmentServiceImpl extends
     Double secondWater = jsonObject.getDouble("secondWater");
     String quarter = jsonObject.getString("quarter");//季度
     String opinions = jsonObject.getString("opinions");//意见
-    List<String> auditFileIds = jsonObject.getJSONArray("auditFileIds").toJavaList(String.class);
-    List<String> waterProofFileIds = jsonObject.getJSONArray("waterProofFileIds").toJavaList(String.class);
-    List<String> otherFileIds = jsonObject.getJSONArray("otherFileIds").toJavaList(String.class);
+    List<FileVO> auditFiles = jsonObject.getJSONArray("auditFiles").toJavaList(FileVO.class);
+    List<FileVO> waterProofFiles = jsonObject.getJSONArray("waterProofFiles").toJavaList(FileVO.class);
+    List<FileVO> otherFiles = jsonObject.getJSONArray("otherFiles").toJavaList(FileVO.class);
     String auditorName =jsonObject.getString("auditorName");//审核人员名称
     String auditorId =jsonObject.getString("auditorId");//审核人员id
     String businessJson = jsonObject.getString("businessJson");
@@ -462,8 +463,8 @@ public class PlanDailyAdjustmentServiceImpl extends
     String nextNodeId = jsonObject.getString("nextNodeId");
     String dataSources = jsonObject.getString("dataSources");
 
-    /**短信或者消息内容*/
-    String messageContent ="";
+    /**待办内容*/
+    String todoContent ="";
     /**查询该用水单位是否存在没有走完办结流程的办结单*/
     Wrapper wrapper = new EntityWrapper();
     wrapper.eq("node_code", user.getNodeCode());
@@ -484,17 +485,33 @@ public class PlanDailyAdjustmentServiceImpl extends
     endPaper.setWaterMeterCode(waterMeterCode);
     endPaper.setPaperType(paperType);
     endPaper.setDataSources(dataSources);//2现场申报,1网上申报
-    if("2".equals(dataSources)){
-      endPaper.setConfirmed("1");//现场申报的都是已确认的
-    }else if ("1".equals(dataSources)){
-      endPaper.setConfirmed("0");//网上申报的都是未确认的
-    }
-    endPaper.setConfirmTime(new Date());
     endPaper.setCreateTime(new Date());
     endPaper.setCreaterId(user.getId());
     endPaper.setCreaterName(user.getUsername());
     endPaper.setPlanYear(planYear);
     endPaper.setChangeQuarter(quarter);
+    endPaper.setMinusPayStatus(useWaterPlan.getMinusPayStatus());
+    endPaper.setBalanceTest(useWaterPlan.getBalanceTest());
+    endPaper.setCreateType(useWaterPlan.getCreateType());
+    endPaper.setAuditStatus("0");//发起时设置为未审核
+    endPaper.setRescinded("0");//未撤销
+    /**相关附件信息*/
+    if (!auditFiles.isEmpty()){
+      List<String> auditFileIds =this.handleFiles(auditFiles);
+      String auditFileId = StringUtils.strip(auditFileIds.toString(),"[]").replace(" ", "");
+      endPaper.setAuditFileId(auditFileId);
+    }
+    if (!waterProofFiles.isEmpty()){
+      List<String> waterProofFileIds = this.handleFiles(waterProofFiles);
+      String waterProofFileId = StringUtils.strip(waterProofFileIds.toString(),"[]").replace(" ", "");
+      endPaper.setWaterProofFileId(waterProofFileId);
+    }
+    if (!otherFiles.isEmpty()){
+      List<String> otherFileIds = this.handleFiles(otherFiles);
+      String otherFileId = StringUtils.strip(otherFileIds.toString(),"[]").replace(" ", "");
+      endPaper.setOtherFileId(otherFileId);
+    }
+
     if (null != firstQuarter && null != secondQuarter && null != thirdQuarter
         && null != fourthQuarter) {
       endPaper.setFirstQuarter(firstQuarter);
@@ -502,60 +519,52 @@ public class PlanDailyAdjustmentServiceImpl extends
       endPaper.setThirdQuarter(thirdQuarter);
       endPaper.setFourthQuarter(fourthQuarter);
       endPaper.setCurYearPlan(firstQuarter + secondQuarter + thirdQuarter + fourthQuarter);
-      endPaper.setAuditStatus("1");//修改4个季度的数据，默认审核通过
-      /**对用水单位发起通知(通知表加数据)*/
-      messageContent =
+      /**审核流程信息新增*/
+      /**查询办结单审核流程的流程节点数据、流程线数据并复制到流程节点记录表、流程节点线记录表*/
+      String flowCode="endPaperAdjustFlow";//季度间调整审核流程
+      String nextNodeInfoId = flowNodeInfoService.selectAndInsert(user.getNodeCode(),endPaper.getId(),flowCode,nextNodeId);
+      endPaper.setNextNodeId(nextNodeInfoId);
+      /**待办内容*/
+      todoContent =
           "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")"
-              + "调整计划审核通过,调整后4个季度水量分别为：一季度" + firstQuarter + "方,二季度"
-              + secondQuarter + "方,三季度" + thirdQuarter + "方,四季度" + fourthQuarter + "方，请到微信端确认。";
-      messageService.messageToUnit(unitCode,messageContent,AuditConstants.END_PAPER_TODO_TITLE);
-    }
-    endPaper.setMinusPayStatus(useWaterPlan.getMinusPayStatus());
-    endPaper.setBalanceTest(useWaterPlan.getBalanceTest());
-    endPaper.setCreateType(useWaterPlan.getCreateType());
-    if (!auditFileIds.isEmpty()){
-      String auditFileId = StringUtils.strip(auditFileIds.toString(),"[]").replace(" ", "");
-      endPaper.setAuditFileId(auditFileId);
-    }
-    if (!waterProofFileIds.isEmpty()){
-      String waterProofFileId = StringUtils.strip(waterProofFileIds.toString(),"[]").replace(" ", "");
-      endPaper.setWaterProofFileId(waterProofFileId);
-    }
-    if (!otherFileIds.isEmpty()){
-      String otherFileId = StringUtils.strip(otherFileIds.toString(),"[]").replace(" ", "");
-      endPaper.setOtherFileId(otherFileId);
+              + "申请调整计划，调整后各季度水量：第一季度水量"
+              + firstQuarter + "方，第二季度水量" + secondQuarter + "方，第三季度水量" + thirdQuarter + "方，第四季度水量"
+              + fourthQuarter + "方。";
     }
     if (null != firstWater && null != secondWater) {
       endPaper.setFirstWater(firstWater);
       endPaper.setSecondWater(secondWater);
-      /**审核流程信息新增(在增加水量时才有审核流程)*/
-      /**1.查询办结单审核流程的流程节点数据、流程线数据并复制到流程节点记录表、流程节点线记录表*/
-      final  String flowCode="endPaperFlow";
+      /**审核流程信息新增*/
+      /**查询办结单审核流程的流程节点数据、流程线数据并复制到流程节点记录表、流程节点线记录表*/
+      String flowCode="endPaperAddFlow";//增加计划审核流程
       String nextNodeInfoId = flowNodeInfoService.selectAndInsert(user.getNodeCode(),endPaper.getId(),flowCode,nextNodeId);
-//      flowNodeLineInfoService.selectAndInsert(user.getNodeCode(),flowCode);
-      /**2.流程实例表添加数据*/
-      String type = AuditConstants.END_PAPER_TODO_TYPE;
-      flowExampleService.add(user,endPaper.getId(),type);
-      /**3.审核流新增(3条数据)*/
-      flowProcessService.create(user,endPaper.getId(),opinions,auditorName,auditorId);
-      /**4.待办表加数据*/
-      String todoType = AuditConstants.END_PAPER_TODO_TYPE;
-      String todoContent =
+      endPaper.setNextNodeId(nextNodeInfoId);
+      /**待办内容*/
+      todoContent =
           "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划：第一水量"
               + firstWater + "方，第二水量" + secondWater+"方。";
-      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, businessJson, detailConfig,todoType);
-      endPaper.setAuditStatus("0");//增加水量时，需要走审核流程，发起时设置为未审核
-      endPaper.setNextNodeId(nextNodeInfoId);
     }
-    endPaper.setRescinded("0");//未撤销
+    if("2".equals(dataSources)){
+      endPaper.setConfirmed("1");//现场申报的都是已确认的
+      endPaper.setConfirmTime(new Date());
+    }else if ("1".equals(dataSources)){
+      endPaper.setConfirmed("0");//网上申报的都是未确认的
+    }
+    /**流程实例表添加数据*/
+    String type = AuditConstants.END_PAPER_TODO_TYPE;
+    flowExampleService.add(user,endPaper.getId(),type);
+    /**审核流新增(3条数据)*/
+    flowProcessService.create(user,endPaper.getId(),opinions,auditorName,auditorId);
+    /**待办表加数据*/
+    if(StringUtils.isNotBlank(todoContent)) {
+      String todoType = AuditConstants.END_PAPER_TODO_TYPE;
+      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, businessJson,
+          detailConfig, todoType);
+    }
+    /**办结单新增*/
     endPaperService.insert(endPaper);
     /**发起办结单后，将计划表中的“是否存在没有走完办结流程的办结单”的状态改为是(办结流程走完后或者撤销办结单后，改为否)。*/
     this.updateExistSettlement("1",unitCode,user.getNodeCode(),planYear);
-    /**发短信*/
-    if(StringUtils.isNotBlank(messageContent)){
-      smsService.sendMsgToUnit(user,unitCode,messageContent,"计划通知");
-      //TODO wbeSocket向公共服务平台推送
-    }
     return response;
   }
 
@@ -630,13 +639,35 @@ public class PlanDailyAdjustmentServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> firstRole(User user) {
-    List<Map<String, Object>> result = flowNodeInfoService
-        .firStAuditRole(AuditConstants.END_PAPER_FLOW_CODE, user.getNodeCode());
+  public List<Map<String, Object>> secondAuditRole(User user,String changeType) {
+    List<Map<String, Object>> result = new ArrayList<>();
+    if ("0".equals(changeType)){//四个季度间调整
+      result = flowNodeInfoService
+          .secondAuditRole(AuditConstants.END_PAPER_ADJUST_FLOW_CODE, user.getNodeCode());
+    }else if ("1".equals(changeType)) {//增加计划
+      result = flowNodeInfoService
+          .secondAuditRole(AuditConstants.END_PAPER_ADD_FLOW_CODE, user.getNodeCode());
+    }
     return result;
   }
 
-
+private List<String> handleFiles(List<FileVO> fileVOS){
+  List<File> deletedFiles = new ArrayList<>();
+  List<String> fileIds = new ArrayList<>();
+  for (FileVO fileVO :fileVOS){
+    if ("0".equals(fileVO.getDeleted())){
+      fileIds.add(fileVO.getId());
+    }else if ("1".equals(fileVO.getDeleted())){
+     File file =  new File();
+     file.setId(fileVO.getId());
+     file.setDeleted("1");
+     deletedFiles.add(file);
+    }
+  }
+  /**更新附件信息(前端进行了删除操作的附件更新deleted字段为已删除)*/
+  fileService.updateBusinessId(null,deletedFiles);
+  return fileIds;
+}
   /**
    * 向上十位取整
    * 34512 返回34520。

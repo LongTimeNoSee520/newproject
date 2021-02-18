@@ -1,7 +1,6 @@
 package com.zjtc.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.zjtc.base.constant.ResponseMsgConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.UseWaterPlanAdd;
@@ -307,23 +306,32 @@ public class PlanDailyAdjustmentController {
           + "\"unitName\": \"单位名称\",\n"
           + "\"waterMeterCode\": \"水表档案号\",\n"
           + "\"planYear\": \"年份 数字\",\n"
-          + "\"paperType\": \"申报类型\",\n"
-          + "\"firstQuarter\": \"一季度水量 数字\",\n"
-          + "\"secondQuarter\": \"二季度水量 数字\",\n"
-          + "\"thirdQuarter\": \"三季度水量 数字\",\n"
-          + "\"fourthQuarter\":\"四季度水量 数字\",\n"
-          + "\"firstWater\":\"第一水量\",\n"
-          + "\"secondWater\":\"第二水量\",\n"
-          + "\"quarter\":\"季度\",\n"
-          + "\"opinions\":\"具体意见\",\n"
-          + "\"auditFileIds\":[\"审批申请附件id列表\"]没有时传[], \n"
-          + "\"waterProofFileIds\":[\"近2月水量凭证附件id列表\"]没有时传[], \n"
-          + "\"otherFileIds\":[\"其他证明材料id列表\"]没有时传[],\n"
-          + "\"auditorName\":\"下一环节审核人员名称\",\n"
-          + "\"auditorId\":\"下一环节审核人员id\",\n"
-          + "\"businessJson\":\"关联业务json数据(待办相关)\",\n"
-          + "\"detailConfig\":\"详情配置文件(待办相关)\",\n"
-          + "\"nextNodeId\":\"下一审核环节id\"\n"
+          + "\"paperType\": \"申报类型(数据字典code为changeType)\",\n"
+          + "\"firstQuarter\": \"一季度水量 数字(调整计划时才填)\",\n"
+          + "\"secondQuarter\": \"二季度水量 数字(调整计划时才填)\",\n"
+          + "\"thirdQuarter\": \"三季度水量 数字(调整计划时才填)\",\n"
+          + "\"fourthQuarter\": \"四季度水量 数字(调整计划时才填)\",\n"
+          + "\"firstWater\": \"第一水量(增加计划时才填)\",\n"
+          + "\"secondWater\": \"第二水量(增加计划时才填)\",\n"
+          + "\"quarter\": \"季度(增加计划时才填)\",\n"
+          + "\"opinions\": \"具体意见\",\n"
+          + "\"auditFiles\"(审批申请附件列表,没有时传[]): [\n"
+          + "     { \"id\":\"附件上传时返回的id\",\n"
+          + "    \"deleted\":\"上传文件后是否进行了删除操作0否1是\"\n"
+          + "    }] ,\n"
+          + "\"waterProofFiles\"(近2月水量凭证附件列表,没有时传[]): [\n"
+          + "     { \"id\":\"附件上传时返回的id\",\n"
+          + "    \"deleted\":\"上传文件后是否进行了删除操作0否1是\"\n"
+          + "    }] ,\n"
+          + "\"otherFiles\"(其他证明材料列表,没有时传[]): [\n"
+          + "     { \"id\":\"附件上传时返回的id\",\n"
+          + "    \"deleted\":\"上传文件后是否进行了删除操作0否1是\"\n"
+          + "    }] ,\n"
+          + "\"auditorName\": \"下一环节审核人员名称\",\n"
+          + "\"auditorId\": \"下一环节审核人员id\",\n"
+          + "\"businessJson\": \"关联业务json数据(待办相关)\",\n"
+          + "\"detailConfig\": \"详情配置文件(待办相关)\",\n"
+          + "\"nextNodeId\": \"下一审核环节id\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("发起办结单==== 参数{" + jsonObject.toJSONString()+ "}");
     ApiResponse response = new ApiResponse();
@@ -362,22 +370,25 @@ public class PlanDailyAdjustmentController {
   }
 
   @ResponseBody
-  @ApiOperation(value = "查询办结单第一个提交流程的角色信息")
-  @RequestMapping(value = "firstRole", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse firstRole(@RequestHeader("token") String token) {
+  @ApiOperation(value = "查询办结单发起时审核流程的角色下人员信息")
+  @RequestMapping(value = "secondAuditRole", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse secondAuditRole(@RequestHeader("token") String token,
+      @ApiParam("{\"changeType\":\"调整类型：四个季度间的调整为0,增加计划为1 \"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
-    if (null != user) {
+    String  changeType = jsonObject.getString("changeType");
+    if (StringUtils.isNotBlank(changeType)) {
       try {
-        List<Map<String, Object>> result = planDailyAdjustmentService.firstRole(user);
+        List<Map<String, Object>> result = planDailyAdjustmentService.secondAuditRole(user,changeType);
         apiResponse.setData(result);
       } catch (Exception e) {
         log.error("查询,errMsg==={}", e.getMessage());
         e.printStackTrace();
-        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+        apiResponse.recordError("查询失败");
       }
     } else {
-      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      apiResponse.recordError("调整类型不能为空");
     }
     return apiResponse;
   }
