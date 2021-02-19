@@ -167,18 +167,14 @@ public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
   @TableField(value = "execute_result", exist = true)
   private String executeResult;
 
-  @ApiModelProperty("调整类型(取数据字典值)")
-  @TableField(value = "change_type", exist = true)
-  private String changeType;
 
 //  @ApiModelProperty("状态(1:初始值,2:待确认,3:已确认,4:执行")
 //  @TableField(value = "status", exist = true)
 //  private String status;
 
   @ApiModelProperty("自平材料附件id")
-  @TableField(value = "self_define_file_id", exist = true)
-  private String selfDefineFileId;
-
+  @TableField(value = "SelfDefineFiles", exist = false)
+  private List<File> selfDefineFiles;
 
 
   /**

@@ -98,7 +98,7 @@ public class FinanceController {
   @ApiOperation("修改加价费开票记录")
   public ApiResponse updateFinance(@ApiParam("{\n"
       + "        {\n"
-      + "            \"id\":\"1\",\n"
+      + "            \"id\":\"主键\",\n"
       + "            \"unitName\":\"单位名称\",\n"
       + "            \"money\":\"缴费金额\",\n"
       + "            \"paymentDate\":\"十三位时间戳:入账时间\",\n"

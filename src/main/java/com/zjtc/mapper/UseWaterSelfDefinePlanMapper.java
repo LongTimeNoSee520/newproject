@@ -71,7 +71,8 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
       @Param("unitCode") String unitCode,
       @Param("nodeCode") String nodeCode,
       @Param("auditStatus") String auditStatus,
-      @Param("userId") String userId);
+      @Param("userId") String userId,
+      @Param("path") String path);
 
   /**
    * 执行时修改执行信息

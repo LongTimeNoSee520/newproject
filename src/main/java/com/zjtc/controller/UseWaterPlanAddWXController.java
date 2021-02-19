@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("useWaterPlanAddWX/")
-@Api(tags = "用水计划调整申请服务")
+@Api(tags = "用水计划调整审核")
 @Slf4j
 public class UseWaterPlanAddWXController {
 

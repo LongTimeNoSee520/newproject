@@ -86,27 +86,23 @@
     <result column="FrontFourthQuarter" property="FrontFourthQuarter" jdbcType="DOUBLE"/>
     <result column="FrontCurYearPlan" property="FrontCurYearPlan" jdbcType="DOUBLE"/>
     <result column="FrontPlanYear" property="FrontPlanYear" jdbcType="INTEGER"/>
-    <collection property="auditFileId" ofType="com.zjtc.model.File" column="id"
+    <result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
+
+    <collection property="auditFileId" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
       select="queryAuditFiles">
     </collection>
-    <collection property="waterProofFileId" ofType="com.zjtc.model.File" column="id"
+    <collection property="waterProofFileId" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
       select="queryWaterProofFiles">
     </collection>
-    <collection property="otherFileId" ofType="com.zjtc.model.File" column="id"
+    <collection property="otherFileId" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
       select="queryOtherFiles">
     </collection>
   </resultMap>
 
-  <resultMap id="sysAttrFileMap" type="com.zjtc.model.File">
+  <resultMap id="sysAttrFileMap" type="com.zjtc.model.vo.FileVO">
     <id column="id" property="id" jdbcType="VARCHAR"/>
-    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
-    <result column="creater_id" property="createrId" jdbcType="VARCHAR"/>
-    <result column="file_type" property="fileType" jdbcType="VARCHAR"/>
-    <result column="size" property="size" jdbcType="VARCHAR"/>
     <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
     <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
-    <result column="business_id" property="businessId" jdbcType="VARCHAR"/>
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
   </resultMap>
 
@@ -177,9 +173,10 @@
     WHEN '0' THEN '未打印'
     WHEN '1' THEN '已打印' ELSE '已打印'
     END printed, --是否打印
-    audit_file_id,
-    water_proof_file_id,
-    other_file_id
+<!--    audit_file_id,-->
+<!--    water_proof_file_id,-->
+<!--    other_file_id,-->
+    #{path} AS preViewRealPath
     FROM
     t_wx_use_water_plan_add t1
     WHERE
@@ -243,15 +240,7 @@
 
   <select id="queryAuditFiles" resultMap="sysAttrFileMap">
     SELECT
-    id,
-    node_code,
-    create_time,
-    creater_id,
-    file_type,
-    size,
-    file_path,
-    file_name,
-    business_id
+    id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
     FROM t_file
     WHERE deleted ='0'
     AND id
@@ -268,15 +257,7 @@
   </select>
   <select id="queryWaterProofFiles" resultMap="sysAttrFileMap">
     SELECT
-    id,
-    node_code,
-    create_time,
-    creater_id,
-    file_type,
-    size,
-    file_path,
-    file_name,
-    business_id
+    id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
     FROM t_file
     WHERE deleted ='0'
     AND id
@@ -294,15 +275,7 @@
   </select>
   <select id="queryOtherFiles" resultMap="sysAttrFileMap">
     SELECT
-    id,
-    node_code,
-    create_time,
-    creater_id,
-    file_type,
-    size,
-    file_path,
-    file_name,
-    business_id
+    id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
     FROM t_file
     WHERE deleted ='0'
     AND id

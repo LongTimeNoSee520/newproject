@@ -1,8 +1,8 @@
 package com.zjtc.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAddWX;
+import com.zjtc.model.vo.UseWaterPlanAddWXVO;
 import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -48,7 +48,7 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
    * @param auditStatus 是否审核
    * @return 数据集
    */
-  List<UseWaterPlanAddWX> queryList(
+  List<UseWaterPlanAddWXVO> queryList(
       @Param("currPage") Integer currPage,
       @Param("pageSize") Integer pageSize,
       @Param("unitName") String unitName,
@@ -56,7 +56,8 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
       @Param("executed") String executed,
       @Param("nodeCode") String nodeCode,
       @Param("auditStatus") String auditStatus,
-      @Param("userId") String userId);
+      @Param("userId") String userId,
+      @Param("path") String path);
 
 
   /**

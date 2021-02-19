@@ -253,6 +253,9 @@ public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
   @TableField(value = "other_file_id", exist = true)
   private List<File> otherFileId;
 
+  @ApiModelProperty("预览路径")
+  private String preViewRealPath;
+
   @Override
   protected Serializable pkVal() {
     return null;

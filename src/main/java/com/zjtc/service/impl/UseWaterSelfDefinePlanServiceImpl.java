@@ -26,6 +26,7 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +53,18 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 
   @Autowired
   private SmsService smsService;
+
+  /**
+   * 附件存储目录
+   */
+  @Value("${server.servlet-path}")
+  private String contextPath;
+
+  /**
+   * 上下文
+   */
+  @Value("${file.preViewRealPath}")
+  private String preViewRealPath;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -118,9 +131,12 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
+//    附件展示路径
+    String path = preViewRealPath + contextPath + "/";
+    // TODO: 2021/2/18 因为没有附件id,需要根据业务id在附件表里去查对应的业务id,现在的做法是默认有附件id的情况,错误
     List<UseWaterSelfDefinePlanVO> waterSelfDefinePlans = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType, areaCode, beginYear,
-            endYear, executed, unitCode, nodeCode, auditStatus, userId);
+            endYear, executed, unitCode, nodeCode, auditStatus, userId,path);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -286,14 +302,15 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //      第四季度计划
       waterPlanAdd.setFourthQuarter(
           useWaterSelfDefinePlan.getFourthQuarter() - useWaterPlanModel.getFourthQuarter());
-//      调整类型(数据字典值(增加计划))
-      waterPlanAdd.setPlanType(useWaterSelfDefinePlan.getChangeType());
+//      调整类型(0代表日常调整)
+      waterPlanAdd.setPlanType("0");
 //      创建时间
       waterPlanAdd.setCreateTime(new Date());
 //      创建者
       waterPlanAdd.setCreater(executor);
 //      创建者id
       waterPlanAdd.setCreaterId(executorId);
+      // TODO: 2021/2/18 附件信息代办 
 ////      审批申请附件id
 //      waterPlanAdd.setAuditFileId(useWaterSelfDefinePlan.getSelfDefineFileId());
 //      状态(1:草稿、2:审核、3:累加)

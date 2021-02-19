@@ -26,10 +26,11 @@
     <result column="executor" property="executor" jdbcType="VARCHAR"/>
     <result column="executor_id" property="executorId" jdbcType="VARCHAR"/>
     <result column="execute_result" property="executeResult" jdbcType="VARCHAR"/>
-    <result column="change_type" property="changeType" jdbcType="VARCHAR"/>
     <result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
     <result column="executed" property="executed" jdbcType="VARCHAR"/>
-    <result column="self_define_file_id" property="selfDefineFileId" jdbcType="VARCHAR"/>
+    <collection property="selfDefineFiles" ofType="java.util.LinkedHashMap" column="id"
+      select="SelectSysAttrFileMap">
+    </collection>
   </resultMap>
 
 
@@ -55,23 +56,17 @@
     <result column="executor" property="executor" jdbcType="VARCHAR"/>
     <result column="executor_id" property="executorId" jdbcType="VARCHAR"/>
     <result column="execute_result" property="executeResult" jdbcType="VARCHAR"/>
-    <result column="change_type" property="changeType" jdbcType="VARCHAR"/>
     <result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
     <result column="executed" property="executed" jdbcType="VARCHAR"/>
-    <collection property="selfDefineFileId" column="id" ofType="com.zjtc.model.File"
-      select="SelectSysAttrFileMap"/>
+    <result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
+    <collection property="selfDefineFiles" column="{id=id,preViewRealPath=preViewRealPath,nodeCode=node_code}" ofType="com.zjtc.model.File"
+      select="selectSysAttrFileMap"/>
   </resultMap>
 
   <resultMap id="sysAttrFileMap" type="com.zjtc.model.File">
     <id column="id" property="id" jdbcType="VARCHAR"/>
-    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
-    <result column="creater_id" property="createrId" jdbcType="VARCHAR"/>
-    <result column="file_type" property="fileType" jdbcType="VARCHAR"/>
-    <result column="size" property="size" jdbcType="VARCHAR"/>
     <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
     <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
-    <result column="business_id" property="businessId" jdbcType="VARCHAR"/>
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
   </resultMap>
 
@@ -141,7 +136,6 @@
     executor,
     executor_id,
     execute_result,
-    change_type,
     CASE audit_status
     WHEN 0 THEN '未审核'
     WHEN 1 THEN '审核不通过'
@@ -150,7 +144,8 @@
     CASE executed
     WHEN 0 THEN '未执行'
     WHEN 1 THEN '已执行'
-    END as executed
+    END as executed,
+    #{path} AS preViewRealPath
     FROM
     t_w_use_water_self_define_plan t1
     WHERE t1.node_code = #{nodeCode}
@@ -231,47 +226,15 @@
     FROM t_w_use_water_unit_role WHERE person_id = #{userId}))
   </select>
 
+  <select id="selectSysAttrFileMap"  resultMap="sysAttrFileMap">
+    select
+    id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
+    from t_file
+    where business_id = #{id}
+    and deleted='0'
+    and node_code = #{nodeCode}
+    order by create_time desc
 
-<!--  <select id="SelectSysAttrFileMap" resultMap="sysAttrFileMap">-->
-<!--    select-->
-<!--    id,-->
-<!--    node_code,-->
-<!--    create_time,-->
-<!--    creater_id,-->
-<!--    file_type,-->
-<!--    size,-->
-<!--    file_path,-->
-<!--    file_name,-->
-<!--    business_id-->
-<!--    from-->
-<!--    t_file-->
-<!--    where business_id = #{id}-->
-<!--    and deleted='0'-->
-<!--  </select>-->
-
-  <select id="SelectSysAttrFileMap"  resultMap="sysAttrFileMap">
-    SELECT
-    id,
-    node_code,
-    create_time,
-    creater_id,
-    file_type,
-    size,
-    file_path,
-    file_name,
-    business_id
-    FROM t_file
-    WHERE deleted ='0'
-    AND id
-    IN (
-    SELECT  SUBSTRING(a.other_file_id,number,CHARINDEX(',',a.other_file_id+',',number)-number) as other_file_id
-    from (SELECT other_file_id
-    FROM t_wx_use_water_plan_add
-    WHERE id = #{id} ) a,master..spt_values
-    where number >= 1 and number  &lt; len(a.other_file_id)
-    and type='p'
-    and SUBSTRING(','+a.other_file_id,number,1)=','
-    ) <!--将逗号隔开的字符串拆分为行-->
   </select>
 
   <update id="updateExecuteData">

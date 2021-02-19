@@ -7,6 +7,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.UseWaterPlanAddWXMapper;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.UseWaterPlanAddWXVO;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.PlanDailyAdjustmentService;
@@ -21,6 +22,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -47,6 +49,12 @@ public class UseWaterPlanAddWXServiceImpl extends
 
   @Autowired
   private SmsService smsService;
+
+  @Value("${file.preViewRealPath}")
+  private String preViewRealPath;
+
+  @Value("${server.servlet-path}")
+  private String contextPath;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -76,7 +84,8 @@ public class UseWaterPlanAddWXServiceImpl extends
     if (null != jsonObject.getString("executed")) {
       executed = jsonObject.getString("executed");
     }
-
+//    附件展示路径
+  String path = preViewRealPath + contextPath + "/";
 //    总条数
     Integer total = this.baseMapper
         .selectCount(unitName, userType, executed, nodeCode, auditStatus, userId);
@@ -84,9 +93,9 @@ public class UseWaterPlanAddWXServiceImpl extends
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     // TODO: 2021/1/8 还没有查询加价费信息
-    List<UseWaterPlanAddWX> useWaterPlanAdds = this.baseMapper
+    List<UseWaterPlanAddWXVO> useWaterPlanAdds = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType,
-            executed, nodeCode, auditStatus, userId);
+            executed, nodeCode, auditStatus, userId,path);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -143,7 +152,7 @@ public class UseWaterPlanAddWXServiceImpl extends
               " 方,第二季度计划:" + useWaterPlanAddWX.getSecondQuarter() +
               "方,第三季度计划:" + useWaterPlanAddWX.getThirdQuarter() +
               "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,年计划水量:"+
-              useWaterPlanAddWX.getCurYearPlan()+",审核已通过。";
+              useWaterPlanAddWX.getCurYearPlan()+",审核未通过,已被驳回。";
       messageService
           .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName, AuditConstants.NOT_APPROVED, messageContent);
       try {
