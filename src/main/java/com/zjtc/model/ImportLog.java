@@ -50,6 +50,9 @@ public class ImportLog extends Model<ImportLog>{
     @TableField(value = "files",exist = false)
     private List<Map<String,Object>> files;
 
+    @ApiModelProperty("预览路径")
+    private String preViewRealPath;
+
 	@Override
 	protected Serializable pkVal() {
 		return this.id;
