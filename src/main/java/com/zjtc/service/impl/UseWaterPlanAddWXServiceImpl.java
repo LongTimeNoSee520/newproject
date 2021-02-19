@@ -16,9 +16,11 @@ import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterPlanService;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +87,7 @@ public class UseWaterPlanAddWXServiceImpl extends
       executed = jsonObject.getString("executed");
     }
 //    附件展示路径
-  String path = preViewRealPath + contextPath + "/";
+    String path = preViewRealPath + contextPath + "/";
 //    总条数
     Integer total = this.baseMapper
         .selectCount(unitName, userType, executed, nodeCode, auditStatus, userId);
@@ -95,7 +97,7 @@ public class UseWaterPlanAddWXServiceImpl extends
     // TODO: 2021/1/8 还没有查询加价费信息
     List<UseWaterPlanAddWXVO> useWaterPlanAdds = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType,
-            executed, nodeCode, auditStatus, userId,path);
+            executed, nodeCode, auditStatus, userId, path);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -141,6 +143,7 @@ public class UseWaterPlanAddWXServiceImpl extends
     int i = this.baseMapper
         .updateAudit(auditPersonId, userName, id, auditStatus, auditResult, new Date(), firstWater,
             secondWater);
+    ApiResponse response1 = null;
 //审核通过后进入办结单审核流程,向办结单中增加数据
     UseWaterPlanAddWX useWaterPlanAddWX = this.baseMapper.selectById(id);
     String messageContent;
@@ -151,14 +154,15 @@ public class UseWaterPlanAddWXServiceImpl extends
               "用水计划增加或调整申请,第一季度计划:" + useWaterPlanAddWX.getFirstQuarter() +
               " 方,第二季度计划:" + useWaterPlanAddWX.getSecondQuarter() +
               "方,第三季度计划:" + useWaterPlanAddWX.getThirdQuarter() +
-              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,年计划水量:"+
-              useWaterPlanAddWX.getCurYearPlan()+",审核未通过,已被驳回。";
+              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,年计划水量:" +
+              useWaterPlanAddWX.getCurYearPlan() + ",审核未通过,已被驳回。";
       messageService
-          .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName, AuditConstants.NOT_APPROVED, messageContent);
+          .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName,
+              AuditConstants.NOT_APPROVED, messageContent);
       try {
-        smsService.sendMsgToPromoter(user,auditPersonId,userName,messageContent,"计划通知");
+        smsService.sendMsgToPromoter(user, auditPersonId, userName, messageContent, "计划通知");
       } catch (Exception e) {
-       log.error("用水计划增加或调整审核短信发送失败");
+        log.error("用水计划增加或调整审核短信发送失败");
       }
     } else if ("2".equals(auditStatus)) {
       messageContent =
@@ -167,10 +171,11 @@ public class UseWaterPlanAddWXServiceImpl extends
               "用水计划增加或调整申请,第一季度计划:" + useWaterPlanAddWX.getFirstQuarter() +
               " 方,第二季度计划:" + useWaterPlanAddWX.getSecondQuarter() +
               "方,第三季度计划:" + useWaterPlanAddWX.getThirdQuarter() +
-              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,年计划水量:"+
-              useWaterPlanAddWX.getCurYearPlan()+",审核已通过。";
+              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,年计划水量:" +
+              useWaterPlanAddWX.getCurYearPlan() + ",审核已通过。";
       messageService
-          .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName, AuditConstants.GET_APPROVED, messageContent);
+          .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName,
+              AuditConstants.GET_APPROVED, messageContent);
     }
     if ("2".equals(useWaterPlanAddWX.getAuditStatus())) {
       JSONObject jsonObject = new JSONObject();
@@ -202,49 +207,71 @@ public class UseWaterPlanAddWXServiceImpl extends
       jsonObject.put("quarter", useWaterPlanAddWX.getChangeQuarter());
 //      具体意见
       jsonObject.put("opinions", useWaterPlanAddWX.getAuditResult());
+
+//==========================================================================
 //       审批申请附件id列表\"]没有时传[]
       String[] split = useWaterPlanAddWX.getAuditFileId().split(",");
-      List<String> list = new ArrayList<>(16);
-      for (String dd : split){
-        list.add(dd);
+      Map<String, Object> map = new HashMap<>(10);
+      List<Map<String, Object>> auditFiles = new ArrayList<>();
+      for (String dd : split) {
+        map.put("id", dd);
+        map.put("deleted", "0");
+        auditFiles.add(map);
       }
-      jsonObject.put("auditFileIds", list);
+      jsonObject.put("auditFiles", auditFiles);
+
 //       近2月水量凭证附件id列表\"]没有时传[]
       String[] split1 = useWaterPlanAddWX.getWaterProofFileId().split(",");
-      List<String> list1 = new ArrayList<>(16);
-      for (String ss : split1){
-        list1.add(ss);
+      Map<String, Object> map1 = new HashMap<>(10);
+      List<Map<String, Object>> waterProofFiles = new ArrayList<>();
+      for (String ss : split1) {
+        map1.put("id", ss);
+        map1.put("deleted", 0);
+        waterProofFiles.add(map1);
       }
-      jsonObject.put("waterProofFileIds", list1);
+      jsonObject.put("waterProofFiles", waterProofFiles);
+
 //        其他证明材料id列表\"]没有时传[]
       String[] split2 = useWaterPlanAddWX.getOtherFileId().split(",");
-      List<String> list2 = new ArrayList<>(16);
-      for (String aa : split2){
-        list2.add(aa);
+      Map<String, Object> map2 = new HashMap<>(10);
+      List<Map<String, Object>> otherFiles = new ArrayList<>();
+      for (String aa : split2) {
+        map2.put("id", aa);
+        map.put("deleted", "0");
+        otherFiles.add(map);
       }
-      jsonObject.put("otherFileIds", list2);
-//      审核人员名称
+      jsonObject.put("otherFiles", otherFiles);
+
+//==========================================================================
+
+//      下一环节审核人员名称
       jsonObject.put("auditorName", auditorName);
-//      审核人员id
+//      下一环节审核人员id
       jsonObject.put("auditorId", auditorId);
       // TODO: 2021/1/21 待办相关数据来源,增加办结单表的对应数据
 //      关联业务json数据(待办相关)
-      jsonObject.put("businessJson",businessJson);
+      jsonObject.put("businessJson", businessJson);
 //      详情配置文件(待办相关)
-      jsonObject.put("detailConfig",detailConfig);
+      jsonObject.put("detailConfig", detailConfig);
 //     下一审核环节id
       jsonObject.put("nextNodeId", nextNodeId);
       try {
-        planDailyAdjustmentService.initiateSettlement(user, jsonObject);
+       response1 =    planDailyAdjustmentService.initiateSettlement(user, jsonObject);
       } catch (Exception e) {
         log.error("转换json数据异常" + e.getMessage());
+        response.recordError("系统异常");
+        return response;
       }
     }
-    if (i > 0) {
+    log.info("审核通过往办结单中增加数据返回状态:"+ response1.getCode());
+    if (i > 0 && Objects.requireNonNull(response1).getCode() == 200) {
       response.setCode(200);
       return response;
     } else {
-      response.recordError("审核失败");
+      if (Objects.requireNonNull(response1).getCode() == 500){
+        log.info(response1.getMessage());
+      }
+      response.recordError("操作失败");
       return response;
     }
   }
