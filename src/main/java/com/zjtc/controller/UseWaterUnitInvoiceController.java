@@ -346,12 +346,13 @@ public class UseWaterUnitInvoiceController {
   public ApiResponse selectInvoices( @RequestHeader("token") String token,@RequestBody JSONObject jsonObject) {
     log.info("分页查询数据,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
     if (null == jsonObject){
       response.recordError("系统异常");
       return response;
     }
     try {
-      List<Map<String, Object>> maps = useWaterUnitInvoiceService.selectInvoices();
+      List<Map<String, Object>> maps = useWaterUnitInvoiceService.selectInvoices(user.getId(),user.getNodeCode());
       response.setData(maps);
       return response;
     } catch (Exception e) {

@@ -113,7 +113,7 @@ public interface UseWaterUnitInvoiceMapper extends BaseMapper<UseWaterUnitInvoic
    * 查询未被使用的发票编号
    * @return 集合
    */
-  List<Map<String,Object>> selectInvoices();
+  List<Map<String,Object>> selectInvoices(@Param("loginId") String loginId,@Param("nodeCode") String nodeCode);
 
   /**
    * 单位信息关联发票

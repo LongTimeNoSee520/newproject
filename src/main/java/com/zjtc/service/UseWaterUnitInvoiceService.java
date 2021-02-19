@@ -89,7 +89,7 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
    * 查询未被使用的发票编号
    * @return 集合
    */
-  List<Map<String,Object>> selectInvoices();
+  List<Map<String,Object>> selectInvoices(String loginId,String nodeCode);
 
   /**
    * 更新发票的单位信息

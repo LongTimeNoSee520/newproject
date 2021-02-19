@@ -88,7 +88,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
       return response;
     }
     String invoiceNumber = this.baseMapper.selectReceived(unitInvoice.getId());
-    if (StringUtils.isBlank(invoiceNumber)) {
+    if (!StringUtils.isBlank(invoiceNumber)) {
       response.recordError("发票" + invoiceNumber + "已被领取,不能被登记");
       return response;
     }
@@ -341,8 +341,8 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> selectInvoices() {
-    return this.baseMapper.selectInvoices();
+  public List<Map<String, Object>> selectInvoices(String loginId,String nodeCode) {
+    return this.baseMapper.selectInvoices(loginId,nodeCode);
   }
 
   @Override

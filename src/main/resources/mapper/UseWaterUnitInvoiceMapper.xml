@@ -24,6 +24,11 @@
     <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
     <result column="rownumber" property="rownumber" jdbcType="VARCHAR"/>
+    <result column="unitCode" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="countQuarter" property="countQuarter" jdbcType="VARCHAR"/>
+    <result column="countYear" property="countYear" jdbcType="INTEGER"/>
+    <result column="actualAmount" property="actualAmount" jdbcType="DOUBLE"/>
+
   </resultMap>
 
   <select id="selectInvoiceNumber" resultType="int">
@@ -67,33 +72,60 @@
 
   <select id="selectCount" resultType="int">
     SELECT
-    count(1)
+    COUNT(1)
     FROM
-    t_w_use_water_unit_invoice t1
+    t_w_use_water_unit_invoice i
+    LEFT JOIN t_w_water_use_pay_info p ON i.pay_info_id = p.id
+    LEFT JOIN ( SELECT uu.* FROM t_w_use_water_unit uu, t_w_use_water_unit_role ur
+    WHERE ur.person_id = #{loginId}
+    and ur.node_code = #{nodeCode}
+    AND uu.unit_code_type = ur.unit_type_code ) u ON p.use_Water_unit_id = u.id
     WHERE
-    t1.deleted = '0'
-    AND t1.person = #{loginId}
-    AND t1.node_code = #{nodeCode}
-    <if test="invoiceNumber != null and invoiceNumber != ''">
-      and  invoice_number like '%${invoiceNumber}%'
+    i.person= #{loginId}
+    and i.node_code = #{nodeCode}
+    and i.deleted = '0'
+    <if test="invoiceNumber != null and invoiceNumber != ''">-->
+      and  i.invoice_number like '%${invoiceNumber}%'
     </if>
     <if test="(begin != null and begin != '') or (end != null and end != '') ">
-   and   (convert(int,invoice_number) &gt;= #{begin} AND convert(int,invoice_number) &lt;= #{end})
+      and  (convert(int,i.invoice_number) &gt;= #{begin} AND convert(int,i.invoice_number) &lt;= #{end})
     </if>
     <if test="enabled != null and enabled != ''">
-      and  enabled = #{enabled}
+      and  i.enabled = #{enabled}
     </if>
     <if test="received != null and received != ''">
-      and  received = #{received}
+      and  i.received = #{received}
     </if>
-    and invoice_unit_code IN (
+  </select>
+
+  <select id="selectInvoices" resultType="java.util.LinkedHashMap">
     SELECT
-    unit_code
+    i.id,
+    i.invoice_number AS invoiceNumber
     FROM
-    t_w_use_water_unit
+    t_w_use_water_unit_invoice i
+    LEFT JOIN t_w_water_use_pay_info p ON i.pay_info_id = p.id
+    LEFT JOIN (
+    SELECT
+    uu.*
+    FROM
+    t_w_use_water_unit uu,
+    t_w_use_water_unit_role ur
     WHERE
-    node_code = #{nodeCode}
-    AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{loginId} ))
+    ur.person_id = #{loginId}
+    AND ur.node_code = #{nodeCode}
+    AND uu.unit_code_type = ur.unit_type_code
+    ) u ON p.use_Water_unit_id = u.id
+    WHERE
+    i.person= #{loginId}
+    AND i.node_code = #{nodeCode}
+    AND i.deleted = '0'
+    AND ( i.pay_info_id IS NULL OR i.pay_info_id = '' )
+    AND i.enabled = '0'
+    AND i.received = '0'
+    AND i.deleted = '0'
+    ORDER BY
+    i.invoice_number DESC
 
   </select>
 
@@ -104,56 +136,52 @@
     (
     SELECT
     row_number () OVER ( ORDER BY [invoice_number] DESC ) AS rownumber,
-    id,
-    pay_info_id,
-    invoice_date,
-    invoice_number,
-    invoice_money,
-    invoice_unit_name,
-    enabled,
-    drawer,
-    create_time,
-    invoice_type,
-    invoice_unit_code,
-    printed,
-    person,
-    received,
-    receive_time,
-    remarks,
-    node_code,
-    deleted
+    i.id,
+    i.pay_info_id,
+    i.invoice_date,
+    i.invoice_number,
+    i.invoice_money,
+    i.invoice_unit_name,
+    i.enabled,
+    i.drawer,
+    i.create_time,
+    i.invoice_type,
+    i.invoice_unit_code,
+    i.printed,
+    i.person,
+    i.received,
+    i.receive_time,
+    i.remarks,
+    u.unit_code as unitCode,
+    p.count_quarter as countQuarter,
+    p.count_year as countYear,
+    p.actual_amount as actualAmount
     FROM
-    t_w_use_water_unit_invoice t1
+    t_w_use_water_unit_invoice i
+    LEFT JOIN t_w_water_use_pay_info p ON i.pay_info_id = p.id
+    LEFT JOIN ( SELECT uu.* FROM t_w_use_water_unit uu, t_w_use_water_unit_role ur
+    WHERE ur.person_id = #{loginId}
+    and ur.node_code = #{nodeCode}
+    AND uu.unit_code_type = ur.unit_type_code ) u ON p.use_Water_unit_id = u.id
     WHERE
-    t1.deleted = '0'
-    AND t1.person = #{loginId}
-    AND t1.node_code = #{nodeCode}
-    <if test="invoiceNumber != null and invoiceNumber != ''">
-      and  invoice_number like '%${invoiceNumber}%'
+    i.person= #{loginId}
+    and i.node_code = #{nodeCode}
+    and i.deleted = '0'
+    <if test="invoiceNumber != null and invoiceNumber != ''">-->
+      and  i.invoice_number like '%${invoiceNumber}%'
     </if>
     <if test="(begin != null and begin != '') or (end != null and end != '') ">
-    and  (convert(int,invoice_number) &gt;= #{begin} AND convert(int,invoice_number) &lt;= #{end})
+    and  (convert(int,i.invoice_number) &gt;= #{begin} AND convert(int,i.invoice_number) &lt;= #{end})
     </if>
     <if test="enabled != null and enabled != ''">
-      and  enabled = #{enabled}
+      and  i.enabled = #{enabled}
     </if>
     <if test="received != null and received != ''">
-      and  received = #{received}
+      and  i.received = #{received}
     </if>
-    and invoice_unit_code IN (
-    SELECT
-    unit_code
-    FROM
-    t_w_use_water_unit
-    WHERE
-    node_code = #{nodeCode}
-    AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{loginId} ))
     ) c
     WHERE
     rownumber > (${pageSize}*(${currPage}-1))
-    ORDER BY
-    invoice_number,
-    invoice_unit_code DESC;
   </select>
 
   <select id="selectInvoices" resultType="java.util.LinkedHashMap">
@@ -229,55 +257,52 @@
   <select id="export" resultMap="UseWaterUnitInvoiceModel">
     SELECT
     row_number () OVER ( ORDER BY [invoice_number] DESC ) AS rownumber,
-    id,
-    pay_info_id,
-    invoice_date,
-    invoice_number,
-    invoice_money,
-    invoice_unit_name,
-    enabled,
-    drawer,
-    create_time,
-    invoice_type,
-    invoice_unit_code,
+    i.id,
+    i.pay_info_id,
+    i.invoice_date,
+    i.invoice_number,
+    i.invoice_money,
+    i.invoice_unit_name,
+    i.enabled,
+    i.drawer,
+    i.create_time,
+    i.invoice_type,
+    i.invoice_unit_code,
     CASE
-    received
+    i.received
     WHEN '0' THEN
     '未领取'
     WHEN '1' THEN
     '已领取' ELSE '未知状态'
     END received,
-    person,
-    received,
-    receive_time,
-    remarks,
-    node_code
+    i.person,
+    i.received,
+    i.receive_time,
+    i.remarks,
+    i.node_code
     FROM
-    t_w_use_water_unit_invoice t1
+    t_w_use_water_unit_invoice i
+    LEFT JOIN t_w_water_use_pay_info p ON i.pay_info_id = p.id
+    LEFT JOIN ( SELECT uu.* FROM t_w_use_water_unit uu, t_w_use_water_unit_role ur
+    WHERE ur.person_id = '202ea4455ab7497e903a1acbdd4cc91c'
+    and ur.node_code = '510100'
+    AND uu.unit_code_type = ur.unit_type_code ) u ON p.use_Water_unit_id = u.id
     WHERE
-    t1.deleted = '0'
-    AND t1.person = #{loginId}
-    AND t1.node_code = #{nodeCode}
+    i.person= '202ea4455ab7497e903a1acbdd4cc91c'
+    and i.node_code = '510100'
+    and i.deleted = '0'
     <if test="invoiceNumber != null and invoiceNumber != ''">
-      and  invoice_number like '%${invoiceNumber}%'
+      and  i.invoice_number like '%${invoiceNumber}%'
     </if>
     <if test="(begin != null and begin != '') or (end != null and end != '') ">
-      and   (convert(int,invoice_number) &gt;= #{begin} AND convert(int,invoice_number) &lt;= #{end})
+      and   (convert(int,i.invoice_number) &gt;= #{begin} AND convert(int,i.invoice_number) &lt;= #{end})
     </if>
     <if test="enabled != null and enabled != ''">
-      and  enabled = #{enabled}
+      and  i.enabled = #{enabled}
     </if>
     <if test="received != null and received != ''">
-      and  received = #{received}
+      and  i.received = #{received}
     </if>
-    and invoice_unit_code IN (
-    SELECT
-    unit_code
-    FROM
-    t_w_use_water_unit
-    WHERE
-    node_code = #{nodeCode}
-    AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{loginId} ))
   </select>
 
 </mapper>

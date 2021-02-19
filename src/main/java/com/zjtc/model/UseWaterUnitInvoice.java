@@ -135,6 +135,22 @@ public class UseWaterUnitInvoice extends Model<UseWaterUnitInvoice>{
   @ApiModelProperty("序号")
   @TableField(value = "rownumber",exist = false)
   private String rownumber;
+
+  @ApiModelProperty("单位编码")
+  @TableField(value = "unitCode",exist = false)
+  private  String unitCode;
+
+  @ApiModelProperty("统计季度")
+  @TableField(value = "countQuarter",exist = false)
+  private  String countQuarter;
+
+  @ApiModelProperty("统计年份")
+  @TableField(value = "countYear",exist = false)
+  private  Integer countYear;
+
+  @ApiModelProperty("实际金额")
+  @TableField(value = "actualAmount",exist = false)
+  private  double actualAmount;
 	/**
 	 * 实例化
 	 */
