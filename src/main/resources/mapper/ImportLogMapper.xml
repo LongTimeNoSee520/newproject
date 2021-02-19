@@ -8,7 +8,8 @@
 		<result column="import_time" property="importTime" jdbcType="TIMESTAMP"/>
 		<result column="import_status" property="importStatus" jdbcType="VARCHAR"/>
 		<result column="import_detail" property="importDetail" jdbcType="VARCHAR"/>
-		<collection property="files" column="id" select="queryFiles" ofType="java.util.LinkedHashMap" ></collection>
+		<result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
+		<collection property="files" column="{id=id,preViewRealPath=preViewRealPath}" select="queryFiles" ofType="java.util.LinkedHashMap" ></collection>
 	</resultMap>
   <select id="queryNum" resultType="int">
 		SELECT COUNT (id)
@@ -17,7 +18,8 @@
 	</select>
   <select id="queryPage" resultMap="BaseResultMap">
 		SELECT TOP  ${size} t1.id,t1.node_code,t1.import_file_name,t1.import_time,
-		CASE t1.import_status WHEN '1' THEN '成功' WHEN '0' THEN '失败' END AS import_status
+		CASE t1.import_status WHEN '1' THEN '成功' WHEN '0' THEN '失败' END AS import_status,
+		#{preViewRealPath} AS preViewRealPath
 		FROM(SELECT row_number () OVER ( ORDER BY [import_time] DESC ,[id]) AS rownumber,*
 					FROM
 		      t_w_import_log
@@ -27,7 +29,7 @@
 		WHERE  rownumber > (#{current}-1)* #{size}
 	</select>
 	<select id="queryFiles" resultType="java.util.LinkedHashMap">
-		SELECT id AS id,file_name AS  fileName,file_path AS filePath
+		SELECT id AS id,file_name AS  fileName,#{preViewRealPath}+ file_path AS filePath
 		FROM t_file
 		WHERE business_id = #{id}
 	</select>

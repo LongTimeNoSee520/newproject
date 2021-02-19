@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,6 +22,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class ImportLogServiceImpl extends ServiceImpl<ImportLogMapper, ImportLog> implements
 		ImportLogService {
+
+	/**
+	 * 附件存储目录
+	 */
+	@Value("${server.servlet-path}")
+	private String contextPath;
+
+	/**
+	 * 上下文
+	 */
+	@Value("${file.preViewRealPath}")
+	private String preViewRealPath;
 
 	@Override
 	public boolean add(ImportLog importLog) {
@@ -38,6 +51,7 @@ public class ImportLogServiceImpl extends ServiceImpl<ImportLogMapper, ImportLog
 		map.put("current", current);
 		map.put("size", size);
 		map.put("nodeCode", nodeCode);
+		map.put("preViewRealPath",preViewRealPath + contextPath +"/" );
 
 		/**查出满足条件的共有多少条*/
 		int num = this.baseMapper.queryNum(map);
