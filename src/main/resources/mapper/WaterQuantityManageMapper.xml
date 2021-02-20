@@ -64,7 +64,7 @@
     </if>
   </select>
   <select id="queryPage" resultType="java.util.LinkedHashMap">
-    SELECT t.id AS id, t.use_water_unit_id AS useWaterUnitId,t.unit_code AS unitCode,t.unit_names AS unitNames,
+    SELECT t.id AS id, t.use_water_unit_id AS useWaterUnitId,t.unit_code AS unitCode,t.unit_names AS unitNames,unit_address AS unitAddress,
     convert(varchar(50),t.use_year)+'年' + convert(varchar(50),t.use_month) +'月' AS yearAndMonth,
     t.water_meter_code AS waterMeterCode,t.water_begin AS waterBegin,t.water_end AS waterEnd,
     t.water_number AS waterNumber,t.price AS price,t.caliber AS caliber,t.sector AS sector,
