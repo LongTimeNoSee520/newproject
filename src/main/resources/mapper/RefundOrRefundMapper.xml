@@ -42,7 +42,20 @@
 
 	<select id="queryAll" resultMap="result_RefundOrRefund_Map">
     select
-    t1.*,
+    id,
+    node_code,
+		use_water_unit_id
+    unit_code,
+    unit_name,
+		water_meter_code,
+		create_time,
+		drawer,
+		quarter,
+		year,
+		money,
+		reason,
+		treatment_advice,
+		actual_amount,
 		case
 		t1.type
 		when'1' then '退款单'
@@ -85,7 +98,8 @@
     SELECT
     t1.id AS id,
     t1.operation_time AS operationTime,
-    CASE  t1.audit_status WHEN '0' THEN  '提交审核' WHEN '1' THEN  '待审核' WHEN '2' THEN  '审核通过' WHEN '3' THEN '审核不通过' END audit_status,
+    t1.audit_status AS auditStatus,
+    CASE  t1.audit_status WHEN '0' THEN  '发起' WHEN '1' THEN  '待审核' WHEN '2' THEN  '审核通过' WHEN '3' THEN '审核不通过' END auditStatusName,
     t1.operator AS operator, t1.operator_id AS operatorId,  t3.org_name AS orgName,
     audit_content as auditContent
     FROM

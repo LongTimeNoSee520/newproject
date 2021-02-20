@@ -31,7 +31,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @RequestMapping("refundOrRefund")
-@Api(description = "xxx rest服务")
+@Api(description = "退减免单管理")
 @Slf4j
 public class RefundOrRefundController {
 
@@ -44,7 +44,7 @@ public class RefundOrRefundController {
   private JWTUtil jwtUtil;
 
   @RequestMapping(value = "queryAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation(value = "查询xxx内容")
+  @ApiOperation(value = "查询所有内容")
   public ApiResponse queryPage(@ApiParam("{\n"
       + "  \"keyWrod\":\"1:待审核，2：已审核，必填\",\n"
       + "  \"unitName\":\"单位名称\",\n"

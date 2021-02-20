@@ -227,13 +227,12 @@ public class RefundOrRefundServiceImpl extends
 
   @Override
   public boolean revoke(JSONObject jsonObject) {
-    boolean result = false;
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
     Wrapper wrapper = new EntityWrapper();
     wrapper.in("id", ids);
     RefundOrRefund refundOrRefund = new RefundOrRefund();
     refundOrRefund.setIsRevoke("1");
-    result = this.update(refundOrRefund, wrapper);
+    boolean result = this.update(refundOrRefund, wrapper);
     /**更新撤销状态*/
     /**删除待办数据*/
     return result && todoService.deleteBatchIds(ids);
