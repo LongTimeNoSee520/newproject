@@ -129,10 +129,10 @@ public class CommonUtil {
         response.setContentType("application/octet-stream");
 
         try {
-//      response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder
-//          .encode(fileName, "UTF-8"));
-            response.addHeader("Content-Disposition", URLEncoder
+            response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder
                     .encode(fileName, "UTF-8"));
+//            response.addHeader("Content-Disposition", URLEncoder
+//                    .encode(fileName, "UTF-8"));
             response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
             response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE,PUT");
             response.setHeader("Access-Control-Max-Age", "3600");
