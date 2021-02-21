@@ -81,7 +81,7 @@ public class UseWaterBasePlan extends Model<UseWaterBasePlan> {
   private String nature;
 
   @ApiModelProperty(value = "用水性质名称")
-  @TableField(value = "nature_name", exist = true)
+  @TableField(value = "nature_name", exist = false)
   private String natureName;
 
   @ApiModelProperty(value = "是否删除")
