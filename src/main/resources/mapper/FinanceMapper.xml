@@ -9,7 +9,7 @@
     <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
     <result column="money" property="money" jdbcType="VARCHAR"/>
     <result column="payment_date" property="paymentDate" jdbcType="TIMESTAMP"/>
-    <result column="invoiceState" property="invoiceState" jdbcType="VARCHAR"/>
+    <result column="invoice_state" property="invoiceState" jdbcType="VARCHAR"/>
     <result column="drawer_id" property="drawerId" jdbcType="VARCHAR"/>
     <result column="drawer" property="drawer" jdbcType="VARCHAR"/>
     <result column="type" property="type" jdbcType="VARCHAR"/>

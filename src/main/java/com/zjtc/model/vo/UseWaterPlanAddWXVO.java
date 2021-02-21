@@ -239,19 +239,19 @@ public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
 
   @ApiModelProperty("审批申请附件id")
   @TableField(value = "audit_file_id", exist = true)
-  private List<File> auditFileId;
+  private List<FileVO> auditFileId;
   /**
    *
    */
   @ApiModelProperty("近2月水量凭证附件id")
   @TableField(value = "water_proof_file_id", exist = true)
-  private List<File> waterProofFileId;
+  private List<FileVO> waterProofFileId;
   /**
    *
    */
   @ApiModelProperty("其他证明材料")
   @TableField(value = "other_file_id", exist = true)
-  private List<File> otherFileId;
+  private List<FileVO> otherFileId;
 
   @ApiModelProperty("预览路径")
   private String preViewRealPath;

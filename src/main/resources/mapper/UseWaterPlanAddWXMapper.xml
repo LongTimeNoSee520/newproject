@@ -41,9 +41,7 @@
     <result column="FrontFourthQuarter" property="FrontFourthQuarter" jdbcType="DOUBLE"/>
     <result column="FrontCurYearPlan" property="FrontCurYearPlan" jdbcType="DOUBLE"/>
     <result column="FrontPlanYear" property="FrontPlanYear" jdbcType="INTEGER"/>
-    <result column="audit_file_id" property="auditFileId" jdbcType="VARCHAR"/>
-    <result column="water_proof_file_id" property="waterProofFileId" jdbcType="VARCHAR"/>
-    <result column="other_file_id" property="otherFileId" jdbcType="VARCHAR"/>
+
   </resultMap>
 
   <!-- UseWaterPlanAdd的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
@@ -87,7 +85,6 @@
     <result column="FrontCurYearPlan" property="FrontCurYearPlan" jdbcType="DOUBLE"/>
     <result column="FrontPlanYear" property="FrontPlanYear" jdbcType="INTEGER"/>
     <result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
-
     <collection property="auditFileId" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
       select="queryAuditFiles">
     </collection>

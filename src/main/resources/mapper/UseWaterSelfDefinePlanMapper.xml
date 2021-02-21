@@ -234,7 +234,6 @@
     and deleted='0'
     and node_code = #{nodeCode}
     order by create_time desc
-
   </select>
 
   <update id="updateExecuteData">
