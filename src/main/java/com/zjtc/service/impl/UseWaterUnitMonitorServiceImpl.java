@@ -47,6 +47,9 @@ public class UseWaterUnitMonitorServiceImpl extends
     String unitCodeType = jsonObject.getString("unitCodeType");//用户类型
     Integer year = jsonObject.getInteger("year");
     String industryId = jsonObject.getString("industryId");
+    String mobileNumber = jsonObject.getString("mobileNumber");
+    String contacts = jsonObject.getString("contacts");
+
     Map<String, Object> map = new HashMap<>();
     map.put("size", size);
     map.put("current", current);
@@ -67,6 +70,12 @@ public class UseWaterUnitMonitorServiceImpl extends
     }
     if (StringUtils.isNotBlank(industryId)) {
       map.put("industryId", industryId);
+    }
+    if (StringUtils.isNotBlank(mobileNumber)) {
+      map.put("mobileNumber", mobileNumber);
+    }
+    if (StringUtils.isNotBlank(contacts)) {
+      map.put("contacts", contacts);
     }
     /**查出满足条件的共有多少条*/
     int num = this.baseMapper.queryNum(map);

@@ -137,6 +137,18 @@
 									 FROM t_w_use_water_unit_role
 									 WHERE person_id = #{userId}
 									 )
+	                 <if test="mobileNumber != null or contacts !=null">
+										AND unit_code
+										IN ( SELECT unit_code FROM  t_w_use_water_unit_contacts
+										     WHERE  deleted = '0'
+												 <if test="mobileNumber != null or mobileNumber !=''">
+													 AND mobile_number LIKE  '%${mobileNumber}%'
+												 </if>
+												 <if test="contacts != null or contacts !=''">
+													 AND contacts LIKE  '%${contacts}%'
+												 </if>
+										 )
+									 </if>
 									 <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
 									 <if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
 									 <if test="unitCodeType != null and unitCodeType !=''">AND unit_code_type LIKE '%${unitCodeType}%'</if>
@@ -257,6 +269,18 @@
 		FROM t_w_use_water_unit_role
 		WHERE person_id = #{userId}
 		)
+		<if test="mobileNumber != null or contacts !=null">
+			AND unit_code
+			IN ( SELECT unit_code FROM  t_w_use_water_unit_contacts
+			WHERE  deleted = '0'
+			<if test="mobileNumber != null or mobileNumber !=''">
+				AND mobile_number LIKE  '%${mobileNumber}%'
+			</if>
+			<if test="contacts != null or contacts !=''">
+				AND	contacts LIKE  '%${contacts}%'
+			</if>
+			)
+		</if>
 		<if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
 		<if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
 		<if test="unitCodeType != null and unitCodeType !=''">AND unit_code_type LIKE '%${unitCodeType}%'</if>
