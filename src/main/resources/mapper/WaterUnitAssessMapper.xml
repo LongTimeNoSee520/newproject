@@ -221,14 +221,11 @@
     ) t6
     WHERE
     t6.nodeCode = #{nodeCode}
-    <if test="beginYear != null  and endYear != null">
-      and (t6.planYear &gt;= #{beginYear} and t6.planYear &lt;= #{endYear})
+    <if test="accessYear != null  and accessYear != ''">
+      and t6.planYear like '%${accessYear}%'
     </if>
     <if test="unitName != null and unitName != ''">
       and  t6.unitName like '%${unitName}%'
-    </if>
-    <if test="planYear != null and planYear != ''">
-      and  t6.planYear = #{planYear}
     </if>
   </select>
 
@@ -424,14 +421,11 @@
     ) t6
     WHERE
     t6.nodeCode = #{nodeCode}
-    <if test="beginYear != null  and endYear != null">
-    and (t6.planYear &gt;= #{beginYear} and t6.planYear &lt;= #{endYear})
+    <if test="accessYear != null  and accessYear != ''">
+      and t6.planYear like '%${accessYear}%'
     </if>
     <if test="unitName != null and unitName != ''">
     and  t6.unitName like '%${unitName}%'
-    </if>
-    <if test="planYear != null and planYear != ''">
-      and  t6.planYear = #{planYear}
     </if>
     ) c
     WHERE

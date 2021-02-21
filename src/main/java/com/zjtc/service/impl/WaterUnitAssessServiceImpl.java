@@ -66,23 +66,18 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
       unitName = jsonObject.getString("unitName");
     }
 //    开始年份
-    Integer beginYear = null;
-    if (null != jsonObject.getInteger("beginYear")) {
-      beginYear = jsonObject.getInteger("beginYear");
-    }
-//    结束年份
-    Integer endYear = null;
-    if (null != jsonObject.getInteger("endYear")) {
-      endYear = jsonObject.getInteger("endYear");
+    Integer accessYear = null;
+    if (null != jsonObject.getInteger("accessYear")) {
+      accessYear = jsonObject.getInteger("accessYear");
     }
 //    总条数
     Integer total = waterUnitAssessMapper
-        .selectCount(unitName, beginYear, endYear, nodeCode, loginId, null);
+        .selectCount(unitName, accessYear, nodeCode, loginId);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<WaterUnitAssessVO> waterUnitAssessVOS = waterUnitAssessMapper
-        .queryList(currPage, pageSize, unitName, beginYear, endYear, nodeCode, loginId, null);
+        .queryList(currPage, pageSize, unitName, accessYear, nodeCode, loginId);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -102,9 +97,9 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
       unitName = jsonObject.getString("unitName");
     }
 //    年份
-    Integer planYear = null;
-    if (null != jsonObject.getInteger("planYear")) {
-      planYear = jsonObject.getInteger("planYear");
+    Integer accessYear = null;
+    if (null != jsonObject.getInteger("accessYear")) {
+      accessYear = jsonObject.getInteger("accessYear");
     }
 ////    结束年份
 //    Integer endYear = null;
@@ -112,10 +107,10 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
 //      endYear = jsonObject.getInteger("endYear");
 //    }
     Integer integer = this.waterUnitAssessMapper
-        .selectCount(unitName, null, null, user.getNodeCode(), user.getId(), planYear);
+        .selectCount(unitName, accessYear, user.getNodeCode(), user.getId());
     List<WaterUnitAssessVO> waterUnitAssess = this.waterUnitAssessMapper
-        .queryList(1, integer + 1, unitName, null, null, user.getNodeCode(), user.getId(),
-            planYear);
+        .queryList(1, integer + 1, unitName, accessYear, user.getNodeCode(), user.getId()
+            );
     Map<String, Object> data = new HashMap<>(16);
     data.put("waterUnitAssess", waterUnitAssess);
     data.put("nowDate", new Date());

@@ -42,8 +42,7 @@ public class WaterUnitAssessController {
       + "    \"current\":\"页数\",\n"
       + "    \"size\":\"条数\",\n"
       + "    \"unitName\":\"单位名称\",\n"
-      + "    \"beginYear\":\"开始年份(Integer)\",\n"
-      + "    \"endYear\":\"结束年份(Integer)\"\n"
+      + "    \"accessYear\":\"年度(Integer)\n"
       + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("用水单位考核分页查询,参数param==={" + jsonObject.toJSONString() + "}");
@@ -79,7 +78,7 @@ public class WaterUnitAssessController {
   public ApiResponse excelExport(@ApiParam(""
       + "{\n"
       + "\"unitName\":\"单位名称\",\n"
-      + "\"planYear\":\"年度\"\n"
+      + "\"accessYear\":\"年度\"\n"
       + "}\n")@RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response, @RequestHeader("token") String token) {
     ApiResponse apiResponse = new ApiResponse();
