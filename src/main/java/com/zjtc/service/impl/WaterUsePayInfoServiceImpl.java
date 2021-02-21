@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
-import com.zjtc.base.util.CommonUtil;
 import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.FileUtil;
 import com.zjtc.mapper.UseWaterUnitMapper;
@@ -27,14 +26,9 @@ import com.zjtc.service.UseWaterUnitInvoiceService;
 import com.zjtc.service.UseWaterUnitRefService;
 import com.zjtc.service.WaterUsePayInfoService;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,8 +38,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.jxls.common.Context;
-import org.jxls.util.JxlsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -151,7 +143,7 @@ public class WaterUsePayInfoServiceImpl extends
     boolean result = true;
     /**重算加价前先删除之前的数据*/
     //三种情况:1.托收缴费已托收，2.已选择发票，3：有退减免过程
-    //baseMapper.deleteByParam(jsonObject);
+    baseMapper.deleteByParam(jsonObject);
     /**初始化加价*/
     List<WaterUsePayInfo> waterUsePayInfos = baseMapper.initPayInfo(jsonObject);
     if (!waterUsePayInfos.isEmpty()) {
