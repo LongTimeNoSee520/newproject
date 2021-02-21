@@ -45,7 +45,7 @@ public class RefundOrRefundController {
 
   @RequestMapping(value = "queryAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "查询所有内容")
-  public ApiResponse queryPage(@ApiParam("{\n"
+  public ApiResponse queryAll(@ApiParam("{\n"
       + "  \"keyWrod\":\"1:待审核，2：已审核，必填\",\n"
       + "  \"unitName\":\"单位名称\",\n"
       + "  \"unitCode\":\"单位编码\",\n"
@@ -76,6 +76,43 @@ public class RefundOrRefundController {
     }
     return apiResponse;
   }
+
+  @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "分页查询所有内容")
+  public ApiResponse queryPage(@ApiParam("{\n"
+      + "  \"current\":\"当前页\",\n"
+      + "  \"size\":\"当前页显示数据条数\",\n"
+      + "  \"keyWrod\":\"1:待审核(退减免单管理)界面，2：已审核界面，必填\",\n"
+      + "  \"unitName\":\"单位名称\",\n"
+      + "  \"unitCode\":\"单位编码\",\n"
+      + "  \"waterMeterCode\":\"水表档案号\",\n"
+      + "  \"year\":\"年度，必填\",\n"
+      + "  \"type\":\"单据类型，1退款单，2减免单\",\n"
+      + "  \"startTime\":\"申请开始时间\",\n"
+      + "  \"endTime\":\"申请结束时间\"\n"
+      + "  \n"
+      + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
+    User user = jwtUtil.getUserByToken(token);
+    log.info("查询 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != jsonObject && null != user) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        Map<String,Object> result = refundOrRefundService.queryPage(jsonObject);
+        apiResponse.setData(result);
+        apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
+      } catch (Exception e) {
+        log.error("查询错误,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
+  }
+
 
   /**
    * 修改

@@ -22,6 +22,7 @@ import com.zjtc.service.SmsService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.WaterUsePayInfoService;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -114,6 +115,38 @@ public class RefundOrRefundServiceImpl extends
       }
     }
     return list;
+  }
+
+  @Override
+  public Map<String, Object> queryPage(JSONObject jsonObject) {
+    Map<String, Object> page = new LinkedHashMap<>();
+    String startTime = jsonObject.getString("startTime");
+    String endTime = jsonObject.getString("endTime");
+    if (StringUtils.isNotBlank(startTime)) {
+      jsonObject.put("startTime", startTime + " 00:00:00");
+    }
+    if (StringUtils.isNotBlank(endTime)) {
+      jsonObject.put("endTime", endTime + " 23:59:59");
+    }
+    List<RefundOrRefund> list = baseMapper.queryPage(jsonObject);
+    if (!list.isEmpty()) {
+      for (RefundOrRefund refundOrRefund : list) {
+        if (!refundOrRefund.getSysFiles().isEmpty()) {
+          for (File file : refundOrRefund.getSysFiles()) {
+            file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());
+          }
+        }
+      }
+    }
+    page.put("records", list);
+    page.put("current", jsonObject.getInteger("current"));
+    page.put("size", jsonObject.getInteger("size"));
+    //查询总数据条数
+    long total = baseMapper.queryListTotal(jsonObject);
+    page.put("total", total);
+    long pageSize = jsonObject.getInteger("size");
+    page.put("page", total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
+    return page;
   }
 
   @Override

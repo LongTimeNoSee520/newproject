@@ -18,4 +18,16 @@ import org.apache.ibatis.annotations.Mapper;
 public interface RefundOrRefundMapper extends BaseMapper<RefundOrRefund> {
   List<RefundOrRefund> queryAll(JSONObject jsonObject);
 
+  /**
+   * 分页
+   */
+  List<RefundOrRefund> queryPage(JSONObject jsonObject);
+
+  /**
+   * 分页查询出的数据总条数
+   * @param jsonObject
+   * @return
+   */
+  long queryListTotal(JSONObject jsonObject);
+
 }

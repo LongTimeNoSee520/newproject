@@ -123,4 +123,106 @@
     order by create_time desc
   </select>
 
+
+	<select id="queryPage" resultMap="result_RefundOrRefund_Map">
+		SELECT
+		top ${size}
+		*
+		FROM
+		(
+		SELECT
+		row_number ( ) over (
+		ORDER BY
+		create_time DESC
+		) AS rownumber,
+		id,
+		node_code,
+		use_water_unit_id
+		unit_code,
+		unit_name,
+		water_meter_code,
+		create_time,
+		drawer,
+		quarter,
+		year,
+		money,
+		reason,
+		treatment_advice,
+		actual_amount,
+		case
+		t1.type
+		when'1' then '退款单'
+		when '2' then '减免单'
+		else '未知' end as typeName
+		from t_w_refund_or_refund t1
+		where node_code=#{nodeCode}
+		<!--待审核-->
+		<if test="keyWrod==1">
+			and id in(select busIness_id as id  from t_sms_audit_flow where audit_status='1' and operator_id=#{userId})
+		</if>
+		<!--已审核-->
+		<if test="keyWrod==2">
+			and id in(select busIness_id as id  from t_sms_audit_flow where (audit_status='2' or audit_status='3') and operator_id=#{userId})
+		</if>
+		<if test="null !=unitCode and unitCode !=''">
+			and unit_code like '%${unitCode}%'
+		</if>
+		<if test="null !=unitName and unitName !=''" >
+			and unit_name like '%${unitName}%'
+		</if>
+		<if test="null !=waterMeterCode and waterMeterCode !=''">
+			and water_meter_code like '%${waterMeterCode}%'
+		</if>
+		<if test="null !=year and year !=''">
+			and t1.year =#{year}
+		</if>
+		<if test="null !=type and type !=''">
+			and t1.type =#{type}
+		</if>
+		<if test="null !=startTime and startTime !=''">
+			and t1.create_time &gt;= #{startTime}
+		</if>
+		<if test="null !=endTime and endTime !=''">
+			and t1.create_time &lt; #{endTime}
+		</if>
+		) temp_row
+		WHERE
+		rownumber > ( ( #{current}- 1 ) * #{size} );
+	</select>
+
+	<select id="queryListTotal" resultType="java.lang.Long">
+		select
+		count(1)
+		from t_w_refund_or_refund t1
+		where node_code=#{nodeCode}
+		<!--待审核-->
+		<if test="keyWrod==1">
+			and id in(select busIness_id as id  from t_sms_audit_flow where audit_status='1' and operator_id=#{userId})
+		</if>
+		<!--已审核-->
+		<if test="keyWrod==2">
+			and id in(select busIness_id as id  from t_sms_audit_flow where (audit_status='2' or audit_status='3') and operator_id=#{userId})
+		</if>
+		<if test="null !=unitCode and unitCode !=''">
+			and unit_code like '%${unitCode}%'
+		</if>
+		<if test="null !=unitName and unitName !=''" >
+			and unit_name like '%${unitName}%'
+		</if>
+		<if test="null !=waterMeterCode and waterMeterCode !=''">
+			and water_meter_code like '%${waterMeterCode}%'
+		</if>
+		<if test="null !=year and year !=''">
+			and t1.year =#{year}
+		</if>
+		<if test="null !=type and type !=''">
+			and t1.type =#{type}
+		</if>
+		<if test="null !=startTime and startTime !=''">
+			and t1.create_time &gt;= #{startTime}
+		</if>
+		<if test="null !=endTime and endTime !=''">
+			and t1.create_time &lt; #{endTime}
+		</if>
+	</select>
 </mapper>

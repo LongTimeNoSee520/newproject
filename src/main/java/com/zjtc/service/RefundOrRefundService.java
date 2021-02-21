@@ -7,6 +7,7 @@ import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.User;
 import java.util.List;
 import java.util.Map;
+import springfox.documentation.spring.web.json.Json;
 
 
 /**
@@ -39,10 +40,17 @@ public interface RefundOrRefundService extends IService<RefundOrRefund> {
 	boolean deleteModel(JSONObject jsonObject);
 
 	/**
-	* 分页所有
+	* 查询所有
 	* @return
 	*/
 	List<RefundOrRefund> queryAll(JSONObject jsonObject);
+
+	/**
+	 * 分页查询
+	 * @param jsonObject
+	 * @return
+	 */
+	Map<String,Object> queryPage(JSONObject jsonObject);
 
 	/**
 	 * 审核
