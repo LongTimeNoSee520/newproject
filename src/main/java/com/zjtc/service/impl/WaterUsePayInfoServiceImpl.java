@@ -17,6 +17,7 @@ import com.zjtc.model.WaterUsePayInfo;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.ContactsService;
+import com.zjtc.service.FileService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
@@ -86,6 +87,8 @@ public class WaterUsePayInfoServiceImpl extends
   private UseWaterUnitRefService useWaterUnitRefService;
   @Autowired
   private ContactsService contactsService;
+  @Autowired
+  private FileService fileService;
 
   @Override
   public boolean saveModel(JSONObject jsonObject) {
@@ -148,7 +151,7 @@ public class WaterUsePayInfoServiceImpl extends
     boolean result = true;
     /**重算加价前先删除之前的数据*/
     //三种情况:1.托收缴费已托收，2.已选择发票，3：有退减免过程
-    baseMapper.deleteByParam(jsonObject);
+    //baseMapper.deleteByParam(jsonObject);
     /**初始化加价*/
     List<WaterUsePayInfo> waterUsePayInfos = baseMapper.initPayInfo(jsonObject);
     if (!waterUsePayInfos.isEmpty()) {
@@ -172,20 +175,27 @@ public class WaterUsePayInfoServiceImpl extends
     String nextPersonName = jsonObject.getString("nextPersonName");
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
+    List<com.zjtc.model.File> files = jsonObject.getJSONArray("sysFiles")
+        .toJavaList(com.zjtc.model.File.class);
     /**查询流程节点记录第二个流程*/
     List<Map<String, Object>> firStAudit = flowNodeInfoService
         .secondAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
     /**退减免单新增一条数据*/
     entity.setNodeCode(user.getNodeCode());
+    entity.setDrawer(user.getUsername());
+    entity.setIsRevoke("0");
+    entity.setStatus("1");
+    entity.setType("1");
     refundOrRefundService.insert(entity);
+    /**新增附件*/
+    if (!entity.getSysFiles().isEmpty()) {
+      fileService.updateBusinessId(entity.getId(),files);
+    }
     /**流程节点记录表、流程节点线记录表创建数据*/
     String newFirStCodeId = flowNodeInfoService
         .selectAndInsert(user.getNodeCode(), entity.getId(), AuditConstants.PAY_FLOW_CODE,
             firStAudit.get(0).get("flowNodeId").toString());
     entity.setNextNodeId(newFirStCodeId);
-    entity.setIsRevoke("0");
-    entity.setStatus("1");
-    entity.setType("1");
     /**修改业务表数据*/
     refundOrRefundService.updateById(entity);
     /**流程进度（操作记录）表 新增三条数据*/
@@ -218,15 +228,22 @@ public class WaterUsePayInfoServiceImpl extends
     String content = jsonObject.getString("content");
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
+    List<com.zjtc.model.File> files = jsonObject.getJSONArray("sysFiles")
+        .toJavaList(com.zjtc.model.File.class);
     /**查询流程节点记录第二个流程*/
     List<Map<String, Object>> firStAudit = flowNodeInfoService
         .secondAuditRole(AuditConstants.PAY_FLOW_CODE, user.getNodeCode());
     /**退减免单新增一条数据*/
     entity.setNodeCode(user.getNodeCode());
+    entity.setDrawer(user.getUsername());
     entity.setIsRevoke("0");
     entity.setStatus("1");
     entity.setType("2");
     refundOrRefundService.insert(entity);
+    /**新增附件*/
+    if (!entity.getSysFiles().isEmpty()) {
+      fileService.updateBusinessId(entity.getId(),files);
+    }
     /**流程节点记录表、流程节点线记录表创建数据*/
     String newFirStCodeId = flowNodeInfoService
         .selectAndInsert(user.getNodeCode(), entity.getId(), AuditConstants.PAY_FLOW_CODE,
@@ -259,6 +276,11 @@ public class WaterUsePayInfoServiceImpl extends
   @Override
   public boolean updateMoney(String id, double moeny) {
     return baseMapper.updateMoney(id, moeny);
+  }
+
+  @Override
+  public boolean updateActualAmount(String id, double actualAmount) {
+    return baseMapper.updateActualAmount(id,actualAmount);
   }
 
   @Override

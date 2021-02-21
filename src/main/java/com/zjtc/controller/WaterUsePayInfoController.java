@@ -174,7 +174,8 @@ public class WaterUsePayInfoController {
       + "  \"nextPersonId\":\"下一环节审核人id\",\n"
       + "  \"nextPersonName\":\"下一环节审核人\",\n"
       + "\"businessJson\":\"关联业务json数据(待办相关)\",\n"
-      + "\"detailConfig\":\"详情配置文件(待办相关)\"\n"
+      + "\"detailConfig\":\"详情配置文件(待办相关)\",\n"
+      + "  \"sysFiles\":\"[\"附件集合,删除附件，修改delete为1\"]\"\n"
       + "  \n"
       + "}") @RequestBody JSONObject jsonObject) {
     log.info("发起减免单， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
@@ -216,7 +217,8 @@ public class WaterUsePayInfoController {
       + "    \"nextPersonId\":\"下一环节审核人id\",\n"
       + "    \"nextPersonName\":\"下一环节审核人\",\n"
       + "    \"businessJson\":\"关联业务json数据(待办相关)\",\n"
-      + "    \"detailConfig\":\"详情配置文件(待办相关)\"\n"
+      + "    \"detailConfig\":\"详情配置文件(待办相关)\",\n"
+      + "  \"sysFiles\":\"[\"附件集合,删除附件，修改delete为1\"]\"\n"
       + "}") @RequestBody JSONObject jsonObject) {
     log.info("发起退款单， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();

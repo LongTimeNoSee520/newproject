@@ -55,6 +55,8 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
    */
    boolean updateMoney(@Param("id") String id ,@Param("money") double money);
 
+   boolean updateActualAmount(@Param("id") String id ,@Param("actualAmount") double actualAmount);
+
   List<Map<String, Object>> findPayBefor(@Param("unitId") String unitId);
 
   List<Map<String, Object>> ThreePayMess(@Param("year") Integer year,@Param("unitId") String unitId);

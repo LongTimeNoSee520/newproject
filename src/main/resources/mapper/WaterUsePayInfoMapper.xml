@@ -288,8 +288,8 @@
 		SELECT
 		t6.id,
 		nodeCode=#{nodeCode},
-		actualAmount = CONVERT ( DECIMAL ( 18, 2 ), t6.exceedWater * t6.price * t6.multiple ),
-		amountReceivable = CONVERT ( DECIMAL ( 18, 2 ), t6.exceedWater * t6.price * t6.multiple ),
+		actualAmount = ROUND (  t6.exceedWater * t6.price * t6.multiple,2 ),
+		amountReceivable = ROUND (  t6.exceedWater * t6.price * t6.multiple ),
 		countQuarter,
 		countYear,
 		exceedWater,
@@ -298,10 +298,10 @@
 		payRatio,
 		payStatus,
 		payType,
-		price,
+		price=ROUND ( price,2 ),
 		quarterPlan,
 		use_water_unit_id as  useWaterUnitId,
-		waterNumber1 as  waterNum1,
+		waterNumber1 as  waterNum1,y
 		waterNumber2 as  waterNum2,
 		waterNumber3 as waterNum3,
 		waterNumberCount as waterNumAmount,
@@ -559,6 +559,12 @@
 	<update id="updateMoney">
 		update t_w_water_use_pay_info
 		set amount_receivable=amount_receivable-#{money},actual_amount=actual_amount-#{money},edited_actual='1'
+		where id=#{id}
+	</update>
+
+	<update id="updateActualAmount">
+		update t_w_water_use_pay_info
+		set amount_receivable=#{actualAmount},actual_amount=#{actualAmount},edited_actual='1'
 		where id=#{id}
 	</update>
 

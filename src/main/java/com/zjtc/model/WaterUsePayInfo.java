@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.activerecord.Model;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -138,7 +139,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     */
     @ApiModelProperty("水价")
     @TableField(value = "price",exist = true)
-    private Double price;
+    private Float price;
     /**
     * 
     */

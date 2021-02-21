@@ -70,6 +70,13 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
   boolean updateMoney(String id, double moeny);
 
   /**
+   * 修改实收
+   * @param id
+   * @param actualAmount
+   * @return
+   */
+  boolean updateActualAmount(String id,double actualAmount);
+  /**
    * 查询退缴费第一个提交流程的角色信息
    */
   List<Map<String, Object>> firstRole( User user);

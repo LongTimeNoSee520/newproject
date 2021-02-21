@@ -12,6 +12,7 @@ import com.zjtc.model.FlowExample;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.User;
+import com.zjtc.model.WaterUsePayInfo;
 import com.zjtc.service.FileService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
@@ -79,12 +80,7 @@ public class RefundOrRefundServiceImpl extends
   @Override
   public boolean updateModel(JSONObject jsonObject) {
     RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
-    boolean flag = false;
-    if (!entity.getSysFiles().isEmpty()) {
-      flag = fileService.updateBusinessId(entity.getId(), entity.getSysFiles());
-    }
-    boolean result = this.updateById(entity);
-    return flag && result;
+    return  this.updateById(entity);
   }
 
   @Override
@@ -190,13 +186,19 @@ public class RefundOrRefundServiceImpl extends
       this.updateById(entity);
       /**2.修改当前审核操作记录表：当前环节审核状态，操作时间*/
       flowProcess.setOperationTime(new Date());
+      flowProcess.setAuditContent(content);
       flowProcessService.updateById(flowProcess);
       /**3.修改代办表：状态改为已办*/
       todoService.edit(entity.getId(), user.getNodeCode(), user.getId());
       /**4.修改实例表数据：流转状态*/
       flowExampleService.edit(user.getNodeCode(), entity.getId());
       if ("1".equals(auditBtn)) {
-        /**5.修改缴费记录表数据：修改应收、实收金额,是否修改过实收*/
+        /**如果是退款单，修改过实收*/
+        WaterUsePayInfo waterUsePayInfo= waterUsePayInfoService.selectById(entity.getPayId());
+        if("1".equals(entity.getType()) && !waterUsePayInfo.getActualAmount().equals(entity.getActualAmount())){
+          waterUsePayInfoService.updateActualAmount(entity.getPayId(),entity.getActualAmount());
+        }
+        /**5.修改缴费记录表数据(退款/减免金额)：修改应收、实收金额,是否修改过实收*/
         waterUsePayInfoService.updateMoney(entity.getPayId(), entity.getMoney());
         /**6.流程结束：通知发起人*/
         String messageContent = "";
@@ -216,10 +218,10 @@ public class RefundOrRefundServiceImpl extends
             .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
                 AuditConstants.PAY_MESSAGE_TYPE, messageContent);
         /**短信通知发起人:*/
-        smsService
-            .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
-                messageContent,
-                "退减免通知");
+//        smsService
+//            .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
+//                messageContent,
+//                "退减免通知");
       }
     } else {
       /**审核流程继续*/
@@ -233,6 +235,7 @@ public class RefundOrRefundServiceImpl extends
       if ("1".equals(auditBtn)) {
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
       }
+      flowProcess.setAuditContent(content);
       flowProcessService.updateById(flowProcess);
       /**3.流程操作记录表:新增下一环节操作记录*/
       flowProcessService.add(user.getNodeCode(), entity.getId(), nextPersonName, nextPersonId);

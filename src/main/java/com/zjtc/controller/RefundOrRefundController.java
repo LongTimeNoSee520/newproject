@@ -121,9 +121,10 @@ public class RefundOrRefundController {
   @ApiOperation(value = "保存")
   @RequestMapping(value = "edit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse edit(@Param("{\n"
+      + "  \"id\":\"退减免单id\",\n"
       + "  \"reason\":\"退款原因\",\n"
       + "  \"treatmentAdvice\":\"服务人员意见\",\n"
-      + "  \"sysFiles\":\"[\"附件集合,删除附件，修改delete为1\"]\"\n"
+      + "  \"actualAmount\":\"实收金额，修改退款单实收金额时，需要改参数\"\n"
       + "}") @RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
     log.info("修改==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
