@@ -97,6 +97,7 @@ public class FinanceController {
   @RequestMapping(value = "updateFinance", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("修改加价费开票记录")
   public ApiResponse updateFinance(@ApiParam("{\n"
+      + "    \"Finance\":[\n"
       + "        {\n"
       + "            \"id\":\"主键\",\n"
       + "            \"unitName\":\"单位名称\",\n"
@@ -106,6 +107,8 @@ public class FinanceController {
       + "            \"drawerId\":\"开票人Id\",\n"
       + "            \"drawer\":\"开票人\",\n"
       + "            \"unitCode\":\"单位编号\"\n"
+      + "        }\n"
+      + "    ]\n"
       + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     log.info("修改加价费开票记录,参数param==={" + jsonObject.toJSONString() + "}");
@@ -114,10 +117,12 @@ public class FinanceController {
       response.recordError("系统错误");
       return response;
     }
-    Finance finance;
+//    Finance finance;
+    List<Finance> finances;
     try {
-      finance = jsonObject.toJavaObject(Finance.class);
-      response = financeService.updateFinance(finance);
+//      finance = jsonObject.toJavaObject(Finance.class);
+       finances = jsonObject.getJSONArray("Finance").toJavaList(Finance.class);
+      response = financeService.updateFinance(finances);
       return response;
     } catch (Exception e) {
       response.setMessage("修改加价费开票记录失败");

@@ -75,4 +75,7 @@ public interface FinanceMapper extends BaseMapper<Finance> {
       @Param("paymentDateFinish") Date paymentDateFinish,
       @Param("drawer") String drawer,
       @Param("nodeCode") String nodeCode);
+
+
+  boolean updateFinance(List<Finance> finances);
 }
