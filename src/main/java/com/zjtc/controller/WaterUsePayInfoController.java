@@ -1,14 +1,13 @@
 package com.zjtc.controller;
 
 import com.alibaba.fastjson.JSONObject;
-
-import com.baomidou.mybatisplus.plugins.Page;
 import com.zjtc.base.constant.ResponseMsgConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
-import com.zjtc.model.WaterUsePayInfo;
 import com.zjtc.service.WaterUsePayInfoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Api;
 
 
 /**
@@ -32,9 +29,9 @@ import io.swagger.annotations.Api;
  *
  * @author zengqingsong
  */
+@Api(tags = "缴费管理")
 @RestController
 @RequestMapping("waterUsePayInfo")
-@Api(description = "xxx rest服务")
 @Slf4j
 public class WaterUsePayInfoController {
 

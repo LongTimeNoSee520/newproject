@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Author: yuchen
  * @Date: 2020/12/25
  */
-@Api(description = "编制算法服务")
+@Api(tags= "编制算法服务")
 @RestController
 @RequestMapping("algorithm")
 @Slf4j

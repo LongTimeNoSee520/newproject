@@ -1,14 +1,13 @@
 package com.zjtc.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.zjtc.base.constant.ResponseMsgConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
-import com.zjtc.model.UseWaterOriginalPlan;
 import com.zjtc.model.User;
 import com.zjtc.service.UseWaterOriginalPlanService;
-import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
@@ -23,17 +22,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Api;
 
 /**
  * TWUseWaterOriginalPlan的路由接口服务
  *
  * @author zengqingsong
  */
-@Api(description = "计划编制 rest服务")
 @RestController
 @RequestMapping("useWaterOriginalPlan")
+@Api(tags = "计划编制")
 @Slf4j
 public class UseWaterOriginalPlanController {
 
@@ -101,9 +98,9 @@ public class UseWaterOriginalPlanController {
   @ResponseBody
   @ApiOperation(value = "老户/新户保存")
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse addOld(@ApiParam("{\n"
+  public ApiResponse addOld(@RequestHeader("token") String token,@ApiParam("{\n"
       + "\"data\":[选择的保存数据集合]\n"
-      + "}")@RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
+      + "}") @RequestBody JSONObject jsonObject) {
     log.info("老户/新户保存==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
     User user=jwtUtil.getUserByToken(token);

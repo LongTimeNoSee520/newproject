@@ -6,6 +6,8 @@ import com.zjtc.base.constant.ResponseMsgConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.service.UseWaterPlanService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Api;
 
 /**
  * TWUseWaterPlan的路由接口服务
@@ -26,7 +26,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @RequestMapping("tWUseWaterPlan")
-@Api(description = "xxx rest服务")
+@Api(tags = "用水计划管理")
 @Slf4j
 public class UseWaterPlanController {
 
