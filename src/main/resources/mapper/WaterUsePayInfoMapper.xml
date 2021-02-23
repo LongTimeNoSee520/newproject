@@ -27,6 +27,7 @@
 		<result column="actualMultiple" property="actualMultiple" jdbcType="FLOAT"/>
 		<result column="amountReceivable" property="amountReceivable" jdbcType="FLOAT"/>
 		<result column="actualAmount" property="actualAmount" jdbcType="FLOAT"/>
+		<result column="increaseMoney" property="increaseMoney" jdbcType="FLOAT"/>
 		<result column="payStatus" property="payStatus" jdbcType="VARCHAR"/>
 		<result column="printed" property="printed" jdbcType="VARCHAR"/>
 		<result column="warned" property="warned" jdbcType="VARCHAR"/>
@@ -160,6 +161,7 @@
 			t1.actual_multiple AS actualMultiple,
 			t1.amount_receivable AS amountReceivable,
 			t1.actual_amount AS actualAmount,
+		  t1.increase_money AS increaseMoney,
 			t1.pay_status AS payStatus,
 			<!--托收缴费状态，满足pay_status=1 -->
 			case t1.pay_status
@@ -179,6 +181,7 @@
 			t4.other_bank AS otherBank,
 			t4.bank_of_deposit as bankOfDeposit,
 			t4.bank_account as bankAccount,
+			t1.remarks,
 			<!--基建季计划-->
 			case #{countQuarter}
 		  when '1' then t5.one_quarter
@@ -290,6 +293,7 @@
 		nodeCode=#{nodeCode},
 		actualAmount = ROUND (  t6.exceedWater * t6.price * t6.multiple,2 ),
 		amountReceivable = ROUND (  t6.exceedWater * t6.price * t6.multiple ,2),
+		increaseMoney=ROUND (  t6.exceedWater * t6.price * t6.multiple ,2),
 		countQuarter,
 		countYear,
 		exceedWater,

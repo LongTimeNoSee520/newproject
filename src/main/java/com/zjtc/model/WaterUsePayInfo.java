@@ -1,19 +1,18 @@
 package com.zjtc.model;
 
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableName;
-import com.baomidou.mybatisplus.activerecord.Model;
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import java.io.Serializable;
 /**
  * t_w_water_use_pay_info实体类
  * 
@@ -226,6 +225,12 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     @TableField(value = "edited_actual",exist = true)
     private String editedActual;
     /**
+     *
+     */
+    @ApiModelProperty("加价费")
+    @TableField(value = "increase_money", exist = true)
+    private String increaseMoney;
+    /**
     * 
     */
     @ApiModelProperty("是否需要托收，0否，1是")
@@ -261,6 +266,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     @ApiModelProperty("银行代码")
     @TableField(exist = false)
     private String otherBank;
+
 	/**
 	 * 实例化
 	 */
