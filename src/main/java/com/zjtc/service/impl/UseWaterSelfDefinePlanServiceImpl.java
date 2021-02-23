@@ -89,15 +89,10 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     if (null != jsonObject.getString("areaCode")) {
       areaCode = jsonObject.getString("areaCode");
     }
-//    开始年份
-    Integer beginYear = null;
-    if (null != jsonObject.getInteger("beginYear")) {
-      beginYear = jsonObject.getInteger("beginYear");
-    }
-//    结束年份
-    Integer endYear = null;
-    if (null != jsonObject.getInteger("endYear")) {
-      endYear = jsonObject.getInteger("endYear");
+//    自平年份
+    Integer planYear = null;
+    if (null != jsonObject.getInteger("planYear")) {
+      planYear = jsonObject.getInteger("planYear");
     }
 
 //    单位编号
@@ -126,8 +121,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     }
 //    总条数
     Integer total = this.baseMapper
-        .selectCount(unitName, userType, areaCode, beginYear,
-            endYear, executed, unitCode, nodeCode, auditStatus, userId);
+        .selectCount(unitName, userType, areaCode, planYear, executed, unitCode, nodeCode, auditStatus, userId);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
@@ -135,8 +129,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     String path = preViewRealPath + contextPath + "/";
     // TODO: 2021/2/18 因为没有附件id,需要根据业务id在附件表里去查对应的业务id,现在的做法是默认有附件id的情况,错误
     List<UseWaterSelfDefinePlanVO> waterSelfDefinePlans = this.baseMapper
-        .queryList(currPage, pageSize, unitName, userType, areaCode, beginYear,
-            endYear, executed, unitCode, nodeCode, auditStatus, userId,path);
+        .queryList(currPage, pageSize, unitName, userType, areaCode, planYear, executed, unitCode, nodeCode, auditStatus, userId,path);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));

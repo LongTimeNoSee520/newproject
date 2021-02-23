@@ -22,8 +22,7 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
    * @param unitName    单位名称-
    * @param userType    用户类型-
    * @param areaCode    编号开头-
-   * @param beginYear   开始年份-
-   * @param endYear     结束年份-
+   * @param planYear    自平年份-
    * @param unitCode    单位编号-
    * @param nodeCode    节点编码-
    * @param auditStatus 是否审核
@@ -34,8 +33,7 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
       @Param("unitName") String unitName,
       @Param("userType") String userType,
       @Param("areaCode") String areaCode,
-      @Param("beginYear") Integer beginYear,
-      @Param("endYear") Integer endYear,
+      @Param("planYear") Integer planYear,
       @Param("executed") String executed,
       @Param("unitCode") String unitCode,
       @Param("nodeCode") String nodeCode,
@@ -50,8 +48,7 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
    * @param unitName    单位名称
    * @param userType    用户类型
    * @param areaCode    编号开头
-   * @param beginYear   开始年份
-   * @param endYear     结束年份
+   * @param planYear   自平年份
    * @param executed    是否执行
    * @param unitCode    单位编号
    * @param nodeCode    节点编码
@@ -65,8 +62,7 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
       @Param("unitName") String unitName,
       @Param("userType") String userType,
       @Param("areaCode") String areaCode,
-      @Param("beginYear") Integer beginYear,
-      @Param("endYear") Integer endYear,
+      @Param("planYear") Integer planYear,
       @Param("executed") String executed,
       @Param("unitCode") String unitCode,
       @Param("nodeCode") String nodeCode,

@@ -158,8 +158,8 @@
     <if test="areaCode != null and areaCode != ''">
       and SUBSTRING(t1.unit_code,1,2) like '%${areaCode}%'
     </if>
-    <if test="beginYear != null  or endYear != null">
-      and (t1.plan_year &gt;= #{beginYear} and t1.plan_year &lt;= #{endYear})
+    <if test="planYear != null  and planYear != ''">
+      and t1.plan_year like '%${planYear}%'
     </if>
     <if test="unitCode != null and unitCode != ''">
       and t1.unit_code like '%${unitCode}%'
@@ -202,8 +202,8 @@
     <if test="areaCode != null and areaCode != ''">
       and SUBSTRING(t1.unit_code,1,2) like '%${areaCode}%'
     </if>
-    <if test="beginYear != null  or endYear != null">
-      and (t1.plan_year &gt;= #{beginYear} and t1.plan_year &lt;= #{endYear})
+    <if test="planYear != null  and planYear != ''">
+      and t1.plan_year like '%${planYear}%'
     </if>
     <if test="unitCode != null and unitCode != ''">
       and t1.unit_code like '%${unitCode}%'

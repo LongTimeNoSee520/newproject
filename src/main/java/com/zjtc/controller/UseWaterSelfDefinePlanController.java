@@ -47,8 +47,7 @@ public class UseWaterSelfDefinePlanController {
       + "    \"unitName\":\"单位名称\",\n"
       + "    \"userType\":\"用户类型(截取的是3-4位)\",\n"
       + "    \"areaCode\":\"编号开头\",\n"
-      + "    \"beginYear\":\"开始年份\",\n"
-      + "    \"endYear\":\"结束年份\",\n"
+      + "    \"planYear \":\"自平年份\",\n"
       + "    \"auditStatus\":\"是否审核(0:未审核,2:已审核)\",\n"
       + "    \"executed\":\"是否执行(0:未执行,1:已执行)\"\n"
       + "}") @RequestBody JSONObject jsonObject,
