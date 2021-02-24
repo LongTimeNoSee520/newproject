@@ -384,9 +384,11 @@ public class WaterUsePayInfoServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = year + "年" + quarter + "季度加价用户信息.xlsx";
-    if (quarter.equals("") && "" == quarter) {
-      fileName = year + "年加价用户信息.xlsx";
+    String fileName = "加价用户信息.xlsx";
+    if (null == quarter || quarter.equals("")) {
+      fileName = year + "年"+fileName;
+    }else {
+      fileName = year + "年" + quarter + "季度"+fileName;
     }
     String templateName = "template/waterUsePayInfoUserData.xlsx";
     commonService.export(fileName, templateName, request, response, data);

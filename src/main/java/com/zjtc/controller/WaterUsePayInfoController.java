@@ -315,7 +315,9 @@ public class WaterUsePayInfoController {
   @ApiOperation(value = "导出查询结果")
   @RequestMapping(value = "exportQueryData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse exportQueryData(@RequestHeader("token") String token,
-      @RequestBody JSONObject jsonObject, HttpServletRequest request,
+      @ApiParam("{\n"
+      + "\"data\":[查询返回的数据集合]\n"
+      + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     log.info("缴费管理：导出查询结果， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -338,7 +340,11 @@ public class WaterUsePayInfoController {
   @ApiOperation(value = "导出用户信息")
   @RequestMapping(value = "exportUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse exportUser(@RequestHeader("token") String token,
-      @RequestBody JSONObject jsonObject, HttpServletRequest request,
+      @ApiParam("{\n"
+          + "  \"year\":\"年份，必填\",\n"
+          + "  \"quarter\":\"季度\"\n"
+          + "  \n"
+          + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     log.info("缴费管理：导出用户信息， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -390,7 +396,11 @@ public class WaterUsePayInfoController {
   @ApiOperation(value = "导出本行托收数据")
   @RequestMapping(value = "exportBankInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse exportBankInfo(@RequestHeader("token") String token,
-      @RequestBody JSONObject jsonObject, HttpServletRequest request,
+      @ApiParam("{\n"
+          + "  \"year\":\"年份，必填\",\n"
+          + "  \"quarter\":\"季度，必填\"\n"
+          + "  \n"
+          + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     log.info("缴费管理：导出本行托收数据， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -417,7 +427,11 @@ public class WaterUsePayInfoController {
   @ApiOperation(value = "导出他行托收数据")
   @RequestMapping(value = "exportOtherBankInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse exportOtherBankInfo(@RequestHeader("token") String token,
-      @RequestBody JSONObject jsonObject, HttpServletRequest request,
+      @ApiParam("{\n"
+          + "  \"year\":\"年份，必填\",\n"
+          + "  \"quarter\":\"季度，必填\"\n"
+          + "  \n"
+          + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     log.info("缴费管理：导出他行托收数据， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
