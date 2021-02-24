@@ -398,7 +398,7 @@ public class WaterUsePayInfoController {
   public ApiResponse exportBankInfo(@RequestHeader("token") String token,
       @ApiParam("{\n"
           + "  \"year\":\"年份，必填\",\n"
-          + "  \"quarter\":\"季度，必填\"\n"
+          + "  \"quarter\":\"季度\"\n"
           + "  \n"
           + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
@@ -429,7 +429,7 @@ public class WaterUsePayInfoController {
   public ApiResponse exportOtherBankInfo(@RequestHeader("token") String token,
       @ApiParam("{\n"
           + "  \"year\":\"年份，必填\",\n"
-          + "  \"quarter\":\"季度，必填\"\n"
+          + "  \"quarter\":\"季度\"\n"
           + "  \n"
           + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {

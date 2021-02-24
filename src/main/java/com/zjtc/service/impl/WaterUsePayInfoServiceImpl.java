@@ -453,7 +453,12 @@ public class WaterUsePayInfoServiceImpl extends
       return apiResponse;
     }
     //写文件
-    String fileName = year + "年" + quarter + "季度本行托收数据.txt";
+    String fileName = "本行托收数据.txt";
+    if (null == quarter || quarter.equals("")) {
+      fileName = year + "年"+fileName;
+    }else {
+      fileName = year + "年" + quarter + "季度"+fileName;
+    }
     File file = new File(
         fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName);
     FileOutputStream fos = new FileOutputStream(file.getPath());
@@ -507,7 +512,12 @@ public class WaterUsePayInfoServiceImpl extends
       return apiResponse;
     }
     //写文件
-    String fileName = year + "年" + quarter + "季度他行托收数据.txt";
+    String fileName = "他行托收数据.txt";
+    if (null == quarter || quarter.equals("")) {
+      fileName = year + "年"+fileName;
+    }else {
+      fileName = year + "年" + quarter + "季度"+fileName;
+    }
     File file = new File(
         fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName);
     FileOutputStream fos = new FileOutputStream(file.getPath());
