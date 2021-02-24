@@ -368,7 +368,7 @@ public class WaterUsePayInfoController {
   @ApiOperation(value = "导出计划用水户超计划情况汇总表")
   @RequestMapping(value = "exportPayInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse exportPayInfo(@ApiParam("{\n"
-      + "        \"year\":\"年份\",\n"
+      + "        \"year\":\"年份，必填\",\n"
       + "       \"quarter\":\"季度\"\n"
       + "}") @RequestHeader("token") String token,
       @RequestBody JSONObject jsonObject, HttpServletRequest request,
