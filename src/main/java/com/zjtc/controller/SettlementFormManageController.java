@@ -96,7 +96,7 @@ public class SettlementFormManageController {
     return response;
   }
   @RequestMapping(value = "cancelSettlement", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation(value = "撤销(审核中的增加计划办结单不能撤销)")
+  @ApiOperation(value = "撤销(审核中的办结单不能撤销)")
   public ApiResponse cancelSettlement(@RequestHeader("token") String token,
       @ApiParam("{\n"
           + "  \"ids\":[\"办结单id列表\"]\n"

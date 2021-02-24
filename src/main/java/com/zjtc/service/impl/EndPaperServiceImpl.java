@@ -141,8 +141,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     /**根据id查询*/
     List<EndPaper> endPapers = this.selectBatchIds(ids);
     for (EndPaper endPaper : endPapers) {
-         /**类型为增加水量的办结单且处于审核中的办结单不能撤销*/
-        if ("1".equals(endPaper.getPaperType()) && !"0".equals(endPaper.getAuditStatus())) {//0为办结单提交审核还未经过下一环节审核的状态
+         /**处于审核中的办结单不能撤销*/
+        if (!"0".equals(endPaper.getAuditStatus())) {//0为办结单提交审核还未经过下一环节审核的状态
           //如果不是刚提交未审核状态，则不能撤销
           response.recordError("处于审核中或者审核通过的增加计划办结单不能撤销");
           return response;

@@ -165,8 +165,8 @@
 			t1.pay_status AS payStatus,
 			<!--托收缴费状态，满足pay_status=1 -->
 			case t1.pay_status
-			when '1' then 'Y'
-			else 'N' end as payStatusName,
+			when '1' then 1
+			else 0 end as payStatusName,
 			t1.entrusted,
 			t1.cash_check AS cashCheck,
 			t1.transfer_check AS transferCheck,
