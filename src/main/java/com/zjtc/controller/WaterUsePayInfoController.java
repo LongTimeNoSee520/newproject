@@ -88,16 +88,19 @@ public class WaterUsePayInfoController {
   @ApiOperation(value = "保存")
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse add(@RequestHeader("token") String token, @ApiParam("{\n"
-      + " \"id\":\"缴费记录id\",\n"
-      + "\"entrusted\":\"是否需要托收，0否，1是\",\n"
-      + "\"payType\":\"付款方式，默认0，2现金,3转账\",\n"
-      + "\"invoiceId\":\"发票id\",\n"
-      + "\"invoiceNum\":\"发票号\",\n"
-      + "\"payStatus\":\"托收缴费状态，0不勾选，1勾选\",\n"
-      + "\"cashCheck\":\"现金财务复核，0不勾选，1勾选\",\n"
-      + "\"transferCheck\":\"转账财务复核，0不勾选，1勾选\",\n"
-      + "\"printed\":\"是否打印,0否，1是\",\n"
-      + "\"remarks\":\"备注\"\n"
+      + "\"payInfoList\": [{\n"
+      + "\"id\": \"缴费记录id\",\n"
+      + "\"entrusted\": \"是否需要托收，0否，1是\",\n"
+      + "\"payType\": \"付款方式，默认0，2现金,3转账\",\n"
+      + "\"invoiceId\": \"发票id\",\n"
+      + "\"invoiceNum\": \"发票号\",\n"
+      + "\"payStatus\": \"托收缴费状态，0不勾选，1勾选\",\n"
+      + "\"cashCheck\": \"现金财务复核，0不勾选，1勾选\",\n"
+      + "\"transferCheck\": \"转账财务复核，0不勾选，1勾选\",\n"
+      + "\"printed\": \"是否打印,0否，1是\",\n"
+      + "\"remarks\": \"备注\"\n"
+      + "\n"
+      + "}]\n"
       + "}") @RequestBody JSONObject jsonObject) {
     log.info("新增==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();

@@ -66,7 +66,11 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     */
     @ApiModelProperty("发票号")
     @TableField(value = "invoice_num",exist = true)
-        private String invoiceNum;
+    private String invoiceNum;
+
+    @ApiModelProperty("发票id")
+    @TableField(value = "invoice_id",exist =false)
+    private String invoiceId;
     /**
     * 
     */

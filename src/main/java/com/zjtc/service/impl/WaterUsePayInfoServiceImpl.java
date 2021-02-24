@@ -91,25 +91,32 @@ public class WaterUsePayInfoServiceImpl extends
 
   @Override
   public boolean updateModel(JSONObject jsonObject, User user) {
-    WaterUsePayInfo entity = jsonObject.toJavaObject(WaterUsePayInfo.class);
-    String invoiceId = jsonObject.getString("invoiceId");
-    //勾选了财务转账、现金复核
-    if ("1".equals(entity.getCashCheck()) || "1".equals(entity.getTransferCheck())) {
-      entity.setPayStatus("5");
-    }
-    //勾选了托收缴费状态
-    if ("1".equals(entity.getPayStatus())) {
-      entity.setPayStatus("1");
-    }
-    if (StringUtils.isNotBlank(invoiceId)) {
-      /**绑定发票号*/
-      UseWaterUnitInvoice useWaterUnitInvoice = new UseWaterUnitInvoice();
-      useWaterUnitInvoice.setInvoiceDate(new Date());
-      useWaterUnitInvoice.setPayInfoId(entity.getId());
-      useWaterUnitInvoiceService
-          .updateInvoicesUnitMessage(useWaterUnitInvoice, user.getUsername(), user.getNodeCode());
-    }
-    boolean result = this.updateById(entity);
+   List<WaterUsePayInfo>  entityList = jsonObject.getJSONArray("payInfoList").toJavaList(WaterUsePayInfo.class);
+   if (entityList.isEmpty()){
+     return false;
+   }
+   for (WaterUsePayInfo entity : entityList) {
+
+     //勾选了财务转账、现金复核
+     if ("1".equals(entity.getCashCheck()) || "1".equals(entity.getTransferCheck())) {
+       entity.setPayStatus("5");
+     }
+     //勾选了托收缴费状态
+     if ("1".equals(entity.getPayStatus())) {
+       entity.setPayStatus("1");
+     }
+     if (StringUtils.isNotBlank(entity.getInvoiceId())) {
+       /**绑定发票号*/
+       UseWaterUnitInvoice useWaterUnitInvoice = new UseWaterUnitInvoice();
+       useWaterUnitInvoice.setId(entity.getInvoiceId());
+       useWaterUnitInvoice.setInvoiceDate(new Date());
+       useWaterUnitInvoice.setPayInfoId(entity.getId());
+       useWaterUnitInvoiceService
+           .updateInvoicesUnitMessage(useWaterUnitInvoice, user.getUsername(), user.getNodeCode());
+     }
+    // boolean result = this.updateById(entity);
+   }
+    boolean result = this.updateBatchById(entityList);
     return result;
   }
 
