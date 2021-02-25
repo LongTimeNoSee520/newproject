@@ -60,7 +60,6 @@
     <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
     <result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
     <result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
-    <result column="change_type" property="changeType" jdbcType="VARCHAR"/>
     <result column="change_type_name" property="changeTypeName" jdbcType="VARCHAR"/>
     <result column="changeCode" property="changeCode" jdbcType="VARCHAR"/>
     <result column="change_quarter" property="changeQuarter" jdbcType="VARCHAR"/>
@@ -125,7 +124,6 @@
     fourth_quarter,
     first_water,
     second_water,
-    change_type,
     CASE change_type
     WHEN 0 THEN '调整计划'
     WHEN 1 THEN '增加计划'

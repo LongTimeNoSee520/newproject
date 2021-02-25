@@ -166,38 +166,5 @@ public class UseWaterPlanAddWXController {
 
 
 
-  @RequestMapping(value = "firstAuditRole", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation("查询第一个审核流程")
-  public ApiResponse firstAuditRole(@ApiParam("   {\n"
-      + "     \"flowCode\":[\"打印的id\"]\n"
-      + "   }") @RequestBody JSONObject jsonObject,
-      @RequestHeader("token") String token) {
-    log.info("打印办结单,参数param==={" + jsonObject.toJSONString() + "}");
-    ApiResponse response = new ApiResponse();
-    User user = jwtUtil.getUserByToken(token);
-    if (user == null) {
-      response.setMessage("打印办结单失败");
-      return response;
-    }
-    if (null == jsonObject) {
-      response.recordError("系统异常");
-      return response;
-    }
-    String flowCode = null;
-    if (null != jsonObject.getString("flowCode")){
-      flowCode = jsonObject.getString("flowCode");
-    }
-    try {
-      List<Map<String, Object>> list = flowNodeInfoService
-          .firstAuditRole(flowCode, user.getNodeCode());
-      response.setData(list);
-      return response;
-    } catch (Exception e) {
-      response.setCode(500);
-      response.setMessage("打印办结单异常");
-      log.error("打印办结单错误,errMsg==={}", e.getMessage());
-      e.printStackTrace();
-    }
-    return response;
-  }
+
 }
