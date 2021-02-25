@@ -112,6 +112,10 @@ public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
   @TableField(value = "change_type", exist = true)
   private String changeType;
 
+  @ApiModelProperty("调整类型(0:调整计划,1:增加计划)")
+  @TableField(value = "change_type_name", exist = false)
+  private String changeTypeName;
+
   @ApiModelProperty("调整类型编码")
   @TableField(value = "changeCode",exist = false)
   private String changeCode;

@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
+import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -34,6 +36,9 @@ public class UseWaterPlanAddWXController {
 
   @Autowired
   private JWTUtil jwtUtil;
+
+  @Autowired
+  private FlowNodeInfoService flowNodeInfoService;
 
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("用水计划调整审核查询")
@@ -108,8 +113,8 @@ public class UseWaterPlanAddWXController {
       + "    \"auditResult\":\"审核结果\",\n"
       + "    \"firstWater\":\"第一水量\",\n"
       + "    \"secondWater\":\"第二水量\",\n"
-      + "    \"auditorName\":\"审核人\",\n"
-      + "    \"auditorId\":\"审核人id\",\n"
+      + "    \"auditorName\":\"下一环节审核人\",\n"
+      + "    \"auditorId\":\"下一环节Role审核人id\",\n"
       + "    \"businessJson\":\"关联业务json数据(待办相关)\",\n"
       + "    \"detailConfig\":\"详情配置文件(待办相关)\",\n"
       + "    \"nextNodeId\":\"下一审核环节id\"\n"
@@ -154,6 +159,43 @@ public class UseWaterPlanAddWXController {
       response.setCode(500);
       response.setMessage("用水计划调整审核异常");
       log.error("用水计划调整审核错误,errMsg==={}", e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
+
+
+
+  @RequestMapping(value = "firstAuditRole", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation("查询第一个审核流程")
+  public ApiResponse firstAuditRole(@ApiParam("   {\n"
+      + "     \"flowCode\":[\"打印的id\"]\n"
+      + "   }") @RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
+    log.info("打印办结单,参数param==={" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (user == null) {
+      response.setMessage("打印办结单失败");
+      return response;
+    }
+    if (null == jsonObject) {
+      response.recordError("系统异常");
+      return response;
+    }
+    String flowCode = null;
+    if (null != jsonObject.getString("flowCode")){
+      flowCode = jsonObject.getString("flowCode");
+    }
+    try {
+      List<Map<String, Object>> list = flowNodeInfoService
+          .firstAuditRole(flowCode, user.getNodeCode());
+      response.setData(list);
+      return response;
+    } catch (Exception e) {
+      response.setCode(500);
+      response.setMessage("打印办结单异常");
+      log.error("打印办结单错误,errMsg==={}", e.getMessage());
       e.printStackTrace();
     }
     return response;

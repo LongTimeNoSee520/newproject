@@ -58,4 +58,7 @@ public interface UseWaterPlanAddWXService extends IService<UseWaterPlanAddWX> {
    * @return 修改是否成功
    */
   boolean update(UseWaterPlanAddWX useWaterPlanAddWX);
+
+
+
 }

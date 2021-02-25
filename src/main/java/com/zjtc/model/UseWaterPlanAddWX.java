@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
  * @Author: ZhouDaBo
  * @Date: 2021/1/5
  */
-@ApiModel("用水计划调整申请表（微信公众号）")
+@ApiModel("用水计划调整申请表")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
