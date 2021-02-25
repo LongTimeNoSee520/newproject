@@ -9,8 +9,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -107,6 +109,57 @@ public class FileController {
           result.put("uploadPath", uploadPath);
           apiResponse.setData(result);
           apiResponse.setCode(200);
+        }
+      } catch (Exception e) {
+        log.error("附件上传失败,errMsg==={" + e.getMessage() + "}");
+
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @RequestMapping(value = "uploadFiles", method = RequestMethod.POST)
+  @ResponseBody
+  @ApiOperation("上传")
+  public ApiResponse uploadFiles(@Param("files") MultipartFile [] files,
+      @RequestHeader("token") String token) {
+    log.info("附件，上传 ==== 参数{" + files + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    List<com.zjtc.model.File> result=new ArrayList<>();
+    if (files.length>0) {
+      try {
+        User user = jwtUtil.getUserByToken(token);
+        if (null == user) {
+          apiResponse.recordError(500);
+        }
+        //获取文件保存路径
+        String path = fileUploadRootPath + File.separator + fileUploadPath + File.separator;
+        /**调用上传接口*/
+        for (MultipartFile item : files) {
+          if (item.isEmpty()) {
+            log.error("");
+            continue;
+          }
+            String fileName = fileService.uploadFile(item, path);
+        if (StringUtils.isNotBlank(fileName)) {
+          com.zjtc.model.File sysAttrFile = new com.zjtc.model.File();
+          sysAttrFile.setId(UUID.randomUUID().toString().replace("-", ""));
+          sysAttrFile.setFileName(item.getOriginalFilename());
+          sysAttrFile.setFilePath(fileUploadPath + File.separator + fileName);//非全路径（排除跟目录）
+          sysAttrFile.setCreateTime(new Date());
+          sysAttrFile.setCreaterId(user.getId());
+          sysAttrFile.setDeleted("0");
+          /**Todo: node从token中获取*/
+          sysAttrFile.setNodeCode(user.getNodeCode());
+          /**附件表新增数据*/
+          fileService.insert(sysAttrFile);
+          String uploadPath = "http://" + ip + ":" + port + contextPath + imgBrowsePath + fileName;
+          sysAttrFile.setUrl(uploadPath);
+          result.add(sysAttrFile);
+        }
+          apiResponse.setData(result);
         }
       } catch (Exception e) {
         log.error("附件上传失败,errMsg==={" + e.getMessage() + "}");

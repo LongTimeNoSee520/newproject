@@ -316,8 +316,17 @@ public class WaterUsePayInfoController {
   @RequestMapping(value = "exportQueryData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse exportQueryData(@RequestHeader("token") String token,
       @ApiParam("{\n"
-      + "\"data\":[查询返回的数据集合]\n"
-      + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
+          + "    \"unitName\":\"单位名称\",\n"
+          + "    \"unitCode\":\"单位编号\",\n"
+          + "    \"countYear\":\"年，必填\",\n"
+          + "    \"countQuarter\":\"季度\",\n"
+          + "    \"payStatus\":\"缴费状态：0：未缴费，1已缴费\",\n"
+          + "    \"actualAmount\":\"金额\",\n"
+          + "    \"userType\":\"用户类型\",\n"
+          + "    \"waterMeterCode\":\"水表档案号\",\n"
+          + "    \"editedActual\":\"是否调整,0否，1是\",\n"
+          + "    \"payType\":\"付款方式：2现金,3转账\"\n"
+          + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     log.info("缴费管理：导出查询结果， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -325,6 +334,7 @@ public class WaterUsePayInfoController {
     if (null != user && null != jsonObject) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
         waterUsePayInfoService.exportQueryData(jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出查询结果失败,errMsg==={}", e.getMessage());

@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.omg.CORBA.OBJ_ADAPTER;
-import springfox.documentation.spring.web.json.Json;
 
 /**
  * WaterUsePayInfo的Dao接口
@@ -68,6 +66,8 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
   List<Map<String,Object>> exportBankInfo(JSONObject jsonObject);
 
   List<Map<String,Object>> exportOtherBankInfo(JSONObject jsonObject);
+
+  List<Map<String,Object>> exportQueryData(JSONObject jsonObject);
 
 
 }

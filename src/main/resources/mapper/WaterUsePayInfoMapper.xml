@@ -851,4 +851,138 @@
 	inner join (select id,unit_code,unit_name,unit_address,area_country,responsibility_code,save_unit_type,zip_address,zip_name,invoice_unit_name,unit_code_type,industry,department,abnormal_cause from t_w_use_water_unit where deleted='0' and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId}))t2 on t2.id=t1.use_water_unit_id
 	LEFT JOIN ( SELECT use_water_unit_id,signed,bank_of_deposit,bank_account,people_bank_pay_sys_number,agreement_number,focus_user_remark,other_bank FROM t_w_bank WHERE main = '1' AND deleted = '0' ) t3 ON t3.use_water_unit_id = t2.id
 	</select>
+
+	<select id="exportQueryData" resultType="java.util.LinkedHashMap">
+		SELECT
+		t1.id,
+		t1.pay_type as payType,
+		t1.unit_code AS unitCode,
+		t1.unit_name AS unitName,
+		t2.unit_code_group as unitCodeGroup,
+		t1.count_year AS countYear,
+		t1.count_quarter AS countQuarter,
+		t1.price,
+		t1.year_plan AS yearPlan,
+		t1.quarter_plan AS quarterPlan,
+		t1.water_num1 AS waterNum1,
+		t1.water_num2 AS waterNum2,
+		t1.water_num2 AS waterNum3,
+		t1.water_num_amount AS waterNumAmount,
+		t1.exceed_water AS exceedWater,
+		t1.pay_ratio AS payRatio,
+		t1.multiple,
+		t1.actual_multiple AS actualMultiple,
+		t1.amount_receivable AS amountReceivable,
+		t1.actual_amount AS actualAmount,
+		t1.increase_money AS increaseMoney,
+		t1.pay_status AS payStatus,
+		<!--托收缴费状态，满足pay_status=1 -->
+		case t1.pay_status
+		when '1' then 1
+		else 0 end as payStatusName,
+		t1.entrusted,
+		t1.cash_check AS cashCheck,
+		t1.transfer_check AS transferCheck,
+		t1.printed,
+		t1.audit_time AS auditTime,
+		t1.audit_person AS auditPerson,
+		t1.invoice_num AS invoiceNum,
+		t1.invoice_print_time AS invoicePrintTime,
+		t2.id as useWaterUnitId,
+		t2.responsibility_code AS responsibilityCode,
+		t2.water_meter_code as waterMeterCode,
+		t4.other_bank AS otherBank,
+		t4.bank_of_deposit as bankOfDeposit,
+		t4.bank_account as bankAccount,
+		t1.remarks,
+		<!--基建季计划-->
+		case #{countQuarter}
+		when '1' then t5.one_quarter
+		when '2' then t5.two_quarter
+		when '3' then t5.three_quarter
+		when '4' then t5.four_quarter
+		ELSE '0' end as  baseQuarterPlan,
+		<!--是否签约，条件：主户银行账号都没有签约-->
+		case
+		when t4.signed ='1' then '是'
+		when t4.signed='0' then '否'
+		ELSE '否'
+		end as signed,
+		case
+		pay_type
+		when '2' THEN '现金'
+		when '3' THEN '转账'
+		ELSE '' END AS payType,
+		countDate=CAST(count_year AS VARCHAR(5))+'第'+CAST(count_quarter AS  VARCHAR(5))+'季度',
+		case
+		pay_status
+		when '1' THEN '1'
+		ELSE '0' END AS isSigning
+		FROM
+		( SELECT * FROM t_w_water_use_pay_info WHERE 1 = 1
+		<!--单位名称关键字查询-->
+		<if test="null !=unitName and unitName !=''">
+			and unit_name like '%${unitName}%'
+		</if>
+		<!--单位编号关键字查询-->
+		<if test="null !=unitCode and unitCode !=''">
+			and unit_code like '%${unitCode}%'
+		</if>
+		<!--筛选缴费年度-->
+		<if test="null !=countYear and countYear !=''">
+			and count_year=#{countYear}
+		</if>
+		<!--筛选缴费季度-->
+		<if test="null !=countQuarter and countQuarter !=''">
+			and count_quarter=#{countQuarter}
+		</if>
+		<!--筛选缴费状态-->
+		<if test="null !=payStatus and payStatus !=''">
+			<choose>
+				<when test="payStatus==1">
+					and (pay_status='1' or pay_status= '5' )
+				</when>
+				<when test="payStatus==0">
+					<!--这里需要兼容一期的数据，排除2：待审核，3：已审核-->
+					and pay_status not in ('1','2','3','5')
+				</when>
+			</choose>
+		</if>
+		<!--筛选金额[实收金额]-->
+		<if test="null !=actualAmount and actualAmount !=''">
+			and 	actual_amount =#{actualAmount}
+		</if>
+		<!--是否调整-->
+		<if test="null !=editedActual and editedActual !=''">
+			and	 edited_actual=#{editedActual}
+		</if>
+		<!--付款方式-->
+		<if test="null !=payType and payType !=''">
+			and	 pay_type=#{payType}
+		</if>
+		) t1
+		inner join (
+		select
+		id ,
+		[water_meter_code] = STUFF (
+		( SELECT ',' + [water_meter_code] FROM t_w_use_water_unit_meter t WHERE t.use_water_unit_id = uu.id FOR XML PATH ( '' ) ),1,1,''),
+		responsibility_code,
+		unit_code_group
+		from t_w_use_water_unit uu
+		where deleted='0'
+		<!--筛选当前用户可操作的用户类型-->
+		and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId})
+		<!--查询筛选的用户类型-->
+		<if test="null !=userType and userType !=''">
+			and unit_code_type=#{userType}
+		</if>
+		) t2 on t2.id=t1.use_water_unit_id
+		LEFT JOIN ( SELECT * FROM t_w_bank WHERE deleted = '0' and main='1' ) t4 ON t4.use_water_unit_id = t1.use_water_unit_id
+		LEFT JOIN ( SELECT * FROM t_w_use_water_base_plan WHERE deleted = '0' ) t5 ON t5.use_water_unit_id = t1.use_water_unit_id
+		AND t5.plan_year = t1.count_year
+		<if test="null !=waterMeterCode and waterMeterCode !=''">
+			where  t2.water_meter_code like '%${waterMeterCode}%'
+		</if>
+		ORDER BY t1.unit_code, unit_code_group, count_quarter DESC
+	</select>
 </mapper>

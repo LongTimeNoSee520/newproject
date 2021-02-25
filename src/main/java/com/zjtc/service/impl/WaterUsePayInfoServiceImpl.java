@@ -305,27 +305,7 @@ public class WaterUsePayInfoServiceImpl extends
   @Override
   public void exportQueryData(JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
-    List<WaterUsePayInfo> list = jsonObject.getJSONArray("data").toJavaList(WaterUsePayInfo.class);
-    if (!list.isEmpty()) {
-      for (WaterUsePayInfo item : list) {
-        //支付方式
-        if ("2".equals(item.getPayType())) {
-          item.setPayType("现金");
-        } else if ("3".equals(item.getPayType())) {
-          item.setPayType("转账");
-        } else {
-          item.setPayType("");
-        }
-        //缴费时间
-        item.setCountDate(item.getCountYear() + "第" + item.getCountQuarter() + "季度");
-        //是否托收
-        if ("1".equals(item.getPayStatus())) {
-          item.setIsSigning("1");
-        } else {
-          item.setIsSigning("0");
-        }
-      }
-    }
+    List<Map<String,Object>> list = baseMapper.exportQueryData(jsonObject);
     Map<String, Object> data = new HashMap<>();
     data.put("excelData", list);
     data.put("nowDate", new Date());
