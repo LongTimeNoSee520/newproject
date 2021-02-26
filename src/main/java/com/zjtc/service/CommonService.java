@@ -29,12 +29,10 @@ public interface CommonService  {
    * @param beans
    * @param xmlConfig
    * @param fileRealPath
-   * @param uploadFileName
-   * @param nodeCode
    * @param isThrowException
    * @return
    * @throws Exception
    */
   Map<String, List> importExcel(Map<String, List> beans, String xmlConfig,
-      String fileRealPath, String uploadFileName,String nodeCode,boolean isThrowException) throws Exception;
+      String fileRealPath,boolean isThrowException) throws Exception;
 }

@@ -74,7 +74,7 @@ public class CommonServiceImpl implements CommonService{
   /**解析excel数据到bean*/
   @Override
   public  Map<String, List> importExcel(Map<String, List> beans, String xmlConfig,
-      String fileRealPath, String uploadFileName,String nodeCode,boolean isThrowException) throws Exception {
+      String fileRealPath,boolean isThrowException) throws Exception {
     File file = new File(fileRealPath);
     String fileName = file.getName();
     InputStream inputXLS = null;
@@ -94,7 +94,7 @@ public class CommonServiceImpl implements CommonService{
         log.debug("读取excel文件成功: 【{}】", fileName);
       }
     } catch (Exception e) {
-      handleException(e, isThrowException,uploadFileName,nodeCode);
+      handleException(e, isThrowException);
     } finally {
       try {
         if (inputXLS != null) {
@@ -115,9 +115,8 @@ public class CommonServiceImpl implements CommonService{
    *
    * @param e: 异常
    * @param isThrowException: 是否抛出异常
-   * @param uploadFileName: 文件上传时的名字
    */
-  private  void handleException(Exception e, boolean isThrowException, String uploadFileName,String nodeCode)
+  private  void handleException(Exception e, boolean isThrowException)
       throws Exception {
     // ① 记录错误位置
     String errorCell = e.getMessage().split(" ")[3];
@@ -135,7 +134,7 @@ public class CommonServiceImpl implements CommonService{
       default:
         break;
     }
-    errorMsg = "读取" + uploadFileName + "文件异常: " + errorCell + errorMsg;
+    errorMsg = "读取文件异常: " + errorCell + errorMsg;
     if (isThrowException) {
       throw new Exception(errorMsg);
     } else {
