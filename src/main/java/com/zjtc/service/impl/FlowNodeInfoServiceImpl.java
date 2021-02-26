@@ -1,5 +1,6 @@
 package com.zjtc.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.mapper.FlowNodeInfoMapper;
 import com.zjtc.model.FlowNodeInfo;
@@ -36,7 +37,8 @@ public class FlowNodeInfoServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public String selectAndInsert(String nodeCode, String businessId, String flowCode,String nextNodeId) {
+  public String selectAndInsert(String nodeCode, String businessId, String flowCode,
+      String nextNodeId) {
     String newNextNodeId = "";
     /**从流程节点表查询办结单/退减免单审核流程节点数据*/
     List<FlowNodeInfo> flowNodeInfos = flowNodeService.selectNodes(nodeCode, flowCode);
@@ -67,7 +69,7 @@ public class FlowNodeInfoServiceImpl extends
           }
         }
         /**在审核创建时，提交来的下一环节id是节点表(配置的id)，需要更新为流程信息表的id，即uuid生成的id*/
-        if(flowNodeId.equals(nextNodeId)){
+        if (flowNodeId.equals(nextNodeId)) {
           newNextNodeId = flowNodeInfo.getId();//此时的id已经是重新生成的uuid
         }
       }
@@ -93,5 +95,13 @@ public class FlowNodeInfoServiceImpl extends
   public List<Map<String, Object>> firstAuditRole(String flowCode, String nodeCode) {
     return baseMapper.firStAuditRole(flowCode, nodeCode);
 
+  }
+
+  @Override
+  public boolean isFirst(String id) {
+    EntityWrapper wrapper = new EntityWrapper();
+    wrapper.eq("id", id);
+    wrapper.eq("flow_sort", "1");
+    return this.selectCount(wrapper) > 0;
   }
 }

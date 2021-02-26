@@ -3,12 +3,10 @@ package com.zjtc.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.mapper.RefundOrRefundMapper;
 import com.zjtc.model.File;
-import com.zjtc.model.FlowExample;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.User;
@@ -80,7 +78,11 @@ public class RefundOrRefundServiceImpl extends
   @Override
   public boolean updateModel(JSONObject jsonObject) {
     RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
-    return  this.updateById(entity);
+    boolean flag = true;
+    if (!entity.getSysFiles().isEmpty()) {
+      flag = fileService.updateBusinessId(entity.getId(), entity.getSysFiles());
+    }
+    return this.updateById(entity) && flag;
   }
 
   @Override
@@ -118,6 +120,7 @@ public class RefundOrRefundServiceImpl extends
     Map<String, Object> page = new LinkedHashMap<>();
     String startTime = jsonObject.getString("startTime");
     String endTime = jsonObject.getString("endTime");
+    jsonObject.put("flowCode",AuditConstants.PAY_FLOW_CODE);
     if (StringUtils.isNotBlank(startTime)) {
       jsonObject.put("startTime", startTime + " 00:00:00");
     }
@@ -161,6 +164,7 @@ public class RefundOrRefundServiceImpl extends
     String auditBtn = jsonObject.getString("auditBtn");
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
+    //查询下一环节
     List<Map<String, Object>> hasNext = flowNodeInfoService
         .nextAuditRole(id, AuditConstants.PAY_TABLE, user.getNodeCode(), auditBtn);
     //获取当前环节的审核操作记录
@@ -178,6 +182,7 @@ public class RefundOrRefundServiceImpl extends
       if ("1".equals(auditBtn)) {
         entity.setStatus(AuditConstants.GET_APPROVED);
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
+        //审核开始，更改审核状态
       }
       /**1.修改当前退减免单：下一环节id、审核人、审核时间、审核状态*/
       entity.setAuditPerson(user.getId());
@@ -194,9 +199,10 @@ public class RefundOrRefundServiceImpl extends
       flowExampleService.edit(user.getNodeCode(), entity.getId());
       if ("1".equals(auditBtn)) {
         /**如果是退款单，修改过实收*/
-        WaterUsePayInfo waterUsePayInfo= waterUsePayInfoService.selectById(entity.getPayId());
-        if("1".equals(entity.getType()) && !waterUsePayInfo.getActualAmount().equals(entity.getActualAmount())){
-          waterUsePayInfoService.updateActualAmount(entity.getPayId(),entity.getActualAmount());
+        WaterUsePayInfo waterUsePayInfo = waterUsePayInfoService.selectById(entity.getPayId());
+        if ("1".equals(entity.getType()) && !waterUsePayInfo.getActualAmount()
+            .equals(entity.getActualAmount())) {
+          waterUsePayInfoService.updateActualAmount(entity.getPayId(), entity.getActualAmount());
         }
         /**5.修改缴费记录表数据(退款/减免金额)：修改应收、实收金额,是否修改过实收*/
         waterUsePayInfoService.updateMoney(entity.getPayId(), entity.getMoney());
@@ -218,23 +224,31 @@ public class RefundOrRefundServiceImpl extends
             .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
                 AuditConstants.PAY_MESSAGE_TYPE, messageContent);
         /**短信通知发起人:*/
-//        smsService
-//            .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
-//                messageContent,
-//                "退减免通知");
+        smsService
+            .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
+                messageContent,
+                "退减免通知");
       }
     } else {
       /**审核流程继续*/
       /**1.修改当前退减免单:下一环节id*/
-      entity.setNextNodeId(hasNext.get(0).get("flowNodeId").toString());
-      this.updateById(entity);
+      String nextFlowNodeId = hasNext.get(0).get("flowNodeId").toString();
+      entity.setNextNodeId(nextFlowNodeId);
       /**2.流程操作记录表：修改当前环节审核状态*/
       if ("0".equals(auditBtn)) {
+        //不通过
         flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
+        //下一环节是第一环节
+        if (flowNodeInfoService.isFirst(nextFlowNodeId)) {
+          entity.setStatus("0");
+        }
       }
       if ("1".equals(auditBtn)) {
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
+        //审核开始，更改审核状态
+        entity.setStatus("1");
       }
+      this.updateById(entity);
       flowProcess.setAuditContent(content);
       flowProcessService.updateById(flowProcess);
       /**3.流程操作记录表:新增下一环节操作记录*/

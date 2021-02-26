@@ -1,19 +1,19 @@
 package com.zjtc.model;
 
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableName;
-import com.baomidou.mybatisplus.activerecord.Model;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import java.io.Serializable;
 /**
  * t_w_refund_or_refund实体类
  * 
@@ -135,9 +135,9 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
     @TableField(value = "audit_time",exist = true)
     private Date auditTime;
     /**
-    * 
+    * 只要科长角色提交审核后，状态为：待审核，之前都是：提交
     */
-    @ApiModelProperty("状态,1:待审核，2：同意，3：不同意")
+    @ApiModelProperty("状态,0，提交，1:待审核，2：同意，3：不同意")
     @TableField(value = "status",exist = true)
     private String status;
     /**
@@ -173,6 +173,12 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
     @TableField(exist = false)
     private List<FlowProcess> auditFlow;
 
+    /**
+     *
+     */
+    @ApiModelProperty("修改按钮标识")
+    @TableField(exist = false)
+    private String editBtn;
 
 	/**
 	 * 实例化

@@ -25,6 +25,7 @@
 		<result column="next_node_id" property="nextNodeId" jdbcType="VARCHAR"/>
 		<result column="is_revoke" property="isRevoke" jdbcType="VARCHAR"/>
 		<result column="treatment_advice" property="treatmentAdvice" jdbcType="VARCHAR"/>
+		<result column="editBtn" property="editBtn" jdbcType="VARCHAR"/>
 		<collection property="auditFlow" ofType="com.zjtc.model.FlowProcess" column="{id=id,nodeCode=node_code}"
 			select="queryAuditList">
 		</collection>
@@ -153,7 +154,30 @@
 		t1.type
 		when'1' then '退款单'
 		when '2' then '减免单'
-		else '未知' end as typeName
+		else '未知' end as typeName,
+		<!--修改按钮权限-->
+		case
+			when status='0'
+			and
+			(
+			SELECT
+			count(1)
+			FROM
+			(
+			SELECT
+			top 1
+			flow_node_role_id
+			FROM
+			t_flow_node
+			WHERE
+			flow_id = ( SELECT id FROM t_flow WHERE node_code =#{nodeCode} AND flow_code =#{flowCode})
+			ORDER BY
+			flow_sort ASC
+			) t1
+			inner join (select user_id ,role_id from  t_user_role_ref ) t4 on t4.role_id=t1.flow_node_role_id
+			where user_id=#{userId}
+			)>0  then '1'
+			else '0' end as editBtn
 		from t_w_refund_or_refund t1
 		where node_code=#{nodeCode}
 		<!--待审核-->
@@ -163,6 +187,7 @@
 		<!--已审核-->
 		<if test="keyWrod==2">
 			and id in(select busIness_id as id  from t_sms_audit_flow where (audit_status='2' or audit_status='3') and operator_id=#{userId})
+			and id not in(select top 1 busIness_id as id  from t_sms_audit_flow where (audit_status='1') and operator_id=#{userId} order by create_time desc)
 		</if>
 		<if test="null !=unitCode and unitCode !=''">
 			and unit_code like '%${unitCode}%'

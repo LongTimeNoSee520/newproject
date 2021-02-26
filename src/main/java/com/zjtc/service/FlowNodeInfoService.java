@@ -46,4 +46,9 @@ public interface FlowNodeInfoService extends IService<FlowNodeInfo> {
    * @return
    */
   List<Map<String,Object>> firstAuditRole(String flowCode,String nodeCode);
+
+  /**
+   * 根据节点id查询当前是否是第一环节
+   */
+  boolean isFirst(String id);
 }

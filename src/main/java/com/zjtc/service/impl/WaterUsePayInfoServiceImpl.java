@@ -183,7 +183,7 @@ public class WaterUsePayInfoServiceImpl extends
     entity.setNodeCode(user.getNodeCode());
     entity.setDrawer(user.getUsername());
     entity.setIsRevoke("0");
-    entity.setStatus("1");
+    entity.setStatus("0");
     entity.setType("1");
     refundOrRefundService.insert(entity);
     /**新增附件*/
@@ -236,7 +236,7 @@ public class WaterUsePayInfoServiceImpl extends
     entity.setNodeCode(user.getNodeCode());
     entity.setDrawer(user.getUsername());
     entity.setIsRevoke("0");
-    entity.setStatus("1");
+    entity.setStatus("0");
     entity.setType("2");
     refundOrRefundService.insert(entity);
     /**新增附件*/
