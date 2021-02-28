@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workbook>
+  <worksheet name="Sheet1">
+    <section startRow="0" endRow="11">
+      <mapping cell="B2">entity.unitName</mapping>
+      <mapping cell="D2">entity.unitCode</mapping>
+      <mapping cell="B3">entity.address</mapping>
+      <mapping cell="B4">entity.legalRepresentative</mapping>
+      <mapping cell="D4">entity.centralizedDepartment</mapping>
+      <mapping cell="B5">entity.phoneNumber</mapping>
+      <mapping cell="D5">entity.zipCode</mapping>
+      <mapping cell="B6">entity.reviewTime</mapping>
+      <mapping cell="D6">entity.reviewScore</mapping>
+      <mapping cell="B7">entity.createTime</mapping>
+      <mapping cell="D7">entity.createScore</mapping>
+      <mapping cell="B9">entity.industrialAdded</mapping>
+      <mapping cell="D9">entity.totalWaterQuantity</mapping>
+      <mapping cell="B10">entity.industrialAddedWater</mapping>
+      <mapping cell="D10">entity.reuseRate</mapping>
+      <mapping cell="B11">entity.zbRate</mapping>
+      <mapping cell="D11">entity.leakageRale</mapping>
+      <mapping cell="B12">entity.remarks</mapping>
+    </section>
+  </worksheet>
+
+  <worksheet name="Sheet2">
+    <section startRow="0" endRow="2"/>
+    <loop startRow="3" endRow="3" items="info1" var="info"
+      varType="com.zjtc.model.vo.WaterSavingUnitQuotaVo">
+      <section startRow="3" endRow="3">
+        <mapping row="3" col="1">info.quotaIndex</mapping>
+        <mapping row="3" col="2">info.assessAlgorithm</mapping>
+        <mapping row="3" col="3">info.assessStandard</mapping>
+        <mapping row="3" col="4">info.standardLevel</mapping>
+        <mapping row="3" col="5">info.companyScore</mapping>
+        <mapping row="3" col="6">info.unitScore</mapping>
+        <mapping row="3" col="7">info.checkScore</mapping>
+        <mapping row="3" col="8">info.actualScore</mapping>
+      </section>
+      <loopbreakcondition>
+        <rowcheck offset="0">
+          <cellcheck offset="0"></cellcheck>
+        </rowcheck>
+        <!--循环到值为空的时候结束 -->
+      </loopbreakcondition>
+    </loop>
+  </worksheet>
+
+  <worksheet name="Sheet3">
+    <section startRow="0" endRow="2"/>
+    <loop startRow="3" endRow="3" items="info2" var="info"
+      varType="com.zjtc.model.vo.WaterSavingUnitBaseVo">
+      <section startRow="3" endRow="3">
+        <mapping row="3" col="1">info.contents</mapping>
+        <mapping row="3" col="2">info.assessMethod</mapping>
+        <mapping row="3" col="3">info.assessStandard</mapping>
+        <mapping row="3" col="4">info.companyScore</mapping>
+        <mapping row="3" col="5">info.unitScore</mapping>
+        <mapping row="3" col="6">info.checkScore</mapping>
+        <mapping row="3" col="7">info.actualScore</mapping>
+      </section>
+      <loopbreakcondition>
+        <rowcheck offset="0">
+          <cellcheck offset="0"></cellcheck>
+        </rowcheck>
+        <!--循环到值为空的时候结束 -->
+      </loopbreakcondition>
+    </loop>
+  </worksheet>
+</workbook>
