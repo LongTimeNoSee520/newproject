@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.WaterSavingUnitMapper">
+  <!-- WaterSavingUnit的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+  <resultMap id="result_WaterSavingUnit_Map" type="com.zjtc.model.WaterSavingUnit">
+    <id column="id" property="id"/>
+    <result column="unit_code" property="unitCode"/>
+    <result column="unit_name" property="unitName"/>
+    <result column="address" property="address"/>
+    <result column="legal_representative" property="legalRepresentative"/>
+    <result column="phone_number" property="phoneNumber"/>
+    <result column="centralized_department" property="centralizedDepartment"/>
+    <result column="review_time" property="reviewTime"/>
+    <result column="review_score" property="reviewScore"/>
+    <result column="zip_code" property="zipCode"/>
+    <result column="create_time" property="createTime"/>
+    <result column="create_score" property="createScore"/>
+    <result column="industrial_added" property="industrialAdded"/>
+    <result column="total_water_quantity" property="totalWaterQuantity"/>
+    <result column="industrial_added_water" property="industrialAddedWater"/>
+    <result column="zb_rate" property="zbRate"/>
+    <result column="reuse_rate" property="reuseRate"/>
+    <result column="leakage_rale" property="leakageRale"/>
+    <result column="remarks" property="remarks"/>
+    <collection property="sysFiles" ofType="com.zjtc.model.File" column="id"
+      select="selectFileList">
+    </collection>
+    <collection property="waterSavingUnitQuotaList" ofType="com.zjtc.model.WaterSavingUnitQuota"
+      column="id"
+      select="selectQuotaList">
+    </collection>
+    <collection property="waterSavingUnitBaseList" ofType="com.zjtc.model.WaterSavingUnitBase"
+      column="id"
+      select="selectBaseList">
+    </collection>
+  </resultMap>
+
+  <resultMap id="result_WaterSavingUnitQuota_Map" type="com.zjtc.model.WaterSavingUnitQuota">
+    <id column="id" property="id"/>
+    <result column="water_saving_unit_id" property="waterSavingUnitId"/>
+    <result column="quota_index" property="quotaIndex"/>
+    <result column="assess_algorithm" property="assessAlgorithm"/>
+    <result column="assess_standard" property="assessStandard"/>
+    <result column="standard_level" property="standardLevel"/>
+    <result column="company_score" property="companyScore"/>
+    <result column="unit_score" property="unitScore"/>
+    <result column="check_score" property="checkScore"/>
+    <result column="actual_score" property="actualScore"/>
+    <result column="remarks" property="remarks"/>
+  </resultMap>
+
+  <resultMap id="result_WaterSavingUnitBase_Map" type="com.zjtc.model.WaterSavingUnitBase">
+    <id column="id" property="id"/>
+    <result column="water_saving_unit_id" property="waterSavingUnitId"/>
+    <result column="contents" property="contents"/>
+    <result column="assess_method" property="assessMethod"/>
+    <result column="assess_standard" property="assessStandard"/>
+    <result column="company_score" property="companyScore"/>
+    <result column="unit_score" property="unitScore"/>
+    <result column="check_score" property="checkScore"/>
+    <result column="actual_score" property="actualScore"/>
+    <result column="remarks" property="remarks"/>
+  </resultMap>
+
+  <resultMap id="sysAttrFileMap" type="com.zjtc.model.File">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+    <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <select id="queryPage" resultMap="result_WaterSavingUnit_Map">
+    SELECT
+    top ${size}
+    *
+    FROM
+    (
+    SELECT
+    row_number ( ) over (
+    ORDER BY unit_code
+    ) AS rownumber,
+    id,
+    unit_code,
+    unit_name,
+    address,
+    legal_representative,
+    phone_number,
+    centralized_department,
+    review_time,
+    review_score,
+    zip_code,
+    create_time,
+    create_score,
+    industrial_added,
+    total_water_quantity,
+    industrial_added_water,
+    zb_rate,
+    reuse_rate,
+    leakage_rale,
+    remarks
+    FROM t_w_water_saving_unit
+    WHERE deleted='0'
+    <if test="null !=unitCode">
+      AND unit_code LIKE '%${unitCode}%'
+    </if>
+    <if test="null !=unitName">
+      AND unit_name LIKE '%${unitName}%'
+    </if>
+    <if test="null !=legalRepresentative">
+      AND legal_representative LIKE '%${legalRepresentative}%'
+    </if>
+    ) temp_row
+    WHERE
+    rownumber > ( ( #{current}- 1 ) * #{size} );
+  </select>
+
+  <select id="queryListTotal" resultType="java.lang.Long">
+    SELECT
+    count(1)
+    FROM t_w_water_saving_unit
+    WHERE deleted='0'
+    <if test="null !=unitCode">
+      AND unit_code LIKE '%${unitCode}%'
+    </if>
+    <if test="null !=unitName">
+      AND unit_name LIKE '%${unitName}%'
+    </if>
+    <if test="null !=legalRepresentative">
+      AND legal_representative LIKE '%${legalRepresentative}%'
+    </if>
+  </select>
+
+  <select id="selectQuotaList" resultMap="result_WaterSavingUnitQuota_Map">
+    select
+    id,
+    water_saving_unit_id,
+    quota_index,
+    assess_algorithm,
+    assess_standard,
+    standard_level,
+    company_score,
+    unit_score,
+    check_score,
+    actual_score,
+    remarks
+    from t_w_water_saving_unit_quota
+    where deleted='0'
+    and water_saving_unit_id=#{id}
+  </select>
+  <select id="selectBaseList" resultMap="result_WaterSavingUnitBase_Map">
+
+  select
+  id,
+  water_saving_unit_id,
+  contents,
+  assess_method,
+  assess_standard,
+  company_score,
+  company_score,
+  unit_score,
+  check_score,
+  actual_score,
+  remarks
+  from t_w_water_saving_unit_base
+  where deleted='0'
+  and water_saving_unit_id=#{id}
+  </select>
+
+  <select id="selectFileList" resultMap="sysAttrFileMap">
+    select
+    id,
+    file_path,
+    file_name,
+    deleted
+    from t_file
+    where business_id =#{id}
+    and deleted='0'
+    order by create_time desc
+  </select>
+</mapper>
