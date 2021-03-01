@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.WaterBalanceTestMapper">
+	<!-- WaterBalanceTest的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+	<resultMap id="result_WaterBalanceTest_Map" type="com.zjtc.model.WaterBalanceTest">
+		<id column="id" property="id" />
+		<result column="node_code" property="nodeCode" />
+		<result column="unit_code" property="unitCode" />
+		<result column="unit_name" property="unitName" />
+		<result column="unit_address" property="unitAddress" />
+		<result column="industry_name" property="industryName" />
+		<result column="industry_code" property="industryCode" />
+		<result column="cover_space" property="coverSpace" />
+		<result column="floor_space" property="floorSpace" />
+		<result column="use_people_num" property="usePeopleNum" />
+		<result column="year_amount" property="yearAmount" />
+		<result column="last_test_time" property="lastTestTime" />
+		<result column="certificate_no" property="certificateNo" />
+		<result column="leakage_rate" property="leakageRate" />
+		<result column="deleted" property="deleted" />
+		<result column="delete_time" property="deleteTime" />
+		<result column="create_person_id" property="createPersonId" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+
+	<resultMap id="pageResultMap" type="java.util.LinkedHashMap">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+		<result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+		<result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+		<result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
+		<result column="industry_name" property="industryName" jdbcType="VARCHAR"/>
+		<result column="industry_code" property="industryCode" jdbcType="VARCHAR"/>
+		<result column="cover_space" property="coverSpace" jdbcType="DOUBLE"/>
+		<result column="floor_space" property="floorSpace" jdbcType="DOUBLE"/>
+		<result column="use_people_num" property="usePeopleNum" jdbcType="INTEGER"/>
+		<result column="year_amount" property="yearAmount" jdbcType="DOUBLE"/>
+		<result column="last_test_time" property="lastTestTime" jdbcType="TIMESTAMP"/>
+		<result column="certificate_no" property="certificateNo" jdbcType="VARCHAR"/>
+		<result column="leakage_rate" property="leakageRate" jdbcType="DOUBLE"/>
+		<!--<result column="deleted" property="deleted" jdbcType="VARCHAR"/>-->
+		<!--<result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP"/>-->
+		<!--<result column="create_person_id" property="createPersonId" jdbcType="VARCHAR"/>-->
+		<!--<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>-->
+		<result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
+		<collection property="products" ofType="com.zjtc.model.WaterBalanceTestProduct" column="id=id"
+			select="queryProducts">
+		</collection>
+		<collection property="fileList" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
+			select="queryFiles">
+		</collection>
+	</resultMap>
+	<resultMap  id="productMap" type="com.zjtc.model.WaterBalanceTestProduct">
+		<id property="id" column="id" jdbcType="VARCHAR"/>
+		<result property="nodeCode" column="node_code" jdbcType="VARCHAR"/>
+		<result property="balanceTestId" column="balance_test_id" jdbcType="VARCHAR"/>
+		<result property="productName" column="product_name" jdbcType="VARCHAR"/>
+		<result property="productCode" column="product_code" jdbcType="VARCHAR"/>
+		<result property="diffToQuota" column="diff_to_quota" jdbcType="DOUBLE"/>
+		<result property="perUseAmount" column="per_use_amount" jdbcType="DOUBLE"/>
+		<result property="yearPlan" column="year_plan" jdbcType="DOUBLE"/>
+		<result property="deleted" column="deleted" jdbcType="VARCHAR"/>
+		<result property="deleteTime" column="delete_time" jdbcType="TIMESTAMP"/>
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+</resultMap>
+	<resultMap id="fileMap" type="com.zjtc.model.vo.FileVO">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+		<result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+		<result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="queryNum" resultType="int">
+		select count(id) from t_w_water_balance_test
+    WHERE deleted ='0'
+		AND node_code = #{nodeCode}
+		<if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
+		<if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
+	</select>
+	<select id="queryPage" resultMap="pageResultMap">
+		SELECT TOP  ${size} t1.id,t1.node_code,t1.unit_code,t1.unit_name,
+		t1.unit_address,t1.industry_name,t1.industry_code,t1.cover_space,t1.floor_space,t1.use_people_num,
+		t1.year_amount,t1.last_test_time,t1.certificate_no,t1.leakage_rate,t1.preViewRealPath
+		FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,
+		id,node_code,unit_code,unit_name,
+		unit_address,industry_name,industry_code,cover_space,floor_space,use_people_num,
+		year_amount,last_test_time,certificate_no,leakage_rate,#{preViewRealPath} AS preViewRealPath
+		FROM
+		t_w_water_balance_test
+		WHERE deleted ='0'
+		AND node_code = #{nodeCode}
+		<if test="unitCode != null and unitCode != ''">
+			and unit_code like '%${unitCode}%'
+		</if>
+		<if test="unitName != null and unitName != ''">
+			and unit_name like '%${unitName}%'
+		</if>
+		)t1
+		WHERE  rownumber > (#{current}-1)* #{size}
+	</select>
+	<select id="queryProducts" resultMap="productMap">
+		SELECT id,node_code,balance_test_id,product_name,product_code,diff_to_quota,per_use_amount,year_plan,deleted,delete_time,create_time
+		FROM t_w_water_balance_test_product
+		WHERE deleted = '0'
+		AND balance_test_id =#{id}
+	</select>
+	<select id="queryFiles" resultMap="fileMap">
+		SELECT id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
+		FROM t_file
+		WHERE deleted ='0'
+		AND business_id = #{id}
+	</select>
+
+	<update id="updateDeleted">
+		UPDATE t_w_water_balance_test
+		SET deleted = '1',
+		delete_time = getdate()
+		WHERE id IN
+		<foreach collection="ids" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</update>
+</mapper>

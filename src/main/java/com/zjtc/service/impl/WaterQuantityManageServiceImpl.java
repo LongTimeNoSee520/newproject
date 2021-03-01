@@ -13,6 +13,7 @@ import com.zjtc.model.ImportLog;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUseData;
 import com.zjtc.model.vo.WaterUseDataVO;
+import com.zjtc.service.CommonService;
 import com.zjtc.service.FileService;
 import com.zjtc.service.ImportLogService;
 import com.zjtc.service.UseWaterUnitMeterService;
@@ -90,6 +91,9 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 
   @Autowired
   private WaterUsePayInfoService waterUsePayInfoService;
+
+  @Autowired
+  private CommonService commonService;
 
   /**
    * 错误文件信息
@@ -265,7 +269,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     List<com.zjtc.model.File> files = new ArrayList<>();
     files.add(file1);
     /**excel数据解析写入bean*/
-    result = this.importExcel(beans, xmlConfig, fileRealPath, fileName, nodeCode, true);
+    result = commonService.importExcel(beans, xmlConfig, fileRealPath,true);
     infos = (List<WaterUseDataVO>) result.get("infos");
     /**计算发送webSocket消息的时机(按比例一共推10次给前端)*/
     int size = (int) Math.ceil((double) infos.size() / 10);
@@ -396,75 +400,75 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
   }
 
   /**解析excel数据到bean*/
-  public  Map<String, List> importExcel(Map<String, List> beans, String xmlConfig,
-      String fileRealPath, String uploadFileName,String nodeCode,boolean isThrowException) throws Exception {
-    File file = new File(fileRealPath);
-    String fileName = file.getName();
-    InputStream inputXLS = null;
-    InputStream inputXML = null;
-    try {
-      // 文件流
-      inputXLS = new FileInputStream(file);
-      // xml配置文件流
-      Resource resource = new ClassPathResource(xmlConfig);
-      inputXML = getClass().getClassLoader()
-          .getResourceAsStream(xmlConfig);//非静态方法可以用此方法获取xml配置文件流
-      // 执行解析
-      XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
-      //按照xml中的配置将数据从文件中读入beens中对应key的value中
-      XLSReadStatus readStatus = mainReader.read(inputXLS, beans);
-      if (readStatus.isStatusOK()) {
-        log.debug("读取excel文件成功: 【{}】", fileName);
-      }
-    } catch (Exception e) {
-      handleException(e, isThrowException,uploadFileName,nodeCode);
-    } finally {
-      try {
-        if (inputXLS != null) {
-          inputXLS.close();
-        }
-        if (inputXML != null) {
-          inputXML.close();
-        }
-      } catch (IOException e) {
-        log.error("parse excel error : 【{}】", e.getMessage());
-      }
-    }
-    return beans;
-  }
-
-  /**
-   * 处理异常
-   *
-   * @param e: 异常
-   * @param isThrowException: 是否抛出异常
-   * @param uploadFileName: 文件上传时的名字
-   */
-  private  void handleException(Exception e, boolean isThrowException, String uploadFileName,String nodeCode)
-      throws Exception {
-    // ① 记录错误位置
-    String errorCell = e.getMessage().split(" ")[3];
-    // ② 记录错误原因
-    String errorMsg = e.getCause().toString();
-    String[] causeMsgArray = errorMsg.split(":");
-    errorMsg = errorMsg.substring(causeMsgArray[0].length() + 2).split(":")[0];
-    switch (errorMsg) {
-      case "For input string":
-        errorMsg = "格式不正确(时间)";
-        break;
-      case "Error converting from 'String' to 'Integer' For input string":
-        errorMsg = "请填写数字类型";
-        break;
-      default:
-        break;
-    }
-    errorMsg = "读取" + uploadFileName + "文件异常: " + errorCell + errorMsg;
-    if (isThrowException) {
-      throw new Exception(errorMsg);
-    } else {
-      log.error(errorMsg);
-    }
-  }
+//  public  Map<String, List> importExcel(Map<String, List> beans, String xmlConfig,
+//      String fileRealPath, String uploadFileName,String nodeCode,boolean isThrowException) throws Exception {
+//    File file = new File(fileRealPath);
+//    String fileName = file.getName();
+//    InputStream inputXLS = null;
+//    InputStream inputXML = null;
+//    try {
+//      // 文件流
+//      inputXLS = new FileInputStream(file);
+//      // xml配置文件流
+//      Resource resource = new ClassPathResource(xmlConfig);
+//      inputXML = getClass().getClassLoader()
+//          .getResourceAsStream(xmlConfig);//非静态方法可以用此方法获取xml配置文件流
+//      // 执行解析
+//      XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
+//      //按照xml中的配置将数据从文件中读入beens中对应key的value中
+//      XLSReadStatus readStatus = mainReader.read(inputXLS, beans);
+//      if (readStatus.isStatusOK()) {
+//        log.debug("读取excel文件成功: 【{}】", fileName);
+//      }
+//    } catch (Exception e) {
+//      handleException(e, isThrowException,uploadFileName,nodeCode);
+//    } finally {
+//      try {
+//        if (inputXLS != null) {
+//          inputXLS.close();
+//        }
+//        if (inputXML != null) {
+//          inputXML.close();
+//        }
+//      } catch (IOException e) {
+//        log.error("parse excel error : 【{}】", e.getMessage());
+//      }
+//    }
+//    return beans;
+//  }
+//
+//  /**
+//   * 处理异常
+//   *
+//   * @param e: 异常
+//   * @param isThrowException: 是否抛出异常
+//   * @param uploadFileName: 文件上传时的名字
+//   */
+//  private  void handleException(Exception e, boolean isThrowException, String uploadFileName,String nodeCode)
+//      throws Exception {
+//    // ① 记录错误位置
+//    String errorCell = e.getMessage().split(" ")[3];
+//    // ② 记录错误原因
+//    String errorMsg = e.getCause().toString();
+//    String[] causeMsgArray = errorMsg.split(":");
+//    errorMsg = errorMsg.substring(causeMsgArray[0].length() + 2).split(":")[0];
+//    switch (errorMsg) {
+//      case "For input string":
+//        errorMsg = "格式不正确(时间)";
+//        break;
+//      case "Error converting from 'String' to 'Integer' For input string":
+//        errorMsg = "请填写数字类型";
+//        break;
+//      default:
+//        break;
+//    }
+//    errorMsg = "读取" + uploadFileName + "文件异常: " + errorCell + errorMsg;
+//    if (isThrowException) {
+//      throw new Exception(errorMsg);
+//    } else {
+//      log.error(errorMsg);
+//    }
+//  }
 
   private WaterUseData formatVoToBean(WaterUseDataVO waterUseDataVO,WaterUseData importWaterUseData,String formatType,int i){
     switch (formatType) {

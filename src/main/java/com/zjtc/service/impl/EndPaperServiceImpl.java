@@ -198,7 +198,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         .nextAuditRole(id, AuditConstants.END_PAPER_TABLE, user.getNodeCode(), auditStatus);
     //获取当前环节的审核操作记录
     FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), endPaper.getId());
-    if (hasNext.isEmpty()) { //审核流程结束(本次通过且没有下一环节)
+    if (hasNext.isEmpty()) { //审核流程结束(没有下一环节)
       //设置办结单审核下一环节id为""
       endPaper.setNextNodeId("");
       if ("1".equals(auditStatus)) {//本次审核通过
@@ -281,6 +281,10 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
       //修改实例表数据
       flowExampleService.edit(user.getNodeCode(), endPaper.getId());
+      /**根据单位编号更新是否存在办结单状态为否*/
+      planDailyAdjustmentService
+          .updateExistSettlement("0", endPaper.getUnitCode(), endPaper.getNodeCode(),
+              endPaper.getPlanYear());
     } else if (!hasNext.isEmpty()) {//审核流程继续
       //修改当前办结单下一环节id
       endPaper.setNextNodeId(hasNext.get(0).get("flowNodeId").toString());

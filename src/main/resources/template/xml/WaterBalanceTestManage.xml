@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workbook>
+  <worksheet name="企业（单位）基本情况">
+      <section startRow="0" endRow="0"/>
+      <section startRow="1" endRow="7" var="info" varType="com.zjtc.model.WaterBalanceTestVO">
+        <mapping row="1" col="1">info.unitName</mapping>
+        <mapping row="1" col="3">info.unitCode</mapping>
+        <mapping row="2" col="1">info.industryName</mapping>
+        <mapping row="2" col="3">info.industryCode</mapping>
+        <mapping row="3" col="1">info.certificateNo</mapping>
+        <mapping row="3" col="3">info.leakageRate</mapping>
+        <mapping row="4" col="1">info.coverSpace</mapping>
+        <mapping row="4" col="3">info.floorSpace</mapping>
+        <mapping row="5" col="1">info.usePeopleNum</mapping>
+        <mapping row="5" col="3">info.yearAmount</mapping>
+        <mapping row="6" col="1">info.lastTestTime</mapping>
+      </section>
+    <section startRow="7" endRow="7"/>
+    <loop startRow="8" endRow="8" items="products" var="pro"
+      varType="com.zjtc.model.vo.WaterBalanceTestProductVO">
+      <section startRow="8" endRow="8">
+        <mapping row="8" col="0">pro.productName</mapping>
+        <mapping row="8" col="1">pro.diffToQuota</mapping>
+        <mapping row="8" col="2">pro.perUseAmount</mapping>
+        <mapping row="8" col="3">pro.yearPlan</mapping>
+      </section>
+      <loopbreakcondition>
+        <rowcheck offset="0">
+          <cellcheck offset="0"></cellcheck>
+        </rowcheck>
+        <!--循环到值为空的时候结束 -->
+      </loopbreakcondition>
+    </loop>
+  </worksheet>
+
+</workbook>
