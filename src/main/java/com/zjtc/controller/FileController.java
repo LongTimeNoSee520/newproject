@@ -38,14 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class FileController {
 
-  @Value("${rootConfig.rootPort}")
-  private String port;
-
-  @Value("${rootConfig.rootIp}")
-  private String ip;
-
-  @Value("${rootConfig.imgBrowsePath}")
-  private String imgBrowsePath;
 
   @Value("${server.servlet-path}")
   private String contextPath;
@@ -103,7 +95,7 @@ public class FileController {
           /**附件表新增数据*/
           fileService.insert(sysAttrFile);
           Map<String, Object> result = new HashMap<>();
-          String uploadPath = "http://" + ip + ":" + port + contextPath + imgBrowsePath + fileName;
+          String uploadPath =preViewRealPath + contextPath +fileUploadPath + fileName;
           sysAttrFile.setUrl(uploadPath);
           result.put("file", sysAttrFile);
           result.put("uploadPath", uploadPath);
@@ -155,7 +147,7 @@ public class FileController {
           sysAttrFile.setNodeCode(user.getNodeCode());
           /**附件表新增数据*/
           fileService.insert(sysAttrFile);
-          String uploadPath = "http://" + ip + ":" + port + contextPath + imgBrowsePath + fileName;
+          String uploadPath = preViewRealPath + contextPath + fileUploadPath + fileName;
           sysAttrFile.setUrl(uploadPath);
           result.add(sysAttrFile);
         }
@@ -178,7 +170,7 @@ public class FileController {
   public ApiResponse getUploadPath() {
     ApiResponse apiResponse = new ApiResponse();
     apiResponse.setCode(200);
-    apiResponse.setData("http://" + ip + ":" + port + contextPath + "/");
+    apiResponse.setData(preViewRealPath + contextPath + "/");
     return apiResponse;
   }
 
