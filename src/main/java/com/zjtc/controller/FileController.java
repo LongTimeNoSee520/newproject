@@ -103,7 +103,7 @@ public class FileController {
           /**附件表新增数据*/
           fileService.insert(sysAttrFile);
           Map<String, Object> result = new HashMap<>();
-          String uploadPath = "http://" + ip + ":" + port + contextPath + imgBrowsePath + fileName;
+          String uploadPath = preViewRealPath + contextPath + imgBrowsePath + fileName;
           sysAttrFile.setUrl(uploadPath);
           result.put("file", sysAttrFile);
           result.put("uploadPath", uploadPath);

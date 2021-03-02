@@ -165,6 +165,7 @@ public class WaterBalanceTestServiceImpl extends
     balanceTest.setLastTestTime(info.getLastTestTime());
     balanceTest.setCreatePersonId(user.getId());
     balanceTest.setCreateTime(new Date());
+    balanceTest.setDeleted("0");
     balanceTest.setNodeCode(user.getNodeCode());
     /**根据单位编号查询单位地址*/
     UseWaterUnit useWaterUnit= useWaterUnitService.selectByUnitCode(balanceTest.getUnitCode(),user);

@@ -57,10 +57,10 @@ sms:
   secret: 2
 
 #系统参数
-rootConfig:
-  rootIp: 120.79.162.253
-  rootPort: 8073
-  imgBrowsePath: /upload/
+#rootConfig:
+#  rootIp: 120.79.162.253
+#  rootPort: 8073
+#  imgBrowsePath: /upload/
 #附件配置
 file:
   #附件上传盘符
@@ -72,6 +72,6 @@ file:
 #  #导入错误日志文件目录
 #  importErrorFilePath : importError
   #文件上下文
-  preViewRealPath: http://120.79.162.253:8082
+  preViewRealPath: http://120.79.162.253:8073
 waterSms:
   sendUrl: http://localhost:8080:/water/sms/smsManage/sendMessages
