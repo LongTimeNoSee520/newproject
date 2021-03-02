@@ -22,9 +22,11 @@ public class WebConfig extends WebMvcConfigurationSupport {
   @Override
   protected void addInterceptors(InterceptorRegistry registry) {
 //    /*除login外都拦截*/
+ //     /*下载、预览不拦截*/
 //    registry.addInterceptor(webInterceptor()).addPathPatterns("/**")
-//        .excludePathPatterns("/login/login").excludePathPatterns("/file/downloadToFlow");
-//    super.addInterceptors(registry);
+////        .excludePathPatterns("/login/login").excludePathPatterns("/file/downloadToFlow")
+////        .excludePathPatterns("/upload");
+    super.addInterceptors(registry);
   }
 
   @Override

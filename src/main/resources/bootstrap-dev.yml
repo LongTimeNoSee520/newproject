@@ -58,8 +58,8 @@ sms:
 
 #系统参数
 rootConfig:
-  rootIp: 127.0.0.1
-  rootPort: 8082
+  rootIp: 120.79.162.253
+  rootPort: 8073
   imgBrowsePath: /upload/
 #附件配置
 file:
