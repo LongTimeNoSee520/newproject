@@ -70,12 +70,7 @@ public class JWTUtil {
      */
     JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS256);
 
-    Map<String, Object> payloadMap = new HashMap<>();
-    payloadMap.put("id", user.getId() + TimeUtil.formatDateToTime(new Date()));
-    payloadMap.put("username", user.getUsername());
-    payloadMap.put("loginId",user.getLoginId());
-    //payloadMap.put("password", user.getPassword());
-    payloadMap.put("nodeCode",user.getNodeCode());
+    Map<String, Object> payloadMap = createPayloadMap(user);
     //建立一个载荷Payload
     Payload payload = new Payload(new JSONObject(payloadMap));
 
@@ -144,6 +139,29 @@ public class JWTUtil {
       }
     }
     return success;
+  }
+
+  public Map<String, Object> createPayloadMap(User user){
+    Map<String, Object> payloadMap = new HashMap<>(16);
+    if(StringUtils.isNotBlank(user.getId())){
+      payloadMap.put("id", user.getId() + TimeUtil.formatDateToTime(new Date()));
+    }
+    if(StringUtils.isNotBlank(user.getUsername())){
+      payloadMap.put("username", user.getUsername());
+    }
+    if(StringUtils.isNotBlank(user.getLoginId())){
+      payloadMap.put("loginId",user.getLoginId());
+    }
+    if(StringUtils.isNotBlank(user.getNodeCode())){
+      payloadMap.put("nodeCode",user.getNodeCode());
+    }
+    if(StringUtils.isNotBlank(user.getUnitCode())){
+      payloadMap.put("unitCode",user.getUnitCode());
+    }
+    if(StringUtils.isNotBlank(user.getMobileNumber())){
+      payloadMap.put("mobileNumber",user.getMobileNumber());
+    }
+    return payloadMap;
   }
 
 
