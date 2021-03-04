@@ -126,6 +126,7 @@ public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
   /**
    *
    */
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("创建时间")
   @TableField(value = "create_time", exist = true, fill = FieldFill.INSERT)
   private Date createTime;
@@ -138,6 +139,7 @@ public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
   /**
    *
    */
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("确认时间")
   @TableField(value = "confirm_time", exist = true)
   private Date confirmTime;
@@ -150,6 +152,7 @@ public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
   /**
    *
    */
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("审核时间")
   @TableField(value = "audit_time", exist = true)
   private Date auditTime;

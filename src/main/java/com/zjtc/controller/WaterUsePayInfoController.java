@@ -287,7 +287,7 @@ public class WaterUsePayInfoController {
   }
 
   @ResponseBody
-  @ApiOperation(value = "查询近3年加价记录")
+  @ApiOperation(value = "查询当前单位所有未缴费记录")
   @RequestMapping(value = "findPayBefor", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse findPayBefor(@RequestHeader("token") String token, @ApiParam("{\n"
       + "  \"useWaterUnitId\":\"单位id\"\n"

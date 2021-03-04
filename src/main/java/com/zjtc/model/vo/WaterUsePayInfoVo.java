@@ -53,6 +53,7 @@ public class WaterUsePayInfoVo extends Model<WaterUsePayInfoVo>{
     /**
     * 
     */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("开票日期")
     private Date invoicePrintTime;
     /**
@@ -197,6 +198,7 @@ public class WaterUsePayInfoVo extends Model<WaterUsePayInfoVo>{
     /**
     * 
     */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("创建时间")
     private Date createTime;
 

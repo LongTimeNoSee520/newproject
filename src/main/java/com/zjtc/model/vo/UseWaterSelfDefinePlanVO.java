@@ -102,6 +102,7 @@ public class UseWaterSelfDefinePlanVO extends Model<UseWaterSelfDefinePlanVO> {
   /**
    *
    */
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("创建时间")
   @TableField(value = "create_time", exist = true, fill = FieldFill.INSERT)
   private Date createTime;
@@ -114,6 +115,7 @@ public class UseWaterSelfDefinePlanVO extends Model<UseWaterSelfDefinePlanVO> {
   /**
    *
    */
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("审核时间")
   @TableField(value = "audit_time", exist = true)
   private Date auditTime;
@@ -144,6 +146,7 @@ public class UseWaterSelfDefinePlanVO extends Model<UseWaterSelfDefinePlanVO> {
   /**
    *
    */
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("执行时间")
   @TableField(value = "execute_time", exist = true)
   private Date executeTime;

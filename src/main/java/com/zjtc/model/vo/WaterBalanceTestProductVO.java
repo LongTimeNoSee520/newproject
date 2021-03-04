@@ -46,9 +46,11 @@ public class WaterBalanceTestProductVO extends Model<WaterBalanceTestProductVO>{
     @ApiModelProperty("逻辑删除，1是0否")
     private String deleted;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("删除时间")
     private Date deleteTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("创建时间")
     private Date createTime;
 	/**
