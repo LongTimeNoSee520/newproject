@@ -79,7 +79,7 @@
 	<select id="queryPage" resultMap="pageResultMap">
 		SELECT TOP  ${size} t1.id,t1.node_code,t1.unit_code,t1.unit_name,
 		t1.unit_address,t1.industry_name,t1.industry_code,t1.cover_space,t1.floor_space,t1.use_people_num,
-		t1.year_amount,t1.last_test_time,t1.certificate_no,t1.leakage_rate,t1.preViewRealPath
+		t1.year_amount,CONVERT(varchar(100),t1.last_test_time, 23) AS last_test_time,t1.certificate_no,t1.leakage_rate,t1.preViewRealPath
 		FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,
 		id,node_code,unit_code,unit_name,
 		unit_address,industry_name,industry_code,cover_space,floor_space,use_people_num,

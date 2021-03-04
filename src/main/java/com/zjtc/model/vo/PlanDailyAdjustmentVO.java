@@ -1,6 +1,7 @@
 package com.zjtc.model.vo;
 
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -64,6 +65,7 @@ public class PlanDailyAdjustmentVO extends Model<PlanDailyAdjustmentVO>{
     private String planType;
 
     @ApiModelProperty("调整时间")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date updateTime;
 
     @ApiModelProperty("是否打印")
