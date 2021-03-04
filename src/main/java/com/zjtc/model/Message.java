@@ -1,6 +1,7 @@
 package com.zjtc.model;
 
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -56,10 +57,12 @@ public class Message extends Model<Message> {
   @TableField(value = "msg_status", exist = true)
   private String msgStatus;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("创建时间")
   @TableField(value = "create_time", exist = true)
   private Date createTime;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("操作时间")
   @TableField(value = "operation_time", exist = true)
   private Date operationTime;

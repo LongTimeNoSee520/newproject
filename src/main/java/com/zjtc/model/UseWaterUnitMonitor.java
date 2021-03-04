@@ -3,6 +3,7 @@ package com.zjtc.model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -73,11 +74,13 @@ public class UseWaterUnitMonitor extends Model<UseWaterUnitMonitor>{
     @ApiModelProperty("创建人id")
     @TableField(value = "create_person_id",exist = true)
     private String createPersonId;
-   
+
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time",exist = true,fill = FieldFill.INSERT)
     private Date createTime;
-   
+
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("删除时间")
     @TableField(value = "delete_time",exist = true)
     private Date deleteTime;

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -78,6 +79,7 @@ public class  EndPaper extends Model<EndPaper>{
     /**
     * 
     */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time",exist = true,fill = FieldFill.INSERT)
     private Date createTime;
@@ -196,6 +198,7 @@ public class  EndPaper extends Model<EndPaper>{
     /**
     * 
     */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("执行时间")
     @TableField(value = "execute_time",exist = true)
     private Date executeTime;
@@ -256,6 +259,7 @@ public class  EndPaper extends Model<EndPaper>{
     @TableField(value = "rescinded",exist = true)
     private String rescinded;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("撤销时间")
     @TableField(value = "rescind_time",exist = true)
     private Date rescindTime;

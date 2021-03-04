@@ -1,6 +1,7 @@
 package com.zjtc.model;
 
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -49,6 +50,7 @@ public class FlowExample extends Model<FlowExample> {
   @TableField(value = "creator_id", exist = true)
   private String creatorId;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("创建时间")
   @TableField(value = "create_time", exist = true)
   private Date createTime;

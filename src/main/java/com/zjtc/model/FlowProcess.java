@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -52,10 +53,12 @@ public class FlowProcess extends Model<FlowProcess> {
   @TableField(value = "operator", exist = true)
   private String operator;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("操作时间")
   @TableField(value = "operation_time", exist = true)
   private Date operationTime;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("创建时间")
   @TableField(value = "create_time", exist = true)
   private Date createTime;

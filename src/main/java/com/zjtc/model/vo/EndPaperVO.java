@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -46,6 +47,7 @@ public class EndPaperVO extends Model<EndPaperVO>{
     @ApiModelProperty("数据来源")
     private String dataSources;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("创建时间")
     private Date createTime;
 
@@ -112,6 +114,7 @@ public class EndPaperVO extends Model<EndPaperVO>{
     @ApiModelProperty("是否执行")
     private String executed;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("执行时间")
     private Date executeTime;
 

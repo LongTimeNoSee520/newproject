@@ -85,13 +85,13 @@
     <result column="FrontCurYearPlan" property="FrontCurYearPlan" jdbcType="DOUBLE"/>
     <result column="FrontPlanYear" property="FrontPlanYear" jdbcType="INTEGER"/>
     <result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
-    <collection property="auditFileId" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
+    <collection property="auditFileIds" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
       select="queryAuditFiles">
     </collection>
-    <collection property="waterProofFileId" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
+    <collection property="waterProofFileIds" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
       select="queryWaterProofFiles">
     </collection>
-    <collection property="otherFileId" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
+    <collection property="otherFileIds" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
       select="queryOtherFiles">
     </collection>
   </resultMap>

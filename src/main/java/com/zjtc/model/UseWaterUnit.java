@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zjtc.model.vo.RefEditData;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import io.swagger.annotations.ApiModel;
@@ -77,10 +78,12 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
   @TableField(value = "deleted", exist = true)
   private String deleted;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty(value = "删除时间")
   @TableField(value = "delete_time", exist = true)
   private Date deleteTime;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty(value = "创建时间")
   @TableField(value = "create_time", exist = true)
   private Date createTime;

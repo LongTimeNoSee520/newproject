@@ -1,6 +1,7 @@
 package com.zjtc.model;
 
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -34,6 +35,7 @@ public class ImportLog extends Model<ImportLog>{
     @TableField(value = "import_file_name",exist = true)
     private String importFileName;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("导入时间")
     @TableField(value = "import_time",exist = true)
     private Date importTime;

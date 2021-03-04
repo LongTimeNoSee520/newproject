@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -88,6 +89,7 @@ public class UseWaterPlanAdd extends Model<UseWaterPlanAdd> {
   @TableField(value = "change_quarter", exist = true)
   private String changeQuarter;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty(value = "创建时间")
   @TableField(value = "create_time", exist = true)
   private Date createTime;
@@ -132,6 +134,7 @@ public class UseWaterPlanAdd extends Model<UseWaterPlanAdd> {
   @TableField(value = "executed", exist = false)
   private String executed;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty(value = "审核时间")
   @TableField(value = "confirmTime", exist = false)
   private Date confirmTime;

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -41,6 +42,7 @@ public class Finance extends Model<Finance> {
   @TableField(value = "money", exist = true)
   private float money;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty(value = "入账时间")
   @TableField(value = "payment_date", exist = true)
   private Date paymentDate;
@@ -69,6 +71,7 @@ public class Finance extends Model<Finance> {
   @TableField(value = "print_person", exist = true)
   private String printPerson;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty(value = "打印时间")
   @TableField(value = "print_time", exist = true)
   private Date printTime;
