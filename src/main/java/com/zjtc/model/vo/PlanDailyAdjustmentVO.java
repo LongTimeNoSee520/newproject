@@ -65,6 +65,7 @@ public class PlanDailyAdjustmentVO extends Model<PlanDailyAdjustmentVO>{
     private String planType;
 
     @ApiModelProperty("调整时间")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date updateTime;
 
     @ApiModelProperty("是否打印")

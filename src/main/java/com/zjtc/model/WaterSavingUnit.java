@@ -78,6 +78,7 @@ public class WaterSavingUnit extends Model<WaterSavingUnit>{
     /**
     * 
     */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("复查时间")
     @TableField(value = "review_time",exist = true)
     private Date reviewTime;
@@ -96,6 +97,7 @@ public class WaterSavingUnit extends Model<WaterSavingUnit>{
     /**
     * 
     */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time",exist = true)
     private Date createTime;

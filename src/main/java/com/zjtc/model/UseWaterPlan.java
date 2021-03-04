@@ -197,6 +197,7 @@ public class UseWaterPlan extends Model<UseWaterPlan>{
     @TableField(value = "update_user_id",exist = true)
     private String updateUserId;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("调整时间")
     @TableField(value = "update_time",exist = true,fill = FieldFill.INSERT)
     private Date updateTime;
