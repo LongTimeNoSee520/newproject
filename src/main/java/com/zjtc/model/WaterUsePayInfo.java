@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -74,6 +75,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     /**
     * 
     */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("开票日期")
     @TableField(value = "invoice_print_time",exist = true)
     private Date invoicePrintTime;
@@ -207,9 +209,10 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     /**
     * 
     */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("审核时间")
     @TableField(value = "audit_time",exist = true)
-    private java.time.Instant auditTime;
+    private Date auditTime;
     /**
     * 
     */
@@ -255,6 +258,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     /**
     * 
     */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time",exist = true,fill = FieldFill.INSERT)
     private Date createTime;

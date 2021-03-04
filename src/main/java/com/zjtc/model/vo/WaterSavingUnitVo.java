@@ -2,6 +2,7 @@ package com.zjtc.model.vo;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -54,6 +55,7 @@ public class WaterSavingUnitVo extends Model<WaterSavingUnitVo>{
     /**
     *
     */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("复查时间")
     private Date reviewTime;
     /**

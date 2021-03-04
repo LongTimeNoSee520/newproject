@@ -76,6 +76,7 @@ public class UseWaterUnitVo extends Model<UseWaterUnitVo> {
   @ApiModelProperty(value = "gisX")
   @TableField(value = "gisX", exist = false)
   private Double gisX;
+
   @ApiModelProperty(value = "gisY")
   @TableField(value = "gisY", exist = false)
   private Double gisY;

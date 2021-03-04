@@ -71,7 +71,7 @@ public class WaterMonthUseData extends Model<WaterMonthUseData> {
 
   @ApiModelProperty(value = "七月水量")
   @TableField(value = "july_count", exist = true)
-    private double julyCount;
+  private double julyCount;
 
   @ApiModelProperty(value = "八月水量")
   @TableField(value = "august_count", exist = true)

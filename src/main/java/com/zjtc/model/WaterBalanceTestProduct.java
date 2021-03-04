@@ -2,6 +2,7 @@ package com.zjtc.model;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -59,10 +60,12 @@ public class WaterBalanceTestProduct extends Model<WaterBalanceTestProduct>{
     @TableField(value = "deleted",exist = true)
     private String deleted;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("删除时间")
     @TableField(value = "delete_time",exist = true)
     private Date deleteTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time",exist = true)
     private Date createTime;
