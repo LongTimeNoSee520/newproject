@@ -55,7 +55,6 @@ public class WaterSavingUnitVo extends Model<WaterSavingUnitVo>{
     /**
     *
     */
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("复查时间")
     private Date reviewTime;
     /**
@@ -72,7 +71,6 @@ public class WaterSavingUnitVo extends Model<WaterSavingUnitVo>{
     *
     */
     @ApiModelProperty("创建时间")
-
     private Date createTime;
     /**
     *

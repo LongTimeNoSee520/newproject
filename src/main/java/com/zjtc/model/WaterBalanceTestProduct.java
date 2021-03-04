@@ -60,12 +60,10 @@ public class WaterBalanceTestProduct extends Model<WaterBalanceTestProduct>{
     @TableField(value = "deleted",exist = true)
     private String deleted;
 
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("删除时间")
     @TableField(value = "delete_time",exist = true)
     private Date deleteTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time",exist = true)
     private Date createTime;

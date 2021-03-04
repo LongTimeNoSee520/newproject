@@ -60,7 +60,6 @@ public class WaterBalanceTestVO extends Model<WaterBalanceTestVO>{
     @ApiModelProperty("单位年用水量")
     private Double yearAmount;
 
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("上次测试时间")
     private Date lastTestTime;
 
@@ -73,14 +72,12 @@ public class WaterBalanceTestVO extends Model<WaterBalanceTestVO>{
     @ApiModelProperty("逻辑删除，1是0否")
     private String deleted;
 
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("删除时间")
     private Date deleteTime;
 
     @ApiModelProperty("创建人id")
     private String createPersonId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("创建时间")
     private Date createTime;
 

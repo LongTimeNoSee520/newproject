@@ -43,6 +43,56 @@
 		<result column="createTime" property="createTime" jdbcType="TIMESTAMP"/>
 	</resultMap>
 
+	<resultMap id="result_WaterUsePayInfoVo_Map" type="com.zjtc.model.vo.WaterUsePayInfoVo">
+		<id column="id" property="id" />
+		<result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+		<result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+		<result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+		<result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+		<result column="pay_type" property="payType" jdbcType="VARCHAR"/>
+		<result column="invoice_num" property="invoiceNum" jdbcType="VARCHAR"/>
+		<result column="invoice_id" property="invoiceNum" jdbcType="VARCHAR"/>
+		<result column="invoice_print_time" property="invoicePrintTime" jdbcType="TIMESTAMP"/>
+		<result column="count_quarter" property="countQuarter" jdbcType="VARCHAR"/>
+		<result column="count_year" property="countYear" jdbcType="VARCHAR"/>
+		<result column="year_plan" property="yearPlan" jdbcType="INTEGER"/>
+		<result column="quarter_plan" property="quarterPlan" jdbcType="FLOAT"/>
+		<result column="base_plan" property="basePlan" jdbcType="FLOAT"/>
+		<result column="water_num1" property="waterNum1" jdbcType="FLOAT"/>
+		<result column="water_num2" property="waterNum2" jdbcType="FLOAT"/>
+		<result column="water_num3" property="waterNum3" jdbcType="FLOAT"/>
+		<result column="water_num_amount" property="waterNumAmount" jdbcType="FLOAT"/>
+		<result column="pay_ratio" property="payRatio" jdbcType="FLOAT"/>
+		<result column="price" property="price" jdbcType="FLOAT"/>
+		<result column="exceed_water" property="exceedWater" jdbcType="FLOAT"/>
+		<result column="multiple" property="multiple" jdbcType="FLOAT"/>
+		<result column="actual_multiple" property="actualMultiple" jdbcType="FLOAT"/>
+		<result column="amount_receivable" property="amountReceivable" jdbcType="FLOAT"/>
+		<result column="actual_amount" property="actualAmount" jdbcType="FLOAT"/>
+		<result column="increase_money" property="increaseMoney" jdbcType="FLOAT"/>
+		<result column="pay_status" property="payStatus" jdbcType="VARCHAR"/>
+		<result column="printed" property="printed" jdbcType="VARCHAR"/>
+		<result column="warned" property="warned" jdbcType="VARCHAR"/>
+		<result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+		<result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
+		<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP"/>
+		<result column="audit_person" property="auditPerson" jdbcType="VARCHAR"/>
+		<result column="audit_personId" property="auditPersonId" jdbcType="VARCHAR"/>
+		<result column="edited_actual" property="editedActual" jdbcType="VARCHAR"/>
+		<result column="increaseMoney" property="increaseMoney" jdbcType="VARCHAR"/>
+		<result column="entrusted" property="entrusted" jdbcType="VARCHAR"/>
+		<result column="cash_check" property="cashCheck" jdbcType="VARCHAR"/>
+		<result column="transfer_check" property="transferCheck" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="otherBank" property="otherBank" jdbcType="VARCHAR"/>
+		<result column="responsibilityCode" property="responsibilityCode" jdbcType="VARCHAR"/>
+		<result column="waterMeterCode" property="waterMeterCode" jdbcType="VARCHAR"/>
+		<result column="bankOfDeposit" property="bankOfDeposit" jdbcType="VARCHAR"/>
+		<result column="bankAccount" property="bankAccount" jdbcType="VARCHAR"/>
+		<result column="baseQuarterPlan" property="baseQuarterPlan" jdbcType="VARCHAR"/>
+		<result column="signed" property="signed" jdbcType="VARCHAR"/>
+	</resultMap>
+
 	<select id="queryListTotal" resultType="java.util.LinkedHashMap">
 		SELECT
 		count(t1.id) as counts,
@@ -134,7 +184,7 @@
 		</if>
 	</select>
 
-	<select id="queryPage" resultType="java.util.LinkedHashMap">
+	<select id="queryPage" resultMap="result_WaterUsePayInfoVo_Map">
 		SELECT
 			top ${size} temp_row.*
 		FROM
@@ -142,40 +192,38 @@
 		SELECT
 			row_number ( ) over ( ORDER BY t1.unit_code, unit_code_group, count_quarter DESC ) AS rownumber,
 			t1.id,
-			t1.pay_type as payType,
-			t1.unit_code AS unitCode,
-			t1.unit_name AS unitName,
-			t2.unit_code_group as unitCodeGroup,
-			t1.count_year AS countYear,
-			t1.count_quarter AS countQuarter,
+			t1.pay_type ,
+			t1.unit_code ,
+			t1.unit_name ,
+			t2.unit_code_group ,
+			t1.count_year ,
+			t1.count_quarter ,
 			t1.price,
-			t1.year_plan AS yearPlan,
-			t1.quarter_plan AS quarterPlan,
-			t1.water_num1 AS waterNum1,
-			t1.water_num2 AS waterNum2,
-			t1.water_num2 AS waterNum3,
-			t1.water_num_amount AS waterNumAmount,
-			t1.exceed_water AS exceedWater,
-			t1.pay_ratio AS payRatio,
+			t1.year_plan,
+			t1.quarter_plan ,
+			t1.water_num1 ,
+			t1.water_num2 ,
+			t1.water_num3 ,
+			t1.water_num_amount ,
+			t1.exceed_water ,
+			t1.pay_ratio ,
 			t1.multiple,
-			t1.actual_multiple AS actualMultiple,
-			t1.amount_receivable AS amountReceivable,
-			t1.actual_amount AS actualAmount,
-		  t1.increase_money AS increaseMoney,
-			t1.pay_status AS payStatus,
+			t1.actual_multiple ,
+			t1.amount_receivable ,
+			t1.actual_amount ,
+		  t1.increase_money ,
+			t1.pay_status ,
 			<!--托收缴费状态，满足pay_status=1 -->
 			case t1.pay_status
 			when '1' then 1
 			else 0 end as payStatusName,
 			t1.entrusted,
-			t1.cash_check AS cashCheck,
-			t1.transfer_check AS transferCheck,
+			t1.cash_check ,
+			t1.transfer_check ,
 			t1.printed,
-			t1.audit_time AS auditTime,
-			t1.audit_person AS auditPerson,
-			t1.invoice_num AS invoiceNum,
-			t1.invoice_print_time AS invoicePrintTime,
-			t2.id as useWaterUnitId,
+			t1.invoice_num ,
+			t1.invoice_print_time ,
+			t1.use_water_unit_id,
 			t2.responsibility_code AS responsibilityCode,
 		  t2.water_meter_code as waterMeterCode,
 			t4.other_bank AS otherBank,

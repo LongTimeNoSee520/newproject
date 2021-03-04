@@ -79,7 +79,6 @@ public class WaterBalanceTest extends Model<WaterBalanceTest>{
     @TableField(value = "year_amount",exist = true)
     private Double yearAmount;
 
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("上次测试时间")
     @TableField(value = "last_test_time",exist = true)
     private Date lastTestTime;
@@ -105,7 +104,6 @@ public class WaterBalanceTest extends Model<WaterBalanceTest>{
     @TableField(value = "create_person_id",exist = true)
     private String createPersonId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time",exist = true,fill = FieldFill.INSERT)
     private Date createTime;
