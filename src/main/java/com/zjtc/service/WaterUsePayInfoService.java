@@ -1,13 +1,10 @@
 package com.zjtc.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
-import io.swagger.annotations.Api;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +91,13 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @param unitId 单位id
    */
   List<Map<String, Object>> ThreePayMess(String unitId);
+
+  /**
+   *查询催缴通知列表
+   * @param jsonObject
+   * @return
+   */
+  List<Map<String,Object>> selectPayNotice(JSONObject jsonObject);
 
   /**
    * 导出查询结果

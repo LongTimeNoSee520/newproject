@@ -312,6 +312,35 @@ public class WaterUsePayInfoController {
   }
 
   @ResponseBody
+  @ApiOperation(value = "催缴通知列表查询")
+  @RequestMapping(value = "selectPayNotice", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse selectPayNotice(@RequestHeader("token") String token, @ApiParam("{\n"
+      + "  \"year\":\"年份,int\"\n"
+      + "  \"unitCode\":\"单位编号 stirng\"\n"
+      + "  \"status\":\"状态\"\n"
+      + "}") @RequestBody JSONObject jsonObject) {
+    log.info("查询， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != jsonObject && null != user) {
+      try {
+        jsonObject.put("userId",user.getId());
+        jsonObject.put("nodeCode",user.getNodeCode());
+        List<Map<String, Object>> result = waterUsePayInfoService
+            .selectPayNotice(jsonObject);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("查询,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
   @ApiOperation(value = "导出查询结果")
   @RequestMapping(value = "exportQueryData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse exportQueryData(@RequestHeader("token") String token,
