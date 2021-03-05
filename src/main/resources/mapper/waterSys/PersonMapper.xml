@@ -28,4 +28,7 @@
     <result column="need_edited" property="needEdited" jdbcType="VARCHAR"/>
   </resultMap>
 
+  <select id="queryAll" resultMap="personModel">
+    SELECT id,user_name from t_user;
+  </select>
 </mapper>

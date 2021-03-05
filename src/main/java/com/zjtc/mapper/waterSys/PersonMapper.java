@@ -55,4 +55,6 @@ public interface PersonMapper extends BaseMapper<Person> {
       @Param("pageSize") Integer pageSize, @Param("parameter") String parameter,
       @Param("orgId") String orgId);
 
+
+  List<Person> queryAll();
 }

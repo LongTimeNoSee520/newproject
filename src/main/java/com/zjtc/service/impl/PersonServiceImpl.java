@@ -6,7 +6,6 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterSys.PersonMapper;
 import com.zjtc.model.Person;
 import com.zjtc.service.PersonService;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,16 +25,8 @@ public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> impleme
     ApiResponse response = new ApiResponse();
     EntityWrapper<Person> wrapper = new EntityWrapper<>();
     wrapper.eq("deleted", "0");
-    List<String> list = new ArrayList<>();
-    List<Person> personList = this.baseMapper.selectList(wrapper);
-    for (Person person : personList) {
-      list.add(person.getUserName());
-    }
-    if (list.size() > 0) {
-      response.setData(list);
-      response.setCode(200);
+    List<Person> personList = this.baseMapper.queryAll();
+      response.setData(personList);
       return response;
-    }
-    return null;
   }
 }
