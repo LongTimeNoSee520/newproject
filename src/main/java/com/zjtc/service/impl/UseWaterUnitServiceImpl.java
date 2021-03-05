@@ -5,20 +5,13 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
-import com.zjtc.base.util.CommonUtil;
 import com.zjtc.base.util.DictUtils;
-import com.zjtc.base.util.JxlsUtils;
 import com.zjtc.mapper.UseWaterUnitMapper;
-import com.zjtc.model.Bank;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.File;
-import com.zjtc.model.UseWaterQuota;
 import com.zjtc.model.UseWaterUnit;
-import com.zjtc.model.UseWaterUnitMeter;
 import com.zjtc.model.UseWaterUnitRef;
 import com.zjtc.model.User;
-import com.zjtc.model.WaterMonthUseData;
-import com.zjtc.model.vo.ExportQueryDataVo;
 import com.zjtc.model.vo.RefEditData;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.model.vo.UseWaterUnitVo;
@@ -32,14 +25,6 @@ import com.zjtc.service.UseWaterUnitModifyService;
 import com.zjtc.service.UseWaterUnitRefService;
 import com.zjtc.service.UseWaterUnitRoleService;
 import com.zjtc.service.UseWaterUnitService;
-import com.zjtc.service.WaterMonthUseDataService;
-import java.beans.PropertyDescriptor;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,10 +35,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.html.parser.Entity;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -131,7 +114,7 @@ public class UseWaterUnitServiceImpl extends
         .checkUserRight(user.getId(), entity.getUnitCode(), user.getNodeCode());
     if (!flag) {
       //当前用户没有操作权限
-      apiResponse.recordError("当前用户没有操作该批次权限");
+      apiResponse.recordError("当前用户没有操作该类型权限");
       return apiResponse;
     }
     /**验证单位编号是否重复,先查询出当前节点编码*/
@@ -201,7 +184,7 @@ public class UseWaterUnitServiceImpl extends
         .checkUserRight(user.getId(), entity.getUnitCode(), user.getNodeCode());
     if (!flag) {
       //当前用户没有操作权限
-      apiResponse.recordError("当前用户没有操作该批次权限");
+      apiResponse.recordError("当前用户没有操作该类型权限");
       return apiResponse;
     }
     /**验证单位编号是否重复,先查询出当前节点编码*/
@@ -524,7 +507,7 @@ public class UseWaterUnitServiceImpl extends
         .checkUserRight(user.getId(), unitCode, user.getNodeCode());
     if (!flag) {
       //当前用户没有操作权限
-      apiResponse.recordError("当前用户没有操作该批次权限");
+      apiResponse.recordError("当前用户没有操作该类型权限");
       return apiResponse;
     }
     /**排序号：查询当前节点编码、当前批次,节点编码后三位最大值*/
