@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.UseWaterUnitMapper">
+  <resultMap id="useWaterUnit_map" type="com.zjtc.model.vo.UseWaterUnitVo">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
+    <result column="industry" property="industry" jdbcType="VARCHAR"/>
+    <result column="industryName" property="industryName" jdbcType="VARCHAR"/>
+    <result column="zip_name" property="zipName" jdbcType="VARCHAR"/>
+    <result column="zip_address" property="zipAddress" jdbcType="VARCHAR"/>
+    <result column="invoice_unit_name" property="invoiceUnitName" jdbcType="VARCHAR"/>
+    <result column="save_unit_type" property="saveUnitType" jdbcType="VARCHAR"/>
+    <result column="gisX" property="gisX" jdbcType="DOUBLE"/>
+    <result column="gisY" property="gisY" jdbcType="DOUBLE"/>
+    <result column="imain" property="imain" jdbcType="VARCHAR"/>
+    <result column="department" property="department" jdbcType="VARCHAR"/>
+    <result column="area_country" property="areaCountry" jdbcType="VARCHAR"/>
+    <result column="areaCountryName" property="areaCountryName" jdbcType="VARCHAR"/>
+    <result column="abnormal" property="abnormal" jdbcType="VARCHAR"/>
+    <result column="abnormal_cause" property="abnormalCause" jdbcType="VARCHAR"/>
+    <result column="responsibility_code" property="responsibilityCode" jdbcType="VARCHAR"/>
+    <result column="bank_of_deposit" property="bankOfDeposit" jdbcType="VARCHAR"/>
+    <result column="bank_account" property="bankAccount" jdbcType="VARCHAR"/>
+    <result column="signed" property="signed" jdbcType="VARCHAR"/>
+    <result column="unit_code_group" property="unitCodeGroup" jdbcType="VARCHAR"/>
+    <result column="unit_code_type" property="unitCodeType" jdbcType="VARCHAR"/>
+    <result column="contacts" property="contacts" jdbcType="VARCHAR"/>
+    <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
+    <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="peopleBankPaySysNumber" property="peopleBankPaySysNumber" jdbcType="VARCHAR"/>
+    <result column="entrustUnitName" property="entrustUnitName" jdbcType="VARCHAR"/>
+    <result column="agreementNumber" property="agreementNumber" jdbcType="VARCHAR"/>
+    <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
+    <result column="other_bank" property="otherBank" jdbcType="VARCHAR"/>
+    <collection property="meterList" column="{id=id,nodeCode=node_code}"
+      select="selectUseWaterUnitMeter"
+      ofType="com.zjtc.model.WaterMonthUseData">
+    </collection>
+    <collection property="bankList" column="{id=id,nodeCode=node_code}" select="selectBank"
+      ofType="com.zjtc.model.Bank">
+    </collection>
+    <collection property="contactsList" column="{id=id,nodeCode=node_code}" select="selectContacts"
+      ofType="com.zjtc.model.Contacts">
+    </collection>
+    <collection property="sysFile" column="{id=id,nodeCode=node_code}" select="selectsysFile"
+      ofType="com.zjtc.model.File">
+    </collection>
+    <collection property="quotaFile" column="{id=id,nodeCode=node_code}" select="selectUseWaterQuota"
+      ofType="com.zjtc.model.UseWaterQuota">
+    </collection>
+    <collection property="ModifyList" column="{id=id,nodeCode=node_code}" select="selectModifyList"
+      ofType="com.zjtc.model.UseWaterQuota">
+    </collection>
+    <!--<collection property="useWaterUnitRefList" column="{id=id,nodeCode=nodeCode}"
+      select="selectuseWaterUnitRef"
+      ofType="com.zjtc.model.UseWaterUnitRef">
+    </collection>-->
+  </resultMap>
+  <resultMap id="WaterMonthUseDataModel" type="com.zjtc.model.WaterMonthUseData">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="use_year" property="useYear" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="january_count" property="januaryCount" jdbcType="VARCHAR"/>
+    <result column="february_count" property="februaryCount" jdbcType="VARCHAR"/>
+    <result column="march_count" property="marchCount" jdbcType="VARCHAR"/>
+    <result column="may_count" property="mayCount" jdbcType="VARCHAR"/>
+    <result column="june_count" property="juneCount" jdbcType="VARCHAR"/>
+    <result column="july_count" property="julyCount" jdbcType="VARCHAR"/>
+    <result column="august_count" property="augustCount" jdbcType="VARCHAR"/>
+    <result column="september_count" property="septemberCount" jdbcType="VARCHAR"/>
+    <result column="october_count" property="octoberCount" jdbcType="VARCHAR"/>
+    <result column="november_count" property="novemberCount" jdbcType="VARCHAR"/>
+    <result column="december_count" property="decemberCount" jdbcType="VARCHAR"/>
+    <result column="now_price" property="nowPrice" jdbcType="VARCHAR"/>
+    <result column="is_warning" property="isWarning" jdbcType="INTEGER"/>
+    <result column="caliber" property="caliber" jdbcType="INTEGER"/>
+    <result column="sector" property="sector" jdbcType="VARCHAR"/>
+    <result column="water_use_kinds" property="waterUseKinds" jdbcType="VARCHAR"/>
+    <result column="unit_names" property="unitNames" jdbcType="VARCHAR"/>
+    <result column="unitAddresss" property="unit_addresss" jdbcType="VARCHAR"/>
+    <result column="waterNumber" property="waterNumber" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <resultMap id="BaseResultMap_Contacts" type="com.zjtc.model.Contacts">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="contacts" property="contacts" jdbcType="VARCHAR"/>
+    <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
+    <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
+    <result column="main" property="main" jdbcType="VARCHAR"/>
+    <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+    <result column="locked" property="locked" jdbcType="VARCHAR"/>
+    <result column="wrong_times" property="wrongTimes" jdbcType="INTEGER"/>
+  </resultMap>
+
+  <resultMap id="BaseResultMap_UseWaterQuota" type="com.zjtc.model.UseWaterQuota">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="industry" property="industry" jdbcType="VARCHAR"/>
+    <result column="industryName" property="industryName" jdbcType="VARCHAR"/>
+    <result column="sub_industry" property="subIndustry" jdbcType="VARCHAR"/>
+    <result column="subIndustryName" property="subIndustryName" jdbcType="VARCHAR"/>
+    <result column="product" property="product" jdbcType="VARCHAR"/>
+    <result column="productName" property="productName" jdbcType="VARCHAR"/>
+    <result column="quota_unit" property="quotaUnit" jdbcType="VARCHAR"/>
+    <result column="quota_value" property="quotaValue" jdbcType="FLOAT"/>
+    <result column="amount" property="amount" jdbcType="FLOAT"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+
+  <resultMap id="bankMapper" type="com.zjtc.model.Bank">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="entrust_unit_name" property="entrustUnitName" jdbcType="VARCHAR"/>
+    <result column="bank_of_deposit" property="bankOfDeposit" jdbcType="VARCHAR"/>
+    <result column="bank_account" property="bankAccount" jdbcType="VARCHAR"/>
+    <result column="people_bank_pay_sys_number" property="peopleBankPaySysNumber" jdbcType="VARCHAR"/>
+    <result column="agreement_number" property="agreementNumber" jdbcType="VARCHAR"/>
+    <result column="other_bank" property="otherBank" jdbcType="VARCHAR"/>
+    <result column="signed" property="signed" jdbcType="VARCHAR"/>
+    <result column="main" property="main" jdbcType="VARCHAR"/>
+    <result column="revocation_date" property="revocationDate" jdbcType="TIMESTAMP"/>
+    <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_Id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <resultMap id="UseWaterUnitModify_map" type="com.zjtc.model.UseWaterUnitModify">
+  <result column="id" property="id" jdbcType="VARCHAR"/>
+  <result column="before_name" property="beforeName" jdbcType="VARCHAR"/>
+  <result column="after_name" property="afterName" jdbcType="VARCHAR"/>
+  <result column="modify_time" property="modifyTime" jdbcType="VARCHAR"/>
+  <result column="modify_person" property="modifyPerson" jdbcType="VARCHAR"/>
+
+  </resultMap>
+
+  <resultMap id="sysAttrFileMap" type="com.zjtc.model.File">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="creater_id" property="createrId" jdbcType="VARCHAR"/>
+    <result column="file_type" property="fileType" jdbcType="VARCHAR"/>
+    <result column="size" property="size" jdbcType="VARCHAR"/>
+    <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+    <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+    <result column="business_id" property="businessId" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <resultMap id="useWaterUnitRefVo_map" type="com.zjtc.model.vo.UseWaterUnitRefVo">
+  <id column="id" property="id" jdbcType="VARCHAR"/>
+  <result column="nodeCode" property="nodeCode" jdbcType="VARCHAR"/>
+  <result column="unitCode" property="unitCode" jdbcType="VARCHAR"/>
+  <result column="unitName" property="unitName" jdbcType="VARCHAR"/>
+  <result column="waterMeterCode" property="waterMeterCode" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="maxUnitCode" resultType="String">
+    SELECT
+    max(
+    substring( unit_code, 7, 3 )
+    )
+    FROM
+    t_w_use_water_unit
+    where deleted='0'
+    <if test="null !=unitCode">
+      and unit_code like substring(#{unitCode},1,6)+'%'
+    </if>
+    <if test="null !=id">
+      and id not in #{id}
+    </if>
+    <if test="null !=nodeCode">
+      and node_code = #{nodeCode}
+    </if>
+  </select>
+
+  <select id="queryPage" resultMap="useWaterUnit_map">
+    SELECT
+    top ${size}
+    *
+    FROM
+    (
+    SELECT
+    row_number ( ) over (
+    ORDER BY
+      a.unit_code
+     ) AS rownumber,
+    a.id,
+    a.node_code,
+    a.unit_code,
+    a.unit_code_type,
+    a.unit_code_group,
+    STUFF((
+    SELECT ',' + water_meter_code
+    FROM t_w_use_water_unit_meter
+    WHERE use_water_unit_id=a.id
+    and node_code=#{nodeCode}
+    FOR XML PATH('')), 1, 1, ''
+    ) as water_meter_code,
+    a.responsibility_code,
+    a.unit_name,
+    a.industry,
+    industryName=(select industry_name from t_w_quota_info where id=a.industry),
+    b.contacts,
+    b.mobile_number,
+    b.phone_number,
+    save_unit_type,
+    unit_address,
+    zip_name,
+    zip_address,
+    department,
+    invoice_unit_name,
+    area_country,
+    gisX ,
+    gisY ,
+    imain,
+    abnormal ,
+    abnormal_cause,
+    case signed
+    when '1' then '1'
+    when '0' then '0'
+    else '0'end as signed,
+    bank_of_deposit,
+    bank_account,
+    responsibility_code as responsibilityCode,
+    people_bank_pay_sys_number as peopleBankPaySysNumber,
+    agreement_number as agreementNumber,
+    entrust_unit_name as entrustUnitName,
+    focus_user_remark,
+    other_bank
+    FROM
+    t_w_use_water_unit as a
+    <!--关联用水单位联系人联系人-->
+    left join (
+    select use_water_unit_id,contacts,mobile_number,phone_number
+    from t_w_use_water_unit_contacts
+    where
+    deleted='0'
+    and node_code=#{nodeCode}
+    and main='1'
+    ) as b on a.id =b.use_water_unit_id
+    <!--关联银行表取主户数据-->
+    left join (
+      select use_water_unit_Id,bank_of_deposit,bank_account,signed,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank from t_w_bank where deleted='0' and main='1'
+    ) as c on c.use_water_unit_Id=a.id
+    WHERE
+    a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
+    where person_id=#{userId})
+    and a.deleted='0'
+    and a.node_code=#{nodeCode}
+    <!--筛选水表档案号-->
+    <if test="null !=waterMeterCode">
+      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_meter where
+      water_meter_code like '%${waterMeterCode}%' )
+    </if>
+    <!--筛选手机号码-->
+    <if test="null !=mobileNumber">
+      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
+      mobile_number like '%${mobileNumber}%' and deleted='0')
+    </if>
+    <!--筛选银行账号-->
+    <if test="null !=bankAccount">
+      and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
+      '%${bankAccount}%' and deleted='0')
+    </if>
+    <!--是否签约-->
+    <if test="null !=signed">
+      and a.id in (select use_water_unit_Id as id from t_w_bank where signed =#{signed} and
+      deleted='0')
+      and signed=#{signed}
+    </if>
+    <!--是否异常-->
+    <if test="null !=abnormal">
+      and a.abnormal =#{abnormal}
+    </if>
+
+    <!--筛选单位编号-->
+    <if test="null !=unitCode">
+      and a.unit_code like '%${unitCode}%'
+    </if>
+    <!--筛选单位名称-->
+    <if test="null !=unitName">
+      and a.unit_name like '%${unitName}%'
+    </if>
+    <!--筛选类型-->
+    <if test="null !=unitCodeType">
+      and a.unit_code_type like '%${unitCodeType}%'
+    </if>
+    <!--责任书编号-->
+    <if test=" null !=responsibilityCode">
+    and a.responsibility_code like '%${responsibilityCode}%'
+    </if>
+    ) temp_row
+    WHERE
+    rownumber > ( ( #{current}- 1 ) * #{size} );
+  </select>
+
+
+  <select id="queryListTotal" resultType="java.lang.Long">
+
+    SELECT
+    count(1)
+    FROM
+    t_w_use_water_unit as a
+    <!--关联用水单位联系人联系人-->
+    left join (
+    select use_water_unit_id,contacts,mobile_number,phone_number
+    from t_w_use_water_unit_contacts
+    where
+    deleted='0'
+    and node_code=#{nodeCode}
+    and main='1'
+    ) as b on a.id =b.use_water_unit_id
+    <!--关联银行表取主户数据-->
+    left join (
+    select use_water_unit_Id,bank_of_deposit,bank_account from t_w_bank where deleted='0' and main='1'
+    ) as c on c.use_water_unit_Id=a.id
+    WHERE
+    a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
+    where person_id=#{userId})
+    and a.deleted='0'
+    and a.node_code=#{nodeCode}
+    <!--筛选水表档案号-->
+    <if test="null !=waterMeterCode">
+      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_meter where
+      water_meter_code like '%${waterMeterCode}%' )
+    </if>
+    <!--筛选手机号码-->
+    <if test="null !=mobileNumber">
+      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
+      mobile_number like '%${mobileNumber}%' and deleted='0')
+    </if>
+    <!--筛选银行账号-->
+    <if test="null !=bankAccount">
+      and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
+      '%${bankAccount}%' and deleted='0')
+    </if>
+    <!--是否签约-->
+    <if test="null !=signed">
+      and a.id in (select use_water_unit_Id as id from t_w_bank where signed =#{signed} and
+      deleted='0')
+      and signed=#{signed}
+    </if>
+    <!--是否异常-->
+    <if test="null !=abnormal">
+      and a.abnormal =#{abnormal}
+    </if>
+
+    <!--筛选单位编号-->
+    <if test="null !=unitCode">
+      and a.unit_code like '%${unitCode}%'
+    </if>
+    <!--筛选单位名称-->
+    <if test="null !=unitName">
+      and a.unit_name like '%${unitName}%'
+    </if>
+    <!--筛选类型-->
+    <if test="null !=unitCodeType">
+      and a.unit_code_type like '%${unitCodeType}%'
+    </if>
+    <!--责任书编号-->
+    <if test=" null !=responsibilityCode">
+      and a.responsibility_code like '%${responsibilityCode}%'
+    </if>
+  </select>
+
+
+  <select id="selectById" resultMap="useWaterUnit_map">
+    select
+    id,
+    node_code ,
+    unit_code ,
+    unit_name ,
+    unit_address ,
+    industry ,
+    zip_name ,
+    zip_address ,
+    invoice_unit_name ,
+    save_unit_type ,
+    gisX ,
+    gisY ,
+    imain ,
+    department ,
+    area_country ,
+    (select dict_item_name from t_dict_item where dict_id in(select id from t_dict where
+    dict_code=#{dictCode} and node_code=#{nodeCode}) and dict_item_code=area_country
+    and  node_code=#{nodeCode}) as areaCountryName,
+    abnormal ,
+    abnormal_cause
+    from t_w_use_water_unit
+    where id=#{id}
+    and node_code=#{nodeCode}
+  </select>
+  <select id="selectUseWaterUnitMeter" resultMap="WaterMonthUseDataModel">
+      SELECT
+      id,
+      use_water_unit_id,
+      use_year,
+      water_meter_code,
+      now_price,
+      node_code,
+      is_warning,
+      caliber,
+      sector,
+      ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + october_count + november_count + december_count ) AS waterNumber
+      FROM
+      t_w_water_month_use_data
+      WHERE
+      node_code = #{nodeCode}
+        AND use_water_unit_id = #{id}
+      AND use_year = DateName(YEAR,GetDate())
+      ORDER BY
+      waterNumber DESC;
+  </select>
+  <select id="selectBank" resultMap="bankMapper">
+    select id,bank_of_deposit,bank_account,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank,main,signed
+    from t_w_bank
+    where use_water_unit_id =#{id}
+    and deleted='0'
+    and node_code=#{nodeCode}
+    order By main desc
+  </select>
+  <select id="selectContacts" resultMap="BaseResultMap_Contacts">
+    select id,contacts,phone_number,mobile_number,main
+    from t_w_use_water_unit_contacts
+    where use_water_unit_id =#{id}
+    and deleted='0'
+    and node_code=#{nodeCode}
+    order by main desc
+  </select>
+  <select id="selectsysFile" resultMap="sysAttrFileMap">
+    select id,file_name,file_path,deleted
+    from t_file
+    where business_id =#{id}
+    and deleted='0'
+    and node_code=#{nodeCode}
+    order by create_time desc
+  </select>
+  <select id="selectUseWaterQuota" resultMap="BaseResultMap_UseWaterQuota">
+    SELECT
+    id,industry,sub_industry,product,quota_unit,quota_value,amount,
+    (select industry_name as subIndustryName from t_w_quota_info where id=a.sub_industry)as subIndustryName,
+    (select industry_name  as productName from t_w_quota_info where id=a.product) as productName
+    FROM t_w_use_water_quota as a
+    WHERE use_water_unit_id = #{id}
+    and node_code=#{nodeCode}
+    ORDER BY create_time desc
+  </select>
+  <select id="selectModifyList" resultMap="UseWaterUnitModify_map">
+    select id,before_name,after_name,modify_time,modify_person
+    from t_w_use_water_unit_modify
+    where node_code=#{nodeCode}
+    and use_water_unit_id=#{id}
+    order by modify_time desc
+  </select>
+  <select id="queryUnitRef" resultMap="useWaterUnitRefVo_map">
+    select
+    a.id ,
+    a.unit_code as unitCode,
+    a.unit_name as unitName ,
+    STUFF((
+    SELECT ',' + water_meter_code
+    FROM t_w_use_water_unit_meter
+    WHERE use_water_unit_id=a.id
+    FOR XML PATH('')), 1, 1, ''
+    ) as waterMeterCode
+    from t_w_use_water_unit as a
+    where node_code=#{nodeCode}
+    and a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
+      where person_id=#{userId})
+    and id in
+    <foreach item="item" collection="ids" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    and id != #{notIn}
+  </select>
+
+  <!--同步用水单位信息-->
+  <update id="updateUseWaterUnit">
+    update t_w_use_water_unit
+    set ${sql}
+    where id
+    in
+    <foreach item="id" collection="refs" index="index" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+
+  </update>
+
+  <select id="exportAccountAudit" resultType="java.util.LinkedHashMap">
+    select
+    b.agreement_number as agreementNumber,
+    sBankName = '建行一行',
+    sBankNum = '105651002108',
+    sUnitName = '成都市节约用水监管事务中心',
+    sBankAccount = '51001416108050735062',
+    b.bank_of_deposit as bankOfDeposit,
+    b.people_bank_pay_sys_number as peopleBankPaySysNumber,
+    b.other_bank as bankCode,
+    CASE
+      b.entrust_unit_name
+      WHEN '' THEN
+      a.unit_name
+    WHEN NULL THEN
+      a.unit_name
+      ELSE b.entrust_unit_name
+      END AS accountUnitName,
+    b.bank_account as bankAccount
+    from
+    (select id, unit_name from t_w_use_water_unit where deleted='0' and node_code=#{nodeCode}) as a
+    inner join
+    (select
+     use_water_unit_Id,
+     agreement_number,
+     bank_of_deposit,
+     people_bank_pay_sys_number,
+     other_bank,
+     entrust_unit_name,
+     bank_account
+     from t_w_bank
+     where deleted='0'
+     and signed='0'
+     and bank_account is not null
+     and bank_account !=''
+    )  as b on a.id =b.use_water_unit_Id
+  </select>
+
+  <select id="exportForm" resultType="java.util.LinkedHashMap">
+     select
+       *
+     from
+     (
+       select
+       use_water_unit_Id,
+       bank_account as bankAccount,
+       bank_of_deposit as bankOfDeposit,
+       people_bank_pay_sys_number as peopleBankPaySysNumber,
+       agreement_number as agreementNumber,
+       other_bank as otherBank
+       from t_w_bank
+       where deleted='0'
+       and signed='1'
+     ) as a
+     inner join
+     (
+       select
+       id
+       from t_w_use_water_unit as b
+       where deleted='0'
+        and node_code=#{nodeCode}
+     ) as b on a.use_water_unit_Id =b.id
+
+  </select>
+  <select id="exportRevoca" resultType="java.util.LinkedHashMap">
+    select
+    type='d',
+    agreement_number as agreementNumber,
+    sBankName=#{sBankName},
+    sBankNum=#{sBankNum},
+    sUnitName=#{sUnitName},
+    sBankAccount=#{sBankAccount},
+    bank_of_deposit as bankOfDeposit,
+    people_bank_pay_sys_number as peopleBankPaySysNumber,
+    entrust_unit_name as entrustUnitName,
+    bank_account as bankAccount
+    from t_w_bank
+    where deleted='0'
+    and main='3'
+    <if test="null !=startTime and startTime !=''">
+      and revocation_date &gt;= #{startTime}
+    </if>
+    <if test="null !=endTime and endTime !=''">
+      and revocation_date &lt; #{endTime}
+    </if>
+  </select>
+
+  <select id="exportMoreAndLess" resultType="java.util.LinkedHashMap">
+    SELECT
+    distinct
+    CASE
+      a.deleted
+      WHEN 0 THEN
+      '新增'
+      WHEN 1 THEN
+      '注销'
+      END AS userType,
+      unit_code as unitCode,
+      unit_name as unitName,
+      unit_address as unitAddress ,
+      contacts,
+      mobileNumber,
+      remark = '' ,
+      deleted
+    FROM
+      t_w_use_water_unit  as a
+    left join (SELECT use_water_unit_id,contacts,mobile_number as mobileNumber from t_w_use_water_unit_contacts where main='1' ) as b on a.id =b.use_water_unit_id
+    where a.node_code=#{nodeCode}
+    ORDER BY
+      a.deleted
+  </select>
+
+  <select id="selectByIds" resultType="java.util.LinkedHashMap">
+    select
+    a.id,
+    a.unit_code as unitCode,
+    a.unit_name as unitName,
+    a.unit_address as unitAddress,
+    a.area_country as areaCountry,
+    [waterMeterCode] = STUFF(( SELECT ',' + [water_meter_code] from t_w_use_water_unit_meter  WHERE use_water_unit_id = a.id FOR XML PATH ( '' )), 1, 1, '' ),
+    a.responsibility_code as responsibilityCode,
+    a.save_unit_type as saveUnitType,
+    <!--是否签约，条件：绑定的银行账号都没有签约-->
+    case
+    (select max(signed) as signed from t_w_bank where deleted='0' and use_water_unit_id=a.id )
+    when '1' then '1'
+    when '0' then '0'
+    else '0'end as signed,
+    b.bank_of_deposit as bankOfDeposit,
+    b.bank_account as bankAccount,
+    a.zip_name as zipName,
+    a.zip_address as zipAddress,
+    a.invoice_unit_name as invoiceUnitName,
+    a.unit_code_type as unitCodeType,
+    a.department ,
+    a.abnormal_cause,
+    c.industry_name as industryName,
+    b.people_bank_pay_sys_number as peopleBankPaySysNumber,
+    b.agreement_number as agreementNumber,
+    b.entrust_unit_name as entrustUnitName,
+    b.focus_user_remark as focusUserRemark,
+    b.other_bank as otherBank
+    from (select *from t_w_use_water_unit where deleted='0') as a
+    left join (
+         SELECT use_water_unit_id,bank_of_deposit,bank_account,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank FROM t_w_bank WHERE deleted = '0' and main='1'
+    ) b ON b.use_water_unit_id = a.id
+    left join (select id,industry_name from t_w_quota_info where deleted='0') as c on c.id=a.industry
+    where a.id in
+    <foreach item="id" collection="ids" index="index" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>
+</mapper>

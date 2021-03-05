@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -57,13 +56,6 @@ public class Dict extends Model<Dict> {
   @ApiModelProperty(value = "节点编码")
   @TableField(value = "node_code", exist = true)
   private String nodeCode;
-
-  /**
-   * 数据子项
-   */
-  @ApiModelProperty("数据子项")
-  @TableField(exist = false)
-  private List<DictItem> dictItems;
 
   @Override
   protected Serializable pkVal() {

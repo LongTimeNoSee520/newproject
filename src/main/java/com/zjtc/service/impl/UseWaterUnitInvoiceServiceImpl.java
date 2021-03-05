@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.CommonUtil;
 import com.zjtc.base.util.JxlsUtils;
-import com.zjtc.mapper.UseWaterUnitInvoiceMapper;
+import com.zjtc.mapper.waterBiz.UseWaterUnitInvoiceMapper;
 import com.zjtc.model.UseWaterUnitInvoice;
 import com.zjtc.model.User;
 import com.zjtc.service.UseWaterUnitInvoiceService;

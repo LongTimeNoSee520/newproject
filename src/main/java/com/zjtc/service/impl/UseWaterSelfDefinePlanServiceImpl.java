@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
-import com.zjtc.mapper.UseWaterSelfDefinePlanMapper;
+import com.zjtc.mapper.waterBiz.UseWaterSelfDefinePlanMapper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;

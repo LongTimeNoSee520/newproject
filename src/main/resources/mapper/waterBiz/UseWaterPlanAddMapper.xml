@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.UseWaterPlanAddMapper">
+
+  <resultMap id="UseWaterPlanAddModel" type="com.zjtc.model.UseWaterPlanAdd">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="curYearPlan" property="cur_year_plan" jdbcType="DOUBLE"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
+    <result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
+    <result column="plan_type" property="planType" jdbcType="VARCHAR"/>
+    <result column="change_quarter" property="changeQuarter" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="creater" property="creater" jdbcType="VARCHAR"/>
+    <result column="creater_id" property="createrId" jdbcType="VARCHAR"/>
+    <result column="audit_file_id" property="auditFileId" jdbcType="VARCHAR"/>
+    <result column="water_proof_file_id" property="waterProofFileId" jdbcType="VARCHAR"/>
+    <result column="other_file_id" property="otherFileId" jdbcType="VARCHAR"/>
+    <result column="printed" property="printed" jdbcType="VARCHAR"/>
+    <result column="status" property="status" jdbcType="VARCHAR"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+
+    <result column="auditStatus" property="auditStatus" jdbcType="VARCHAR"/>
+    <result column="executed" property="executed" jdbcType="VARCHAR"/>
+    <result column="confirmTime" property="confirmTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+
+
+
+  <select id="queryPage" resultMap="UseWaterPlanAddModel">
+  SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_name,t1.unit_code,
+  t1.water_meter_code,t1.plan_year,t1.minus_pay_status,t1.balance_test,
+  t1.create_type,t1.cur_year_plan,t1.first_quarter,t1.second_quarter,
+  t1.third_quarter,t1.fourth_quarter,
+  '当前计划' AS plan_type,t1.update_time, '' AS  printed,t1.remarks
+  FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,
+  id,node_code,use_water_unit_id,unit_name,unit_code,
+  water_meter_code,plan_year,minus_pay_status,balance_test,
+  create_type,cur_year_plan,first_quarter,second_quarter,
+  third_quarter,fourth_quarter,
+  COALESCE (update_time,create_time) AS update_time,remarks
+  FROM
+  t_w_use_water_plan
+  WHERE id IN
+  (SELECT id
+  FROM t_w_use_water_plan
+  WHERE  node_code = #{nodeCode}
+  AND SUBSTRING(unit_code,5,2) <!--类型-->
+  IN (
+  SELECT unit_type_code
+  FROM t_w_use_water_unit_role
+  WHERE person_id = #{userId}
+  )
+  <if test="unitCode != null and unitCode != ''">
+    and unit_code like '%${unitCode}%'
+  </if>
+  <if test="unitName != null and unitName != ''">
+    and unit_name like '%${unitName}%'
+  </if>
+  <if test="waterMeterCode != null and waterMeterCode != ''">
+    and water_meter_code like '%${waterMeterCode}%'
+  </if>
+  <if test="yearStart != null">
+    and plan_year &gt; #{yearStart}
+  </if>
+  <if test="waterNumberEnd != null">
+    and plan_year &lt; #{yearEnd}
+  </if>
+  )
+  )t1
+  WHERE  rownumber > (#{current}-1)* #{size}
+  </select>
+
+
+  <update id="updateRemarks">
+    UPDATE t_w_use_water_plan_add
+    SET remarks = #{remarks}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updatePlanAdd" parameterType="java.util.List">
+    <foreach collection="useWaterPlanAdds" item="item" index="index"  separator=";">
+      update t_w_use_water_plan_add
+      <set>
+        first_quarter = #{item.firstQuarter},
+        second_quarter = #{item.secondQuarter},
+        third_quarter = #{item.thirdQuarter},
+        fourth_quarter = #{item.fourthQuarter},
+      </set>
+      where id = #{item.id}
+    </foreach>
+  </update>
+  <update id="updateStatusOrPrinted">
+    UPDATE t_w_use_water_plan_add
+    SET
+    <if test="status != null and status != ''">
+      status = #{status}
+    </if>
+    <if test="printed != null and printed != ''">
+      printed = #{printed}
+    </if>
+    WHERE id = #{id}
+  </update>
+
+
+
+
+
+</mapper>

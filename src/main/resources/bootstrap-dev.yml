@@ -10,14 +10,26 @@ spring:
     async:
       #请求超时时间10分钟
       request-timeout: 6000000
+#  datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    druid:
+#      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#      url: jdbc:sqlserver://120.79.162.253:1433;databaseName=water_service
+#      username: sa
+#      password: harmony123!
+#      min-idle: 10
+#      max-active: 50
   datasource:
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://120.79.162.253:1433;databaseName=water_service
-    username: sa
-    password: harmony123!
-    type: com.alibaba.druid.pool.DruidDataSource
-    maxIdle: 50
-    minIdle: 10
+    waterBiz:
+      driverClassName : com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://120.79.162.253:1433;databaseName=water_service
+      username: sa
+      password: harmony123!
+    waterSys:
+      driverClassName : com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://120.79.162.253:1433;databaseName=water_sys
+      username: sa
+      password: harmony123!
   redis:
     host: 120.79.162.253
     password: 123456

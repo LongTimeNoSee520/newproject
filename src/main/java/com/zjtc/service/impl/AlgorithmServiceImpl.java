@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
-import com.zjtc.mapper.AlgorithmMapper;
+import com.zjtc.mapper.waterBiz.AlgorithmMapper;
 import com.zjtc.model.Algorithm;
 import com.zjtc.service.AlgorithmService;
 import com.zjtc.service.UseWaterOriginalPlanService;

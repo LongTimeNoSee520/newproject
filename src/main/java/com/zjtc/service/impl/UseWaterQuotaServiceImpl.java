@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.zjtc.mapper.UseWaterQuotaMapper;
+import com.zjtc.mapper.waterBiz.UseWaterQuotaMapper;
 import com.zjtc.model.UseWaterQuota;
 
 import com.zjtc.service.UseWaterQuotaService;

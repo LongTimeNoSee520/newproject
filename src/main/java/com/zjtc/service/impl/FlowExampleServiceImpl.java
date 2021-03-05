@@ -4,7 +4,7 @@ package com.zjtc.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
-import com.zjtc.mapper.FlowExampleMapper;
+import com.zjtc.mapper.waterBiz.FlowExampleMapper;
 import com.zjtc.model.FlowExample;
 import com.zjtc.model.User;
 import com.zjtc.service.FlowExampleService;

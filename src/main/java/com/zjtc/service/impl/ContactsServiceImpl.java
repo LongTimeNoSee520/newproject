@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.zjtc.mapper.ContactsMapper;
+import com.zjtc.mapper.waterBiz.ContactsMapper;
 import com.zjtc.model.Contacts;
 import com.zjtc.service.ContactsService;
 import java.util.ArrayList;

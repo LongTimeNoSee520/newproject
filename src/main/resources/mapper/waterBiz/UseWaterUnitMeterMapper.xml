@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.UseWaterUnitMeterMapper">
+  <resultMap id="UseWaterUnitMeterModel" type="com.zjtc.model.UseWaterUnitMeter">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+  </resultMap>
+
+
+  <select id="selectWaterMeterCodeWhetherOccupy" resultType="String">
+    SELECT
+    unit_name
+    FROM
+    t_w_use_water_unit_meter t1
+    INNER JOIN t_w_use_water_unit t2 ON t1.use_water_unit_id = t2.id
+    WHERE 1 = 1
+    <if test="waterMeterCode != null and waterMeterCode != ''">
+      and t1.water_meter_code = #{waterMeterCode}
+    </if>
+  </select>
+
+  <select id="selectUseWaterUnitMeter" resultMap="UseWaterUnitMeterModel">
+    select
+    id,
+    use_water_unit_id,
+    water_meter_code,
+    node_code
+    from t_w_use_water_unit_meter where use_water_unit_id = #{id}
+  </select>
+
+  <select id="selectWaterMeterCodeMyId" resultType="String">
+    select id from t_w_water_month_use_data where 1=1
+    <if test="waterMeterCode != null and waterMeterCode != ''">
+      and water_meter_code = #{waterMeterCode}
+    </if>
+  </select>
+
+</mapper>

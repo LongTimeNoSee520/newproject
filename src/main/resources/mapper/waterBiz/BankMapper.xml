@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.BankMapper">
+
+  <resultMap id="bankMapper" type="com.zjtc.model.Bank">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="entrust_unit_name" property="entrustUnitName" jdbcType="VARCHAR"/>
+    <result column="bank_of_deposit" property="bankOfDeposit" jdbcType="VARCHAR"/>
+    <result column="bank_account" property="bankAccount" jdbcType="VARCHAR"/>
+    <result column="people_bank_pay_sys_number" property="peopleBankPaySysNumber" jdbcType="VARCHAR"/>
+    <result column="agreement_number" property="agreementNumber" jdbcType="VARCHAR"/>
+    <result column="other_bank" property="otherBank" jdbcType="VARCHAR"/>
+    <result column="signed" property="signed" jdbcType="VARCHAR"/>
+    <result column="main" property="main" jdbcType="VARCHAR"/>
+    <result column="revocation_date" property="revocationDate" jdbcType="TIMESTAMP"/>
+    <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_Id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <select id="selectBankAccount" resultType="int">
+    select count(1) from t_w_bank where deleted = '0'
+    <if test="id != null and id != ''">
+      and id != #{id}
+    </if>
+    <if test="bankAccount != null and bankAccount != ''">
+      and bank_account = #{bankAccount}
+    </if>
+    <if test="useWaterUnitId != null and useWaterUnitId != ''">
+      and use_water_unit_Id = #{useWaterUnitId}
+    </if>
+  </select>
+
+  <update id="deletedBank">
+    update t_w_bank set deleted = '1'
+    WHERE id IN
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </update>
+
+  <select id="queryByUnitId" resultMap="bankMapper">
+    select * from t_w_bank where deleted = '0' and use_water_unit_Id = #{id}
+  </select>
+
+
+</mapper>
