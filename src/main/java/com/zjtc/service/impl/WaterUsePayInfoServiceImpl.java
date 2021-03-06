@@ -3,6 +3,7 @@ package com.zjtc.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
+import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.FileUtil;
@@ -13,6 +14,7 @@ import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.UseWaterUnitInvoice;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
+import com.zjtc.model.vo.SendListVO;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.model.vo.WaterUsePayInfoVo;
 import com.zjtc.service.CommonService;
@@ -22,6 +24,7 @@ import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.RefundOrRefundService;
+import com.zjtc.service.SmsService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterUnitInvoiceService;
 import com.zjtc.service.UseWaterUnitRefService;
@@ -82,6 +85,8 @@ public class WaterUsePayInfoServiceImpl extends
   private ContactsService contactsService;
   @Autowired
   private FileService fileService;
+  @Autowired
+  private SmsService smsService;
 
   @Override
   public boolean saveModel(JSONObject jsonObject) {
@@ -207,7 +212,8 @@ public class WaterUsePayInfoServiceImpl extends
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请退款" + entity.getMoney()
             + "元";
     todoService
-        .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, JSONObject.toJSONString(entity),
+        .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent,
+            JSONObject.toJSONString(entity),
             detailConfig,
             AuditConstants.PAY_TODO_TYPE);
     /**新增流程实例表数据*/
@@ -259,7 +265,8 @@ public class WaterUsePayInfoServiceImpl extends
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请减免" + entity.getMoney()
             + "元";
     todoService
-        .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, JSONObject.toJSONString(entity),
+        .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent,
+            JSONObject.toJSONString(entity),
             detailConfig,
             AuditConstants.PAY_TODO_TYPE);
     /**新增流程实例表数据*/
@@ -320,9 +327,9 @@ public class WaterUsePayInfoServiceImpl extends
   }
 
   @Override
-  public boolean send(JSONObject jsonObject) {
-    List<WaterUsePayInfo> list=jsonObject.getJSONArray("data").toJavaList(WaterUsePayInfo.class);
-    //todo：
+  public boolean send(JSONObject jsonObject,User user) throws Exception {
+    List<SendListVO> list = jsonObject.getJSONArray("data").toJavaList(SendListVO.class);
+    smsService.sendNotification(user,list, SmsConstants.SEND_NOTIFICATION_PAY,null);
     return true;
   }
 

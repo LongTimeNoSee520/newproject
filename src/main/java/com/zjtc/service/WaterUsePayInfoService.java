@@ -104,7 +104,7 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @param jsonObject
    * @return
    */
-  boolean send(JSONObject jsonObject);
+  boolean send(JSONObject jsonObject,User user) throws Exception;
 
   /**
    * 导出查询结果

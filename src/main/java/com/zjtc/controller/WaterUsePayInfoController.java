@@ -70,7 +70,7 @@ public class WaterUsePayInfoController {
       try {
         String nodeCode = jsonObject.getString("nodeCode");
         if (StringUtils.isBlank(nodeCode)) {
-          jsonObject.put("nodeCode",user.getNodeCode());
+          jsonObject.put("nodeCode", user.getNodeCode());
         }
         jsonObject.put("userId", user.getId());
         Map<String, Object> result = waterUsePayInfoService.queryPage(jsonObject);
@@ -330,8 +330,8 @@ public class WaterUsePayInfoController {
     User user = jwtUtil.getUserByToken(token);
     if (null != jsonObject && null != user) {
       try {
-        jsonObject.put("userId",user.getId());
-        jsonObject.put("nodeCode",user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        jsonObject.put("nodeCode", user.getNodeCode());
         List<Map<String, Object>> result = waterUsePayInfoService
             .selectPayNotice(jsonObject);
         apiResponse.setData(result);
@@ -361,7 +361,7 @@ public class WaterUsePayInfoController {
           + "    \"waterMeterCode\":\"水表档案号\",\n"
           + "    \"editedActual\":\"是否调整,0否，1是\",\n"
           + "    \"payType\":\"付款方式：2现金,3转账\"\n"
-          + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
+          + "}") @RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     log.info("缴费管理：导出查询结果， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -389,7 +389,7 @@ public class WaterUsePayInfoController {
           + "  \"year\":\"年份，必填\",\n"
           + "  \"quarter\":\"季度\"\n"
           + "  \n"
-          + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
+          + "}") @RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     log.info("缴费管理：导出用户信息， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -445,7 +445,7 @@ public class WaterUsePayInfoController {
           + "  \"year\":\"年份，必填\",\n"
           + "  \"quarter\":\"季度\"\n"
           + "  \n"
-          + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
+          + "}") @RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     log.info("缴费管理：导出本行托收数据， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -476,7 +476,7 @@ public class WaterUsePayInfoController {
           + "  \"year\":\"年份，必填\",\n"
           + "  \"quarter\":\"季度\"\n"
           + "  \n"
-          + "}")@RequestBody JSONObject jsonObject, HttpServletRequest request,
+          + "}") @RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     log.info("缴费管理：导出他行托收数据， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
@@ -500,6 +500,7 @@ public class WaterUsePayInfoController {
     }
     return apiResponse;
   }
+
   @ResponseBody
   @ApiOperation(value = "短信发送")
   @RequestMapping(value = "send", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -519,7 +520,7 @@ public class WaterUsePayInfoController {
           + "\"statusName\": \"加价费\"\n"
           + "}\n"
           + "]\n"
-          + "}")@RequestBody JSONObject jsonObject) {
+          + "}") @RequestBody JSONObject jsonObject) {
     log.info("短信发送， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -528,9 +529,9 @@ public class WaterUsePayInfoController {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
         boolean result = waterUsePayInfoService
-            .send(jsonObject);
+            .send(jsonObject, user);
         if (result) {
-         return apiResponse;
+          return apiResponse;
         }
       } catch (Exception e) {
         log.error("短信发送,errMsg==={}", e.getMessage());
