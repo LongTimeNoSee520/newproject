@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -96,7 +97,10 @@ public class RefundOrRefundController {
     ApiResponse apiResponse = new ApiResponse();
     if (null != jsonObject && null != user) {
       try {
-        jsonObject.put("nodeCode", user.getNodeCode());
+        String nodeCode = jsonObject.getString("nodeCode");
+        if (StringUtils.isBlank(nodeCode)) {
+          jsonObject.put("nodeCode", user.getNodeCode());
+        }
         jsonObject.put("userId", user.getId());
         Map<String,Object> result = refundOrRefundService.queryPage(jsonObject);
         apiResponse.setData(result);

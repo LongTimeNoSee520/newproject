@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,9 +47,11 @@ public class UseWaterOriginalPlanController {
   @ApiOperation(value = "老户查询列表")
   public ApiResponse queryAllOld(
       @ApiParam("{\n"
+          + "\"nodeCode\":\"节点编码\",\n"
           + "\"userType\":\"用户类型\",\n"
           + "\"unitStart\":\"编号开头 \",\n"
           + "\"year\":\"年份\"\n"
+
           + "\n"
           + "}")@RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
@@ -57,8 +60,11 @@ public class UseWaterOriginalPlanController {
     User user = jwtUtil.getUserByToken(token);
     if (null != jsonObject && null != user) {
       try {
+        String nodeCode = jsonObject.getString("nodeCode");
+        if (StringUtils.isBlank(nodeCode)) {
+          jsonObject.put("nodeCode", user.getNodeCode());
+        }
         jsonObject.put("userId",user.getId());
-        jsonObject.put("nodeCode",user.getNodeCode());
         List<Map<String, Object>> result = useWaterOriginalPlanService.goPlanningOld(jsonObject);
         apiResponse.setData(result);
         apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
@@ -76,13 +82,21 @@ public class UseWaterOriginalPlanController {
   @RequestMapping(value = "queryAllNew", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "新户查询列表")
   public ApiResponse queryAllNew(
-      @RequestHeader("token") String token) {
+      @RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "\"nodeCode\":\"节点编码\"\n"
+          + "}")@RequestBody JSONObject jsonObject
+  ) {
     log.info("查询列表==== 参数{" + token + "}");
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     if (null != user) {
       try {
-        List<Map<String, Object>> result = useWaterOriginalPlanService.goPlanningNew(user.getId(),user.getNodeCode());
+        String nodeCode = jsonObject.getString("nodeCode");
+        if (StringUtils.isBlank(nodeCode)) {
+          nodeCode=user.getNodeCode();
+        }
+        List<Map<String, Object>> result = useWaterOriginalPlanService.goPlanningNew(user.getId(),nodeCode);
         apiResponse.setData(result);
         apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
       } catch (Exception e) {

@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,6 +49,7 @@ public class WaterUsePayInfoController {
   @ApiOperation(value = "分页查询xxx内容")
   public ApiResponse queryPage(@RequestBody JSONObject jsonObject,
       @ApiParam("{\n"
+          + "  \"nodeCode\":\"节点编码\",\n"
           + "  \"current\":\"当前页，必填\",\n"
           + "  \"size\":\"当前页数据条数，必填\",\n"
           + "  \"unitName\":\"单位名称\",\n"
@@ -66,6 +68,10 @@ public class WaterUsePayInfoController {
     User user = jwtUtil.getUserByToken(token);
     if (null != jsonObject && null != user) {
       try {
+        String nodeCode = jsonObject.getString("nodeCode");
+        if (StringUtils.isBlank(nodeCode)) {
+          jsonObject.put("nodeCode",user.getNodeCode());
+        }
         jsonObject.put("userId", user.getId());
         Map<String, Object> result = waterUsePayInfoService.queryPage(jsonObject);
         apiResponse.setData(result);

@@ -244,7 +244,7 @@
 		else '否'
 		end as signed
 		FROM
-		( SELECT * FROM t_w_water_use_pay_info WHERE 1 = 1
+		( SELECT * FROM t_w_water_use_pay_info WHERE node_code = #{nodeCode}
 		<!--单位名称关键字查询-->
 		<if test="null !=unitName and unitName !=''">
 			and unit_name like '%${unitName}%'

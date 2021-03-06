@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -258,8 +259,9 @@ public class UseWaterUnitController {
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "分页")
   public ApiResponse queryPage(@ApiParam("{\n"
-      + "  \"current\":\"1\",\n"
-      + "  \"size\":\"2\",\n"
+      + "  \"nodeCode\":\"节点编码\",\n"
+      + "  \"current\":\"页码，必填\",\n"
+      + "  \"size\":\"显示数据条数，必填\",\n"
       + "  \"unitCode\":\"单位编号\",\n"
       + "  \"unitName\":\"单位名称\",\n"
       + "  \"waterMeterCode\":\"水表档案号\",\n"
@@ -274,12 +276,20 @@ public class UseWaterUnitController {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     log.debug("分页，参数param==={" + jsonObject.toString() + "}");
-    if (null != jsonObject && null != user) {
-      jsonObject.put("userId", user.getId());
-      jsonObject.put("nodeCode", user.getNodeCode());
-      Map<String, Object> result = useWaterUnitService.queryPage(jsonObject);
-      response.setData(result);
-    } else {
+    try{
+      if (null != jsonObject && null != user) {
+        String nodeCode =jsonObject.getString("nodeCode");
+        if(StringUtils.isBlank(nodeCode)){
+          jsonObject.put("nodeCode", user.getNodeCode());
+        }
+        jsonObject.put("userId", user.getId());
+        Map<String, Object> result = useWaterUnitService.queryPage(jsonObject);
+        response.setData(result);
+      } else {
+        response.recordError(500);
+      }
+    }catch (Exception e){
+      log.error("分页查询错误,errMsg==={}", e.getMessage());
       response.recordError(500);
     }
 

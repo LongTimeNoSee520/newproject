@@ -3,19 +3,16 @@ package com.zjtc.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
-import com.zjtc.model.UseWaterUnitMeter;
 import com.zjtc.model.User;
-import com.zjtc.model.WaterMonthUseData;
 import com.zjtc.service.WaterMonthUseDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,6 +41,7 @@ public class WaterMonthUseDataController {
   @ApiOperation("水使用量月数据分页")
   public ApiResponse queryPage(
       @ApiParam("{\n"
+          + "  \"nodeCode\":\"节点编码\",\n"
           + "  \"current\":\"页码，必填\",\n"
           + "  \"size\":\"显示数据条数，必填\",\n"
           + "  \"unitName\":\"单位名称\",\n"
@@ -65,12 +63,20 @@ public class WaterMonthUseDataController {
       @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
-    log.info("删除部门,参数param==={" + jsonObject.toJSONString() + "}");
-    if (null != user && null != jsonObject) {
-      jsonObject.put("nodeCode", user.getNodeCode());
-      Map<String, Object> result = waterMonthUseDataService.queryPage(jsonObject);
-      response.setData(result);
-    } else {
+    log.info("分页查询,参数param==={" + jsonObject.toJSONString() + "}");
+    try {
+      if (null != user && null != jsonObject) {
+        String nodeCode = jsonObject.getString("nodeCode");
+        if (StringUtils.isBlank(nodeCode)) {
+          jsonObject.put("nodeCode", user.getNodeCode());
+        }
+        Map<String, Object> result = waterMonthUseDataService.queryPage(jsonObject);
+        response.setData(result);
+      } else {
+        response.recordError(500);
+      }
+    } catch (Exception e) {
+      log.error("分页查询错误,errMsg==={}", e.getMessage());
       response.recordError(500);
     }
     return response;
