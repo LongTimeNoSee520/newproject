@@ -76,6 +76,9 @@
     type,
     unit_code,
     remarks
-    from t_w_water_use_data
+    from t_w_water_use_data where water_meter_code in
+    <foreach collection="waterMeterCode" open="(" close=")" separator="," item="waterMeterCode" index="i">
+    #{waterMeterCode}
+    </foreach>
   </select>
 </mapper>

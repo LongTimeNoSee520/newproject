@@ -57,8 +57,6 @@ public class WaterUseDataServiceImpl extends
 
   @Override
   public List<WaterUseData> selectWaterUseData(List<String> waterMeterCode) {
-    EntityWrapper<WaterUseData> wrapper = new EntityWrapper<>();
-    wrapper.in("water_meter_code",waterMeterCode);
-    return this.selectList(wrapper);
+    return this.baseMapper.selectWaterUseData(waterMeterCode);
   }
 }
