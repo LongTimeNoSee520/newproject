@@ -1,16 +1,12 @@
 package com.zjtc.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
-import com.zjtc.model.Algorithm;
 import com.zjtc.model.UseWaterOriginalPlan;
 import com.zjtc.model.User;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -49,10 +45,10 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	boolean deleteModel(JSONObject jsonObject);
 
 	/**
-	* 分页查询
+	* 老户分页查询
 	* @return
 	*/
-	Page<UseWaterOriginalPlan> queryPage(JSONObject jsonObject);
+	Map<String,Object> queryPageOld(JSONObject jsonObject);
 
 	/**
 	 * 获取本年度初始化编制信息老户

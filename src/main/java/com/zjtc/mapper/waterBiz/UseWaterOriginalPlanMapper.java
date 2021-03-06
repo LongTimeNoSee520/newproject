@@ -29,14 +29,24 @@ public interface UseWaterOriginalPlanMapper extends BaseMapper<UseWaterOriginalP
       @Param("userId") String userId, @Param("nodeCode") String nodeCode
   );
 
+  List<Map<String, Object>> initPlanOldPage(@Param("year") int year,
+      @Param("unitCodeType") String userType, @Param("unitCodeStart") String unitCodeStart,
+      @Param("userId") String userId, @Param("nodeCode") String nodeCode,
+      @Param("current") Integer current, @Param("size") Integer size
+  );
+  long initPlanOldCount(@Param("year") int year,
+      @Param("unitCodeType") String userType, @Param("unitCodeStart") String unitCodeStart,
+      @Param("userId") String userId, @Param("nodeCode") String nodeCode,
+      @Param("current") Integer current, @Param("size") Integer size
+  );
   /**
    * 编制初始化：新户
    *
    * @param year 年份
    * @param userId 用户id
    * @param nodeCode 节点编码
-   * @param ParamOne  计算第三季度的年份参数
-   * @param ParamTwo  计算第四季度的年份参数
+   * @param ParamOne 计算第三季度的年份参数
+   * @param ParamTwo 计算第四季度的年份参数
    * @param threeWaterMonth 计算第三季度的水量参数
    * @param fourWaterMonth 计算第四季度的水量参数
    */
@@ -61,6 +71,20 @@ public interface UseWaterOriginalPlanMapper extends BaseMapper<UseWaterOriginalP
       @Param("userType") String userType,
       @Param("unitCodeStart") String unitCodeStart, @Param("userId") String userId,
       @Param("nodeCode") String nodeCode);
+
+  List<Map<String, Object>> nowYearPlanOldPage(@Param("year") int year,
+      @Param("userType") String userType,
+      @Param("unitCodeStart") String unitCodeStart, @Param("userId") String userId,
+      @Param("nodeCode") String nodeCode,
+      @Param("current") Integer current, @Param("size") Integer size
+  );
+
+  long nowYearPlanOldCount(@Param("year") int year,
+      @Param("userType") String userType,
+      @Param("unitCodeStart") String unitCodeStart, @Param("userId") String userId,
+      @Param("nodeCode") String nodeCode,
+      @Param("current") Integer current, @Param("size") Integer size
+  );
 
   /**
    * 编制查询：新户 满足条件：原始计划表中查询不到数据,2:包含基础算法中新户号

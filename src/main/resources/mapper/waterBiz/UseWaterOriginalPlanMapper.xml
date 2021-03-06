@@ -220,8 +220,6 @@
     SELECT
     id,
     use_water_unit_id as useWaterUnitId,
-    unit_code as unitCode,
-    unit_name AS unitName,
     water_meter_code AS waterMeterCode,
     <!--算法类型-->
     algorithm_type as algorithmType,
@@ -447,4 +445,425 @@
     order by t1.unit_code
   </select>
 
+  <select id="initPlanOldPage" resultType="java.util.LinkedHashMap">
+
+    SELECT
+    top ${size}
+    *
+    FROM
+    (
+    SELECT
+    row_number ( ) over (
+    ORDER BY
+    t1.unit_code
+    ) AS rownumber,
+    id=null,
+    waterMeterCode =STUFF (
+    ( SELECT ',' + water_meter_code  FROM t_w_use_water_unit_meter WHERE use_water_unit_id =
+    t1.id FOR XML PATH ( '' ) ),
+    1,
+    1,
+    ''
+    ),
+    t1.id AS useWaterUnitId ,
+    t1.unit_code as unitCode,
+    t1.unit_name as unitName,
+    baseWaterAmount=isnull(t2.baseWaterAmount,0),
+    t3.beforeLastYearWaterAmount,
+    t4.lastYearWaterAmount,
+    nextYearQuotaStartPlan=isnull(t9.nextYearQuotaStartPlan,0),
+    algorithmType=0,
+    minusPayStatus=0,
+    balanceTest=0,
+    createType=0,
+    planed=0,
+    printed=0,
+    anded=0,
+    assessQuarter=0,
+    isnull(t2.nowPrice,0) as nowPrice,
+    planYear=#{year},
+    isNull(t5.cur_year_plan,0) as curYearPlan,
+    isNull(t5.curYearBasePlan,0) as curYearBasePlan ,
+    CASE
+    WHEN t1.unit_code_group = t6.third_batch_num  THEN
+    CEILING( ISNULL(t2.baseWaterAmount,0) )
+    WHEN t1.unit_code_group=t6.second_batch_num THEN
+    CEILING(
+    ISNULL( t2.baseWaterAmount, 0 ) *ISNULL(t6.first_year_pro,0)
+    + ISNULL( t3.beforeLastYearWaterAmount, 0 )*ISNULL(t6.second_year_pro+t6.third_year_pro,0)
+    )
+    WHEN t1.unit_code_group &lt;=t6.first_batch_num or t1.unit_code_group>t6.third_batch_num  THEN
+    CEILING(
+    ISNULL( t2.baseWaterAmount, 0 ) *ISNULL(t6.first_year_pro,0)
+    + ISNULL( t3.beforeLastYearWaterAmount, 0 )*ISNULL(t6.second_year_pro,0)
+    + ISNULL( t4.lastYearWaterAmount, 0 )*ISNULL(t6.third_year_pro,0)
+    )
+    END AS threeYearAvg
+    FROM
+    (
+    SELECT
+    id,
+    unit_code,
+    unit_name,
+    unit_code_group,
+    unit_code_type,
+    save_unit_type
+    FROM
+    t_w_use_water_unit
+    WHERE
+    deleted = '0'
+    <!--当前用户可操作类型-->
+    AND unit_code_type IN ( SELECT unit_type_code AS unit_code_type FROM t_w_use_water_unit_role
+    WHERE person_id = #{userId} )
+    <if test="null !=unitCodeType and unitCodeType !=''">
+      AND unit_code_type = #{unitCodeType}
+    </if>
+    <!--编号开头[批次]筛选-->
+    <if test="null !=unitCodeStart and unitCodeStart !=''">
+      and unit_code_group=#{unitCodeStart}
+    </if>
+    ) t1
+    <!--第三年-->
+    LEFT JOIN (
+    SELECT
+    MAX( now_price ) AS nowPrice,
+    use_water_unit_id,
+    SUM( topThree + fourth ) AS baseWaterAmount
+    FROM
+    (
+    SELECT
+    n1.use_water_unit_id,
+    n1.now_price,
+    topThree,
+    fourth
+    FROM
+    (
+    SELECT
+    now_price,
+    use_water_unit_id,
+    water_meter_code,
+    topThree = ( january_count + february_count + march_count + april_count + may_count + june_count
+    + july_count + august_count + september_count )
+    FROM
+    t_w_water_month_use_data
+    WHERE
+    use_year = #{year}-1
+    ) n1
+    LEFT JOIN ( SELECT use_water_unit_id, water_meter_code, fourth = ( october_count +
+    november_count + december_count ) FROM t_w_water_month_use_data WHERE use_year = #{year}-2) n2
+    ON n1.water_meter_code = n2.water_meter_code
+    ) nn
+    GROUP BY
+    use_water_unit_id
+    ) t2 on t1.id=t2.use_water_unit_id
+    <!--第二年-->
+    left join (
+    SELECT
+    use_water_unit_id,
+    beforeLastYearWaterAmount = (
+    SUM( january_count ) + SUM( february_count ) + SUM( march_count ) + SUM( april_count ) + SUM(
+    may_count ) + SUM( june_count ) + SUM( july_count ) + SUM( august_count ) + SUM( september_count
+    ) + SUM( october_count ) + SUM( november_count ) + SUM( december_count )
+    )
+    FROM
+    t_w_water_month_use_data
+    WHERE
+    use_year = #{year}-2
+    GROUP BY
+    use_water_unit_id
+
+    ) t3 on t1.id=t3.use_water_unit_id
+    <!--第一年-->
+    left join (
+    SELECT
+    use_water_unit_id,
+    lastYearWaterAmount = (
+    SUM( january_count ) + SUM( february_count ) + SUM( march_count ) + SUM( april_count ) + SUM(
+    may_count ) + SUM( june_count ) + SUM( july_count ) + SUM( august_count ) + SUM( september_count
+    ) + SUM( october_count ) + SUM( november_count ) + SUM( december_count )
+    )
+    FROM
+    t_w_water_month_use_data
+    WHERE
+    use_year =#{year}-3
+    GROUP BY
+    use_water_unit_id
+
+    ) t4 on t1.id=t4.use_water_unit_id
+    LEFT JOIN (
+    SELECT
+    p.use_water_unit_id,<!--当年年计划-->
+    p.cur_year_plan,<!--基建计划-->
+    ISNULL( bp.cur_year_plan, 0 ) AS curYearBasePlan
+    FROM
+    ( SELECT use_water_unit_id, cur_year_plan FROM t_w_use_water_plan WHERE plan_type = 0 AND
+    plan_year =#{year}-1 ) p
+    LEFT JOIN ( SELECT cur_year_plan, use_water_unit_id FROM t_w_use_water_base_plan WHERE plan_year
+    =#{year}-1 ) bp ON p.use_water_unit_id = bp.use_water_unit_id
+    ) t5 ON t1.id= t5.use_water_unit_id
+    LEFT JOIN ( SELECT use_water_unit_id FROM t_w_use_water_plan pp WHERE plan_year = #{year} ) t7
+    ON
+    t1.id = t7.use_water_unit_id
+    <!--原始表中上一年能查到的单位，为老户-->
+    inner join (select use_water_unit_id from t_w_use_water_original_plan where
+    node_code=#{nodeCode} and plan_year=#{year}-1 ) t8 on t1.id =t8.use_water_unit_id
+    left join(
+    select
+    a.use_water_unit_id,
+    sum(b.common_value * a.amount * b.quota_rate) as nextYearQuotaStartPlan
+    from t_w_use_water_quota as a
+    inner join t_w_quota_info as b on a.product=b.id
+    group by a.use_water_unit_id
+    ) t9 on t9.use_water_unit_id=t1.id
+    ,
+    (select * from t_w_algorithm where
+    node_code=#{nodeCode} and algorithm_type='1' ) t6
+    where ISNULL( t7.use_water_unit_id, '1' ) = '1'
+    <!--去掉算法中的新户-->
+    and t1.unit_code_group not in (t6.new_batch_num)
+    ) temp_row
+    WHERE
+    rownumber > ( ( #{current}- 1 ) * #{size} );
+  </select>
+
+  <select id="initPlanOldCount" resultType="java.lang.Long">
+    SELECT
+    count (1)
+    FROM
+    (
+    SELECT
+    id,
+    unit_code,
+    unit_name,
+    unit_code_group,
+    unit_code_type,
+    save_unit_type
+    FROM
+    t_w_use_water_unit
+    WHERE
+    deleted = '0'
+    <!--当前用户可操作类型-->
+    AND unit_code_type IN ( SELECT unit_type_code AS unit_code_type FROM t_w_use_water_unit_role
+    WHERE person_id = #{userId} )
+    <if test="null !=unitCodeType and unitCodeType !=''">
+      AND unit_code_type = #{unitCodeType}
+    </if>
+    <!--编号开头[批次]筛选-->
+    <if test="null !=unitCodeStart and unitCodeStart !=''">
+      and unit_code_group=#{unitCodeStart}
+    </if>
+    ) t1
+    <!--第三年-->
+    LEFT JOIN (
+    SELECT
+    MAX( now_price ) AS nowPrice,
+    use_water_unit_id,
+    SUM( topThree + fourth ) AS baseWaterAmount
+    FROM
+    (
+    SELECT
+    n1.use_water_unit_id,
+    n1.now_price,
+    topThree,
+    fourth
+    FROM
+    (
+    SELECT
+    now_price,
+    use_water_unit_id,
+    water_meter_code,
+    topThree = ( january_count + february_count + march_count + april_count + may_count + june_count
+    + july_count + august_count + september_count )
+    FROM
+    t_w_water_month_use_data
+    WHERE
+    use_year = #{year}-1
+    ) n1
+    LEFT JOIN ( SELECT use_water_unit_id, water_meter_code, fourth = ( october_count +
+    november_count + december_count ) FROM t_w_water_month_use_data WHERE use_year = #{year}-2) n2
+    ON n1.water_meter_code = n2.water_meter_code
+    ) nn
+    GROUP BY
+    use_water_unit_id
+    ) t2 on t1.id=t2.use_water_unit_id
+    <!--第二年-->
+    left join (
+    SELECT
+    use_water_unit_id,
+    beforeLastYearWaterAmount = (
+    SUM( january_count ) + SUM( february_count ) + SUM( march_count ) + SUM( april_count ) + SUM(
+    may_count ) + SUM( june_count ) + SUM( july_count ) + SUM( august_count ) + SUM( september_count
+    ) + SUM( october_count ) + SUM( november_count ) + SUM( december_count )
+    )
+    FROM
+    t_w_water_month_use_data
+    WHERE
+    use_year = #{year}-2
+    GROUP BY
+    use_water_unit_id
+
+    ) t3 on t1.id=t3.use_water_unit_id
+    <!--第一年-->
+    left join (
+    SELECT
+    use_water_unit_id,
+    lastYearWaterAmount = (
+    SUM( january_count ) + SUM( february_count ) + SUM( march_count ) + SUM( april_count ) + SUM(
+    may_count ) + SUM( june_count ) + SUM( july_count ) + SUM( august_count ) + SUM( september_count
+    ) + SUM( october_count ) + SUM( november_count ) + SUM( december_count )
+    )
+    FROM
+    t_w_water_month_use_data
+    WHERE
+    use_year =#{year}-3
+    GROUP BY
+    use_water_unit_id
+
+    ) t4 on t1.id=t4.use_water_unit_id
+    LEFT JOIN (
+    SELECT
+    p.use_water_unit_id,<!--当年年计划-->
+    p.cur_year_plan,<!--基建计划-->
+    ISNULL( bp.cur_year_plan, 0 ) AS curYearBasePlan
+    FROM
+    ( SELECT use_water_unit_id, cur_year_plan FROM t_w_use_water_plan WHERE plan_type = 0 AND
+    plan_year =#{year}-1 ) p
+    LEFT JOIN ( SELECT cur_year_plan, use_water_unit_id FROM t_w_use_water_base_plan WHERE plan_year
+    =#{year}-1 ) bp ON p.use_water_unit_id = bp.use_water_unit_id
+    ) t5 ON t1.id= t5.use_water_unit_id
+    LEFT JOIN ( SELECT use_water_unit_id FROM t_w_use_water_plan pp WHERE plan_year = #{year} ) t7
+    ON
+    t1.id = t7.use_water_unit_id
+    <!--原始表中上一年能查到的单位，为老户-->
+    inner join (select use_water_unit_id from t_w_use_water_original_plan where
+    node_code=#{nodeCode} and plan_year=#{year}-1 ) t8 on t1.id =t8.use_water_unit_id
+    left join(
+    select
+    a.use_water_unit_id,
+    sum(b.common_value * a.amount * b.quota_rate) as nextYearQuotaStartPlan
+    from t_w_use_water_quota as a
+    inner join t_w_quota_info as b on a.product=b.id
+    group by a.use_water_unit_id
+    ) t9 on t9.use_water_unit_id=t1.id
+    ,
+    (select * from t_w_algorithm where
+    node_code=#{nodeCode} and algorithm_type='1' ) t6
+    where ISNULL( t7.use_water_unit_id, '1' ) = '1'
+    <!--去掉算法中的新户-->
+    and t1.unit_code_group not in (t6.new_batch_num)
+  </select>
+
+  <select id="nowYearPlanOldPage" resultType="java.util.LinkedHashMap">
+    SELECT
+    top ${size}
+    *
+    FROM
+    (
+    SELECT
+    row_number () over (
+    ORDER BY u.unitCode
+    ) AS rownumber,
+    p.*,
+    u.unitCode ,
+    u.unitName
+    FROM
+    (
+    SELECT
+    id,
+    use_water_unit_id as useWaterUnitId,
+    water_meter_code AS waterMeterCode,
+    <!--算法类型-->
+    algorithm_type as algorithmType,
+    base_water_amount as baseWaterAmount,
+    before_last_year_water_amount as beforeLastYearWaterAmount,
+    last_year_water_amount as lastYearWaterAmount,
+    three_year_avg as threeYearAvg,
+    now_price as nowPrice,
+    n8 as n8,
+    sign ,
+    minus_pay_status As minusPayStatus,
+    balance_test as balanceTest,
+    create_type as createType,
+    cur_year_base_plan as curYearBasePlan,
+    cur_year_plan as curYearPlan,
+    next_year_base_start_plan as nextYearBaseStartPlan,
+    next_year_quota_start_plan as nextYearQuotaStartPlan,
+    next_year_base_end_plan as nextYearBaseEndPlan,
+    next_year_quota_end_plan as nextYearQuotaEndPlan,
+    first_quarter_base as firstQuarterBase,
+    second_quarter_base as secondQuarterBase,
+    third_quarter_base as thirdQuarterBase,
+    fourth_quarter_base as fourthQuarterBase,
+    first_quarter_quota as firstQuarterQuota,
+    second_quarter_quota as secondQuarterQuota,
+    third_quarter_quota as thirdQuarterQuota,
+    fourth_quarter_quota as fourthQuarterQuota,
+    printed as printed,
+    create_time as createTime,
+    assess_quarter as assessQuarter,
+    planed as planed
+    FROM
+    t_w_use_water_original_plan
+    WHERE
+    plan_year =#{year}
+    ) p
+    inner join
+    (
+    select
+    id,
+    unit_code as unitCode ,
+    unit_name as unitName
+    from t_w_use_water_unit
+    where deleted='0'
+    and node_code=#{nodeCode}
+    <!--查询当前用户有的类型-->
+    AND unit_code_type IN ( SELECT unit_type_code AS unit_code_type FROM t_w_use_water_unit_role
+    WHERE person_id = #{userId} )
+    <!--筛选类型-->
+    <if test="null !=userType and userType !='' ">
+      and unit_code_type=#{userType}
+    </if>
+    <!--筛选批次-->
+    <if test="null !=unitCodeStart and unitCodeStart !=''">
+      and unit_code_group=#{unitCodeStart}
+    </if>
+    ) as u on u.id=p.useWaterUnitId
+    ) temp_row
+    WHERE
+    rownumber > ( ( #{current}- 1 ) * #{size} );
+  </select>
+
+  <select id="nowYearPlanOldCount" resultType="java.lang.Long">
+
+    SELECT
+    count (1)
+    FROM
+    (
+    SELECT
+    use_water_unit_id as useWaterUnitId
+    FROM
+    t_w_use_water_original_plan
+    WHERE
+    plan_year =#{year}
+    ) p
+    inner join
+    (
+    select
+    id
+    from t_w_use_water_unit
+    where deleted='0'
+    and node_code=#{nodeCode}
+    <!--查询当前用户有的类型-->
+    AND unit_code_type IN ( SELECT unit_type_code AS unit_code_type FROM t_w_use_water_unit_role
+    WHERE person_id = #{userId} )
+    <!--筛选类型-->
+    <if test="null !=userType and userType !='' ">
+      and unit_code_type=#{userType}
+    </if>
+    <!--筛选批次-->
+    <if test="null !=unitCodeStart and unitCodeStart !=''">
+      and unit_code_group=#{unitCodeStart}
+    </if>
+    ) as u on u.id=p.useWaterUnitId
+  </select>
 </mapper>

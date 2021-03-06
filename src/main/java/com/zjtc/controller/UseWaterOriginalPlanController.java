@@ -78,6 +78,44 @@ public class UseWaterOriginalPlanController {
     }
     return apiResponse;
   }
+  @RequestMapping(value = "queryPageOld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "老户查询分页")
+  public ApiResponse queryPageOld(
+      @ApiParam("{\n"
+          + "\"current\":\"页码\",\n"
+          + "\"size\":\"当前页显示数据\",\n"
+          + "\"nodeCode\":\"节点编码\",\n"
+          + "\"userType\":\"用户类型\",\n"
+          + "\"unitStart\":\"编号开头 \",\n"
+          + "\"year\":\"年份\"\n"
+
+          + "\n"
+          + "}")@RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
+    log.info("查询列表==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != jsonObject && null != user) {
+      try {
+        String nodeCode = jsonObject.getString("nodeCode");
+        if (StringUtils.isBlank(nodeCode)) {
+          jsonObject.put("nodeCode", user.getNodeCode());
+        }
+        jsonObject.put("userId",user.getId());
+        Map<String, Object> result = useWaterOriginalPlanService.queryPageOld(jsonObject);
+        apiResponse.setData(result);
+        apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
+      } catch (Exception e) {
+        log.error("老户查询错误,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+      }
+    } else {
+      apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+    }
+    return apiResponse;
+  }
+
 
   @RequestMapping(value = "queryAllNew", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "新户查询列表")
