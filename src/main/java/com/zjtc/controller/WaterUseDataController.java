@@ -41,29 +41,31 @@ public class WaterUseDataController {
   @ResponseBody
   @ApiOperation(value = "查询可使用年份")
   @RequestMapping(value = "queryYear", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse exchange(@RequestHeader("token") String token) {
+  public ApiResponse exchange(@RequestHeader("token") String token,
+      @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
-    if (null == user){
+    if (null == user) {
       response.recordError("系统异常");
       return response;
     }
     try {
-      List<Integer> list = waterUseDataService.queryYear(user.getNodeCode());
-      if (list.isEmpty()){
+      List<Integer> list = waterUseDataService.queryYear(jsonObject.getString("nodeCode"));
+      if (list.isEmpty()) {
         response.recordError("查询可使用年份失败");
         return response;
-      }else {
+      } else {
         response.setData(list);
         response.setCode(200);
         return response;
       }
     } catch (Exception e) {
-      log.error("查询可使用年份异常=="+e.getMessage());
+      log.error("查询可使用年份异常==" + e.getMessage());
       e.printStackTrace();
     }
     return response;
   }
+
   @RequestMapping(value = "selectWaterUseData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("根据水表档案号回填水表信息")
   public ApiResponse selectWaterUseData(@ApiParam("   {\n"

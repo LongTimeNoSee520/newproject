@@ -39,8 +39,9 @@ public class WaterUnitAssessController {
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("用水单位考核查询")
   public ApiResponse queryPage(@ApiParam("{\n"
-      + "    \"current\":\"页数\",\n"
-      + "    \"size\":\"条数\",\n"
+      + "    \"current\":\"页数(必填)\",\n"
+      + "    \"size\":\"条数(必填)\",\n"
+      + "    \"nodeCode\":\"节点编码(必填)\",\n"
       + "    \"unitName\":\"单位名称\",\n"
       + "    \"accessYear\":\"年度(Integer)\n"
       + "}") @RequestBody JSONObject jsonObject,
@@ -57,7 +58,13 @@ public class WaterUnitAssessController {
       return response;
     }
     try {
-      response = waterUnitAssessService.queryPage(jsonObject, user.getNodeCode(), user.getId());
+      String nodeCode;
+      if (null != jsonObject.getString("nodeCode")) {
+        nodeCode = jsonObject.getString("nodeCode");
+        response = waterUnitAssessService.queryPage(jsonObject,nodeCode, user.getId());
+      }else{
+        response = waterUnitAssessService.queryPage(jsonObject, user.getNodeCode(), user.getId());
+      }
       return response;
     } catch (Exception e) {
       response.setCode(500);

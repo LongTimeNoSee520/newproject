@@ -311,8 +311,9 @@ public class UseWaterUnitInvoiceController {
   @ApiOperation("分页查询")
   public ApiResponse queryPage(@ApiParam(""
       + "{\n"
-      + "    \"current\":\"页数\",\n"
-      + "    \"size\":\"条数\",\n"
+      + "    \"current\":\"页数(必填)\",\n"
+      + "    \"size\":\"条数(必填)\",\n"
+      + "    \"nodeCode\":\"节点编码(必填)\",\n"
       + "    \"invoiceNumber\":\"发票号\",\n"
       + "    \"begin\":\"开始票段(Integer类型)\",\n"
       + "    \"end\":\"结束票段(Integer类型)\"\n"
@@ -330,8 +331,15 @@ public class UseWaterUnitInvoiceController {
       response.recordError("系统异常");
       return response;
     }
+    String nodeCode;
     try {
-      response = useWaterUnitInvoiceService.queryPage(jsonObject, user.getNodeCode(),user.getId());
+      if (null != jsonObject.getString("nodeCode")) {
+         nodeCode = jsonObject.getString("nodeCode");
+        response = useWaterUnitInvoiceService.queryPage(jsonObject, nodeCode, user.getId());
+      }else{
+        response = useWaterUnitInvoiceService.queryPage(jsonObject, user.getNodeCode(), user.getId());
+      }
+
       return response;
     } catch (Exception e) {
       response.recordError("查询人员信息异常");

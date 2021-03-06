@@ -42,8 +42,9 @@ public class UseWaterSelfDefinePlanController {
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("自平计划管理分页查询")
   public ApiResponse queryPage(@ApiParam("{\n"
-      + "    \"current\":\"页数\",\n"
-      + "    \"size\":\"条数\",\n"
+      + "    \"current\":\"页数(必填)\",\n"
+      + "    \"size\":\"条数(必填)\",\n"
+      + "    \"nodeCode\":\"节点编码(必填)\",\n"
       + "    \"unitName\":\"单位名称\",\n"
       + "    \"userType\":\"用户类型(截取的是3-4位)\",\n"
       + "    \"areaCode\":\"编号开头\",\n"
@@ -63,8 +64,14 @@ public class UseWaterSelfDefinePlanController {
       response.recordError("系统异常");
       return response;
     }
+    String nodeCode;
     try {
-      response = tWUseWaterSelfDefinePlanService.queryPage(jsonObject, user.getNodeCode(),user.getId());
+      if (null != jsonObject.getString("nodeCode")) {
+         nodeCode  = jsonObject.getString("nodeCode");
+        response = tWUseWaterSelfDefinePlanService.queryPage(jsonObject, nodeCode, user.getId());
+      }else{
+        response = tWUseWaterSelfDefinePlanService.queryPage(jsonObject, user.getNodeCode(), user.getId());
+      }
       return response;
     } catch (Exception e) {
       response.setCode(500);
