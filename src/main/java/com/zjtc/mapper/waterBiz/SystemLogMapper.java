@@ -1,4 +1,4 @@
-package com.zjtc.mapper;
+package com.zjtc.mapper.waterBiz;
 
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
