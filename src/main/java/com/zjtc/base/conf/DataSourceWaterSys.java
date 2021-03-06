@@ -1,8 +1,8 @@
 package com.zjtc.base.conf;
 
+import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,11 +50,12 @@ public class DataSourceWaterSys {
   @Bean(name = "waterSysSqlSessionFactory")
   public SqlSessionFactory waterSysSqlSessionFactory(
       @Qualifier("waterSysDataSource") DataSource dataSource) throws Exception {
-    SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-    sqlSessionFactoryBean.setDataSource(dataSource);
-    sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
+//    SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+    MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
+    mybatisSqlSessionFactoryBean.setDataSource(dataSource);
+    mybatisSqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
         .getResources(MAPPER_LOCATION));
-    return sqlSessionFactoryBean.getObject();
+    return mybatisSqlSessionFactoryBean.getObject();
   }
 
   @Bean(name = "waterSysTransactionManager")
