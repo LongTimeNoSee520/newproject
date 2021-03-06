@@ -39,7 +39,7 @@ public class UseWaterUnitMonitorServiceImpl extends
     Map<String, Object> result = new HashMap<>();
     Integer size = jsonObject.getInteger("size");
     Integer current = jsonObject.getInteger("current");
-    String nodeCode = user.getNodeCode();
+   // String nodeCode = user.getNodeCode();
     String userId = user.getId();
     String monitorType = jsonObject.getString("monitorType");
     String unitName = jsonObject.getString("unitName");
@@ -54,7 +54,12 @@ public class UseWaterUnitMonitorServiceImpl extends
     map.put("size", size);
     map.put("current", current);
     map.put("monitorType", monitorType);
-    map.put("nodeCode", nodeCode);
+    //    map.put("nodeCode", nodeCode);
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
     map.put("userId", userId);
     if (StringUtils.isNotBlank(unitName)) {
       map.put("unitName", unitName);
@@ -115,7 +120,7 @@ public class UseWaterUnitMonitorServiceImpl extends
       HttpServletRequest request,
      HttpServletResponse response) {
     ApiResponse apiResponse = new ApiResponse();
-    String nodeCode = user.getNodeCode();
+  //  String nodeCode = user.getNodeCode();
     String userId = user.getId();
     String monitorType = jsonObject.getString("monitorType");//监控类型:1重点,2节水型
     String unitName = jsonObject.getString("unitName");
@@ -125,7 +130,12 @@ public class UseWaterUnitMonitorServiceImpl extends
     String industryId = jsonObject.getString("industryId");
     Map<String, Object> map = new HashMap<>();
     map.put("monitorType", monitorType);
-    map.put("nodeCode", nodeCode);
+    //    map.put("nodeCode", nodeCode);
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
     map.put("userId", userId);
     if (StringUtils.isNotBlank(unitName)) {
       map.put("unitName", unitName);

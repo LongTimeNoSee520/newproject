@@ -1,5 +1,6 @@
 package com.zjtc.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.QuotaInfoMapper;
 import com.zjtc.model.QuotaInfo;
@@ -10,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -81,8 +83,12 @@ public class QuotaInfoServiceImpl extends ServiceImpl<QuotaInfoMapper, QuotaInfo
   }
 
   @Override
-  public List<Map<String, Object>> queryIndustry(User user) {
-    String nodeCode = user.getNodeCode();
+  public List<Map<String, Object>> queryIndustry(User user,JSONObject jsonObject) {
+    String nodeCode = jsonObject.getString("nodeCode");
+    if (StringUtils.isBlank(nodeCode)){
+      nodeCode = user.getNodeCode();
+    }
+    //String nodeCode = user.getNodeCode();
     return this.baseMapper.queryIndustry(nodeCode);
   }
 

@@ -44,7 +44,8 @@ public class WaterBalanceTestController {
           + "  \"current\":\"当前页,数字\", \n"
           + "  \"size\":\"每页条数,数字\" ,\n"
           + "  \"unitName\":\"单位名称\",\n"
-          + "  \"unitCode\":\"单位编号\"\n"
+          + "  \"unitCode\":\"单位编号\",\n"
+          + "  \"nodeCode\":\"节点编码\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("水平衡测试分页查询 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();

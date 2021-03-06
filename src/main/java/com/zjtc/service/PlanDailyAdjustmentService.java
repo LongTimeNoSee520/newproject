@@ -69,7 +69,7 @@ public interface PlanDailyAdjustmentService extends IService<UseWaterPlan> {
 	 * 根据单位编号，查询单位信息和一、二水量前端回填
 	 * @param unitCode
 	 */
-	List<Map<String,Object>> queryMessage(User user, String unitCode);
+	List<Map<String,Object>> queryMessage(User user, String unitCode,String nodeCode);
 
 	ApiResponse initiateSettlement(User user,JSONObject jsonObject) throws Exception;
 
@@ -92,13 +92,13 @@ public interface PlanDailyAdjustmentService extends IService<UseWaterPlan> {
 	 * @param response
 	 * @return
 	 */
-	ApiResponse export(User user, Integer planYear, HttpServletRequest request, HttpServletResponse response);
+	ApiResponse export(User user, Integer planYear,String nodeCode, HttpServletRequest request, HttpServletResponse response);
 
 
 	/**
 	 * 查询退缴费第一个提交流程的角色信息
 	 */
-	List<Map<String, Object>> secondAuditRole( User user,String changeType);
+	List<Map<String, Object>> secondAuditRole(String nodeCode,String changeType);
 
 	/**
 	 * 年计划自平通知

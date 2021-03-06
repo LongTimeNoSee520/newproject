@@ -87,7 +87,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
     int current = jsonObject.getInteger("current");//当前页
     int size = jsonObject.getInteger("size");//每页条数
-    String nodeCode = user.getNodeCode();//节点编码
+  //  String nodeCode = user.getNodeCode();//节点编码
     String userId = user.getId();
     String unitCode = jsonObject.getString("unitCode");//单位编号
     String unitName = jsonObject.getString("unitName");//单位名称
@@ -99,7 +99,12 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     Map<String, Object> map = new HashMap();
     map.put("current", current);
     map.put("size", size);
-    map.put("nodeCode", nodeCode);
+//    map.put("nodeCode", nodeCode);
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
     map.put("userId", userId);
     map.put("preViewRealPath",preViewRealPath + contextPath + "/");
     if (StringUtils.isNotBlank(unitCode)) {

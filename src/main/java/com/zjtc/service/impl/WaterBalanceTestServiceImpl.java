@@ -101,7 +101,7 @@ public class WaterBalanceTestServiceImpl extends
     Map<String, Object> result = new HashMap<>();
     Integer size = jsonObject.getInteger("size");
     Integer current = jsonObject.getInteger("current");
-    String nodeCode = user.getNodeCode();
+    //String nodeCode = user.getNodeCode();
     //	String userId = user.getId();
     String unitName = jsonObject.getString("unitName");
     String unitCode = jsonObject.getString("unitCode");
@@ -109,7 +109,12 @@ public class WaterBalanceTestServiceImpl extends
     Map<String, Object> map = new HashMap<>();
     map.put("size", size);
     map.put("current", current);
-    map.put("nodeCode", nodeCode);
+    //    map.put("nodeCode", nodeCode);
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
     map.put("preViewRealPath", preViewRealPath + contextPath + "/");
     //	map.put("userId", userId);
     if (StringUtils.isNotBlank(unitName)) {

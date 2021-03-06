@@ -52,7 +52,8 @@ public class PlanDailyAdjustmentController {
           + " \"unitName\":\"单位名称\",\n"
           + " \"waterMeterCode\":\"水表档案号\",\n"
           + " \"planYearStart\":\"计划年度起始\",\n"
-          + " \"planYearEnd\":\"计划年度截止\"\n"
+          + " \"planYearEnd\":\"计划年度截止\",\n"
+          + "\"nodeCode\":\"节点编码\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("分页查询 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
@@ -77,7 +78,8 @@ public class PlanDailyAdjustmentController {
           + " \"unitName\":\"单位名称\",\n"
           + " \"waterMeterCode\":\"水表档案号\",\n"
           + " \"yearStart\":\"计划年度起始 数字\",\n"
-          + " \"yearEnd\":\"计划年度截止 数字\"\n"
+          + " \"yearEnd\":\"计划年度截止 数字\",\n"
+          + "\"nodeCode\":\"节点编码\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("列表查询 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
@@ -278,7 +280,8 @@ public class PlanDailyAdjustmentController {
   @ApiOperation(value = "发起办结单时输入单位编码后回填数据(年初计划)")
   public ApiResponse queryMessage(@RequestHeader("token") String token,
       @ApiParam("{\n"
-          + "\"unitCode\": \"单位编号\"\n"
+          + "\"unitCode\": \"单位编号\",\n"
+          + "\"nodeCode\":\"节点编码\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("查询单位信息和一、二水量==== 参数{" + jsonObject.toJSONString()+ "}");
     ApiResponse response = new ApiResponse();
@@ -286,7 +289,8 @@ public class PlanDailyAdjustmentController {
       try {
         User user = jwtUtil.getUserByToken(token);
         String unitCode = jsonObject.getString("unitCode");
-        List<Map<String,Object>> result = planDailyAdjustmentService.queryMessage(user,unitCode);
+        String nodeCode = jsonObject.getString("nodeCode");
+        List<Map<String,Object>> result = planDailyAdjustmentService.queryMessage(user,unitCode,nodeCode);
         response.setData(result);
       } catch (Exception e) {
         log.error("查询单位信息和一、二水量失败,errMsg==={}" + e.getMessage());
@@ -360,8 +364,9 @@ public class PlanDailyAdjustmentController {
     log.debug("导出最新计划导出，参数param==={" + jsonObject.toString() + "}");
     try {
       Integer planYear = jsonObject.getInteger("planYear");
+      String nodeCode = jsonObject.getString("nodeCode");
       User user =  jwtUtil.getUserByToken(token);
-      apiResponse = planDailyAdjustmentService.export(user,planYear,request,response);
+      apiResponse = planDailyAdjustmentService.export(user,planYear,nodeCode,request,response);
     } catch (Exception e) {
       log.error("导出最新计划失败,errMsg==={}" + e.getMessage());
       apiResponse.recordError(500);
@@ -378,9 +383,13 @@ public class PlanDailyAdjustmentController {
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     String  changeType = jsonObject.getString("changeType");
+    String nodeCode = jsonObject.getString("nodeCode");
+    if (StringUtils.isBlank(nodeCode)){
+      nodeCode = user.getNodeCode();
+    }
     if (StringUtils.isNotBlank(changeType)) {
       try {
-        List<Map<String, Object>> result = planDailyAdjustmentService.secondAuditRole(user,changeType);
+        List<Map<String, Object>> result = planDailyAdjustmentService.secondAuditRole(nodeCode,changeType);
         apiResponse.setData(result);
       } catch (Exception e) {
         log.error("查询,errMsg==={}", e.getMessage());

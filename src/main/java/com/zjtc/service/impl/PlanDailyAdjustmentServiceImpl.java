@@ -77,7 +77,7 @@ public class PlanDailyAdjustmentServiceImpl extends
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
     int current = jsonObject.getInteger("current");//当前页
     int size = jsonObject.getInteger("size");//每页条数
-    String nodeCode = user.getNodeCode();//节点编码
+//    String nodeCode = user.getNodeCode();//节点编码
     String userId = user.getId();
     String unitCode = jsonObject.getString("unitCode");//单位编号
     String unitName = jsonObject.getString("unitName");//单位名称
@@ -96,7 +96,12 @@ public class PlanDailyAdjustmentServiceImpl extends
     Map<String, Object> map = new HashMap();
     map.put("current", current);
     map.put("size", size);
-    map.put("nodeCode", nodeCode);
+//    map.put("nodeCode", nodeCode);
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
     map.put("userId",userId);
     if (StringUtils.isNotBlank(unitCode)) {
       map.put("unitCode", unitCode);
@@ -407,11 +412,16 @@ public class PlanDailyAdjustmentServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> queryMessage(User user, String unitCode) {
+  public List<Map<String, Object>> queryMessage(User user, String unitCode,String nodeCode) {
     List<Map<String, Object>> result = new ArrayList<>();
     Map<String,Object> map = new HashMap<>();
     map.put("userId",user.getId());
-    map.put("nodeCode",user.getNodeCode());
+//    map.put("nodeCode",user.getNodeCode());
+    if (StringUtils.isNotBlank(nodeCode)) {
+      map.put("nodeCode", nodeCode);
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
     if (StringUtils.isNotBlank(unitCode)){
       map.put("unitCode",unitCode);
     }
@@ -583,7 +593,12 @@ public class PlanDailyAdjustmentServiceImpl extends
     Integer yearEnd = jsonObject.getInteger("yearEnd");//计划年度截止
 
     Map<String, Object> map = new HashMap();
-    map.put("nodeCode", nodeCode);
+//    map.put("nodeCode", nodeCode);
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
     map.put("userId",userId);
     if (StringUtils.isNotBlank(unitCode)) {
       map.put("unitCode", unitCode);
@@ -607,14 +622,19 @@ public class PlanDailyAdjustmentServiceImpl extends
   }
 
   @Override
-  public ApiResponse export(User user, Integer planYear, HttpServletRequest request,
+  public ApiResponse export(User user, Integer planYear,String nodeCode, HttpServletRequest request,
       HttpServletResponse response) {
     ApiResponse apiResponse = new ApiResponse();
     /**查询导出数据*/
-    String nodeCode = user.getNodeCode();
+   // String nodeCode = user.getNodeCode();
     String userId = user.getId();
     Map<String, Object> map = new HashMap();
-    map.put("nodeCode", nodeCode);
+//    map.put("nodeCode", nodeCode);
+    if (StringUtils.isNotBlank(nodeCode)) {
+      map.put("nodeCode",nodeCode);
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
     map.put("userId", userId);
     map.put("planYear", planYear);
     List<UseWaterPlanExportVO>  useWaterPlans = this.baseMapper.selectExportData(map);
@@ -637,14 +657,14 @@ public class PlanDailyAdjustmentServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> secondAuditRole(User user,String changeType) {
+  public List<Map<String, Object>> secondAuditRole(String nodeCode,String changeType) {
     List<Map<String, Object>> result = new ArrayList<>();
     if ("0".equals(changeType)){//四个季度间调整
       result = flowNodeInfoService
-          .secondAuditRole(AuditConstants.END_PAPER_ADJUST_FLOW_CODE, user.getNodeCode());
+          .secondAuditRole(AuditConstants.END_PAPER_ADJUST_FLOW_CODE, nodeCode);
     }else if ("1".equals(changeType)) {//增加计划
       result = flowNodeInfoService
-          .secondAuditRole(AuditConstants.END_PAPER_ADD_FLOW_CODE, user.getNodeCode());
+          .secondAuditRole(AuditConstants.END_PAPER_ADD_FLOW_CODE, nodeCode);
     }
     return result;
   }

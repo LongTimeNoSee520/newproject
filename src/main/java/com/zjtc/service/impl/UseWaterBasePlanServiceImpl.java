@@ -134,7 +134,7 @@ public class UseWaterBasePlanServiceImpl extends
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
     int current = jsonObject.getInteger("current");//当前页
     int size = jsonObject.getInteger("size");//每页条数
-    String nodeCode = user.getNodeCode();
+//    String nodeCode = user.getNodeCode();
     String userId = user.getId();
     String unitCode = jsonObject.getString("unitCode");
     String unitName = jsonObject.getString("unitName");
@@ -142,7 +142,12 @@ public class UseWaterBasePlanServiceImpl extends
     Map<String, Object> map = new HashMap();
     map.put("current", current);
     map.put("size", size);
-    map.put("nodeCode", nodeCode);
+//    map.put("nodeCode", nodeCode);
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
     map.put("userId", userId);
     if (StringUtils.isNotBlank(unitCode)) {
       map.put("unitCode", unitCode);
@@ -173,13 +178,18 @@ public class UseWaterBasePlanServiceImpl extends
       HttpServletResponse response) {
     ApiResponse apiResponse = new ApiResponse();
     /**查询导出数据*/
-    String nodeCode = user.getNodeCode();
+   // String nodeCode = user.getNodeCode();
     String userId = user.getId();
     String unitCode = jsonObject.getString("unitCode");
     String unitName = jsonObject.getString("unitName");
     Integer planYear = jsonObject.getInteger("planYear");
     Map<String, Object> map = new HashMap();
-    map.put("nodeCode", nodeCode);
+    //    map.put("nodeCode", nodeCode);
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
     map.put("userId", userId);
     if (StringUtils.isNotBlank(unitCode)) {
       map.put("unitCode", unitCode);

@@ -99,7 +99,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 	public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
     int current = jsonObject.getInteger("current");//当前页
     int size = jsonObject.getInteger("size");//每页条数
-    String nodeCode = user.getNodeCode();//节点编码
+   // String nodeCode = user.getNodeCode();//节点编码
     String unitName = jsonObject.getString("unitName");//单位名称
     String waterMeterCode = jsonObject.getString("waterMeterCode");//水表档案号
     Float waterNumberStart =jsonObject.getFloat("waterNumberStart");//水量区间起始数
@@ -115,7 +115,12 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     Map<String, Object> map = new HashMap();
     map.put("current", current);
     map.put("size", size);
-    map.put("nodeCode", nodeCode);
+    //    map.put("nodeCode", nodeCode);
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
     if (StringUtils.isNotBlank(unitName)){
     map.put("unitName", unitName);
     }

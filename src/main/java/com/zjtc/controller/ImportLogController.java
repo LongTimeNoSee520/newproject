@@ -39,7 +39,8 @@ public class ImportLogController {
 	@ApiOperation(value = "分页查询导入日志内容")
 	public ApiResponse queryPage(@RequestHeader("token") String token,
 			@ApiParam("{\"current\":\"当前页,数字类型\",\n"
-					+ "\"size\":\"每页条数,数字类型\"\n"
+					+ "\"size\":\"每页条数,数字类型\",\n"
+					+ "\"nodeCode\":\"节点编码\"\n"
 					+ "}") @RequestBody JSONObject jsonObject) {
 		log.info("分页查询导入日志 ==== 参数{" + jsonObject.toJSONString() + "}");
 		ApiResponse response = new ApiResponse();

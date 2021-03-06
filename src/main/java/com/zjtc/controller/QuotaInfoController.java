@@ -147,12 +147,14 @@ public class QuotaInfoController {
   @ApiOperation(value = "一级行业信息查询(用水单位监控查询行条件业类型下拉列表)")
   @RequestMapping(value = "queryIndustry", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse queryIndustry(@RequestHeader("token") String token,
-      @ApiParam("{}")@RequestBody JSONObject jsonObject) {
+      @ApiParam("{\n"
+          + "\"nodeCode\": \"节点编码\"\n"
+          + "}")@RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
     log.debug("一级行业信息查询，参数param==={" + jsonObject.toString() + "}");
     try {
       User user = jwtUtil.getUserByToken(token);
-      List<Map<String,Object>> result = quotaInfoService.queryIndustry(user);
+      List<Map<String,Object>> result = quotaInfoService.queryIndustry(user,jsonObject);
       response.setData(result);
       response.setCode(200);
     } catch (Exception e) {

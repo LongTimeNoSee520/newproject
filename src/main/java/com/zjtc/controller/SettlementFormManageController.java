@@ -52,7 +52,8 @@ public class SettlementFormManageController {
           + " \"executed\":\"是否已执行0否1是\",\n"
           + " \"waterMeterCode\":\"水表档案号\",\n"
           + " \"applyTimeStart\":\"申请时间起始\",\n"
-          + " \"applyTimeEnd\":\"申请时间截止\"\n"
+          + " \"applyTimeEnd\":\"申请时间截止\",\n"
+          + "\"nodeCode\":\"节点编码\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("分页查询 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();

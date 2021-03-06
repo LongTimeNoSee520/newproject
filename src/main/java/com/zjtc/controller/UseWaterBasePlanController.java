@@ -160,7 +160,8 @@ public class UseWaterBasePlanController {
           + "\"size\":\"每页条数,数字类型\",\n"
           + "\"unitCode\": \"单位编码\",\n"
           + "\"unitName\":\"单位名称\",\n"
-          + "\"planYear\":\"查询年份,数字类型\"\n"
+          + "\"planYear\":\"查询年份,数字类型\",\n"
+          + "\"nodeCode\":\"节点编码\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
     log.debug("用水基建计划分页条件查询，参数param==={" + jsonObject.toString() + "}");
@@ -180,7 +181,8 @@ public class UseWaterBasePlanController {
   public ApiResponse export(@RequestHeader("token") String token,
       @ApiParam("{\"unitCode\": \"单位编码\",\n"
           + "\"unitName\":\"单位名称\",\n"
-          + "\"planYear\":\"查询年份,数字类型\"\n"
+          + "\"planYear\":\"查询年份,数字类型\",\n"
+          + "\"nodeCode\":\"节点编码\"\n"
           + "}") @RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     ApiResponse apiResponse = new ApiResponse();

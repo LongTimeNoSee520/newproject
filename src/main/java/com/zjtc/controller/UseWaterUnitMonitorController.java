@@ -53,7 +53,8 @@ public class UseWaterUnitMonitorController {
           + "  \"industryId\":\"行业类型id\",\n"
           + "  \"mobileNumber\":\"手机号码\",\n"
           + "  \"contacts\":\"联系人\",\n"
-          + "  \"monitorType\":\"监控类型(必填):1重点,2节水型\"\n"
+          + "  \"monitorType\":\"监控类型(必填):1重点,2节水型\",\n"
+          + "  \"nodeCode\":\"节点编码\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("分页查询用水单位监控信息 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
@@ -160,7 +161,8 @@ public class UseWaterUnitMonitorController {
           + "  \"unitCodeType\":\"用户类型\",\n"
           + "  \"year\":\"年份,数字\",\n"
           + "  \"industryId\":\"行业类型id\",\n"
-          + "  \"monitorType\":\"监控类型(必填):1重点,2节水型\"\n"
+          + "  \"monitorType\":\"监控类型(必填):1重点,2节水型\",\n"
+          + "  \"nodeCode\":\"节点编码\"\n"
           + "}") @RequestBody JSONObject jsonObject,HttpServletRequest request,
       HttpServletResponse response) {
     log.info("用水单位监控数据导出 ==== 参数{" + jsonObject.toJSONString() + "}");

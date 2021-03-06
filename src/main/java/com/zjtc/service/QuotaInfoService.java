@@ -39,5 +39,5 @@ public interface QuotaInfoService extends IService<QuotaInfo> {
   /**
    * 一级行业信息查询
    * */
-  List<Map<String,Object>> queryIndustry(User user);
+  List<Map<String,Object>> queryIndustry(User user,JSONObject jsonObject);
 }
