@@ -207,7 +207,7 @@ public class WaterUsePayInfoServiceImpl extends
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请退款" + entity.getMoney()
             + "元";
     todoService
-        .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, businessJson,
+        .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, JSONObject.toJSONString(entity),
             detailConfig,
             AuditConstants.PAY_TODO_TYPE);
     /**新增流程实例表数据*/
@@ -259,7 +259,7 @@ public class WaterUsePayInfoServiceImpl extends
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请减免" + entity.getMoney()
             + "元";
     todoService
-        .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, businessJson,
+        .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, JSONObject.toJSONString(entity),
             detailConfig,
             AuditConstants.PAY_TODO_TYPE);
     /**新增流程实例表数据*/

@@ -1042,6 +1042,8 @@
 		t1.count_year as countYear,
 		t1.count_quarter as countQuarter,
 		t3.mobile_number as mobileNumber,
+		t1.exceed_water as exceedWater,
+		t1.increase_money as increaseMoney,
 		t3.contacts,
 		case
 		when t5.status is null or t5.status ='' then '未发送'

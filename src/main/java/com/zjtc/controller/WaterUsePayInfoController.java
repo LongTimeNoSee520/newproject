@@ -515,6 +515,8 @@ public class WaterUsePayInfoController {
           + "\"mobileNumber\": \"手机号码\",\n"
           + "\"contacts\": \"收件人\",\n"
           + "\"statusName\": \"状态\"\n"
+          + "\"exceedWater\": \"超计划水量\"\n"
+          + "\"statusName\": \"加价费\"\n"
           + "}\n"
           + "]\n"
           + "}")@RequestBody JSONObject jsonObject) {
