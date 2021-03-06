@@ -320,6 +320,13 @@ public class WaterUsePayInfoServiceImpl extends
   }
 
   @Override
+  public boolean send(JSONObject jsonObject) {
+    List<WaterUsePayInfo> list=jsonObject.getJSONArray("data").toJavaList(WaterUsePayInfo.class);
+    //todo：
+    return true;
+  }
+
+  @Override
   public void exportQueryData(JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     List<Map<String, Object>> list = baseMapper.exportQueryData(jsonObject);

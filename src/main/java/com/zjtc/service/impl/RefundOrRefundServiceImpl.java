@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.mapper.waterBiz.RefundOrRefundMapper;
+import com.zjtc.mapper.waterSys.FlowProcessMapper;
 import com.zjtc.model.File;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.RefundOrRefund;
@@ -56,6 +57,8 @@ public class RefundOrRefundServiceImpl extends
   private MessageService messageService;
   @Autowired
   private SmsService smsService;
+  @Autowired
+  private FlowProcessMapper flowProcessMapper;
   /**
    * 附件存储目录
    */
@@ -120,7 +123,7 @@ public class RefundOrRefundServiceImpl extends
     Map<String, Object> page = new LinkedHashMap<>();
     String startTime = jsonObject.getString("startTime");
     String endTime = jsonObject.getString("endTime");
-    jsonObject.put("flowCode",AuditConstants.PAY_FLOW_CODE);
+    jsonObject.put("flowCode", AuditConstants.PAY_FLOW_CODE);
     if (StringUtils.isNotBlank(startTime)) {
       jsonObject.put("startTime", startTime + " 00:00:00");
     }
@@ -130,6 +133,8 @@ public class RefundOrRefundServiceImpl extends
     List<RefundOrRefund> list = baseMapper.queryPage(jsonObject);
     if (!list.isEmpty()) {
       for (RefundOrRefund refundOrRefund : list) {
+        refundOrRefund.setAuditFlow(
+            flowProcessMapper.queryAuditList(refundOrRefund.getId(), refundOrRefund.getNodeCode()));
         if (!refundOrRefund.getSysFiles().isEmpty()) {
           for (File file : refundOrRefund.getSysFiles()) {
             file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());

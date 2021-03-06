@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -174,7 +175,7 @@ public class RefundOrRefund extends Model<RefundOrRefund>{
      */
     @ApiModelProperty("审核流程")
     @TableField(exist = false)
-    private List<FlowProcess> auditFlow;
+    private List<Map<String,Object>> auditFlow;
 
     /**
      *
