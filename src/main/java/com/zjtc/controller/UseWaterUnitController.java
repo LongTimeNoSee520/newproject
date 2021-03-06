@@ -70,7 +70,7 @@ public class UseWaterUnitController {
           + "            \"agreementNumber\":\"协议号\",\n"
           + "            \"entrustUnitName\":\"托收单位名称\",\n"
           + "            \"focusUserRemark\":\"集中户备注\",\n"
-          + "            \"main\":\"是否是主账号：0否，1是\",\n"
+          + "            \"main\":\"是否是主账号：0否，1是,3撤销\",\n"
           + "            \"otherBank\":\"银行代码\",\n"
           + "            \"signed\":\"是否签约，0否，1是\"\n"
           + "        }\n"
@@ -270,7 +270,9 @@ public class UseWaterUnitController {
       + "  \"responsibilityCode\":\"责任书编号\",\n"
       + "  \"mobileMumber\":\"电话号码\",\n"
       + "  \"signed\":\"是否签约：0，否，1是\",\n"
-      + "  \"abnormal\":\"是否异常：0，否，1是\"\n"
+      + "  \"contacts\":\"联系人：0，否，1是\",\n"
+      + "  \"industryName\":\"行业名称：0否，1是\",\n"
+      + "  \"abnormal\":\"是否异常：0否，1是\"\n"
       + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
