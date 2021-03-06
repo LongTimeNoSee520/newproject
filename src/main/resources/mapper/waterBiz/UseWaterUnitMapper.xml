@@ -648,4 +648,118 @@
       #{id}
     </foreach>
   </select>
+
+  <select id="exportQueryData" resultType="java.util.LinkedHashMap">
+
+    SELECT
+    a.id,
+    a.node_code,
+    a.unit_code,
+    a.unit_code_type,
+    a.unit_code_group,
+    STUFF((
+    SELECT ',' + water_meter_code
+    FROM t_w_use_water_unit_meter
+    WHERE use_water_unit_id=a.id
+    and node_code=#{nodeCode}
+    FOR XML PATH('')), 1, 1, ''
+    ) as water_meter_code,
+    a.responsibility_code,
+    a.unit_name,
+    a.industry,
+    industryName=(select industry_name from t_w_quota_info where id=a.industry),
+    b.contacts,
+    b.mobile_number,
+    b.phone_number,
+    case when save_unit_type='1' then '是'
+    else '否' end as  save_unit_type,
+    case when signed='1' then '是'
+    else '否' end as  signed,
+    unit_address,
+    zip_name,
+    zip_address,
+    department,
+    invoice_unit_name,
+    area_country,
+    gisX ,
+    gisY ,
+    imain,
+    abnormal ,
+    abnormal_cause,
+    case signed
+    when '1' then '1'
+    when '0' then '0'
+    else '0'end as signed,
+    bank_of_deposit,
+    bank_account,
+    responsibility_code as responsibilityCode,
+    people_bank_pay_sys_number as peopleBankPaySysNumber,
+    agreement_number as agreementNumber,
+    entrust_unit_name as entrustUnitName,
+    focus_user_remark,
+    other_bank
+    FROM
+    t_w_use_water_unit as a
+    <!--关联用水单位联系人联系人-->
+    left join (
+    select use_water_unit_id,contacts,mobile_number,phone_number
+    from t_w_use_water_unit_contacts
+    where
+    deleted='0'
+    and node_code=#{nodeCode}
+    and main='1'
+    ) as b on a.id =b.use_water_unit_id
+    <!--关联银行表取主户数据-->
+    left join (
+    select use_water_unit_Id,bank_of_deposit,bank_account,signed,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank from t_w_bank where deleted='0' and main='1'
+    ) as c on c.use_water_unit_Id=a.id
+    WHERE
+    a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
+    where person_id=#{userId})
+    and a.deleted='0'
+    and a.node_code=#{nodeCode}
+    <!--筛选水表档案号-->
+    <if test="null !=waterMeterCode">
+      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_meter where
+      water_meter_code like '%${waterMeterCode}%' )
+    </if>
+    <!--筛选手机号码-->
+    <if test="null !=mobileNumber">
+      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
+      mobile_number like '%${mobileNumber}%' and deleted='0')
+    </if>
+    <!--筛选银行账号-->
+    <if test="null !=bankAccount">
+      and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
+      '%${bankAccount}%' and deleted='0')
+    </if>
+    <!--是否签约-->
+    <if test="null !=signed">
+      and a.id in (select use_water_unit_Id as id from t_w_bank where signed =#{signed} and
+      deleted='0')
+      and signed=#{signed}
+    </if>
+    <!--是否异常-->
+    <if test="null !=abnormal">
+      and a.abnormal =#{abnormal}
+    </if>
+
+    <!--筛选单位编号-->
+    <if test="null !=unitCode">
+      and a.unit_code like '%${unitCode}%'
+    </if>
+    <!--筛选单位名称-->
+    <if test="null !=unitName">
+      and a.unit_name like '%${unitName}%'
+    </if>
+    <!--筛选类型-->
+    <if test="null !=unitCodeType">
+      and a.unit_code_type like '%${unitCodeType}%'
+    </if>
+    <!--责任书编号-->
+    <if test=" null !=responsibilityCode">
+      and a.responsibility_code like '%${responsibilityCode}%'
+    </if>
+
+  </select>
 </mapper>

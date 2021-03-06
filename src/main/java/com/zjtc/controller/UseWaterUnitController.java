@@ -3,23 +3,17 @@ package com.zjtc.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
-import com.zjtc.base.util.StringUtil;
-import com.zjtc.model.Dict;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.User;
-import com.zjtc.model.vo.UseWaterUnitRefVo;
-
 import com.zjtc.service.UseWaterUnitService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
-import javax.jws.soap.SOAPBinding.Use;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -459,7 +453,15 @@ public class UseWaterUnitController {
   public ApiResponse exportQueryData
       (
           @ApiParam("{\n"
-              + "\"data\":[分页查询结果records下所有数据]\n"
+              + "    \"unitCode\":\"单位编号\",\n"
+              + "    \"unitName\":\"单位名称\",\n"
+              + "    \"waterMeterCode\":\"水表档案号\",\n"
+              + "    \"unitCodeType\":\"用户类型\",\n"
+              + "    \"bankAccount\":\"银行账号\",\n"
+              + "    \"responsibilityCode\":\"责任书编号\",\n"
+              + "    \"mobileMumber\":\"电话号码\",\n"
+              + "    \"signed\":\"是否签约：0，否，1是\",\n"
+              + "    \"abnormal\":\"是否异常：0，否，1是\"\n"
               + "}") @RequestBody JSONObject jsonObject,
           HttpServletRequest request,
           HttpServletResponse response, @RequestHeader("token") String token) {
@@ -469,6 +471,7 @@ public class UseWaterUnitController {
     if (null != user) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
         useWaterUnitService.exportQueryData(jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出查询结果错误,errMsg==={}", e.getMessage());

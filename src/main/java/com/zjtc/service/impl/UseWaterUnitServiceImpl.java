@@ -643,22 +643,9 @@ public class UseWaterUnitServiceImpl extends
   @Override
   public void exportQueryData(JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
-    List<Map> map = jsonObject.getJSONArray("data")
-        .toJavaList(Map.class);
+    List<Map<String,Object>> map = baseMapper.exportQueryData(jsonObject);
     if (!map.isEmpty()) {
       for (Map item : map) {
-        //是否是节水单位
-        if ("1".equals(item.get("saveUnitType"))) {
-          item.put("saveUnitType","是");
-        } else {
-          item.put("saveUnitType","否");
-        }
-        //是否签约
-        if ("1".equals(item.get("signed"))) {
-          item.put("signed","是");
-        } else {
-          item.put("signed","否");
-        }
         //查询电话号码
         List<Contacts> contactsList = contactsService.queryByUnitId(item.get("id").toString());
         if (!contactsList.isEmpty()) {
