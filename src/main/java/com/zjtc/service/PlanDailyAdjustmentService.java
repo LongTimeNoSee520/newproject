@@ -99,4 +99,9 @@ public interface PlanDailyAdjustmentService extends IService<UseWaterPlan> {
 	 * 查询退缴费第一个提交流程的角色信息
 	 */
 	List<Map<String, Object>> secondAuditRole( User user,String changeType);
+
+	/**
+	 * 年计划自平通知
+	 */
+  void planAdjustNotification(User user, JSONObject jsonObject);
 }

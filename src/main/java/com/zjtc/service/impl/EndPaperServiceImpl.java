@@ -131,6 +131,17 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
     /**查出满足条件的数据*/
     List<EndPaperVO> records = this.baseMapper.queryPage(map);
+    for(EndPaperVO paperVO :records){
+      /**查询流程信息*/
+     paperVO.setAuditMessages(flowProcessService.queryAuditList(paperVO.getId(),paperVO.getNodeCode()));
+     /**查询是否需要当前登录人员审核*/
+     int i =flowProcessService.ifNeedAudit(paperVO.getId(),userId);
+     if (i==0){
+       paperVO.setNeedAudit(false);
+     }else {
+       paperVO.setNeedAudit(true);
+     }
+    }
     result.put("records", records);
     return result;
   }

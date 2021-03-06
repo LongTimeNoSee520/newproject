@@ -649,7 +649,12 @@ public class PlanDailyAdjustmentServiceImpl extends
     return result;
   }
 
-private List<String> handleFiles(List<FileVO> fileVOS){
+  @Override
+  public void planAdjustNotification(User user, JSONObject jsonObject) {
+    //todo
+  }
+
+  private List<String> handleFiles(List<FileVO> fileVOS){
   List<File> deletedFiles = new ArrayList<>();
   List<String> fileIds = new ArrayList<>();
   for (FileVO fileVO :fileVOS){

@@ -80,7 +80,7 @@
 		<result column="result" property="result" jdbcType="VARCHAR"/>
 		<result column="next_node_id" property="nextNodeId" jdbcType="VARCHAR"/>
 		<result column="can_execute" property="canExecute" jdbcType="BOOLEAN"/>
-		<result column="need_audit" property="needAudit" jdbcType="BOOLEAN"/>
+		<!--<result column="need_audit" property="needAudit" jdbcType="BOOLEAN"/>-->
 		<result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
 		<collection property="auditFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
 		select="queryAuditFiles">
@@ -94,9 +94,9 @@
 	<!--<collection property="unpaidList" ofType="java.util.LinkedHashMap" column="id"-->
 	<!--select="queryUnpaidList">-->
 	<!--</collection>-->
-		<collection property="auditMessages" ofType="java.util.LinkedHashMap" column="{id=id,nodeCode=node_code}"
-			select="queryAuditList">
-		</collection>
+		<!--<collection property="auditMessages" ofType="java.util.LinkedHashMap" column="{id=id,nodeCode=node_code}"-->
+			<!--select="queryAuditList">-->
+		<!--</collection>-->
 	</resultMap>
 	<resultMap id="FileMap" type="com.zjtc.model.vo.FileVO">
 		<id column="id" property="id" jdbcType="VARCHAR"/>
@@ -155,9 +155,9 @@
 		CASE t1.audit_status WHEN '0' THEN '发起审核' WHEN '1' THEN '审核通过' WHEN '2' THEN '审核中' END AS audit_status,
 		CASE t1.executed WHEN '0' THEN '否' WHEN '1' THEN '是' END AS executed,
 		t1.execute_time,t1.executor,t1.executor_id,t1.algorithm_rules,t1.result,t1.next_node_id,
-    CASE <!--如果在审核流程信息表中找到满足条件的数据，则前端显示审核按钮-->
-    WHEN ((SELECT COUNT(id) FROM t_sms_audit_flow WHERE business_id =t1.id AND operator_id = #{userId} AND audit_status='1')>0)
-    THEN 1  ELSE 0 END AS need_audit,
+    <!--CASE &lt;!&ndash;如果在审核流程信息表中找到满足条件的数据，则前端显示审核按钮&ndash;&gt;-->
+    <!--WHEN ((SELECT COUNT(id) FROM t_sms_audit_flow WHERE business_id =t1.id AND operator_id = #{userId} AND audit_status='1')>0)-->
+    <!--THEN 1  ELSE 0 END AS need_audit,-->
     CASE WHEN (t1.confirmed ='1'AND t1.audit_status ='1' AND (executed IS NULL OR executed ='0' OR executed ='')) THEN 1 ELSE 0 END AS can_execute
 		FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,*
 		FROM
@@ -241,20 +241,20 @@
 		and SUBSTRING(','+a.other_file_id,number,1)=','
 		) <!--将逗号隔开的字符串拆分为行-->
 	</select>
-  <select id="queryAuditList" resultType="java.util.LinkedHashMap">
-    SELECT
-    t1.id AS id, t1.operation_time AS operationTime,
-    t1.audit_status AS auditStatus,
-    CASE  t1.audit_status WHEN '0' THEN  '发起' WHEN '1' THEN  '待审核' WHEN '2' THEN  '审核通过' WHEN '3' THEN '审核不通过' END auditStatusName,
-    t1.operator AS operator, t1.operator_id AS operatorId,  t3.org_name AS orgName
-    FROM
-    (
-    SELECT id,operator_id, node_code, audit_status, operator ,operation_time,create_time
-    FROM t_sms_audit_flow WHERE business_id = #{id} and node_code=#{nodeCode}) AS t1
-    LEFT JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t1.operator_id = t2.id
-    LEFT JOIN ( SELECT id, org_name FROM t_org  where  node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
-    order by t1.create_time ASC
-  </select>
+  <!--<select id="queryAuditList" resultType="java.util.LinkedHashMap">-->
+    <!--SELECT-->
+    <!--t1.id AS id, t1.operation_time AS operationTime,-->
+    <!--t1.audit_status AS auditStatus,-->
+    <!--CASE  t1.audit_status WHEN '0' THEN  '发起' WHEN '1' THEN  '待审核' WHEN '2' THEN  '审核通过' WHEN '3' THEN '审核不通过' END auditStatusName,-->
+    <!--t1.operator AS operator, t1.operator_id AS operatorId,  t3.org_name AS orgName-->
+    <!--FROM-->
+    <!--(-->
+    <!--SELECT id,operator_id, node_code, audit_status, operator ,operation_time,create_time-->
+    <!--FROM t_sms_audit_flow WHERE business_id = #{id} and node_code=#{nodeCode}) AS t1-->
+    <!--LEFT JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t1.operator_id = t2.id-->
+    <!--LEFT JOIN ( SELECT id, org_name FROM t_org  where  node_code=#{nodeCode}) t3 ON t2.org_id = t3.id-->
+    <!--order by t1.create_time ASC-->
+  <!--</select>-->
 
 	<update id="update">
 		update t_w_end_paper

@@ -20,6 +20,8 @@
     LEFT JOIN ( SELECT id, org_name FROM t_org  where  node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
     order by t1.create_time ASC
   </select>
-
+  <select id="ifNeedAudit" resultType="int">
+    SELECT COUNT(id) FROM t_sms_audit_flow WHERE business_id =#{businessId} AND operator_id = #{userId} AND audit_status='1'
+  </select>
 
 </mapper>

@@ -4,6 +4,8 @@ package com.zjtc.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.User;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author lianghao
@@ -34,4 +36,14 @@ public interface FlowProcessService extends IService<FlowProcess> {
    * @param businessId 业务id
    */
   FlowProcess selectFirstRecords(String businessId);
+
+  /**
+   * 查询相关业务流程信息
+   * @param businessId,nodeCode
+   */
+  List<Map<String,Object>> queryAuditList(String businessId, String nodeCode);
+  /**
+   * 查询是否需要当前登录人员审核
+   * */
+  int ifNeedAudit(String id, String userId);
 }

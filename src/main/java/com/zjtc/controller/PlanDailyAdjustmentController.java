@@ -392,4 +392,24 @@ public class PlanDailyAdjustmentController {
     }
     return apiResponse;
   }
+
+  @RequestMapping(value = "planAdjustNotification", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "年计划自平通知")
+  public ApiResponse planAdjustNotification(@RequestHeader("token") String token,
+      @ApiParam(" ") @RequestBody JSONObject jsonObject) {
+    log.info("年计划自平通知 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        User user = jwtUtil.getUserByToken(token);
+         planDailyAdjustmentService.planAdjustNotification(user, jsonObject);
+      } catch (Exception e) {
+        log.error("年计划自平通知发送失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("年计划自平通知参数不能为空");
+    }
+    return response;
+  }
 }

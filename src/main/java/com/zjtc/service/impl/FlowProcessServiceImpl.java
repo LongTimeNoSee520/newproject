@@ -11,6 +11,7 @@ import com.zjtc.service.FlowProcessService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +91,16 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     auditWrapper.eq("audit_status", "0");
     FlowProcess flowProcess = this.selectOne(auditWrapper);
     return flowProcess;
+  }
+
+  @Override
+  public List<Map<String, Object>> queryAuditList(String businessId, String nodeCode) {
+    return this.baseMapper.queryAuditList(businessId,nodeCode);
+  }
+
+  @Override
+  public int ifNeedAudit(String businessId, String userId) {
+    return this.baseMapper.ifNeedAudit(businessId,userId);
   }
 
 }
