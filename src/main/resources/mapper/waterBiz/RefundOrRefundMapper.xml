@@ -26,9 +26,6 @@
 		<result column="is_revoke" property="isRevoke" jdbcType="VARCHAR"/>
 		<result column="treatment_advice" property="treatmentAdvice" jdbcType="VARCHAR"/>
 		<result column="editBtn" property="editBtn" jdbcType="VARCHAR"/>
-		<collection property="auditFlow" ofType="com.zjtc.model.FlowProcess" column="{id=id,nodeCode=node_code}"
-			select="queryAuditList">
-		</collection>
 		<collection property="sysFiles" column="{id=id,nodeCode=node_code}" select="selectsysFile"
 			ofType="com.zjtc.model.File">
 		</collection>

@@ -100,6 +100,13 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
   List<Map<String,Object>> selectPayNotice(JSONObject jsonObject);
 
   /**
+   * 短信发送
+   * @param jsonObject
+   * @return
+   */
+  boolean send(JSONObject jsonObject);
+
+  /**
    * 导出查询结果
    * @param jsonObject
    * @param request

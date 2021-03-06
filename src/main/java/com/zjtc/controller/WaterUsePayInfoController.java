@@ -494,4 +494,44 @@ public class WaterUsePayInfoController {
     }
     return apiResponse;
   }
+  @ResponseBody
+  @ApiOperation(value = "短信发送")
+  @RequestMapping(value = "send", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse send(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "\"data\":[\n"
+          + "{\n"
+          + "\"id\": \"主键id\",\n"
+          + "\"unitCode\": \"单位id\",\n"
+          + "\"unitName\": \"单位名称\",\n"
+          + "\"countQuarter\": \"季度\",\n"
+          + "\"countYear\": \"年度\",\n"
+          + "\"mobileNumber\": \"手机号码\",\n"
+          + "\"contacts\": \"收件人\",\n"
+          + "\"statusName\": \"状态\"\n"
+          + "}\n"
+          + "]\n"
+          + "}")@RequestBody JSONObject jsonObject) {
+    log.info("短信发送， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user && null != jsonObject) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        boolean result = waterUsePayInfoService
+            .send(jsonObject);
+        if (result) {
+         return apiResponse;
+        }
+      } catch (Exception e) {
+        log.error("短信发送,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
 }
