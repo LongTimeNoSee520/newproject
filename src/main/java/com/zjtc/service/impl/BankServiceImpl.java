@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.BankMapper;
 import com.zjtc.model.Bank;
+import com.zjtc.model.User;
 import com.zjtc.service.BankService;
+import com.zjtc.service.SystemLogService;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,6 +20,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
     BankService {
+
+  @Autowired
+  private SystemLogService systemLogService;
 
   @Override
   public boolean deletedBank(String id) {

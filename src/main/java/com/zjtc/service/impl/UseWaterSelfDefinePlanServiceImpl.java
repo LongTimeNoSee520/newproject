@@ -15,6 +15,7 @@ import com.zjtc.model.User;
 import com.zjtc.model.vo.UseWaterSelfDefinePlanVO;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.SmsService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanService;
 import com.zjtc.service.UseWaterSelfDefinePlanService;
@@ -65,6 +66,9 @@ public class UseWaterSelfDefinePlanServiceImpl extends
    */
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
+
+  @Autowired
+  private SystemLogService systemLogService;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -201,6 +205,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     if (integer > 0) {
       response.setCode(200);
       response.setMessage("审核成功");
+      systemLogService.logInsert(user,"用水计划自平","用水计划自平审核","");
       return response;
     }
     response.recordError("审核失败");
@@ -348,8 +353,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       }
     }
     if (zp > 0 && planAdd && water > 0) {
-
       response.setCode(200);
+      systemLogService.logInsert(user,"用水计划自平","用水计划自平执行","");
       return response;
     } else {
       response.recordError("操作失败");

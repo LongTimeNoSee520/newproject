@@ -60,7 +60,7 @@ public class FinanceController {
     List<Finance> finances;
     try {
       finances = jsonObject.getJSONArray("finance").toJavaList(Finance.class);
-      response = financeService.insertFinance(finances, user.getNodeCode());
+      response = financeService.insertFinance(finances, user.getNodeCode(),user);
       return response;
     } catch (Exception e) {
       response.setMessage("新增加价费开票记录失败");
@@ -78,13 +78,18 @@ public class FinanceController {
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     log.debug("删除单位失败，参数param==={" + jsonObject.toString() + "}");
+    User user = jwtUtil.getUserByToken(token);
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
+    if (null == user){
+      response.recordError("系统异常");
+      return response;
+    }
     if (ids.size() == 0) {
       response.recordError("系统错误");
       return response;
     }
     try {
-      response = financeService.deletedFinance(ids);
+      response = financeService.deletedFinance(ids,user);
       return response;
     } catch (Exception e) {
       log.error("删除单位失败,errMsg==={}" + e.getMessage());
@@ -122,7 +127,7 @@ public class FinanceController {
     try {
 //      finance = jsonObject.toJavaObject(Finance.class);
        finances = jsonObject.getJSONArray("Finance").toJavaList(Finance.class);
-      response = financeService.updateFinance(finances);
+      response = financeService.updateFinance(finances,user);
       return response;
     } catch (Exception e) {
       response.setMessage("修改加价费开票记录失败");

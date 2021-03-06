@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.Finance;
 import com.zjtc.model.UseWaterUnit;
+import com.zjtc.model.User;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public interface FinanceService extends IService<Finance> {
    * @param nodeCode 节点编码
    * @return 响应状态
    */
-  ApiResponse insertFinance(List<Finance> finances, String nodeCode);
+  ApiResponse insertFinance(List<Finance> finances, String nodeCode, User user);
 
   /**
    * 修改单位
@@ -29,7 +30,7 @@ public interface FinanceService extends IService<Finance> {
    * @param finances 加价开票记录实体
    * @return 响应状态
    */
-  ApiResponse updateFinance(List<Finance> finances);
+  ApiResponse updateFinance(List<Finance> finances,User user);
 
 
   /**
@@ -38,7 +39,7 @@ public interface FinanceService extends IService<Finance> {
    * @param id 单位id
    * @return 响应状态
    */
-  ApiResponse   deletedFinance(List<String> id);
+  ApiResponse   deletedFinance(List<String> id,User user);
 
   /**
    * 单位分页查询

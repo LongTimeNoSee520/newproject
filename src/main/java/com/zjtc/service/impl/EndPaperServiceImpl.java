@@ -228,7 +228,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
           waterPlanAddWX.setId(endPaper.getWaterPlanWXId());
           //只有通过时(且审核流程走完)，不通过则不修改
           waterPlanAddWX.setAuditStatus("4");//微信端提交审核通过后办结单审核也通过
-          useWaterPlanAddWXService.update(waterPlanAddWX);
+          useWaterPlanAddWXService.update(waterPlanAddWX,user);
           /**网上申报的 需要通知用户到微信端确认(现场的不发通知)*/
           String messageContent1 ="";
           if ("0".equals(endPaper.getPaperType())) {//调整计划
@@ -449,7 +449,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       useWaterPlanAddWX.setThirdQuarterQuota(thirdQuarter);
       useWaterPlanAddWX.setFourthQuarterQuota(fourthQuarter);
       useWaterPlanAddWX.setExecuted("1");//已执行
-      useWaterPlanAddWXService.update(useWaterPlanAddWX);
+      useWaterPlanAddWXService.update(useWaterPlanAddWX,user);
     }
     /**向用水单位发起通知*/
     String messageContent =

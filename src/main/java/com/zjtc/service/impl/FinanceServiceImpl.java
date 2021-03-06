@@ -6,13 +6,16 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.FinanceMapper;
 import com.zjtc.model.Finance;
+import com.zjtc.model.User;
 import com.zjtc.service.FinanceService;
+import com.zjtc.service.SystemLogService;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,9 +27,11 @@ import org.springframework.stereotype.Service;
 public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> implements
     FinanceService {
 
+  @Autowired
+  private SystemLogService systemLogService;
 
   @Override
-  public ApiResponse insertFinance(List<Finance> finances, String nodeCode) {
+  public ApiResponse insertFinance(List<Finance> finances, String nodeCode, User user) {
     ApiResponse response = new ApiResponse();
     if (finances.size() == 0 || StringUtils.isBlank(nodeCode)) {
       response.setMessage("系统错误");
@@ -43,13 +48,14 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
     boolean b = this.insertBatch(finances);
     if (b) {
       response.setCode(200);
+      systemLogService.logInsert(user,"加价费管理","新增加价费管理","");
       return response;
     }
     return response;
   }
 
   @Override
-  public ApiResponse updateFinance(List<Finance> finances) {
+  public ApiResponse updateFinance(List<Finance> finances,User user) {
     ApiResponse response = new ApiResponse();
     if (finances.isEmpty()) {
       response.setMessage("系统错误");
@@ -65,13 +71,14 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
     boolean b = this.updateBatchById(finances);
     if (b) {
       response.setCode(200);
+      systemLogService.logInsert(user,"加价费管理","修改加价费开票记录","");
       return response;
     }
     return response;
   }
 
   @Override
-  public ApiResponse deletedFinance(List<String> ids) {
+  public ApiResponse deletedFinance(List<String> ids,User user) {
     ApiResponse response = new ApiResponse();
     if (ids.size() == 0) {
       response.setMessage("系统错误");
@@ -92,6 +99,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
       b = this.baseMapper.updateFinanceDeleted(id);
     }
     if (b > 0) {
+      systemLogService.logInsert(user,"加价费管理","删除加价费开票记录","");
       response.setCode(200);
       return response;
     } else {

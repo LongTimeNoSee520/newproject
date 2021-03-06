@@ -67,7 +67,7 @@ public class UseWaterSelfDefinePlanController {
     String nodeCode;
     try {
       if (null != jsonObject.getString("nodeCode")) {
-         nodeCode  = jsonObject.getString("nodeCode");
+        nodeCode = jsonObject.getString("nodeCode");
         response = tWUseWaterSelfDefinePlanService.queryPage(jsonObject, nodeCode, user.getId());
       }else{
         response = tWUseWaterSelfDefinePlanService.queryPage(jsonObject, user.getNodeCode(), user.getId());

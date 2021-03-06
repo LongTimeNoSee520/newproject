@@ -28,28 +28,28 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
 	* @param unitInvoice 发票实体
 	* @return 响应结果
 	*/
-  ApiResponse updateModel(UseWaterUnitInvoice unitInvoice,String userName);
+  ApiResponse updateModel(UseWaterUnitInvoice unitInvoice,User user);
 
 	/**
 	* 删除
 	* @param ids 发票id集
 	* @return 响应结果
 	*/
-  ApiResponse deleteModel(List<String> ids);
+  ApiResponse deleteModel(List<String> ids,User user);
 
   /**
    * 作废
    * @param ids  发票id集
    * @return 响应结果
    */
-  ApiResponse abolish(List<String> ids,String nodeCode);
+  ApiResponse abolish(List<String> ids,User user);
 
   /**
    * 取消作废
    * @param ids  发票id集
    * @return 响应结果
    */
-  ApiResponse cancelAbolish(List<String> ids,String nodeCode);
+  ApiResponse cancelAbolish(List<String> ids,User user);
 
     /**
    * 重置发票
@@ -57,7 +57,7 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
    * @param rearId 交换id
    * @return 响应结果
    */
-  ApiResponse exchange(String frontId,String rearId,String nodeCode);
+  ApiResponse exchange(String frontId,String rearId,User user);
 
   /**
    * 移交票段
@@ -66,7 +66,7 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
    * @param personId 所领取人id
    * @return 响应结果
    */
-  ApiResponse shift(String begin,String end,String personId,String loginId,String nodeCode);
+  ApiResponse shift(String begin,String end,String personId,User user);
 
   /**
    * 发票标记

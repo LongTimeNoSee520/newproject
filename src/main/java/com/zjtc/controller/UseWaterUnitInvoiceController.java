@@ -84,16 +84,22 @@ public class UseWaterUnitInvoiceController {
       + "    \"ids\":[\n"
       + "       \"id数据集\"\n"
       + "    ]\n"
-      + "}") @RequestBody JSONObject jsonObject) {
+      + "}") @RequestBody JSONObject jsonObject,@RequestHeader("token") String token) {
     log.info("删除发票信息 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse response = new ApiResponse();
+
+    User user = jwtUtil.getUserByToken(token);
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
+   if (null == user){
+     response.recordError("系统异常");
+     return response;
+   }
     if (ids.isEmpty()) {
       response.recordError("参数错误");
       return response;
     }
     try {
-      response = useWaterUnitInvoiceService.deleteModel(ids);
+      response = useWaterUnitInvoiceService.deleteModel(ids,user);
       return response;
     } catch (Exception e) {
       e.printStackTrace();
@@ -126,7 +132,7 @@ public class UseWaterUnitInvoiceController {
       return response;
     }
     try {
-      response = useWaterUnitInvoiceService.abolish(ids,user.getNodeCode());
+      response = useWaterUnitInvoiceService.abolish(ids,user);
       return response;
     } catch (Exception e) {
       e.printStackTrace();
@@ -163,7 +169,7 @@ public class UseWaterUnitInvoiceController {
       return response;
     }
     try {
-      response = useWaterUnitInvoiceService.cancelAbolish(ids,user.getNodeCode());
+      response = useWaterUnitInvoiceService.cancelAbolish(ids,user);
       return response;
     } catch (Exception e) {
       e.printStackTrace();
@@ -199,7 +205,7 @@ public class UseWaterUnitInvoiceController {
     if (null != jsonObject) {
       entity = jsonObject.toJavaObject(UseWaterUnitInvoice.class);
       if (null != entity) {
-        response = useWaterUnitInvoiceService.updateModel(entity,user.getUsername());
+        response = useWaterUnitInvoiceService.updateModel(entity,user);
         return response;
       }
       response.recordError("开票登记失败");
@@ -230,7 +236,7 @@ public class UseWaterUnitInvoiceController {
     if (null != jsonObject) {
       String frontId = jsonObject.getString("frontId");
       String rearId = jsonObject.getString("rearId");
-      response = useWaterUnitInvoiceService.exchange(frontId, rearId, user.getNodeCode());
+      response = useWaterUnitInvoiceService.exchange(frontId, rearId, user);
       return response;
     }
     response.recordError("重置异常");
@@ -267,7 +273,7 @@ public class UseWaterUnitInvoiceController {
     String begin = jsonObject.getString("begin");
     String end = jsonObject.getString("end");
     String personId = jsonObject.getString("personId");
-    response = useWaterUnitInvoiceService.shift(begin, end, personId, user.getId(),user.getNodeCode());
+    response = useWaterUnitInvoiceService.shift(begin, end, personId, user);
     return response;
   }
 

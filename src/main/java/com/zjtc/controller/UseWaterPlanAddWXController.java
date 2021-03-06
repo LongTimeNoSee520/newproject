@@ -101,7 +101,7 @@ public class UseWaterPlanAddWXController {
     }
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
     try {
-      response = useWaterPlanAddWXService.printed(ids);
+      response = useWaterPlanAddWXService.printed(ids,user);
       return response;
     } catch (Exception e) {
       response.setCode(500);

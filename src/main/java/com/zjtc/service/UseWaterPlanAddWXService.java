@@ -29,7 +29,7 @@ public interface UseWaterPlanAddWXService extends IService<UseWaterPlanAddWX> {
    * @param ids 数据集
    * @return 响应状态
    */
-  ApiResponse printed(List<String> ids);
+  ApiResponse printed(List<String> ids,User user);
 
   /**
    * 审核计划调整申请
@@ -57,7 +57,7 @@ public interface UseWaterPlanAddWXService extends IService<UseWaterPlanAddWX> {
    *
    * @return 修改是否成功
    */
-  boolean update(UseWaterPlanAddWX useWaterPlanAddWX);
+  boolean update(UseWaterPlanAddWX useWaterPlanAddWX,User user);
 
 
 

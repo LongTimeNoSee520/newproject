@@ -12,6 +12,7 @@ import com.zjtc.service.EndPaperService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.SmsService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterPlanService;
 import java.util.ArrayList;
@@ -58,6 +59,9 @@ public class UseWaterPlanAddWXServiceImpl extends
   @Value("${server.servlet-path}")
   private String contextPath;
 
+  @Autowired
+  private SystemLogService systemLogService;
+
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
     ApiResponse response = new ApiResponse();
@@ -94,7 +98,6 @@ public class UseWaterPlanAddWXServiceImpl extends
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
-    // TODO: 2021/1/8 还没有查询加价费信息
     List<UseWaterPlanAddWXVO> useWaterPlanAdds = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType,
             executed, nodeCode, auditStatus, userId, path);
@@ -109,7 +112,7 @@ public class UseWaterPlanAddWXServiceImpl extends
   }
 
   @Override
-  public ApiResponse printed(List<String> ids) {
+  public ApiResponse printed(List<String> ids,User user) {
     ApiResponse response = new ApiResponse();
     if (ids.isEmpty()) {
       response.recordError("系统异常");
@@ -122,11 +125,10 @@ public class UseWaterPlanAddWXServiceImpl extends
     }
     if (i > 0) {
       response.setCode(200);
-      return response;
-    } else {
-      response.recordError("打印失败");
+      systemLogService.logInsert(user,"用水计划调整审核","打印用水计划调整审核列表","");
       return response;
     }
+    return response;
   }
 
   @Override
@@ -266,6 +268,7 @@ public class UseWaterPlanAddWXServiceImpl extends
     log.info("审核通过往办结单中增加数据返回状态:"+ response1.getCode());
     if (i > 0 && Objects.requireNonNull(response1).getCode() == 200) {
       response.setCode(200);
+      systemLogService.logInsert(user,"用水计划调整审核","用水计划增加/调整审核","");
       return response;
     } else {
       if (Objects.requireNonNull(response1).getCode() == 500){
@@ -278,11 +281,12 @@ public class UseWaterPlanAddWXServiceImpl extends
 
 
   @Override
-  public boolean update(UseWaterPlanAddWX useWaterPlanAddWX) {
+  public boolean update(UseWaterPlanAddWX useWaterPlanAddWX,User user) {
     if (StringUtils.isBlank(useWaterPlanAddWX.getId())) {
       return false;
     }
     int i = this.baseMapper.update(useWaterPlanAddWX);
+    systemLogService.logInsert(user,"用水计划调整审核","修改审核/执行状态","");
     return i > 0;
   }
 }
