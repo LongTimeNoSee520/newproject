@@ -40,6 +40,6 @@ public interface WaterUseDataMapper extends BaseMapper<WaterUseData> {
    * @param waterMeterCode 水表档案号集
    * @return 水表使用量信息
    */
-  List<WaterUseData> selectWaterUseData(List<String> waterMeterCode);
+  List<WaterUseData> selectWaterUseData(@Param("waterMeterCode") List<String> waterMeterCode);
 
 }
