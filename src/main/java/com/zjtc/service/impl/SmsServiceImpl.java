@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class SmsServiceImpl  implements SmsService {
+public class SmsServiceImpl implements SmsService {
 
   @Autowired
   private JWTUtil jwtUtil;
@@ -34,11 +35,13 @@ public class SmsServiceImpl  implements SmsService {
   private ContactsService contactsService;
 
   @Override
-  public void sendMsgToUnit(User user, String unitCode, String messageContent,String messageType) throws Exception {
+  public void sendMsgToUnit(User user, String unitCode, String messageContent, String messageType)
+      throws Exception {
     /**通过单位编号查询主要联系人信息*/
     Contacts contacts = contactsService.selectByUnitCode(unitCode);
     this
-        .sendMessages(user, messageContent, contacts.getMobileNumber(), null,contacts.getContacts(),
+        .sendMessages(user, messageContent, contacts.getMobileNumber(), null,
+            contacts.getContacts(),
             messageType);
   }
 
@@ -47,27 +50,34 @@ public class SmsServiceImpl  implements SmsService {
       String messageContent, String messageType) throws Exception {
     /**通过发起人id查询其电话号码*/
     String phoneNumber = contactsService.selectByUserId(operatorId);
-    this.sendMessages(user,messageContent,phoneNumber,operatorId,operator,"审核通知");
+    this.sendMessages(user, messageContent, phoneNumber, operatorId, operator, "审核通知");
   }
 
-  private void sendMessages(User user, String messageContent, String phoneNumber,String receiverId,
+  @Override
+  @Async("asyncExecutor")
+  public void asyncSendMsg() {
+    // TODO: 2021/3/6 批量发送短信
+
+  }
+
+  private void sendMessages(User user, String messageContent, String phoneNumber, String receiverId,
       String receiverName, String messageType) throws Exception {
     JSONObject jsonObject = new JSONObject();
     String publicKey = jwtUtil.getPublicKey();
-    String token = jwtUtil.creatToken(user,publicKey);
+    String token = jwtUtil.creatToken(user, publicKey);
 
-    jsonObject.put("content",messageContent);
-    jsonObject.put("messageType",messageType);
-    List<JSONObject> sendTo  =new ArrayList<>();
-    JSONObject sendToInfo =new JSONObject();
-    if (StringUtils.isNotBlank(receiverId)){
-      sendToInfo.put("receiverId",receiverId);
+    jsonObject.put("content", messageContent);
+    jsonObject.put("messageType", messageType);
+    List<JSONObject> sendTo = new ArrayList<>();
+    JSONObject sendToInfo = new JSONObject();
+    if (StringUtils.isNotBlank(receiverId)) {
+      sendToInfo.put("receiverId", receiverId);
     }
-    sendToInfo.put("receiverName",receiverName);
-    sendToInfo.put("phoneNumber",phoneNumber);
+    sendToInfo.put("receiverName", receiverName);
+    sendToInfo.put("phoneNumber", phoneNumber);
     sendTo.add(sendToInfo);
-    jsonObject.put("sendTo",sendTo);
-     HttpUtil.doPost(token, sendUrl, jsonObject.toJSONString());
+    jsonObject.put("sendTo", sendTo);
+    HttpUtil.doPost(token, sendUrl, jsonObject.toJSONString());
   }
 
 }
