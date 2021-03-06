@@ -3,7 +3,7 @@ package com.zjtc.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.util.FileUtil;
-import com.zjtc.mapper.WaterBalanceTestMapper;
+import com.zjtc.mapper.waterBiz.WaterBalanceTestMapper;
 import com.zjtc.model.File;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.User;

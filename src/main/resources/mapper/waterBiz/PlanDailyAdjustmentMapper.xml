@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.PlanDailyAdjustmentMapper">
+  <resultMap id="BaseResultMap" type="com.zjtc.model.UseWaterPlan">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="algorithm_type" property="algorithmType" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="base_water_amount" property="baseWaterAmount" jdbcType="DOUBLE"/>
+    <result column="before_last_year_water_amount" property="beforeLastYearWaterAmount" jdbcType="DOUBLE"/>
+    <result column="last_year_water_amount" property="lastYearWaterAmount" jdbcType="DOUBLE"/>
+    <result column="three_year_avg" property="threeYearAvg" jdbcType="DOUBLE"/>
+    <result column="now_price" property="nowPrice" jdbcType="DOUBLE"/>
+    <result column="n8" property="n8" jdbcType="INTEGER"/>
+    <result column="minus_pay_status" property="minusPayStatus" jdbcType="VARCHAR"/>
+    <result column="balance_test" property="balanceTest" jdbcType="VARCHAR"/>
+    <result column="create_type" property="createType" jdbcType="VARCHAR"/>
+    <result column="cur_year_base_plan" property="curYearBasePlan" jdbcType="DOUBLE"/>
+    <result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+    <result column="next_year_start_plan" property="nextYearBaseStartPlan" jdbcType="DOUBLE"/>
+    <result column="next_year_end_plan" property="nextYearBaseEndPlan" jdbcType="DOUBLE"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="plan_type" property="planType" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="update_user_id" property="updateUserId" jdbcType="VARCHAR"/>
+    <result column="added" property="added" jdbcType="VARCHAR"/>
+    <result column="reduce_plan" property="reducePlan" jdbcType="DOUBLE"/>
+    <result column="reward_plan" property="rewardPlan" jdbcType="DOUBLE"/>
+    <result column="assess_quarter" property="assessQuarter" jdbcType="VARCHAR"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+    <result column="exist_settlement_form" property="existSettlementForm" jdbcType="VARCHAR"/>
+    <result column="printed" property="printed" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <resultMap id="PageResultMap" type="com.zjtc.model.vo.PlanDailyAdjustmentVO">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="minus_pay_status" property="minusPayStatus" jdbcType="VARCHAR"/>
+    <result column="balance_test" property="balanceTest" jdbcType="VARCHAR"/>
+    <result column="create_type" property="createType" jdbcType="VARCHAR"/>
+    <result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="plan_type" property="planType" jdbcType="VARCHAR"/>
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    <result column="printed" property="printed" jdbcType="VARCHAR"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+    <result column="printed" property="printed" jdbcType="VARCHAR"/>
+    <collection property="adjustList" ofType="java.util.LinkedHashMap"
+      column="{nodeCode=node_code,unitCode=unit_code,planYear=plan_year}"
+      select="queryAdjustList">
+    </collection>
+    <!--<collection property="auditFiles" ofType="java.util.LinkedHashMap" column="id"-->
+      <!--select="queryAuditFiles">-->
+    <!--</collection>-->
+    <!--<collection property="waterProofFiles" ofType="java.util.LinkedHashMap" column="id"-->
+      <!--select="queryWaterProofFiles">-->
+    <!--</collection>-->
+    <!--<collection property="otherFiles" ofType="java.util.LinkedHashMap" column="id"-->
+      <!--select="queryOtherFiles">-->
+    <!--</collection>-->
+    <!--<collection property="unpaidList" ofType="java.util.LinkedHashMap" column="id"-->
+      <!--select="queryUnpaidList">-->
+    <!--</collection>-->
+  </resultMap>
+  <resultMap id="MessageResultMap" type="java.util.LinkedHashMap">
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
+    <result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
+    <!--<collection property="unpaidList" ofType="java.util.LinkedHashMap" column="unit_code"-->
+      <!--select="queryUnpaidList">-->
+    <!--</collection>-->
+  </resultMap>
+  <resultMap id="ExportResultMap" type="com.zjtc.model.vo.UseWaterPlanExportVO">
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+    <result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+    <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="plan_type" property="planType" jdbcType="VARCHAR"/>
+    <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="queryNum" resultType="int">
+    SELECT COUNT (id)
+    FROM t_w_use_water_plan
+    WHERE id IN
+    (SELECT id
+    FROM t_w_use_water_plan
+    WHERE node_code = #{nodeCode}
+    AND SUBSTRING(unit_code,5,2)<!--类型-->
+    IN (
+    SELECT unit_type_code
+    FROM t_w_use_water_unit_role
+    WHERE person_id = #{userId}
+    )
+    <if test="unitCode != null and unitCode != ''">
+      and unit_code like '%${unitCode}%'
+    </if>
+    <if test="unitName != null and unitName != ''">
+      and unit_name like '%${unitName}%'
+    </if>
+    <if test="waterMeterCode != null and waterMeterCode != ''">
+      and water_meter_code like '%${waterMeterCode}%'
+    </if>
+    <if test="yearStart != null">
+      and plan_year &gt;= #{yearStart}
+    </if>
+    <if test="yearEnd != null">
+      and plan_year &lt;= #{yearEnd}
+    </if>
+    )
+  </select>
+
+  <select id="queryPage" resultMap="PageResultMap">
+    SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_name,t1.unit_code,
+    t1.water_meter_code,t1.plan_year,t1.minus_pay_status,t1.balance_test,
+    t1.create_type,t1.cur_year_plan,t1.first_quarter,t1.second_quarter,
+    t1.third_quarter,t1.fourth_quarter,
+    '当前计划' AS plan_type,t1.update_time,t1.remarks,t1.printed
+    FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,
+    id,node_code,use_water_unit_id,unit_name,unit_code,
+    water_meter_code,plan_year,minus_pay_status,balance_test,
+    create_type,cur_year_plan,first_quarter,second_quarter,
+    third_quarter,fourth_quarter,
+    COALESCE (update_time,create_time) AS update_time,remarks,printed
+    FROM
+    t_w_use_water_plan
+    WHERE id IN
+    (SELECT id
+    FROM t_w_use_water_plan
+    WHERE  node_code = #{nodeCode}
+    AND SUBSTRING(unit_code,5,2) <!--类型-->
+    IN (
+    SELECT unit_type_code
+    FROM t_w_use_water_unit_role
+    WHERE person_id = #{userId}
+    )
+    <if test="unitCode != null and unitCode != ''">
+      and unit_code like '%${unitCode}%'
+    </if>
+    <if test="unitName != null and unitName != ''">
+      and unit_name like '%${unitName}%'
+    </if>
+    <if test="waterMeterCode != null and waterMeterCode != ''">
+      and water_meter_code like '%${waterMeterCode}%'
+    </if>
+    <if test="yearStart != null">
+      and plan_year &gt;= #{yearStart}
+    </if>
+    <if test="yearEnd != null">
+      and plan_year &lt;= #{yearEnd}
+    </if>
+    )
+    )t1
+    WHERE  rownumber > (#{current}-1)* #{size}
+  </select>
+  <select id="queryAdjustList" resultType="java.util.LinkedHashMap">
+    SELECT t1.id,t1.node_code AS nodeCode,t1.use_water_unit_id AS useWaterUnitId,t1.unit_name AS unitName,t1.unit_code AS unitCode,
+    t1.water_meter_code AS waterMeterCode,t1.plan_year AS planYear,
+    t1.cur_year_plan AS curYearPlan,t1.first_quarter AS firstQuarter,t1.second_quarter AS secondQuarter,
+    t1.third_quarter AS thirdQuarter,t1.fourth_quarter AS fourthQuarter,
+    t1.plan_type AS planType,
+    (SELECT dict_item_name
+		  FROM t_dict_item
+		  WHERE dict_id =(SELECT id FROM t_dict WHERE dict_code = 'changeType')
+		  AND  dict_item_code = t1.plan_type
+		) AS planTypeName,
+    CONVERT(varchar(100), t1.create_time, 23) AS updateTime,t1.printed AS printed,t1.status AS  status,
+    t1.remarks AS remarks
+    FROM t_w_use_water_plan_add t1
+    WHERE t1.node_code =#{nodeCode}
+    AND   t1.unit_code =#{unitCode}
+    AND   t1.plan_year =#{planYear}
+    ORDER BY t1.create_time DESC
+  </select>
+  <select id="queryList" resultMap="PageResultMap">
+    SELECT  t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_name,t1.unit_code,
+    t1.water_meter_code,t1.plan_year,t1.minus_pay_status,t1.balance_test,
+    t1.create_type,t1.cur_year_plan,t1.first_quarter,t1.second_quarter,
+    t1.third_quarter,t1.fourth_quarter,
+    '当前计划' AS plan_type,COALESCE (t1.update_time,t1.create_time) AS update_time,t1.remarks,t1.printed
+    FROM
+    t_w_use_water_plan t1
+    WHERE id IN
+    (SELECT id
+    FROM t_w_use_water_plan
+    WHERE  node_code = #{nodeCode}
+    AND SUBSTRING(unit_code,5,2) <!--类型-->
+    IN (
+    SELECT unit_type_code
+    FROM t_w_use_water_unit_role
+    WHERE person_id = #{userId}
+    )
+    <if test="unitCode != null and unitCode != ''">
+      and unit_code like '%${unitCode}%'
+    </if>
+    <if test="unitName != null and unitName != ''">
+      and unit_name like '%${unitName}%'
+    </if>
+    <if test="waterMeterCode != null and waterMeterCode != ''">
+      and water_meter_code like '%${waterMeterCode}%'
+    </if>
+    <if test="yearStart != null">
+      and plan_year &gt;= #{yearStart}
+    </if>
+    <if test="yearEnd != null">
+      and plan_year &lt;= #{yearEnd}
+    </if>
+    )
+    ORDER BY t1.unit_code ASC
+  </select>
+  <select id="queryMessage" resultMap="MessageResultMap">
+    SELECT t1.use_water_unit_id,t1.unit_code,t1.unit_name,t1.water_meter_code,t1.plan_year,
+    t1.first_quarter,t1.second_quarter,t1.third_quarter,t1.fourth_quarter,
+    COALESCE((SELECT sum(COALESCE(water_number,0))
+             FROM t_w_water_use_data
+             WHERE use_month=#{thisMonth}
+             AND   use_year =#{thisMonthYear}
+             AND   use_water_unit_id =t1.use_water_unit_id
+             GROUP BY use_water_unit_id
+           ),0) AS first_water,
+    COALESCE((SELECT sum(COALESCE(water_number,0))
+             FROM t_w_water_use_data
+             WHERE use_month=#{monthBefore}
+             AND   use_year =#{monthBeforeYear}
+             AND   use_water_unit_id =t1.use_water_unit_id
+             GROUP BY use_water_unit_id
+          ),0) AS second_water
+    FROM t_w_use_water_plan t1
+    WHERE id IN
+     ( SELECT id
+       FROM t_w_use_water_plan
+       WHERE node_code = #{nodeCode}
+       AND SUBSTRING(unit_code,5,2) <!--类型-->
+       IN (
+           SELECT unit_type_code
+           FROM t_w_use_water_unit_role
+           WHERE person_id = #{userId}
+      )
+    )
+    AND plan_year = #{thisMonthYear}
+    AND (exist_settlement_form ='0' or exist_settlement_form ='' or exist_settlement_form is NULL) <!--不存在未完成的办结单-->
+    <if test="unitCode != null and unitCode != ''">
+      and unit_code like '%${unitCode}%'
+    </if>
+  </select>
+  <select id="queryUnpaidList" resultType="java.util.LinkedHashMap">
+    SELECT 1 AS a
+  </select>
+  <select id="selectExportData" resultMap="ExportResultMap">
+    SELECT
+    uu.unit_code,
+    MAX (m.water_meter_code) AS water_meter_code,
+    uu.unit_name,
+    p.plan_year,
+    p.cur_year_plan,
+    p.first_quarter,
+    p.second_quarter,
+    p.third_quarter,
+    p.fourth_quarter,
+    CONVERT(varchar(100), p.update_time, 23) as update_time,
+    MAX ('当前计划') AS plan_type,
+    p.remarks
+    FROM
+    t_w_use_water_unit uu,
+    t_w_use_water_plan p,
+    t_w_use_water_unit_meter m
+    WHERE
+    uu.id = p.use_water_unit_id
+    AND uu.id = m.use_water_unit_id
+    AND uu.id IN
+    (SELECT id
+    FROM t_w_use_water_unit
+    WHERE node_code = #{nodeCode}
+    AND SUBSTRING(unit_code,5,2)<!--类型-->
+    IN (
+        SELECT unit_type_code
+        FROM t_w_use_water_unit_role
+        WHERE person_id = #{userId}
+      )
+    )
+    AND p.plan_year = #{planYear}
+    AND p.plan_type = '0'
+    group by uu.unit_code,uu.unit_name,p.plan_year,p.cur_year_plan,p.first_quarter,
+    p.second_quarter,p.third_quarter,p.fourth_quarter,p.update_time,p.remarks
+    order by uu.unit_code
+  </select>
+  <update id="updateRemarks">
+    UPDATE t_w_use_water_plan
+    SET remarks = #{remarks}
+    WHERE id = #{id}
+  </update>
+  <update id="updatePrintStatus">
+    UPDATE t_w_use_water_plan
+    SET  printed= '1'
+    WHERE id = #{id}
+  </update>
+  <update id="updateExistSettlement">
+    UPDATE t_w_use_water_plan
+    SET  exist_settlement_form = #{existSettlement}
+    WHERE  unit_code = #{unitCode}
+    AND node_code = #{nodeCode}
+    AND plan_year =#{planYear}
+  </update>
+
+</mapper>

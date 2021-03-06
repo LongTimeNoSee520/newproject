@@ -2,7 +2,7 @@ package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
-import com.zjtc.mapper.UseWaterUnitRoleMapper;
+import com.zjtc.mapper.waterBiz.UseWaterUnitRoleMapper;
 import com.zjtc.model.UseWaterUnitRole;
 import com.zjtc.service.UseWaterUnitRoleService;
 import java.util.List;

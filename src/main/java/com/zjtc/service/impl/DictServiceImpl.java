@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.base.util.RedisUtil;
-import com.zjtc.mapper.DictMapper;
+import com.zjtc.mapper.waterSys.DictMapper;
 import com.zjtc.model.Dict;
 import com.zjtc.model.DictItem;
 import com.zjtc.service.DictItemService;

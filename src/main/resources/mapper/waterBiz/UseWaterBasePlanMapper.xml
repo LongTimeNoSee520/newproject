@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.UseWaterBasePlanMapper">
+  <resultMap id="BaseResultMap" type="com.zjtc.model.UseWaterBasePlan">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+    <result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+    <result column="one_quarter" property="oneQuarter" jdbcType="DOUBLE"/>
+    <result column="two_quarter" property="twoQuarter" jdbcType="DOUBLE"/>
+    <result column="three_quarter" property="threeQuarter" jdbcType="DOUBLE"/>
+    <result column="four_quarter" property="fourQuarter" jdbcType="DOUBLE"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="nature" property="nature" jdbcType="VARCHAR"/>
+    <result column="nature_name" property="natureName" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="queryExistNum" resultType="int">
+    SELECT COUNT (id)
+    FROM t_w_use_water_base_plan
+    WHERE deleted = '0'
+    AND unit_code = #{unitCode}
+    AND node_code = #{nodeCode}
+    AND plan_year = #{planYear}
+  </select>
+  <select id="queryOthers" resultType="int">
+    SELECT COUNT (id)
+    FROM t_w_use_water_base_plan
+    WHERE deleted = '0'
+    AND unit_code = #{useWaterBasePlan.unitCode}
+    AND node_code = #{useWaterBasePlan.nodeCode}
+    AND plan_year = #{useWaterBasePlan.planYear}
+    AND id  &lt; &gt; #{useWaterBasePlan.id}
+  </select>
+
+  <select id="queryYear" resultType="int">
+    SELECT DISTINCT  t1.plan_year AS planYear
+    FROM (SELECT plan_year
+           FROM t_w_use_water_base_plan
+           WHERE deleted = '0'
+           AND node_code = #{nodeCode}
+           AND SUBSTRING(unit_code,5,2) <!--类型-->
+           IN (
+           SELECT unit_type_code
+           FROM t_w_use_water_unit_role
+           WHERE person_id = #{userId}
+           ) <!-- in条件是查询当前登录者能查询的类型的单位基建计划年份-->
+            )t1
+    ORDER BY t1.plan_year ASC
+  </select>
+  <select id="queryNum" resultType="int">
+    SELECT COUNT (t1.id)
+    FROM (
+          SELECT id
+          FROM t_w_use_water_base_plan
+           WHERE deleted = '0'
+           AND node_code = #{nodeCode}
+           AND SUBSTRING(unit_code,5,2) <!--类型-->
+           IN (
+           SELECT unit_type_code
+           FROM t_w_use_water_unit_role
+           WHERE person_id = #{userId}
+           )
+          <if test="planYear != null">AND plan_year = #{planYear} </if>
+          <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
+          <if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
+
+    )t1
+  </select>
+
+  <select id="queryPage" resultMap="BaseResultMap">
+    SELECT a.*,(SELECT dict_item_name
+        FROM t_dict_item
+        WHERE dict_id =(SELECT id FROM t_dict WHERE dict_code = 'useWaterNature')
+        AND  dict_item_code = a.nature
+    ) AS nature_name
+    FROM
+    (SELECT TOP  ${size} t1.*
+            FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,*
+                  FROM
+                  t_w_use_water_base_plan
+                  WHERE id IN
+                      (SELECT id
+                      FROM t_w_use_water_base_plan
+                      WHERE deleted = '0'
+                      AND node_code = #{nodeCode}
+                      AND SUBSTRING(unit_code,5,2) <!--类型-->
+                          IN (
+                          SELECT unit_type_code
+                          FROM t_w_use_water_unit_role
+                          WHERE person_id = #{userId}
+                          )
+                      <if test="planYear != null">AND plan_year = #{planYear} </if>
+                      <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
+                      <if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
+                      )
+            )t1
+        WHERE  rownumber > (#{current}-1)* #{size}
+    )a
+  </select>
+  <update id="delete">
+    UPDATE t_w_use_water_base_plan SET deleted ='1',
+    delete_time = getdate()
+    WHERE id IN
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </update>
+  <select id="selectExportData" resultMap="BaseResultMap">
+    SELECT ROUND(cur_year_plan, 2,1) AS cur_year_plan,plan_year,ROUND(one_quarter, 2,1) AS one_quarter,
+    ROUND(two_quarter,2,1)AS two_quarter,ROUND(three_quarter, 2,1) AS three_quarter,ROUND(four_quarter, 2,1)
+    AS four_quarter,remarks,unit_code,unit_name
+    FROM
+    t_w_use_water_base_plan
+    WHERE id IN
+    (SELECT id
+    FROM t_w_use_water_base_plan
+    WHERE deleted = '0'
+    AND node_code = #{nodeCode}
+    AND SUBSTRING(unit_code,5,2) <!--类型-->
+    IN (
+    SELECT unit_type_code
+    FROM t_w_use_water_unit_role
+    WHERE person_id = #{userId}
+    )
+    <if test="planYear != null">AND plan_year = #{planYear} </if>
+    <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
+    <if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
+    )
+  </select>
+</mapper>

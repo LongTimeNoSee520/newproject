@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.TodoMapper">
+	<!-- Todo的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+	<resultMap id="result_Todo_Map" type="com.zjtc.model.Todo">
+		<id column="id" property="id" />
+		<result column="node_code" property="nodeCode" />
+		<result column="execute_person_id" property="executePersonId" />
+		<result column="execute_person_name" property="executePersonName" />
+		<result column="todo_title" property="todoTitle" />
+		<result column="todo_content" property="todoContent" />
+		<result column="todo_type" property="todoType" />
+		<result column="business_json" property="businessJson" />
+		<result column="table_name" property="tableName" />
+		<result column="business_id" property="businessId" />
+		<result column="registrant" property="registrant" />
+		<result column="registrant_id" property="registrantId" />
+		<result column="detail_config" property="detailConfig" />
+		<result column="status" property="status" />
+		<result column="create_time" property="createTime" />
+		<result column="operation_time" property="operationTime" />
+	</resultMap>
+
+	<delete id="deleteByBusinessId" parameterType="String">
+		delete from t_w_todo
+		where  business_id  =  #{businessId}
+	</delete>
+</mapper>

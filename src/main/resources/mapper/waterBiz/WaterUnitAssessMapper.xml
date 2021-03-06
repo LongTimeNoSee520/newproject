@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.WaterUnitAssessMapper">
+
+  <resultMap id="WaterUnitAssessModel" type="com.zjtc.model.vo.WaterUnitAssessVO">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="nodeCode" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="unitCode" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="unitName" property="unitName" jdbcType="VARCHAR"/>
+    <result column="planYear" property="planYear" jdbcType="INTEGER"/>
+    <result column="curYearPlan" property="curYearPlan" jdbcType="DOUBLE"/>
+    <result column="yearPracticalWater" property="yearPracticalWater" jdbcType="DOUBLE"/>
+    <result column="waterMeterCode" property="waterMeterCode" jdbcType="DOUBLE"/>
+    <result column="oneQuarter" property="oneQuarter" jdbcType="DOUBLE"/>
+    <result column="twoQuarter" property="twoQuarter" jdbcType="DOUBLE"/>
+    <result column="threeQuarter" property="threeQuarter" jdbcType="DOUBLE"/>
+    <result column="fourQuarter" property="fourQuarter" jdbcType="DOUBLE"/>
+    <result column="oneFirstQuarter" property="oneFirstQuarter" jdbcType="DOUBLE"/>
+    <result column="secondQuarter" property="secondQuarter" jdbcType="DOUBLE"/>
+    <result column="thirdQuarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+    <result column="fourthQuarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="onePracticalWater" property="onePracticalWater" jdbcType="DOUBLE"/>
+    <result column="twoPracticalWater" property="twoPracticalWater" jdbcType="DOUBLE"/>
+    <result column="threePracticalWater" property="threePracticalWater" jdbcType="DOUBLE"/>
+    <result column="fourPracticalWater" property="fourPracticalWater" jdbcType="DOUBLE"/>
+    <result column="oneExceedWater" property="oneExceedWater" jdbcType="DOUBLE"/>
+    <result column="twoExceedWater" property="twoExceedWater" jdbcType="DOUBLE"/>
+    <result column="threeExceedWater" property="threeExceedWater" jdbcType="DOUBLE"/>
+    <result column="fourExceedWater" property="fourExceedWater" jdbcType="DOUBLE"/>
+    <result column="oneStatus" property="oneStatus" jdbcType="VARCHAR"/>
+    <result column="twoStatus" property="twoStatus" jdbcType="VARCHAR"/>
+    <result column="threeStatus" property="threeStatus" jdbcType="VARCHAR"/>
+    <result column="fourStatus" property="fourStatus" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <select id="selectCount" resultType="int">
+    SELECT COUNT
+    ( 1 )
+    FROM
+    (
+    SELECT DISTINCT
+    t1.id,
+    t1.nodeCode,
+    t1.unitCode,
+    t1.unitName,--单位名称
+    t1.unitAddress,--单位地址
+    t2.plan_year AS planYear,--年度
+    t2.curYearPlan,--本年计划
+    t3.yearPracticalWater,--年实际水量
+    t3.waterMeterCode,--水表档案号
+    t4.oneQuarter,--第一季度基建计划水量
+    t4.twoQuarter,--第二季度基建计划
+    t4.threeQuarter,--第三季度基建计划
+    t4.fourQuarter,--第四季度基建计划
+    t2.oneFirstQuarter,--第一季度计划水量
+    t2.secondQuarter,--第二季度计划水量
+    t2.thirdQuarter,-- 第三季度计划水量
+    t2.fourthQuarter,--第四季度计划水量
+    t3.onePracticalWater,-- 第一季度实际水量
+    t3.twoPracticalWater,-- 第二季度实际水量
+    t3.threePracticalWater,-- 第三季度实际水量
+    t3.fourPracticalWater,-- 第四季度实际水量
+    ( t3.onePracticalWater- t2.oneFirstQuarter ) AS oneExceedWater,-- 第一季度超节量
+    ( t3.twoPracticalWater- t2.secondQuarter ) AS twoExceedWater,-- 第二季度超节量
+    ( t3.threePracticalWater - t2.thirdQuarter ) AS threeExceedWater,-- 第三季度超节量
+    ( t3.fourPracticalWater - t2.fourthQuarter ) AS fourExceedWater,-- 第四季度超节量
+    t5.oneStatus,--第一季度回收情况
+    t5.twoStatus,--第二季度回收情况
+    t5.threeStatus,--第三季度回收情况
+    t5.fourStatus --第四季度回收情况
+
+    FROM
+    (
+    SELECT
+    id,
+    node_code AS nodeCode,
+    unit_code AS unitCode,
+    unit_name AS unitName,--单位名称
+    unit_address AS unitAddress --单位地址
+
+    FROM
+    t_w_use_water_unit
+    WHERE
+    deleted = '0'
+    AND node_code = #{nodeCode}
+    ) t1 --用水单位
+    LEFT JOIN (
+    SELECT
+    plan_year,
+    cur_year_plan AS curYearPlan,
+    use_water_unit_id,
+    first_quarter AS oneFirstQuarter,
+    second_quarter AS secondQuarter,
+    third_quarter AS thirdQuarter,
+    fourth_quarter AS fourthQuarter
+    FROM
+    t_w_use_water_plan
+    WHERE
+    node_code = #{nodeCode}
+    ) t2 --用水计划
+    ON t1.id = t2.use_water_unit_id
+    LEFT JOIN (
+    select
+    s3.use_water_unit_id,
+    s3.use_year,
+    s3.water_meter_code AS waterMeterCode,
+    ( s3.january_count + s3.february_count +s3. march_count ) AS onePracticalWater,
+    ( s3.april_count + s3.may_count + s3.june_count ) AS twoPracticalWater,
+    ( s3.july_count + s3.august_count + s3.september_count ) AS threePracticalWater,
+    ( s3.october_count + s3.november_count + s3.december_count ) AS fourPracticalWater,
+    ( s3.january_count + s3.february_count + s3.march_count + s3.april_count + s3.may_count + june_count + s3.july_count + s3.august_count + s3.september_count + s3.october_count + s3.november_count + s3.december_count ) AS yearPracticalWater
+    FROM (
+    SELECT
+    s2.use_water_unit_id,
+    s2.use_year,
+    s2.water_meter_code,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    0 ELSE january_count
+    END AS january_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    0 ELSE february_count
+    END AS february_count,
+    CASE
+
+    WHEN SUBSTRING(s1.unit_code, 5, 2) 	= '33' THEN
+    0 ELSE march_count
+    END AS march_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    january_count + april_count ELSE april_count
+    END AS april_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    february_count + may_count ELSE may_count
+    END AS may_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    march_count + june_count ELSE june_count
+    END AS june_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    0 ELSE july_count
+    END AS july_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    0 ELSE august_count
+    END AS august_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    0 ELSE september_count
+    END AS september_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    july_count + october_count ELSE october_count
+    END AS october_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    august_count + november_count ELSE november_count
+    END AS november_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    september_count + december_count ELSE december_count
+    END AS december_count
+    FROM
+    t_w_use_water_plan s1 LEFT JOIN t_w_water_month_use_data s2 ON s1.use_water_unit_id = s2.use_water_unit_id and s1.plan_year = s2.use_year
+    WHERE
+    s1.node_code = #{nodeCode}
+    and s2.node_code = #{nodeCode}
+    )s3
+    ) t3 --水使用量月数据
+    ON t1.id = t3.use_water_unit_id
+    AND t2.plan_year = t3.use_year
+    LEFT JOIN (
+    SELECT
+    use_water_unit_Id,
+    plan_year,
+    one_quarter AS oneQuarter,
+    two_quarter AS twoQuarter,
+    three_quarter AS threeQuarter,
+    four_quarter AS fourQuarter
+    FROM
+    t_w_use_water_base_plan
+    WHERE
+    node_code = #{nodeCode}
+    ) t4 --基建计划
+    ON t1.id = t4.use_water_unit_Id
+    AND t2.plan_year = t4.plan_year
+    LEFT JOIN (
+    SELECT
+    count_year,
+    use_water_unit_id,
+    MIN ( [1] ) AS oneStatus,
+    MIN ( [2] ) AS twoStatus,
+    MIN ( [3] ) AS threeStatus,
+    MIN ( [4] ) AS fourStatus
+    FROM
+    t_w_water_use_pay_info --水使用量季度缴费表
+    PIVOT (
+    MIN ( pay_status ) FOR [count_quarter] IN ( [1], [2], [3], [4] )) AS pvt
+    WHERE
+    node_code = #{nodeCode}
+    GROUP BY
+    use_water_unit_id,
+    count_year
+    ) t5 ON t1.id = t5.use_water_unit_id
+    AND t2.plan_year = t5.count_year
+    ) t6
+    WHERE
+    t6.nodeCode = #{nodeCode}
+    <if test="accessYear != null  and accessYear != ''">
+      and t6.planYear like '%${accessYear}%'
+    </if>
+    <if test="unitName != null and unitName != ''">
+      and  t6.unitName like '%${unitName}%'
+    </if>
+  </select>
+
+  <select id="queryList" resultMap="WaterUnitAssessModel">
+    SELECT TOP
+    ${pageSize} c.*
+    FROM
+    (
+    SELECT
+    row_number () OVER ( ORDER BY [planYear] DESC) AS rownumber,
+    *
+    FROM
+    (
+    SELECT DISTINCT
+    t1.id,
+    t1.nodeCode,
+    t1.unitCode,
+    t1.unitName,--单位名称
+    t1.unitAddress,--单位地址
+    t2.plan_year AS planYear,--年度
+    t2.curYearPlan,--本年计划
+    t3.yearPracticalWater,--年实际水量
+    t3.waterMeterCode,--水表档案号
+    t4.oneQuarter,--第一季度基建计划水量
+    t4.twoQuarter,--第二季度基建计划
+    t4.threeQuarter,--第三季度基建计划
+    t4.fourQuarter,--第四季度基建计划
+    t2.oneFirstQuarter,--第一季度计划水量
+    t2.secondQuarter,--第二季度计划水量
+    t2.thirdQuarter,-- 第三季度计划水量
+    t2.fourthQuarter,--第四季度计划水量
+    t3.onePracticalWater,-- 第一季度实际水量
+    t3.twoPracticalWater,-- 第二季度实际水量
+    t3.threePracticalWater,-- 第三季度实际水量
+    t3.fourPracticalWater,-- 第四季度实际水量
+    ( t3.onePracticalWater- t2.oneFirstQuarter ) AS oneExceedWater,-- 第一季度超节量
+    ( t3.twoPracticalWater- t2.secondQuarter ) AS twoExceedWater,-- 第二季度超节量
+    ( t3.threePracticalWater - t2.thirdQuarter ) AS threeExceedWater,-- 第三季度超节量
+    ( t3.fourPracticalWater - t2.fourthQuarter ) AS fourExceedWater,-- 第四季度超节量
+    t5.oneStatus,--第一季度回收情况
+    t5.twoStatus,--第二季度回收情况
+    t5.threeStatus,--第三季度回收情况
+    t5.fourStatus --第四季度回收情况
+
+    FROM
+    (
+    SELECT
+    id,
+    node_code AS nodeCode,
+    unit_code AS unitCode,
+    unit_name AS unitName,--单位名称
+    unit_address AS unitAddress --单位地址
+
+    FROM
+    t_w_use_water_unit
+    WHERE
+    deleted = '0'
+    AND node_code = #{nodeCode}
+    ) t1 --用水单位
+    LEFT JOIN (
+    SELECT
+    plan_year,
+    cur_year_plan AS curYearPlan,
+    use_water_unit_id,
+    first_quarter AS oneFirstQuarter,
+    second_quarter AS secondQuarter,
+    third_quarter AS thirdQuarter,
+    fourth_quarter AS fourthQuarter
+    FROM
+    t_w_use_water_plan
+    WHERE
+    node_code = #{nodeCode}
+    ) t2 --用水计划
+    ON t1.id = t2.use_water_unit_id
+    LEFT JOIN (
+    select
+    s3.use_water_unit_id,
+    s3.use_year,
+    s3.water_meter_code AS waterMeterCode,
+    ( s3.january_count + s3.february_count +s3. march_count ) AS onePracticalWater,
+    ( s3.april_count + s3.may_count + s3.june_count ) AS twoPracticalWater,
+    ( s3.july_count + s3.august_count + s3.september_count ) AS threePracticalWater,
+    ( s3.october_count + s3.november_count + s3.december_count ) AS fourPracticalWater,
+    ( s3.january_count + s3.february_count + s3.march_count + s3.april_count + s3.may_count + june_count + s3.july_count + s3.august_count + s3.september_count + s3.october_count + s3.november_count + s3.december_count ) AS yearPracticalWater
+    FROM (
+    SELECT
+    s2.use_water_unit_id,
+    s2.use_year,
+    s2.water_meter_code,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    0 ELSE january_count
+    END AS january_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    0 ELSE february_count
+    END AS february_count,
+    CASE
+
+    WHEN SUBSTRING(s1.unit_code, 5, 2) 	= '33' THEN
+    0 ELSE march_count
+    END AS march_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    january_count + april_count ELSE april_count
+    END AS april_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    february_count + may_count ELSE may_count
+    END AS may_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    march_count + june_count ELSE june_count
+    END AS june_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    0 ELSE july_count
+    END AS july_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    0 ELSE august_count
+    END AS august_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    0 ELSE september_count
+    END AS september_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    july_count + october_count ELSE october_count
+    END AS october_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    august_count + november_count ELSE november_count
+    END AS november_count,
+    CASE
+
+    WHEN SUBSTRING(unit_code, 5, 2) 	= '33' THEN
+    september_count + december_count ELSE december_count
+    END AS december_count
+    FROM
+    t_w_use_water_plan s1 LEFT JOIN t_w_water_month_use_data s2 ON s1.use_water_unit_id = s2.use_water_unit_id and s1.plan_year = s2.use_year
+    WHERE
+    s1.node_code = #{nodeCode}
+    and s2.node_code = #{nodeCode}
+    )s3
+    ) t3 --水使用量月数据
+    ON t1.id = t3.use_water_unit_id
+    AND t2.plan_year = t3.use_year
+    LEFT JOIN (
+    SELECT
+    use_water_unit_Id,
+    plan_year,
+    one_quarter AS oneQuarter,
+    two_quarter AS twoQuarter,
+    three_quarter AS threeQuarter,
+    four_quarter AS fourQuarter
+    FROM
+    t_w_use_water_base_plan
+    WHERE
+    node_code = #{nodeCode}
+    ) t4 --基建计划
+    ON t1.id = t4.use_water_unit_Id
+    AND t2.plan_year = t4.plan_year
+    LEFT JOIN (
+    SELECT
+    count_year,
+    use_water_unit_id,
+    MIN ( [1] ) AS oneStatus,
+    MIN ( [2] ) AS twoStatus,
+    MIN ( [3] ) AS threeStatus,
+    MIN ( [4] ) AS fourStatus
+    FROM
+    t_w_water_use_pay_info --水使用量季度缴费表
+    PIVOT (
+    MIN ( pay_status ) FOR [count_quarter] IN ( [1], [2], [3], [4] )) AS pvt
+    WHERE
+    node_code = #{nodeCode}
+    GROUP BY
+    use_water_unit_id,
+    count_year
+    ) t5 ON t1.id = t5.use_water_unit_id
+    AND t2.plan_year = t5.count_year
+    ) t6
+    WHERE
+    t6.nodeCode = #{nodeCode}
+    <if test="accessYear != null  and accessYear != ''">
+      and t6.planYear like '%${accessYear}%'
+    </if>
+    <if test="unitName != null and unitName != ''">
+    and  t6.unitName like '%${unitName}%'
+    </if>
+    ) c
+    WHERE
+    rownumber > (${pageSize}*(${currPage}-1))
+  </select>
+</mapper>

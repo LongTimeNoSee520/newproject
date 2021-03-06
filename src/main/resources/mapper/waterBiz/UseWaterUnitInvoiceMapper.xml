@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.UseWaterUnitInvoiceMapper">
+
+  <!-- UseWaterUnitInvoice的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+  <resultMap id="UseWaterUnitInvoiceModel" type="com.zjtc.model.UseWaterUnitInvoice">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="pay_info_id" property="payInfoId" jdbcType="VARCHAR"/>
+    <result column="invoice_date" property="invoiceDate" jdbcType="TIMESTAMP"/>
+    <result column="invoice_number" property="invoiceNumber" jdbcType="VARCHAR"/>
+    <result column="invoice_money" property="invoiceMoney" jdbcType="VARCHAR"/>
+    <result column="invoice_unit_name" property="invoiceUnitName" jdbcType="VARCHAR"/>
+    <result column="enabled" property="enabled" jdbcType="VARCHAR"/>
+    <result column="drawer" property="drawer" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="invoice_type" property="invoiceType" jdbcType="VARCHAR"/>
+    <result column="invoice_unit_code" property="invoiceUnitCode" jdbcType="VARCHAR"/>
+    <result column="printed" property="printed" jdbcType="VARCHAR"/>
+    <result column="person" property="person" jdbcType="VARCHAR"/>
+    <result column="received" property="received" jdbcType="VARCHAR"/>
+    <result column="receive_time" property="receiveTime" jdbcType="TIMESTAMP"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+    <result column="rownumber" property="rownumber" jdbcType="VARCHAR"/>
+    <result column="unitCode" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="countQuarter" property="countQuarter" jdbcType="VARCHAR"/>
+    <result column="countYear" property="countYear" jdbcType="INTEGER"/>
+    <result column="actualAmount" property="actualAmount" jdbcType="DOUBLE"/>
+
+  </resultMap>
+
+  <select id="selectInvoiceNumber" resultType="int">
+    SELECT COUNT
+    ( 1 )
+    FROM
+    t_w_use_water_unit_invoice
+    WHERE
+    node_code = #{nodeCode}
+    <if test="invoiceNumber != null and invoiceNumber != ''">
+      AND invoice_number = #{invoiceNumber}
+    </if>
+    and deleted = '0'
+  </select>
+
+  <select id="selectReceived" resultType="String">
+    SELECT invoice_number
+    FROM
+    t_w_use_water_unit_invoice
+    WHERE 1 = 1
+    <if test="id != null and id != ''">
+      and id IN ( #{id})
+    </if>
+    AND received = '1'
+    and deleted = '0'
+  </select>
+
+  <select id="selectUseWaterUnitInvoice" resultMap="UseWaterUnitInvoiceModel">
+    select id,invoice_number from t_w_use_water_unit_invoice where id = #{id} and deleted = '0' and
+    node_code = #{nodeCode}
+  </select>
+
+  <update id="updateUid">
+    UPDATE t_w_use_water_unit_invoice
+    SET person = #{personId}
+    WHERE
+    (convert(int,invoice_number) &gt;= #{begin} AND convert(int,invoice_number) &lt;= #{end})
+    AND person = #{loginId}
+    and deleted = '0' AND pay_info_id IS NULL and enabled = '0'  AND received = '0' and node_code = #{nodeCode}
+  </update>
+
+  <select id="selectCount" resultType="int">
+    SELECT
+    COUNT(1)
+    FROM
+    t_w_use_water_unit_invoice i
+    LEFT JOIN t_w_water_use_pay_info p ON i.pay_info_id = p.id
+    LEFT JOIN ( SELECT uu.* FROM t_w_use_water_unit uu, t_w_use_water_unit_role ur
+    WHERE ur.person_id = #{loginId}
+    and ur.node_code = #{nodeCode}
+    AND uu.unit_code_type = ur.unit_type_code ) u ON p.use_Water_unit_id = u.id
+    WHERE
+    i.person= #{loginId}
+    and i.node_code = #{nodeCode}
+    and i.deleted = '0'
+    <if test="invoiceNumber != null and invoiceNumber != ''">-->
+      and  i.invoice_number like '%${invoiceNumber}%'
+    </if>
+    <if test="(begin != null and begin != '') or (end != null and end != '') ">
+      and  (convert(int,i.invoice_number) &gt;= #{begin} AND convert(int,i.invoice_number) &lt;= #{end})
+    </if>
+    <if test="enabled != null and enabled != ''">
+      and  i.enabled = #{enabled}
+    </if>
+    <if test="received != null and received != ''">
+      and  i.received = #{received}
+    </if>
+  </select>
+
+  <select id="selectInvoices" resultType="java.util.LinkedHashMap">
+    SELECT
+    i.id,
+    i.invoice_number AS invoiceNumber
+    FROM
+    t_w_use_water_unit_invoice i
+    LEFT JOIN t_w_water_use_pay_info p ON i.pay_info_id = p.id
+    LEFT JOIN (
+    SELECT
+    uu.*
+    FROM
+    t_w_use_water_unit uu,
+    t_w_use_water_unit_role ur
+    WHERE
+    ur.person_id = #{loginId}
+    AND ur.node_code = #{nodeCode}
+    AND uu.unit_code_type = ur.unit_type_code
+    ) u ON p.use_Water_unit_id = u.id
+    WHERE
+    i.person= #{loginId}
+    AND i.node_code = #{nodeCode}
+    AND i.deleted = '0'
+    AND ( i.pay_info_id IS NULL OR i.pay_info_id = '' )
+    AND i.enabled = '0'
+    AND i.received = '0'
+    AND i.deleted = '0'
+    ORDER BY
+    i.invoice_number DESC
+
+  </select>
+
+  <select id="queryList" parameterType="java.util.Map" resultMap="UseWaterUnitInvoiceModel">
+    SELECT TOP
+    ${pageSize} c.*
+    FROM
+    (
+    SELECT
+    row_number () OVER ( ORDER BY [invoice_number] DESC ) AS rownumber,
+    i.id,
+    i.pay_info_id,
+    i.invoice_date,
+    i.invoice_number,
+    i.invoice_money,
+    i.invoice_unit_name,
+    i.enabled,
+    i.drawer,
+    i.create_time,
+    i.invoice_type,
+    i.invoice_unit_code,
+    i.printed,
+    i.person,
+    i.received,
+    i.receive_time,
+    i.remarks,
+    u.unit_code as unitCode,
+    p.count_quarter as countQuarter,
+    p.count_year as countYear,
+    p.actual_amount as actualAmount
+    FROM
+    t_w_use_water_unit_invoice i
+    LEFT JOIN t_w_water_use_pay_info p ON i.pay_info_id = p.id
+    LEFT JOIN ( SELECT uu.* FROM t_w_use_water_unit uu, t_w_use_water_unit_role ur
+    WHERE ur.person_id = #{loginId}
+    and ur.node_code = #{nodeCode}
+    AND uu.unit_code_type = ur.unit_type_code ) u ON p.use_Water_unit_id = u.id
+    WHERE
+    i.person= #{loginId}
+    and i.node_code = #{nodeCode}
+    and i.deleted = '0'
+    <if test="invoiceNumber != null and invoiceNumber != ''">-->
+      and  i.invoice_number like '%${invoiceNumber}%'
+    </if>
+    <if test="(begin != null and begin != '') or (end != null and end != '') ">
+    and  (convert(int,i.invoice_number) &gt;= #{begin} AND convert(int,i.invoice_number) &lt;= #{end})
+    </if>
+    <if test="enabled != null and enabled != ''">
+      and  i.enabled = #{enabled}
+    </if>
+    <if test="received != null and received != ''">
+      and  i.received = #{received}
+    </if>
+    ) c
+    WHERE
+    rownumber > (${pageSize}*(${currPage}-1))
+  </select>
+
+  <!--<select id="selectInvoices" resultType="java.util.LinkedHashMap">-->
+    <!--SELECT-->
+    <!--id,-->
+    <!--invoice_number as invoiceNumber-->
+    <!--FROM-->
+    <!--t_w_use_water_unit_invoice-->
+    <!--WHERE-->
+    <!--( pay_info_id is NULL OR pay_info_id = '' )-->
+    <!--AND enabled = '0'-->
+    <!--AND received = '0'-->
+    <!--AND deleted = '0'-->
+    <!--order by invoice_number desc-->
+  <!--</select>-->
+
+  <update id="updateInvoicesUnitMessage" >
+    update t_w_use_water_unit_invoice
+    <set>
+      <if test="useWaterUnitInvoice.payInfoId != null and useWaterUnitInvoice.payInfoId != ''">
+        pay_info_id = #{useWaterUnitInvoice.payInfoId},
+      </if>
+      <if test="useWaterUnitInvoice.invoiceDate != null">
+        invoice_date = #{useWaterUnitInvoice.invoiceDate},
+      </if>
+      <if test="useWaterUnitInvoice.invoiceMoney != null and useWaterUnitInvoice.invoiceMoney != ''">
+        invoice_money = #{useWaterUnitInvoice.invoiceMoney},
+      </if>
+      <if test="useWaterUnitInvoice.invoiceUnitName != null and useWaterUnitInvoice.invoiceUnitName != ''">
+        invoice_unit_name = #{useWaterUnitInvoice.invoiceUnitName},
+      </if>
+      <if test="useWaterUnitInvoice.invoiceType != null and useWaterUnitInvoice.invoiceType != ''">
+        invoice_type  = #{useWaterUnitInvoice.invoiceType},
+      </if>
+      <if test="useWaterUnitInvoice.invoiceUnitCode != null and useWaterUnitInvoice.invoiceUnitCode != ''">
+        invoice_unit_code = #{useWaterUnitInvoice.invoiceUnitCode},
+      </if>
+      <if test="userName != null and userName != ''">
+        drawer = #{userName}
+      </if>
+    </set>
+    <where>
+      id = #{useWaterUnitInvoice.id}
+    </where>
+  </update>
+
+  <select id="selectEnabledStatus" resultType="String">
+    SELECT
+    invoice_number
+    FROM
+    t_w_use_water_unit_invoice
+    WHERE
+    invoice_date > (
+    SELECT MIN
+    ( invoice_date )
+    FROM
+    t_w_use_water_unit_invoice
+    WHERE
+    pay_info_id IN ( SELECT pay_info_id FROM t_w_use_water_unit_invoice WHERE pay_info_id = #{id} AND enabled = '1' AND deleted = '0' and node_code = #{nodeCode})
+    AND enabled = '1' AND deleted = '0' and node_code = #{nodeCode}
+    )
+    AND enabled = '1' AND deleted = '0' and node_code = #{nodeCode} ORDER BY invoice_number desc
+  </select>
+
+  <update id="updateEnabledStatus" >
+    update t_w_use_water_unit_invoice
+    <set>
+      enabled = '0'
+    </set>
+    where id = #{id}
+  </update>
+
+  <select id="export" resultMap="UseWaterUnitInvoiceModel">
+    SELECT
+    row_number () OVER ( ORDER BY [invoice_number] DESC ) AS rownumber,
+    i.id,
+    i.pay_info_id,
+    i.invoice_date,
+    i.invoice_number,
+    i.invoice_money,
+    i.invoice_unit_name,
+    i.enabled,
+    i.drawer,
+    i.create_time,
+    i.invoice_type,
+    i.invoice_unit_code,
+    CASE
+    i.received
+    WHEN '0' THEN
+    '未领取'
+    WHEN '1' THEN
+    '已领取' ELSE '未知状态'
+    END received,
+    i.person,
+    i.received,
+    i.receive_time,
+    i.remarks,
+    i.node_code
+    FROM
+    t_w_use_water_unit_invoice i
+    LEFT JOIN t_w_water_use_pay_info p ON i.pay_info_id = p.id
+    LEFT JOIN ( SELECT uu.* FROM t_w_use_water_unit uu, t_w_use_water_unit_role ur
+    WHERE ur.person_id = '202ea4455ab7497e903a1acbdd4cc91c'
+    and ur.node_code = '510100'
+    AND uu.unit_code_type = ur.unit_type_code ) u ON p.use_Water_unit_id = u.id
+    WHERE
+    i.person= '202ea4455ab7497e903a1acbdd4cc91c'
+    and i.node_code = '510100'
+    and i.deleted = '0'
+    <if test="invoiceNumber != null and invoiceNumber != ''">
+      and  i.invoice_number like '%${invoiceNumber}%'
+    </if>
+    <if test="(begin != null and begin != '') or (end != null and end != '') ">
+      and   (convert(int,i.invoice_number) &gt;= #{begin} AND convert(int,i.invoice_number) &lt;= #{end})
+    </if>
+    <if test="enabled != null and enabled != ''">
+      and  i.enabled = #{enabled}
+    </if>
+    <if test="received != null and received != ''">
+      and  i.received = #{received}
+    </if>
+  </select>
+
+</mapper>

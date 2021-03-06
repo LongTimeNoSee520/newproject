@@ -2,7 +2,7 @@ package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.zjtc.mapper.WaterUseDataMapper;
+import com.zjtc.mapper.waterBiz.WaterUseDataMapper;
 import com.zjtc.model.WaterUseData;
 import com.zjtc.service.WaterUseDataService;
 import java.util.ArrayList;

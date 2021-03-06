@@ -2,7 +2,7 @@ package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.zjtc.mapper.FlowNodeInfoMapper;
+import com.zjtc.mapper.waterBiz.FlowNodeInfoMapper;
 import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.FlowNodeLineInfo;
 import com.zjtc.service.FlowNodeInfoService;

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.UseWaterUnitRefMapper">
+
+  <select id="maxUnitCode" resultType="java.util.LinkedHashMap">
+    SELECT
+      a.unit_code,
+      a.unit_name,
+      (select * from )
+      from t_w_use_water_unit as a
+
+
+  </select>
+
+</mapper>

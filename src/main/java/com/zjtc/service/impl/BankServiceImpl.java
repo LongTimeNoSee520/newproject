@@ -2,7 +2,7 @@ package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.zjtc.mapper.BankMapper;
+import com.zjtc.mapper.waterBiz.BankMapper;
 import com.zjtc.model.Bank;
 import com.zjtc.service.BankService;
 import java.util.ArrayList;

@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.UseWaterUnitMonitorMapper">
+	<resultMap id="BaseResultMap" type="com.zjtc.model.UseWaterUnitMonitor">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+		<result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+		<result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+		<result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+		<result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
+		<result column="industry" property="industry" jdbcType="VARCHAR"/>
+		<result column="year" property="year" jdbcType="INTEGER"/>
+		<result column="monitor_type" property="monitorType" jdbcType="VARCHAR"/>
+		<result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+		<result column="create_person_id" property="createPersonId" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP"/>
+		<result column="unit_code_type" property="unitCodeType" jdbcType="VARCHAR"/>
+		<result column="industry_name" property="industryName" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="pageResultMap" type="java.util.LinkedHashMap">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+		<result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+		<result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+		<result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+		<result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
+		<result column="industry" property="industry" jdbcType="VARCHAR"/>
+		<result column="industry_name" property="industryName" jdbcType="VARCHAR"/>
+		<result column="year" property="year" jdbcType="INTEGER"/>
+		<result column="unit_code_type" property="unitCodeType" jdbcType="VARCHAR"/>
+		<result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+		<result column="cur_year_total" property="curYearTotal" jdbcType="DOUBLE"/>
+		<result column="cur_year_rate" property="curYearRate" jdbcType="DOUBLE"/>
+		<result column="first_quarter_plan" property="firstQuarterPlan" jdbcType="DOUBLE"/>
+		<result column="first_quarter_total" property="firstQuarterTotal" jdbcType="DOUBLE"/>
+		<result column="first_quarter_rate" property="firstQuarterRate" jdbcType="DOUBLE"/>
+		<result column="second_quarter_plan" property="secondQuarterPlan" jdbcType="DOUBLE"/>
+		<result column="second_quarter_total" property="secondQuarterTotal" jdbcType="DOUBLE"/>
+		<result column="second_quarter_rate" property="secondQuarterRate" jdbcType="DOUBLE"/>
+		<result column="third_quarter_plan" property="thirdQuarterPlan" jdbcType="DOUBLE"/>
+		<result column="third_quarter_total" property="thirdQuarterTotal" jdbcType="DOUBLE"/>
+		<result column="third_quarter_rate" property="thirdQuarterRate" jdbcType="DOUBLE"/>
+		<result column="fourth_quarter_plan" property="fourthQuarterPlan" jdbcType="DOUBLE"/>
+		<result column="fourth_quarter_total" property="fourthQuarterTotal" jdbcType="DOUBLE"/>
+		<result column="fourth_quarter_rate" property="fourthQuarterRate" jdbcType="DOUBLE"/>
+		<result column="january_count" property="januaryCount" jdbcType="DOUBLE"/>
+		<result column="february_count" property="februaryCount" jdbcType="DOUBLE"/>
+		<result column="march_count" property="marchCount" jdbcType="DOUBLE"/>
+		<result column="april_count" property="aprilCount" jdbcType="DOUBLE"/>
+		<result column="may_count" property="mayCount" jdbcType="DOUBLE"/>
+		<result column="june_count" property="juneCount" jdbcType="DOUBLE"/>
+		<result column="july_count" property="julyCount" jdbcType="DOUBLE"/>
+		<result column="august_count" property="augustCount" jdbcType="DOUBLE"/>
+		<result column="september_count" property="septemberCount" jdbcType="DOUBLE"/>
+		<result column="october_count" property="octoberCount" jdbcType="DOUBLE"/>
+		<result column="november_count" property="novemberCount" jdbcType="DOUBLE"/>
+		<result column="december_count" property="decemberCount" jdbcType="DOUBLE"/>
+		<!--<association property="firstQuarter" javaType="java.util.LinkedHashMap" column="id"-->
+			<!--select="queryFirstQuarter">-->
+		<!--</association>-->
+		<!--<association property="secondQuarter" javaType="java.util.LinkedHashMap" column="id"-->
+			<!--select="querySecondQuarter">-->
+		<!--</association>-->
+		<!--<association property="thirdQuarter" javaType="java.util.LinkedHashMap" column="id"-->
+			<!--select="queryThirdQuarter">-->
+		<!--</association>-->
+		<!--<association property="fourthQuarter" javaType="java.util.LinkedHashMap" column="id"-->
+			<!--select="queryFourthQuarter">-->
+		<!--</association>-->
+	</resultMap>
+	<select id="queryNum" resultType="int">
+		SELECT COUNT (t1.id)
+		FROM (
+		SELECT id
+		FROM t_w_use_water_unit_monitor
+		WHERE deleted = '0'
+		AND node_code = #{nodeCode}
+    AND monitor_type = #{monitorType}
+		AND unit_code_type <!--类型-->
+		IN (
+		SELECT unit_type_code
+		FROM t_w_use_water_unit_role
+		WHERE person_id = #{userId}
+		)
+		<if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
+		<if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
+		<if test="unitCodeType != null and unitCodeType !=''">AND unit_code_type LIKE '%${unitCodeType}%'</if>
+		<if test="year != null">AND year = #{year} </if>
+		<if test="industryId != null and industryId !=''">AND industry = #{industryId}</if>
+		)t1
+	</select>
+ <select id="queryPage" resultMap="pageResultMap">
+	 SELECT a.id,a.node_code,a.use_water_unit_id,a.unit_code,a.unit_name,a.unit_address,a.industry,a.industry_name,
+	 a.year,a.unit_code_type,
+	 COALESCE(b.cur_year_plan,0) AS cur_year_plan,COALESCE(b.first_quarter_plan,0) AS first_quarter_plan,
+	 COALESCE(b.second_quarter_plan,0) AS second_quarter_plan,COALESCE(b.third_quarter_plan,0) AS third_quarter_plan,
+	 COALESCE(b.fourth_quarter_plan,0) AS fourth_quarter_plan, COALESCE(c.january_count,0)AS january_count,
+	 COALESCE(c.february_count,0) AS february_count,COALESCE(c.march_count,0) AS march_count,
+	 COALESCE(c.april_count,0) AS april_count, COALESCE(c.may_count,0) AS  may_count,
+	 COALESCE(c.june_count,0) AS june_count,COALESCE(c.july_count,0) AS july_count,
+	 COALESCE(c.august_count,0) AS august_count, COALESCE(c.september_count,0) AS september_count,
+	 COALESCE(c.october_count,0) AS october_count,COALESCE(c.november_count,0) AS november_count,
+	 COALESCE(c.december_count,0) AS december_count,COALESCE(c.first_quarter_total,0) AS first_quarter_total,
+	 COALESCE(c.second_quarter_total,0) AS second_quarter_total,COALESCE(c.third_quarter_total,0) AS third_quarter_total,
+	 COALESCE(c.fourth_quarter_total,0) AS fourth_quarter_total, COALESCE(c.cur_year_total,0) AS cur_year_total,
+	 CASE    WHEN ((COALESCE(c.cur_year_total,0)-COALESCE(b.cur_year_plan,0))=0 OR COALESCE(b.cur_year_plan,0)= 0 )THEN 0
+	 ELSE Convert(decimal(10,2),(COALESCE(c.cur_year_total,0)-COALESCE(b.cur_year_plan,0)) /COALESCE(b.cur_year_plan,0)* 100)
+	 END AS cur_year_rate,<!--年节超率-->
+	 CASE    WHEN ((COALESCE(c.first_quarter_total,0)-COALESCE(b.first_quarter_plan,0))=0 OR COALESCE(b.first_quarter_plan,0)= 0 )THEN 0
+	 ELSE  Convert(decimal(10,2),(COALESCE(c.first_quarter_total,0)-COALESCE(b.first_quarter_plan,0)) /COALESCE(b.first_quarter_plan,0)* 100)
+	 END AS first_quarter_rate,<!--一季度节超率-->
+	 CASE    WHEN ((COALESCE(c.second_quarter_total,0)-COALESCE(b.second_quarter_plan,0))=0 OR COALESCE(b.second_quarter_plan,0)= 0 )THEN 0
+	 ELSE  Convert(decimal(10,2),(COALESCE(c.second_quarter_total,0)-COALESCE(b.second_quarter_plan,0)) /COALESCE(b.second_quarter_plan,0)* 100)
+	 END AS second_quarter_rate,<!--二季度节超率-->
+	 CASE    WHEN ((COALESCE(c.third_quarter_total,0)-COALESCE(b.third_quarter_plan,0))=0 OR COALESCE(b.third_quarter_plan,0)= 0 )THEN 0
+	 ELSE  Convert(decimal(10,2),(COALESCE(c.third_quarter_total,0)-COALESCE(b.third_quarter_plan,0)) /COALESCE(b.third_quarter_plan,0) * 100)
+	 END AS third_quarter_rate,<!--三季度节超率-->
+	 CASE    WHEN ((COALESCE(c.fourth_quarter_total,0)-COALESCE(b.fourth_quarter_plan,0))=0 OR COALESCE(b.fourth_quarter_plan,0)= 0 )THEN 0
+	 ELSE Convert(decimal(10,2),(COALESCE(c.fourth_quarter_total,0)-COALESCE(b.fourth_quarter_plan,0)) /COALESCE(b.fourth_quarter_plan,0)* 100)
+	 END AS fourth_quarter_rate<!--四季度节超率-->
+	 FROM
+	 (SELECT TOP  ${size} t1.*
+	  FROM(
+	       SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,*
+				 FROM
+				 t_w_use_water_unit_monitor
+				 WHERE id
+				 IN  (SELECT id
+									 FROM t_w_use_water_unit_monitor
+									 WHERE deleted = '0'
+									 AND node_code = #{nodeCode}
+	                 AND monitor_type = #{monitorType}
+									 AND unit_code_type <!--用户类型(权限控制)-->
+									 IN (
+									 SELECT unit_type_code
+									 FROM t_w_use_water_unit_role
+									 WHERE person_id = #{userId}
+									 )
+	                 <if test="mobileNumber != null or contacts !=null">
+										AND unit_code
+										IN ( SELECT unit_code FROM  t_w_use_water_unit_contacts
+										     WHERE  deleted = '0'
+												 <if test="mobileNumber != null or mobileNumber !=''">
+													 AND mobile_number LIKE  '%${mobileNumber}%'
+												 </if>
+												 <if test="contacts != null or contacts !=''">
+													 AND contacts LIKE  '%${contacts}%'
+												 </if>
+										 )
+									 </if>
+									 <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
+									 <if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
+									 <if test="unitCodeType != null and unitCodeType !=''">AND unit_code_type LIKE '%${unitCodeType}%'</if>
+									 <if test="year != null">AND year = #{year} </if>
+									 <if test="industryId != null and industryId !=''">AND industry = #{industryId}</if>
+							 )
+	  )t1
+	 WHERE  rownumber > (#{current}-1)* #{size}
+	 )a
+ LEFT JOIN (
+	 SELECT plan_year,use_water_unit_id,COALESCE(cur_year_plan,0)AS cur_year_plan,COALESCE(first_quarter,0) AS first_quarter_plan,
+	 COALESCE(second_quarter,0) AS second_quarter_plan,COALESCE(third_quarter,0) AS third_quarter_plan,
+	 COALESCE(fourth_quarter,0) AS fourth_quarter_plan
+	 FROM t_w_use_water_plan
+	 )b
+ ON a.use_water_unit_id = b.use_water_unit_id
+ AND a.year = b.plan_year
+ LEFT JOIN (
+	 SELECT sum(COALESCE(january_count,0))AS january_count,sum(COALESCE(february_count,0))AS february_count,
+	        sum(COALESCE(march_count,0))AS march_count,sum(COALESCE(april_count,0))AS april_count,
+	        sum(COALESCE(may_count,0))AS may_count,sum(COALESCE(june_count,0))AS june_count,
+	        sum(COALESCE(july_count,0))AS july_count,sum(COALESCE(august_count,0))AS august_count,
+	        sum(COALESCE(september_count,0))AS september_count,sum(COALESCE(october_count,0))AS october_count,
+	        sum(COALESCE(november_count,0))AS november_count,sum(COALESCE(december_count,0))AS december_count,
+	        use_water_unit_id,use_year,
+	        sum(COALESCE(january_count,0)+COALESCE(february_count,0)+COALESCE(march_count,0)) AS first_quarter_total,
+	        sum(COALESCE(april_count,0)+COALESCE(may_count,0)+COALESCE(june_count,0)) AS second_quarter_total,
+	        sum(COALESCE(july_count,0)+COALESCE(august_count,0)+COALESCE(september_count,0)) AS third_quarter_total,
+	        sum(COALESCE(october_count,0)+COALESCE(november_count,0)+COALESCE(december_count,0)) AS fourth_quarter_total,
+	        sum(COALESCE(january_count,0)+COALESCE(february_count,0)+COALESCE(march_count,0)
+	            +COALESCE(april_count,0)+COALESCE(may_count,0)+COALESCE(june_count,0)
+	            +COALESCE(july_count,0)+COALESCE(august_count,0)+COALESCE(september_count,0)
+	            +COALESCE(october_count,0)+COALESCE(november_count,0)+COALESCE(december_count,0)) AS cur_year_total
+	 FROM t_w_water_month_use_data
+	 GROUP BY use_water_unit_id,use_year
+	 )c
+ ON a.use_water_unit_id = c.use_water_unit_id
+ AND a.year = c.use_year
+ </select>
+
+	<resultMap id="exportResultMap" type="com.zjtc.model.vo.UseWaterMonitorExportVO">
+		<result column="row_number" property="rowNumber" jdbcType="INTEGER"/>
+		<result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+		<result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+		<result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
+		<result column="industry_name" property="industryName" jdbcType="VARCHAR"/>
+		<result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+		<result column="cur_year_total" property="curYearTotal" jdbcType="DOUBLE"/>
+		<result column="cur_year_rate" property="curYearRate" jdbcType="VARCHAR"/>
+		<result column="first_quarter_plan" property="firstQuarterPlan" jdbcType="DOUBLE"/>
+		<result column="first_quarter_total" property="firstQuarterTotal" jdbcType="DOUBLE"/>
+		<result column="first_quarter_rate" property="firstQuarterRate" jdbcType="VARCHAR"/>
+		<result column="second_quarter_plan" property="secondQuarterPlan" jdbcType="DOUBLE"/>
+		<result column="second_quarter_total" property="secondQuarterTotal" jdbcType="DOUBLE"/>
+		<result column="second_quarter_rate" property="secondQuarterRate" jdbcType="VARCHAR"/>
+		<result column="third_quarter_plan" property="thirdQuarterPlan" jdbcType="DOUBLE"/>
+		<result column="third_quarter_total" property="thirdQuarterTotal" jdbcType="DOUBLE"/>
+		<result column="third_quarter_rate" property="thirdQuarterRate" jdbcType="VARCHAR"/>
+		<result column="fourth_quarter_plan" property="fourthQuarterPlan" jdbcType="DOUBLE"/>
+		<result column="fourth_quarter_total" property="fourthQuarterTotal" jdbcType="DOUBLE"/>
+		<result column="fourth_quarter_rate" property="fourthQuarterRate" jdbcType="VARCHAR"/>
+		<result column="january_count" property="januaryCount" jdbcType="DOUBLE"/>
+		<result column="february_count" property="februaryCount" jdbcType="DOUBLE"/>
+		<result column="march_count" property="marchCount" jdbcType="DOUBLE"/>
+		<result column="april_count" property="aprilCount" jdbcType="DOUBLE"/>
+		<result column="may_count" property="mayCount" jdbcType="DOUBLE"/>
+		<result column="june_count" property="juneCount" jdbcType="DOUBLE"/>
+		<result column="july_count" property="julyCount" jdbcType="DOUBLE"/>
+		<result column="august_count" property="augustCount" jdbcType="DOUBLE"/>
+		<result column="september_count" property="septemberCount" jdbcType="DOUBLE"/>
+		<result column="october_count" property="octoberCount" jdbcType="DOUBLE"/>
+		<result column="november_count" property="novemberCount" jdbcType="DOUBLE"/>
+		<result column="december_count" property="decemberCount" jdbcType="DOUBLE"/>
+	</resultMap>
+	<select id="selectExportData" resultMap="exportResultMap">
+		SELECT a.rownumber as row_number,a.unit_code,a.unit_name,a.unit_address,a.industry,a.industry_name,
+		a.year,a.unit_code_type,
+		COALESCE(b.cur_year_plan,0) AS cur_year_plan,COALESCE(b.first_quarter_plan,0) AS first_quarter_plan,
+		COALESCE(b.second_quarter_plan,0) AS second_quarter_plan,COALESCE(b.third_quarter_plan,0) AS third_quarter_plan,
+		COALESCE(b.fourth_quarter_plan,0) AS fourth_quarter_plan, COALESCE(c.january_count,0)AS january_count,
+		COALESCE(c.february_count,0) AS february_count,COALESCE(c.march_count,0) AS march_count,
+		COALESCE(c.april_count,0) AS april_count, COALESCE(c.may_count,0) AS  may_count,
+		COALESCE(c.june_count,0) AS june_count,COALESCE(c.july_count,0) AS july_count,
+		COALESCE(c.august_count,0) AS august_count, COALESCE(c.september_count,0) AS september_count,
+		COALESCE(c.october_count,0) AS october_count,COALESCE(c.november_count,0) AS november_count,
+		COALESCE(c.december_count,0) AS december_count,COALESCE(c.first_quarter_total,0) AS first_quarter_total,
+		COALESCE(c.second_quarter_total,0) AS second_quarter_total,COALESCE(c.third_quarter_total,0) AS third_quarter_total,
+		COALESCE(c.fourth_quarter_total,0) AS fourth_quarter_total, COALESCE(c.cur_year_total,0) AS cur_year_total,
+		CASE    WHEN ((COALESCE(c.cur_year_total,0)-COALESCE(b.cur_year_plan,0))=0 OR COALESCE(b.cur_year_plan,0)= 0 )THEN 0
+		ELSE Convert(decimal(10,2),(COALESCE(c.cur_year_total,0)-COALESCE(b.cur_year_plan,0)) /COALESCE(b.cur_year_plan,0)* 100)
+		END AS cur_year_rate,<!--年节超率-->
+		CASE    WHEN ((COALESCE(c.first_quarter_total,0)-COALESCE(b.first_quarter_plan,0))=0 OR COALESCE(b.first_quarter_plan,0)= 0 )THEN 0
+		ELSE  Convert(decimal(10,2),(COALESCE(c.first_quarter_total,0)-COALESCE(b.first_quarter_plan,0)) /COALESCE(b.first_quarter_plan,0)* 100)
+		END AS first_quarter_rate,<!--一季度节超率-->
+		CASE    WHEN ((COALESCE(c.second_quarter_total,0)-COALESCE(b.second_quarter_plan,0))=0 OR COALESCE(b.second_quarter_plan,0)= 0 )THEN 0
+		ELSE  Convert(decimal(10,2),(COALESCE(c.second_quarter_total,0)-COALESCE(b.second_quarter_plan,0)) /COALESCE(b.second_quarter_plan,0)* 100)
+		END AS second_quarter_rate,<!--二季度节超率-->
+		CASE    WHEN ((COALESCE(c.third_quarter_total,0)-COALESCE(b.third_quarter_plan,0))=0 OR COALESCE(b.third_quarter_plan,0)= 0 )THEN 0
+		ELSE  Convert(decimal(10,2),(COALESCE(c.third_quarter_total,0)-COALESCE(b.third_quarter_plan,0)) /COALESCE(b.third_quarter_plan,0) * 100)
+		END AS third_quarter_rate,<!--三季度节超率-->
+		CASE    WHEN ((COALESCE(c.fourth_quarter_total,0)-COALESCE(b.fourth_quarter_plan,0))=0 OR COALESCE(b.fourth_quarter_plan,0)= 0 )THEN 0
+		ELSE Convert(decimal(10,2),(COALESCE(c.fourth_quarter_total,0)-COALESCE(b.fourth_quarter_plan,0)) /COALESCE(b.fourth_quarter_plan,0)* 100)
+		END AS fourth_quarter_rate<!--四季度节超率-->
+		FROM
+		(
+		SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,*
+		FROM
+		t_w_use_water_unit_monitor
+		WHERE id
+		IN  (SELECT id
+		FROM t_w_use_water_unit_monitor
+		WHERE deleted = '0'
+		AND node_code = #{nodeCode}
+		AND monitor_type = #{monitorType}
+		AND unit_code_type <!--用户类型(权限控制)-->
+		IN (
+		SELECT unit_type_code
+		FROM t_w_use_water_unit_role
+		WHERE person_id = #{userId}
+		)
+		<if test="mobileNumber != null or contacts !=null">
+			AND unit_code
+			IN ( SELECT unit_code FROM  t_w_use_water_unit_contacts
+			WHERE  deleted = '0'
+			<if test="mobileNumber != null or mobileNumber !=''">
+				AND mobile_number LIKE  '%${mobileNumber}%'
+			</if>
+			<if test="contacts != null or contacts !=''">
+				AND	contacts LIKE  '%${contacts}%'
+			</if>
+			)
+		</if>
+		<if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
+		<if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
+		<if test="unitCodeType != null and unitCodeType !=''">AND unit_code_type LIKE '%${unitCodeType}%'</if>
+		<if test="year != null">AND year = #{year} </if>
+		<if test="industryId != null and industryId !=''">AND industry = #{industryId}</if>
+		)
+		)a
+		LEFT JOIN (
+		SELECT plan_year,use_water_unit_id,COALESCE(cur_year_plan,0)AS cur_year_plan,COALESCE(first_quarter,0) AS first_quarter_plan,
+		COALESCE(second_quarter,0) AS second_quarter_plan,COALESCE(third_quarter,0) AS third_quarter_plan,
+		COALESCE(fourth_quarter,0) AS fourth_quarter_plan
+		FROM t_w_use_water_plan
+		)b
+		ON a.use_water_unit_id = b.use_water_unit_id
+		AND a.year = b.plan_year
+		LEFT JOIN (
+		SELECT sum(COALESCE(january_count,0))AS january_count,sum(COALESCE(february_count,0))AS february_count,
+		sum(COALESCE(march_count,0))AS march_count,sum(COALESCE(april_count,0))AS april_count,
+		sum(COALESCE(may_count,0))AS may_count,sum(COALESCE(june_count,0))AS june_count,
+		sum(COALESCE(july_count,0))AS july_count,sum(COALESCE(august_count,0))AS august_count,
+		sum(COALESCE(september_count,0))AS september_count,sum(COALESCE(october_count,0))AS october_count,
+		sum(COALESCE(november_count,0))AS november_count,sum(COALESCE(december_count,0))AS december_count,
+		use_water_unit_id,use_year,
+		sum(COALESCE(january_count,0)+COALESCE(february_count,0)+COALESCE(march_count,0)) AS first_quarter_total,
+		sum(COALESCE(april_count,0)+COALESCE(may_count,0)+COALESCE(june_count,0)) AS second_quarter_total,
+		sum(COALESCE(july_count,0)+COALESCE(august_count,0)+COALESCE(september_count,0)) AS third_quarter_total,
+		sum(COALESCE(october_count,0)+COALESCE(november_count,0)+COALESCE(december_count,0)) AS fourth_quarter_total,
+		sum(COALESCE(january_count,0)+COALESCE(february_count,0)+COALESCE(march_count,0)
+		+COALESCE(april_count,0)+COALESCE(may_count,0)+COALESCE(june_count,0)
+		+COALESCE(july_count,0)+COALESCE(august_count,0)+COALESCE(september_count,0)
+		+COALESCE(october_count,0)+COALESCE(november_count,0)+COALESCE(december_count,0)) AS cur_year_total
+		FROM t_w_water_month_use_data
+		GROUP BY use_water_unit_id,use_year
+		)c
+		ON a.use_water_unit_id = c.use_water_unit_id
+		AND a.year = c.use_year
+	</select>
+	<update id="updateDeleted">
+		UPDATE t_w_use_water_unit_monitor
+		SET deleted = '1',
+    delete_time = getdate()
+		WHERE id IN
+		<foreach collection="ids" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</update>
+  <insert id="initNextYear">
+    INSERT INTO
+    t_w_use_water_unit_monitor
+    SELECT LOWER(REPLACE(newId(),'-',''))AS id,<!--生成去除‘-’后的UUID并大写转小写-->
+    node_code,use_water_unit_id,unit_code,unit_name,unit_address,
+    industry_name,(year+1) AS year,monitor_type,deleted,${userId} AS create_person_id,getdate() AS create_time,
+    delete_time,unit_code_type,industry
+    FROM t_w_use_water_unit_monitor
+    WHERE [year] = ( SELECT MAX([year]) from t_w_use_water_unit_monitor WHERE deleted ='0' and monitor_type = #{monitorType})
+    AND  deleted ='0'
+    AND  monitor_type = #{monitorType}
+    AND node_code = #{nodeCode}
+  </insert>
+</mapper>

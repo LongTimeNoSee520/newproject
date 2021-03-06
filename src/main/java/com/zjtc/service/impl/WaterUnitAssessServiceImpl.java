@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.CommonUtil;
 import com.zjtc.base.util.JxlsUtils;
-import com.zjtc.mapper.WaterUnitAssessMapper;
+import com.zjtc.mapper.waterBiz.WaterUnitAssessMapper;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.WaterUnitAssessVO;
 import com.zjtc.service.WaterUnitAssessService;

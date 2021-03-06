@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.WaterBalanceTestProductMapper">
+	<!-- WaterBalanceTestProduct的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+	<resultMap id="result_WaterBalanceTestProduct_Map" type="com.zjtc.model.WaterBalanceTestProduct">
+		<id column="id" property="id" />
+		<result column="node_code" property="nodeCode" />
+		<result column="balance_test_id" property="balanceTestId" />
+		<result column="product_name" property="productName" />
+		<result column="product_code" property="productCode" />
+		<result column="diff_to_quota" property="diffToQuota" />
+		<result column="per_use_amount" property="perUseAmount" />
+		<result column="year_plan" property="yearPlan" />
+		<result column="deleted" property="deleted" />
+		<result column="delete_time" property="deleteTime" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+
+	<update id="updateNotNull" parameterType="com.zjtc.model.WaterBalanceTestProduct">
+		update t_w_water_balance_test_product
+		<set>
+			<if test="nodeCode != null">node_code = #{nodeCode},</if>
+			<if test="balanceTestId != null">balance_test_id = #{balanceTestId},</if>
+			<if test="productName != null">product_name = #{productName},</if>
+			<if test="productCode != null">product_code = #{productCode},</if>
+			<if test="diffToQuota != null">diff_to_quota = #{diffToQuota},</if>
+			<if test="perUseAmount != null">per_use_amount = #{perUseAmount},</if>
+			<if test="yearPlan != null">year_plan = #{yearPlan},</if>
+			<if test="deleted != null">deleted = #{deleted},</if>
+			<if test="deleteTime != null">delete_time = #{deleteTime},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+		</set>
+		where id = #{id}
+	</update>
+</mapper>

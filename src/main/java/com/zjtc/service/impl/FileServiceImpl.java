@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
 import com.zjtc.base.util.TimeUtil;
-import com.zjtc.mapper.FileMapper;
+import com.zjtc.mapper.waterBiz.FileMapper;
 import com.zjtc.model.File;
 import com.zjtc.service.FileService;
 import java.io.IOException;

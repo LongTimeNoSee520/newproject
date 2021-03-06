@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.EndPaperMapper">
+	<!-- EndPaper的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+	<resultMap id="BaseResultMap" type="com.zjtc.model.EndPaper">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+		<result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+		<result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+		<result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+		<result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+		<result column="paper_type" property="paperType" jdbcType="VARCHAR"/>
+		<result column="data_sources" property="dataSources" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="creater_id" property="createrId" jdbcType="VARCHAR"/>
+		<result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+		<result column="change_quarter" property="changeQuarter" jdbcType="VARCHAR"/>
+		<result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+		<result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
+		<result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
+		<result column="add_number" property="addNumber" jdbcType="DOUBLE"/>
+		<result column="add_way" property="addWay" jdbcType="VARCHAR"/>
+		<result column="minus_pay_status" property="minusPayStatus" jdbcType="VARCHAR"/>
+		<result column="balance_test" property="balanceTest" jdbcType="VARCHAR"/>
+		<result column="create_type" property="createType" jdbcType="VARCHAR"/>
+		<result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+		<result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+		<result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+		<result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+		<result column="confirmed" property="confirmed" jdbcType="VARCHAR"/>
+		<result column="confirm_time" property="confirmTime" jdbcType="TIMESTAMP"/>
+		<result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
+		<result column="executed" property="executed" jdbcType="VARCHAR"/>
+		<result column="execute_time" property="executeTime" jdbcType="TIMESTAMP"/>
+		<result column="executor" property="executor" jdbcType="VARCHAR"/>
+		<result column="executor_id" property="executorId" jdbcType="VARCHAR"/>
+		<result column="audit_file_id" property="auditFileId" jdbcType="VARCHAR"/>
+		<result column="water_proof_file_id" property="waterProofFileId" jdbcType="VARCHAR"/>
+		<result column="other_file_id" property="otherFileId" jdbcType="VARCHAR"/>
+		<result column="algorithm_rules" property="algorithmRules" jdbcType="VARCHAR"/>
+		<result column="creater_name" property="createrName" jdbcType="VARCHAR"/>
+		<result column="result" property="result" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<resultMap id="PageResultMap" type="com.zjtc.model.vo.EndPaperVO">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+		<result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+		<result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+		<result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+		<result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+		<result column="paper_type" property="paperType" jdbcType="VARCHAR"/>
+		<result column="paper_type_name" property="paperTypeName" jdbcType="VARCHAR"/>
+		<result column="data_sources" property="dataSources" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="creater_id" property="createrId" jdbcType="VARCHAR"/>
+		<result column="creater_name" property="createrName" jdbcType="VARCHAR"/>
+		<result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+		<result column="change_quarter" property="changeQuarter" jdbcType="VARCHAR"/>
+		<result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+		<result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
+		<result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
+		<result column="add_number" property="addNumber" jdbcType="DOUBLE"/>
+		<result column="add_way" property="addWay" jdbcType="VARCHAR"/>
+		<result column="minus_pay_status" property="minusPayStatus" jdbcType="VARCHAR"/>
+		<result column="balance_test" property="balanceTest" jdbcType="VARCHAR"/>
+		<result column="create_type" property="createType" jdbcType="VARCHAR"/>
+		<result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+		<result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+		<result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+		<result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+		<result column="confirmed" property="confirmed" jdbcType="VARCHAR"/>
+		<result column="confirm_time" property="confirmTime" jdbcType="TIMESTAMP"/>
+		<result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
+		<result column="executed" property="executed" jdbcType="VARCHAR"/>
+		<result column="execute_time" property="executeTime" jdbcType="TIMESTAMP"/>
+		<result column="executor" property="executor" jdbcType="VARCHAR"/>
+		<result column="executor_id" property="executorId" jdbcType="VARCHAR"/>
+		<result column="algorithm_rules" property="algorithmRules" jdbcType="VARCHAR"/>
+		<result column="result" property="result" jdbcType="VARCHAR"/>
+		<result column="next_node_id" property="nextNodeId" jdbcType="VARCHAR"/>
+		<result column="can_execute" property="canExecute" jdbcType="BOOLEAN"/>
+		<result column="need_audit" property="needAudit" jdbcType="BOOLEAN"/>
+		<result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
+		<collection property="auditFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
+		select="queryAuditFiles">
+		</collection>
+		<collection property="waterProofFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
+		select="queryWaterProofFiles">
+		</collection>
+		<collection property="otherFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
+		select="queryOtherFiles">
+		</collection>
+	<!--<collection property="unpaidList" ofType="java.util.LinkedHashMap" column="id"-->
+	<!--select="queryUnpaidList">-->
+	<!--</collection>-->
+		<collection property="auditMessages" ofType="java.util.LinkedHashMap" column="{id=id,nodeCode=node_code}"
+			select="queryAuditList">
+		</collection>
+	</resultMap>
+	<resultMap id="FileMap" type="com.zjtc.model.vo.FileVO">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+		<result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+		<result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="queryNum" resultType="int">
+		SELECT COUNT (id)
+		FROM t_w_end_paper
+		WHERE id IN
+		(SELECT id
+		FROM t_w_end_paper
+		WHERE node_code = #{nodeCode}
+    AND (rescinded ='0' OR rescinded IS NULL OR rescinded ='')
+		AND SUBSTRING(unit_code,5,2)<!--类型-->
+		IN (
+		SELECT unit_type_code
+		FROM t_w_use_water_unit_role
+		WHERE person_id = #{userId}
+		)
+		<if test="unitCode != null and unitCode != ''">
+			and unit_code like '%${unitCode}%'
+		</if>
+		<if test="unitName != null and unitName != ''">
+			and unit_name like '%${unitName}%'
+		</if>
+		<if test="executed != null and executed != ''">
+			and executed = #{executed}
+		</if>
+		<if test="waterMeterCode != null and waterMeterCode != ''">
+			and water_meter_code like '%${waterMeterCode}%'
+		</if>
+		<if test="applyTimeStart != null">
+			and create_time &gt;= #{applyTimeStart}
+		</if>
+		<if test="applyTimeEnd != null">
+			and create_time &lt;= #{applyTimeEnd}
+		</if>
+		)
+	</select>
+
+	<select id="queryPage" resultMap="PageResultMap">
+		SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_code,t1.unit_name,#{preViewRealPath} AS preViewRealPath,
+		t1.water_meter_code,t1.paper_type,<!--申报(调整)类型code-->
+		(SELECT dict_item_name
+		  FROM t_dict_item
+		  WHERE dict_id =(SELECT id FROM t_dict WHERE dict_code = 'changeType')
+		  AND  dict_item_code = t1.paper_type
+		)AS paper_type_name,<!--申报(调整)类型名称-->
+		CASE t1.data_sources WHEN '1' THEN '网上申报' WHEN '2' THEN '现场申报' END AS data_sources,
+		t1.create_time,t1.creater_id,t1.creater_name,t1.plan_year,t1.change_quarter,t1.cur_year_plan,
+	  t1.first_water,t1.second_water,t1.add_number,t1.add_way,t1.minus_pay_status,t1.balance_test,
+		t1.create_type,t1.first_quarter,t1.second_quarter,t1.third_quarter,t1.fourth_quarter,
+		CASE t1.confirmed WHEN '0' THEN '否' WHEN '1' THEN '是' END AS confirmed,
+		CASE t1.audit_status WHEN '0' THEN '发起审核' WHEN '1' THEN '审核通过' WHEN '2' THEN '审核中' END AS audit_status,
+		CASE t1.executed WHEN '0' THEN '否' WHEN '1' THEN '是' END AS executed,
+		t1.execute_time,t1.executor,t1.executor_id,t1.algorithm_rules,t1.result,t1.next_node_id,
+    CASE <!--如果在审核流程信息表中找到满足条件的数据，则前端显示审核按钮-->
+    WHEN ((SELECT COUNT(id) FROM t_sms_audit_flow WHERE business_id =t1.id AND operator_id = #{userId} AND audit_status='1')>0)
+    THEN 1  ELSE 0 END AS need_audit,
+    CASE WHEN (t1.confirmed ='1'AND t1.audit_status ='1' AND (executed IS NULL OR executed ='0' OR executed ='')) THEN 1 ELSE 0 END AS can_execute
+		FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,*
+		FROM
+		t_w_end_paper
+		WHERE id IN
+		(SELECT id
+		FROM t_w_end_paper
+		WHERE  node_code = #{nodeCode}
+    AND (rescinded ='0' OR rescinded IS NULL OR rescinded ='')
+		AND SUBSTRING(unit_code,5,2) <!--类型-->
+		IN (
+		SELECT unit_type_code
+		FROM t_w_use_water_unit_role
+		WHERE person_id = #{userId}
+		)
+		<if test="unitCode != null and unitCode != ''">
+			and unit_code like '%${unitCode}%'
+		</if>
+		<if test="unitName != null and unitName != ''">
+			and unit_name like '%${unitName}%'
+		</if>
+		<if test="executed != null and executed != ''">
+			and executed = #{executed}
+		</if>
+		<if test="waterMeterCode != null and waterMeterCode != ''">
+			and water_meter_code like '%${waterMeterCode}%'
+		</if>
+		<if test="applyTimeStart != null">
+			and create_time &gt;= #{applyTimeStart}
+		</if>
+		<if test="applyTimeEnd != null">
+			and create_time &lt;= #{applyTimeEnd}
+		</if>
+		)
+		)t1
+		WHERE  rownumber > (#{current}-1)* #{size}
+	</select>
+
+	<select id="queryAuditFiles" resultMap="FileMap">
+		SELECT id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
+		FROM t_file
+		WHERE deleted ='0'
+		AND id
+		IN (
+		SELECT  SUBSTRING(a.audit_file_id,number,CHARINDEX(',',a.audit_file_id+',',number)-number) as audit_file_id
+		from (SELECT audit_file_id
+		FROM t_w_end_paper
+		WHERE id = #{id} ) a,master..spt_values
+		where number >= 1 and number  &lt; len(a.audit_file_id)
+		and type='p'
+		and SUBSTRING(','+a.audit_file_id,number,1)=','
+		) <!--将逗号隔开的字符串拆分为行-->
+	</select>
+	<select id="queryWaterProofFiles" resultMap="FileMap">
+		SELECT id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
+		FROM t_file
+		WHERE deleted ='0'
+		AND id
+		IN (
+		SELECT  SUBSTRING(a.water_proof_file_id,number,CHARINDEX(',',a.water_proof_file_id+',',number)-number) as water_proof_file_id
+		from (SELECT water_proof_file_id
+		FROM t_w_end_paper
+		WHERE id = #{id} ) a,master..spt_values
+		where number >= 1 and number  &lt; len(a.water_proof_file_id)
+		and type='p'
+		and SUBSTRING(','+a.water_proof_file_id,number,1)=','
+		) <!--将逗号隔开的字符串拆分为行-->
+	</select>
+	<select id="queryOtherFiles" resultMap="FileMap">
+		SELECT id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
+		FROM t_file
+		WHERE deleted ='0'
+		AND id
+		IN (
+		SELECT  SUBSTRING(a.other_file_id,number,CHARINDEX(',',a.other_file_id+',',number)-number) as other_file_id
+		from (SELECT other_file_id
+		FROM t_w_end_paper
+		WHERE id = #{id} ) a,master..spt_values
+		where number >= 1 and number  &lt; len(a.other_file_id)
+		and type='p'
+		and SUBSTRING(','+a.other_file_id,number,1)=','
+		) <!--将逗号隔开的字符串拆分为行-->
+	</select>
+  <select id="queryAuditList" resultType="java.util.LinkedHashMap">
+    SELECT
+    t1.id AS id, t1.operation_time AS operationTime,
+    t1.audit_status AS auditStatus,
+    CASE  t1.audit_status WHEN '0' THEN  '发起' WHEN '1' THEN  '待审核' WHEN '2' THEN  '审核通过' WHEN '3' THEN '审核不通过' END auditStatusName,
+    t1.operator AS operator, t1.operator_id AS operatorId,  t3.org_name AS orgName
+    FROM
+    (
+    SELECT id,operator_id, node_code, audit_status, operator ,operation_time,create_time
+    FROM t_sms_audit_flow WHERE business_id = #{id} and node_code=#{nodeCode}) AS t1
+    LEFT JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t1.operator_id = t2.id
+    LEFT JOIN ( SELECT id, org_name FROM t_org  where  node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
+    order by t1.create_time ASC
+  </select>
+
+	<update id="update">
+		update t_w_end_paper
+		<set>
+			<if test="firstWater != null">first_water= #{firstWater},</if>
+			<if test="secondWater != null">second_water = #{secondWater},</if>
+			<if test="addWay != null and addWay != ''">add_way = #{addWay},</if>
+			<if test="quarter != null and quarter != ''">quarter = #{quarter},</if>
+			<if test="addNumber != null">add_number = #{addNumber},</if>
+			<if test="addNumber != null">cur_year_plan = #{addNumber},</if> <!--增加水量也赋值给年计划，回填数据-->
+			<if test="algorithmRules != null and algorithmRules != ''">algorithm_rules = #{algorithmRules},</if>
+			<if test="auditStatus != null and auditStatus != ''">audit_status = #{auditStatus},</if>
+		</set>
+		where id = #{id}
+	</update>
+	<update id="updateFromWeChat">
+		update t_w_end_paper
+		<set>
+			<if test="endPaper.addNumber != null">add_number= #{endPaper.addNumber},</if>
+			<if test="endPaper.curYearPlan != null">cur_year_plan= #{endPaper.curYearPlan},</if>
+			<if test="endPaper.firstQuarter != null">first_quarter= #{endPaper.firstQuarter},</if>
+			<if test="endPaper.secondQuarter != null">second_quarter= #{endPaper.secondQuarter},</if>
+			<if test="endPaper.thirdQuarter != null">third_quarter= #{endPaper.thirdQuarter},</if>
+			<if test="endPaper.fourthQuarter != null">fourth_quarter= #{endPaper.fourthQuarter},</if>
+			<if test="endPaper.confirmed != null and endPaper.confirmed != ''">confirmed = #{endPaper.confirmed},</if>
+			<if test="endPaper.confirmTime != null">confirm_time = #{endPaper.confirmTime},</if>
+		</set>
+		where water_plan_WX_id = #{endPaper.waterPlanWXId}
+	</update>
+</mapper>

@@ -4,7 +4,7 @@ package com.zjtc.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.zjtc.mapper.FlowProcessMapper;
+import com.zjtc.mapper.waterBiz.FlowProcessMapper;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.User;
 import com.zjtc.service.FlowProcessService;

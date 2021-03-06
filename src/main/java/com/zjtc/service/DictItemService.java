@@ -50,6 +50,14 @@ public interface DictItemService extends IService<DictItem> {
   DictItem findByDictCode(String dictCode, String dictItemCode, String nodeCode);
 
   /**
+   * 根据字典编码获取指定字典项信息
+   * @param dictCode 字典编码
+   * @param dictItemName 指定字典项名称
+   * @return
+   */
+  DictItem findByDictName(String dictCode, String dictItemName, String nodeCode);
+
+  /**
    *根据字典编码获取对应字典项数据
    * @param dictCode 字典编码
    * @param nodeCode 节点编码

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
-import com.zjtc.mapper.DictItemMapper;
+import com.zjtc.mapper.waterSys.DictItemMapper;
 import com.zjtc.model.DictItem;
 import com.zjtc.service.DictItemService;
 import com.zjtc.service.DictService;
@@ -83,6 +83,11 @@ public class DictItemServiceImpl extends ServiceImpl<DictItemMapper, DictItem> i
   @Override
   public DictItem findByDictCode(String dictCode, String dictItemCode, String nodeCode) {
     return baseMapper.findByDictCode(dictCode, dictItemCode,nodeCode);
+  }
+
+  @Override
+  public DictItem findByDictName(String dictCode, String dictItemName, String nodeCode) {
+    return baseMapper.findByDictName(dictCode, dictItemName,nodeCode);
   }
 
   @Override

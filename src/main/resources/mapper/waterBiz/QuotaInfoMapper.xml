@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.QuotaInfoMapper">
+  <resultMap id="BaseResultMap" type="com.zjtc.model.QuotaInfo">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="parent_id" property="parentId" jdbcType="VARCHAR"/>
+    <result column="industry_name" property="industryName" jdbcType="VARCHAR"/>
+    <result column="quota_unit" property="quotaUnit" jdbcType="VARCHAR"/>
+    <result column="quota_value" property="quotaValue" jdbcType="FLOAT"/>
+    <result column="common_value" property="commonValue" jdbcType="FLOAT"/>
+    <result column="quota_rate" property="quotaRate" jdbcType="FLOAT"/>
+    <result column="time_param" property="timeParam" jdbcType="INTEGER"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+    <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    <result column="advance_value" property="advanceValue" jdbcType="FLOAT"/>
+  </resultMap>
+
+  <select id="queryAll" resultMap="BaseResultMap">
+    SELECT * FROM t_w_quota_info
+    WHERE deleted ='0'
+    <if test="ids != null">
+      AND id IN
+      <foreach collection="ids" item="id" separator=","  open="(" close=")">
+        #{id}
+      </foreach>
+    </if>
+  </select>
+  <select id="selectByKeyword" resultMap="BaseResultMap">
+    SELECT id,parent_id
+    FROM t_w_quota_info
+    WHERE deleted ='0'
+    AND industry_name like  '%${keyword}%'
+  </select>
+  <select id="queryIndustry" resultType="java.util.LinkedHashMap">
+    SELECT id AS id,industry_name AS industryName
+    FROM t_w_quota_info
+    WHERE node_code = #{nodeCode}
+    AND deleted ='0'
+    AND (parent_id IS NULL OR parent_id = '')
+  </select>
+  <update id="update">
+    UPDATE t_w_quota_info
+    SET deleted = '0'
+    <if test="quotaInfo.nodeCode != null and quotaInfo.nodeCode != ''">,node_code = #{quotaInfo.nodeCode} </if>
+    <if test="quotaInfo.parentId != null and quotaInfo.parentId != ''">,parent_id = #{quotaInfo.parentId} </if>
+    <if test="quotaInfo.industryName != null and quotaInfo.industryName != ''">,industry_name = #{quotaInfo.industryName} </if>
+    <if test="quotaInfo.quotaUnit != null and quotaInfo.quotaUnit != ''">,quota_unit = #{quotaInfo.quotaUnit} </if>
+    <if test="quotaInfo.quotaValue != null">,quota_value = #{quotaInfo.quotaValue} </if>
+    <if test="quotaInfo.remark != null and quotaInfo.remark != ''">,remark = #{quotaInfo.remark} </if>
+    <if test="quotaInfo.advanceValue != null">,advance_value = #{quotaInfo.advanceValue}</if>
+    <if test="quotaInfo.commonValue != null">,common_value = #{quotaInfo.commonValue}</if>
+    <if test="quotaInfo.quotaRate != null">,quota_rate = #{quotaInfo.quotaRate}</if>
+    <if test="quotaInfo.timeParam != null">,time_param = #{quotaInfo.timeParam}</if>
+    WHERE id = #{quotaInfo.id}
+  </update>
+  <update id="delete">
+    UPDATE t_w_quota_info SET deleted ='1',
+    delete_time = getdate()
+    WHERE id IN
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </update>
+
+
+</mapper>

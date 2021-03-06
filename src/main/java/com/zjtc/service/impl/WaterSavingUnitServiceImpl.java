@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.FileUtil;
-import com.zjtc.mapper.WaterSavingUnitMapper;
+import com.zjtc.mapper.waterBiz.WaterSavingUnitMapper;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterSavingUnit;
 import com.zjtc.model.WaterSavingUnitBase;

@@ -6,14 +6,15 @@ import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.FileUtil;
-import com.zjtc.mapper.UseWaterUnitMapper;
-import com.zjtc.mapper.WaterUsePayInfoMapper;
+import com.zjtc.mapper.waterBiz.UseWaterUnitMapper;
+import com.zjtc.mapper.waterBiz.WaterUsePayInfoMapper;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.UseWaterUnitInvoice;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
+import com.zjtc.model.vo.WaterUsePayInfoVo;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.ContactsService;
 import com.zjtc.service.FileService;
@@ -91,31 +92,32 @@ public class WaterUsePayInfoServiceImpl extends
 
   @Override
   public boolean updateModel(JSONObject jsonObject, User user) {
-   List<WaterUsePayInfo>  entityList = jsonObject.getJSONArray("payInfoList").toJavaList(WaterUsePayInfo.class);
-   if (entityList.isEmpty()){
-     return false;
-   }
-   for (WaterUsePayInfo entity : entityList) {
+    List<WaterUsePayInfo> entityList = jsonObject.getJSONArray("payInfoList")
+        .toJavaList(WaterUsePayInfo.class);
+    if (entityList.isEmpty()) {
+      return false;
+    }
+    for (WaterUsePayInfo entity : entityList) {
 
-     //勾选了财务转账、现金复核
-     if ("1".equals(entity.getCashCheck()) || "1".equals(entity.getTransferCheck())) {
-       entity.setPayStatus("5");
-     }
-     //勾选了托收缴费状态
-     if ("1".equals(entity.getPayStatus())) {
-       entity.setPayStatus("1");
-     }
-     if (StringUtils.isNotBlank(entity.getInvoiceId())) {
-       /**绑定发票号*/
-       UseWaterUnitInvoice useWaterUnitInvoice = new UseWaterUnitInvoice();
-       useWaterUnitInvoice.setId(entity.getInvoiceId());
-       useWaterUnitInvoice.setInvoiceDate(new Date());
-       useWaterUnitInvoice.setPayInfoId(entity.getId());
-       useWaterUnitInvoiceService
-           .updateInvoicesUnitMessage(useWaterUnitInvoice, user.getUsername(), user.getNodeCode());
-     }
-    // boolean result = this.updateById(entity);
-   }
+      //勾选了财务转账、现金复核
+      if ("1".equals(entity.getCashCheck()) || "1".equals(entity.getTransferCheck())) {
+        entity.setPayStatus("5");
+      }
+      //勾选了托收缴费状态
+      if ("1".equals(entity.getPayStatus())) {
+        entity.setPayStatus("1");
+      }
+      if (StringUtils.isNotBlank(entity.getInvoiceId())) {
+        /**绑定发票号*/
+        UseWaterUnitInvoice useWaterUnitInvoice = new UseWaterUnitInvoice();
+        useWaterUnitInvoice.setId(entity.getInvoiceId());
+        useWaterUnitInvoice.setInvoiceDate(new Date());
+        useWaterUnitInvoice.setPayInfoId(entity.getId());
+        useWaterUnitInvoiceService
+            .updateInvoicesUnitMessage(useWaterUnitInvoice, user.getUsername(), user.getNodeCode());
+      }
+      // boolean result = this.updateById(entity);
+    }
     boolean result = this.updateBatchById(entityList);
     return result;
   }
@@ -130,7 +132,7 @@ public class WaterUsePayInfoServiceImpl extends
   @Override
   public Map<String, Object> queryPage(JSONObject jsonObject) {
     Map<String, Object> page = new LinkedHashMap<>();
-    List<Map<String, Object>> result = baseMapper.queryPage(jsonObject);
+    List<WaterUsePayInfoVo> result = baseMapper.queryPage(jsonObject);
     page.put("records", result);
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
@@ -188,7 +190,7 @@ public class WaterUsePayInfoServiceImpl extends
     refundOrRefundService.insert(entity);
     /**新增附件*/
     if (!entity.getSysFiles().isEmpty()) {
-      fileService.updateBusinessId(entity.getId(),files);
+      fileService.updateBusinessId(entity.getId(), files);
     }
     /**流程节点记录表、流程节点线记录表创建数据*/
     String newFirStCodeId = flowNodeInfoService
@@ -241,7 +243,7 @@ public class WaterUsePayInfoServiceImpl extends
     refundOrRefundService.insert(entity);
     /**新增附件*/
     if (!entity.getSysFiles().isEmpty()) {
-      fileService.updateBusinessId(entity.getId(),files);
+      fileService.updateBusinessId(entity.getId(), files);
     }
     /**流程节点记录表、流程节点线记录表创建数据*/
     String newFirStCodeId = flowNodeInfoService
@@ -279,7 +281,7 @@ public class WaterUsePayInfoServiceImpl extends
 
   @Override
   public boolean updateActualAmount(String id, double actualAmount) {
-    return baseMapper.updateActualAmount(id,actualAmount);
+    return baseMapper.updateActualAmount(id, actualAmount);
   }
 
   @Override
@@ -303,9 +305,24 @@ public class WaterUsePayInfoServiceImpl extends
   }
 
   @Override
+  public List<Map<String, Object>> selectPayNotice(JSONObject jsonObject) {
+    Integer year = jsonObject.getInteger("year");
+    if (null == year || "0".equals(year)) {
+      //默认当年
+      Calendar now = Calendar.getInstance();
+      year = now.get(Calendar.YEAR);
+      jsonObject.put("year", year);
+    }
+    String messageTypecode = dictUtils
+        .getDictItemCode("messageType", "催缴通知", jsonObject.getString("nodeCode"));
+    jsonObject.put("messageTypecode", messageTypecode);
+    return baseMapper.selectPayNotice(jsonObject);
+  }
+
+  @Override
   public void exportQueryData(JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
-    List<Map<String,Object>> list = baseMapper.exportQueryData(jsonObject);
+    List<Map<String, Object>> list = baseMapper.exportQueryData(jsonObject);
     Map<String, Object> data = new HashMap<>();
     data.put("excelData", list);
     data.put("nowDate", new Date());
@@ -366,9 +383,9 @@ public class WaterUsePayInfoServiceImpl extends
     data.put("dateFormat", dateFmt);
     String fileName = "加价用户信息.xlsx";
     if (null == quarter || quarter.equals("")) {
-      fileName = year + "年"+fileName;
-    }else {
-      fileName = year + "年" + quarter + "季度"+fileName;
+      fileName = year + "年" + fileName;
+    } else {
+      fileName = year + "年" + quarter + "季度" + fileName;
     }
     String templateName = "template/waterUsePayInfoUserData.xlsx";
     commonService.export(fileName, templateName, request, response, data);
@@ -389,9 +406,9 @@ public class WaterUsePayInfoServiceImpl extends
     data.put("dateFormat", dateFmt);
     String fileName = "计划用水户超计划用水情况汇总表.xlsx";
     if (null == quarter || quarter.equals("")) {
-      fileName = year + "年"+fileName;
-    }else {
-      fileName = year + "年" + quarter + "季度"+fileName;
+      fileName = year + "年" + fileName;
+    } else {
+      fileName = year + "年" + quarter + "季度" + fileName;
     }
     String templateName = "template/payInfo.xlsx";
     commonService.export(fileName, templateName, request, response, data);
@@ -435,9 +452,9 @@ public class WaterUsePayInfoServiceImpl extends
     //写文件
     String fileName = "本行托收数据.txt";
     if (null == quarter || quarter.equals("")) {
-      fileName = year + "年"+fileName;
-    }else {
-      fileName = year + "年" + quarter + "季度"+fileName;
+      fileName = year + "年" + fileName;
+    } else {
+      fileName = year + "年" + quarter + "季度" + fileName;
     }
     File file = new File(
         fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName);
@@ -494,9 +511,9 @@ public class WaterUsePayInfoServiceImpl extends
     //写文件
     String fileName = "他行托收数据.txt";
     if (null == quarter || quarter.equals("")) {
-      fileName = year + "年"+fileName;
-    }else {
-      fileName = year + "年" + quarter + "季度"+fileName;
+      fileName = year + "年" + fileName;
+    } else {
+      fileName = year + "年" + quarter + "季度" + fileName;
     }
     File file = new File(
         fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName);

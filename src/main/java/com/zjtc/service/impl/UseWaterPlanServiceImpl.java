@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.zjtc.mapper.UseWaterPlanMapper;
+import com.zjtc.mapper.waterBiz.UseWaterPlanMapper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.service.UseWaterPlanService;
 import org.springframework.stereotype.Service;

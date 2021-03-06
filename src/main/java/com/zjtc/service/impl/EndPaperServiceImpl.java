@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
-import com.zjtc.mapper.EndPaperMapper;
+import com.zjtc.mapper.waterBiz.EndPaperMapper;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.UseWaterPlan;

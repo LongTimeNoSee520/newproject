@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.ContactsMapper">
+  <resultMap id="BaseResultMap" type="com.zjtc.model.Contacts">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="contacts" property="contacts" jdbcType="VARCHAR"/>
+    <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
+    <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
+    <result column="main" property="main" jdbcType="VARCHAR"/>
+    <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+    <result column="locked" property="locked" jdbcType="VARCHAR"/>
+    <result column="wrong_times" property="wrongTimes" jdbcType="INTEGER"/>
+  </resultMap>
+  <select id="queryByUnitId" resultMap="BaseResultMap">
+    SELECT id,node_code,use_water_unit_id,unit_code,contacts,mobile_number,phone_number,
+     CASE main WHEN '1' THEN '主联系人' WHEN '0' THEN '备用联系人' END AS main,
+     open_id,deleted,locked,wrong_times
+    FROM t_w_use_water_unit_contacts
+    WHERE deleted = '0'
+    AND use_water_unit_id = #{useWaterUnitId}
+    ORDER BY  main DESC
+  </select>
+  <update id="delete" >
+    UPDATE t_w_use_water_unit_contacts SET deleted ='1',open_id= ''
+    WHERE id IN
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </update>
+  <select id="selectByUnitCode" resultMap="BaseResultMap">
+    SELECT mobile_number,contacts
+    FROM t_w_use_water_unit_contacts
+    WHERE unit_code = #{unitCode}
+    AND main ='1'
+  </select>
+  <select id="selectByUserId" resultType="string">
+    SELECT mobile_phone
+    FROM t_user
+    WHERE id=#{operatorId}
+  </select>
+  <select id="selectMaxCount" resultType="java.lang.Integer">
+  SELECT
+	max( t.num ) AS num
+  FROM
+	( SELECT count( 0 ) AS num FROM t_w_use_water_unit_contacts WHERE
+    use_water_unit_id IN
+    <foreach collection="useWaterUnitIds" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+	 GROUP BY use_water_unit_id
+	 ) t
+  </select>
+</mapper>
