@@ -6,6 +6,7 @@ import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.PrintVO;
+import com.zjtc.model.vo.SendListVO;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -405,13 +406,23 @@ public class PlanDailyAdjustmentController {
   @RequestMapping(value = "planAdjustNotification", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "年计划自平通知")
   public ApiResponse planAdjustNotification(@RequestHeader("token") String token,
-      @ApiParam(" ") @RequestBody JSONObject jsonObject) {
+      @ApiParam("{\n"
+          + "\"year\": \"年份 \",\n"
+          + "\"sendList\":(发送列表) [{\n"
+          + "\"unitCode\": \"单位编号\",\n"
+          + "\"unitName\": \"单位名称\",\n"
+          + "\"mobileNumber\": \"手机号码\",\n"
+          + "\"contacts\": \"收件人\",\n"
+          + "}]\n"
+          + "}") @RequestBody JSONObject jsonObject) {
     log.info("年计划自平通知 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
-    if (null != jsonObject) {
+    List<SendListVO> sendList = jsonObject.getJSONArray("sendList").toJavaList(SendListVO.class);
+    Integer year = jsonObject.getInteger("year");
+    if (null != sendList && sendList.size()>0) {
       try {
         User user = jwtUtil.getUserByToken(token);
-         planDailyAdjustmentService.planAdjustNotification(user, jsonObject);
+         planDailyAdjustmentService.planAdjustNotification(user, sendList,year);
       } catch (Exception e) {
         log.error("年计划自平通知发送失败,errMsg==={}" + e.getMessage());
         response.recordError(500);

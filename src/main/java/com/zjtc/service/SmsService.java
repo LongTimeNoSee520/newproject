@@ -1,7 +1,10 @@
 package com.zjtc.service;
 
 
+import com.nimbusds.jose.JOSEException;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.SendListVO;
+import java.util.List;
 
 /**
  * @author lianghao
@@ -26,4 +29,14 @@ public interface SmsService {
    * 异步发短信
    */
   void asyncSendMsg();
+
+  /**
+   * * 异步发送缴费通知/自平计划调整通知
+   * @param user
+   * @param sendList
+   * @param notificationType 通知类型
+   * @param year
+   */
+  void sendNotification(User user, List<SendListVO> sendList, String notificationType,
+      Integer year) throws Exception;
 }

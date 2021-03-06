@@ -8,6 +8,7 @@ import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.PlanDailyAdjustmentVO;
 import com.zjtc.model.vo.PrintVO;
+import com.zjtc.model.vo.SendListVO;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -103,5 +104,5 @@ public interface PlanDailyAdjustmentService extends IService<UseWaterPlan> {
 	/**
 	 * 年计划自平通知
 	 */
-  void planAdjustNotification(User user, JSONObject jsonObject);
+  void planAdjustNotification(User user, List<SendListVO> sendList, Integer year) throws Exception;
 }

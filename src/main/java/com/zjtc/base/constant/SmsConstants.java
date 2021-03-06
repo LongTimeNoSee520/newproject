@@ -38,4 +38,14 @@ public class SmsConstants {
    */
   public  static final String AUDIT_STATUS_FAIL = "3";
 
+  /**
+   * 通知短信类型-缴费通知
+   */
+  public  static final String SEND_NOTIFICATION_PAY = "1";
+
+  /**
+   * 通知短信类型-计划自平通知
+   */
+  public  static final String SEND_NOTIFICATION_PLAN = "2";
+
 }

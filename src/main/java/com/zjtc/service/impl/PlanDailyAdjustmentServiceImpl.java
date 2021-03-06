@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
+import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.waterBiz.PlanDailyAdjustmentMapper;
@@ -17,6 +18,7 @@ import com.zjtc.model.User;
 import com.zjtc.model.vo.FileVO;
 import com.zjtc.model.vo.PlanDailyAdjustmentVO;
 import com.zjtc.model.vo.PrintVO;
+import com.zjtc.model.vo.SendListVO;
 import com.zjtc.model.vo.UseWaterPlanExportVO;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.EndPaperService;
@@ -25,6 +27,7 @@ import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.PlanDailyAdjustmentService;
+import com.zjtc.service.SmsService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.WaterUsePayInfoService;
@@ -72,6 +75,8 @@ public class PlanDailyAdjustmentServiceImpl extends
   private FileService fileService;
   @Autowired
   private CommonService commonService;
+  @Autowired
+  private SmsService smsService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -670,7 +675,10 @@ public class PlanDailyAdjustmentServiceImpl extends
   }
 
   @Override
-  public void planAdjustNotification(User user, JSONObject jsonObject) {
+  public void planAdjustNotification(User user, List<SendListVO> sendList, Integer year)
+      throws Exception {
+   // String messageContent = "计划下达通知：你单位【单位名称】2021年用水计划已经下达，请你单位于7个工作日内前往公共服务平台或者微信公众号“成都市微管家”中办理计划自平。";
+    smsService.sendNotification(user,sendList, SmsConstants.SEND_NOTIFICATION_PLAN,year);
     //todo
   }
 
