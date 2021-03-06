@@ -274,7 +274,7 @@ public class RefundOrRefundServiceImpl extends
                 .getMoney()
                 + "元";
       }
-      todoService.add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, businessJson,
+      todoService.add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, JSONObject.toJSONString(entity),
           detailConfig, AuditConstants.PAY_TODO_TYPE);
     }
     return true;
