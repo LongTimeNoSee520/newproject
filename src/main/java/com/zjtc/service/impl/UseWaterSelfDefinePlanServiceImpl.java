@@ -266,8 +266,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
         return response;
       }
       if (useWaterPlanModel.getCurYearPlan()
-          != useWaterSelfDefinePlan.getFirstQuarter() + useWaterSelfDefinePlan.getSecondQuarter()
-          + useWaterSelfDefinePlan.getThirdQuarter() + useWaterSelfDefinePlan.getFourthQuarter()) {
+          != (useWaterSelfDefinePlan.getFirstQuarter() + useWaterSelfDefinePlan.getSecondQuarter()
+          + useWaterSelfDefinePlan.getThirdQuarter() + useWaterSelfDefinePlan.getFourthQuarter())) {
         response.recordError("四个季度水量总和与年计划水量不符");
         return response;
       }

@@ -6,6 +6,7 @@ import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterMonthUseData;
 import com.zjtc.model.WaterUseData;
+import com.zjtc.service.WaterMonthUseDataService;
 import com.zjtc.service.WaterUseDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,6 +38,9 @@ public class WaterUseDataController {
 
   @Autowired
   private JWTUtil jwtUtil;
+
+  @Autowired
+  private WaterMonthUseDataService waterMonthUseDataService;
 
   @ResponseBody
   @ApiOperation(value = "查询可使用年份")
@@ -86,9 +90,9 @@ public class WaterUseDataController {
     List<String> waterMeterCode = jsonObject.getJSONArray("waterMeterCode")
         .toJavaList(String.class);
     try {
-      List<WaterUseData> waterUseData = waterUseDataService
+      List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
           .selectWaterUseData(waterMeterCode);
-      response.setData(waterUseData);
+      response.setData(waterMonthUseDataList);
       return response;
     } catch (Exception e) {
       response.setCode(500);

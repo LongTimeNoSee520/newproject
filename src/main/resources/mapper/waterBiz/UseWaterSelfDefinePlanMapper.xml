@@ -226,7 +226,7 @@
     FROM t_w_use_water_unit_role WHERE person_id = #{userId}))
   </select>
 
-  <select id="SelectSysAttrFileMap"  resultMap="sysAttrFileMap">
+  <select id="selectSysAttrFileMap"  resultMap="sysAttrFileMap">
     select
     *,#{preViewRealPath}+ file_path AS file_path,deleted
     from t_file

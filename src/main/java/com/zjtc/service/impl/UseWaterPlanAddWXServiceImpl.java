@@ -13,6 +13,7 @@ import com.zjtc.service.MessageService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.SmsService;
 import com.zjtc.service.SystemLogService;
+import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterPlanService;
 import java.util.ArrayList;
@@ -61,6 +62,9 @@ public class UseWaterPlanAddWXServiceImpl extends
 
   @Autowired
   private SystemLogService systemLogService;
+
+  @Autowired
+  private TodoService todoService;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -131,6 +135,7 @@ public class UseWaterPlanAddWXServiceImpl extends
     return response;
   }
 
+  //===============
   @Override
   public ApiResponse audit(String auditPersonId, String userName, String id, String auditStatus,
       String auditResult, Double firstWater, Double secondWater, User user, String auditorName,
@@ -178,6 +183,16 @@ public class UseWaterPlanAddWXServiceImpl extends
       messageService
           .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName,
               AuditConstants.GET_APPROVED, messageContent);
+//     待办
+      todoService.add(
+          useWaterPlanAddWX.getId(),
+          user,
+          auditorId,
+          auditorName,
+          messageContent,
+          businessJson,
+          detailConfig,
+          AuditConstants.END_PAPER_TODO_TYPE);
     }
     if ("2".equals(useWaterPlanAddWX.getAuditStatus())) {
       JSONObject jsonObject = new JSONObject();
@@ -268,6 +283,7 @@ public class UseWaterPlanAddWXServiceImpl extends
     log.info("审核通过往办结单中增加数据返回状态:"+ response1.getCode());
     if (i > 0 && Objects.requireNonNull(response1).getCode() == 200) {
       response.setCode(200);
+//      日志记录
       systemLogService.logInsert(user,"用水计划调整审核","用水计划增加/调整审核","");
       return response;
     } else {
