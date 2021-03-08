@@ -92,6 +92,21 @@ public class WaterUseDataController {
     try {
       List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
           .selectWaterUseData(waterMeterCode);
+      for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList){
+        waterMonthUseData.setWaterNumber(String.valueOf(
+            waterMonthUseData.getJanuaryCount()
+                +waterMonthUseData.getFebruaryCount()
+                +waterMonthUseData.getMarchCount()
+                +waterMonthUseData.getAprilCount()
+                +waterMonthUseData.getMayCount()
+                +waterMonthUseData.getJuneCount()
+                +waterMonthUseData.getJulyCount()
+                +waterMonthUseData.getAugustCount()
+                +waterMonthUseData.getSeptemberCount()
+                +waterMonthUseData.getOctoberCount()
+                +waterMonthUseData.getNovemberCount()
+                +waterMonthUseData.getDecemberCount()));
+      }
       response.setData(waterMonthUseDataList);
       return response;
     } catch (Exception e) {

@@ -21,7 +21,6 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
   /**
    * @param unitName    单位名称-
    * @param userType    用户类型-
-   * @param areaCode    编号开头-
    * @param planYear    自平年份-
    * @param unitCode    单位编号-
    * @param nodeCode    节点编码-
@@ -32,7 +31,6 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
   Integer selectCount(
       @Param("unitName") String unitName,
       @Param("userType") String userType,
-      @Param("areaCode") String areaCode,
       @Param("planYear") Integer planYear,
       @Param("executed") String executed,
       @Param("unitCode") String unitCode,
@@ -47,7 +45,6 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
    * @param pageSize    条数
    * @param unitName    单位名称
    * @param userType    用户类型
-   * @param areaCode    编号开头
    * @param planYear   自平年份
    * @param executed    是否执行
    * @param unitCode    单位编号
@@ -61,7 +58,6 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
       @Param("pageSize") Integer pageSize,
       @Param("unitName") String unitName,
       @Param("userType") String userType,
-      @Param("areaCode") String areaCode,
       @Param("planYear") Integer planYear,
       @Param("executed") String executed,
       @Param("unitCode") String unitCode,

@@ -155,9 +155,6 @@
     <if test="userType != null and userType != ''">
       and SUBSTRING(t1.unit_code, 5, 2) like '%${userType}%'
     </if>
-    <if test="areaCode != null and areaCode != ''">
-      and SUBSTRING(t1.unit_code,1,2) like '%${areaCode}%'
-    </if>
     <if test="planYear != null  and planYear != ''">
       and t1.plan_year like '%${planYear}%'
     </if>
@@ -198,9 +195,6 @@
     </if>
     <if test="userType != null and userType != ''">
       and SUBSTRING(t1.unit_code, 5, 2) like '%${userType}%'
-    </if>
-    <if test="areaCode != null and areaCode != ''">
-      and SUBSTRING(t1.unit_code,1,2) like '%${areaCode}%'
     </if>
     <if test="planYear != null  and planYear != ''">
       and t1.plan_year like '%${planYear}%'
