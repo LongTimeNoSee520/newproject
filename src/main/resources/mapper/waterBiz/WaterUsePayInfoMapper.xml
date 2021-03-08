@@ -1035,7 +1035,12 @@
 	</select>
 
 	<select id="selectPayNotice" resultType="java.util.LinkedHashMap">
+		SELECT
+		top ${size} temp_row.*
+		FROM
+		(
 		select
+		row_number ( ) over ( ORDER BY t1.unit_code) AS rownumber,
 		t1.id,
 		t1.unit_code as unitCode,
 		t1.unit_name as unitName,
@@ -1051,6 +1056,76 @@
 		when t5.status='1' then '发送失败'
 		when t5.status='2' then '等待回执'
 		end as statusName
+		from (
+		select
+		id,
+		unit_code,
+		unit_name,
+		count_year,
+		count_quarter,
+		exceed_water,
+		increase_money
+		from t_w_water_use_pay_info
+		where node_code=#{nodeCode}
+		and  pay_status != '1'
+		and pay_status != '5'
+		<if test="null !=year and year !=''">
+			and	count_year=#{year}
+		</if>
+		<if test="null !=unitCode and unitCode !=''">
+			and	unit_code like '%${unitCode}%'
+		</if>
+		) as t1
+		inner join (
+		select
+		unit_code
+		from t_w_use_water_unit
+		where deleted='0'
+		and   unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId})
+		) as t2 on t2.unit_code =t1.unit_code
+		LEFT JOIN (
+		SELECT
+		unit_code,
+		mobile_number,
+		contacts
+		from t_w_use_water_unit_contacts
+		where deleted='0'
+		and main='1'
+		) as t3 on t3.unit_code=t2.unit_code
+		left join (
+		select
+		id,
+		business_id
+		from t_sms_info as a
+		where message_type=#{messageTypecode}
+		) as t4 on t4.business_id=t1.id
+		left join(
+		select
+		sms_id,
+		status
+		from 	t_sms_sendInfo
+		) as t5 on t5.sms_id =t4.id
+		where 1=1
+		<choose>
+			<when test="null !=status and status=''">
+				and 1=1
+			</when>
+			<when test="status ==3">
+				and	status is null or status =''
+			</when>
+			<otherwise >
+				and	status=#{status}
+			</otherwise>
+		</choose>
+		) temp_row
+		WHERE
+		rownumber > ( (#{current}-1)* #{size} );
+	</select>
+
+	<select id="selectPayNoticeCount" resultType="java.lang.Long">
+
+		select
+			count(1)
 		from (
 		select
 		id,

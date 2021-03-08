@@ -52,6 +52,8 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
 
   List<Map<String, Object>> selectPayNotice(JSONObject jsonObject);
 
+  long selectPayNoticeCount(JSONObject jsonObject);
+
   List<Map<String, Object>> selectUser(JSONObject jsonObject);
 
   List<Map<String, Object>> exportPayInfo(JSONObject jsonObject);

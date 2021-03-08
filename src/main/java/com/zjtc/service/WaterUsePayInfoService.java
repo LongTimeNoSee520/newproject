@@ -97,7 +97,7 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @param jsonObject
    * @return
    */
-  List<Map<String,Object>> selectPayNotice(JSONObject jsonObject);
+  Map<String,Object> selectPayNotice(JSONObject jsonObject);
 
   /**
    * 短信发送
