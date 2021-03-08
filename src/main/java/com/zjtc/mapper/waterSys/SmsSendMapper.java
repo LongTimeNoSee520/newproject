@@ -2,7 +2,7 @@ package com.zjtc.mapper.waterSys;
 
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import com.zjtc.model.vo.SmsSendInfo;
+import com.zjtc.model.SmsSendInfo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

@@ -1,7 +1,8 @@
 package com.zjtc.service;
 
 import com.baomidou.mybatisplus.service.IService;
-import com.zjtc.model.vo.SmsSendInfo;
+import com.zjtc.model.SmsSendInfo;
+
 
 /**
  * @author lianghao

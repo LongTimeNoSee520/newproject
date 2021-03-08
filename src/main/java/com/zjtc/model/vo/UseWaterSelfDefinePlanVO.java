@@ -188,8 +188,8 @@ public class UseWaterSelfDefinePlanVO extends Model<UseWaterSelfDefinePlanVO> {
   @ApiModelProperty("预览路径")
   private String preViewRealPath;
 
-  @ApiModelProperty("执行状态,用作前端验证是否可执行")
-  private boolean executorStatus = false;
+  @ApiModelProperty("审核状态,用作前端验证是否可审核")
+  private boolean auditOperationStatus = false;
 
   /**
    * 实例化

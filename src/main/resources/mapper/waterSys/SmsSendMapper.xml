@@ -20,10 +20,10 @@
     <result column="description" property="description" jdbcType="VARCHAR"/>
   </resultMap>
 
-  <resultMap id="ResultVoMap" type="com.zjtc.model.vo.SmsSendStatusVo">
-    <result column="unitCode" property="unitCode" jdbcType="VARCHAR"/>
-    <result column="status" property="status" jdbcType="VARCHAR"/>
-  </resultMap>
+<!--  <resultMap id="ResultVoMap" type="com.zjtc.model.SmsSendStatusVo">-->
+<!--    <result column="unitCode" property="unitCode" jdbcType="VARCHAR"/>-->
+<!--    <result column="status" property="status" jdbcType="VARCHAR"/>-->
+<!--  </resultMap>-->
   <select id="SmsSendMapper" resultMap="ResultVoMap">
    select
     a.unit_code as unitCode,
