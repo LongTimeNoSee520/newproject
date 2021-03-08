@@ -312,7 +312,8 @@ public class WaterUsePayInfoServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> selectPayNotice(JSONObject jsonObject) {
+  public Map<String, Object> selectPayNotice(JSONObject jsonObject) {
+    Map<String,Object> page=new HashMap<>();
     Integer year = jsonObject.getInteger("year");
     if (null == year || "0".equals(year)) {
       //默认当年
@@ -323,7 +324,15 @@ public class WaterUsePayInfoServiceImpl extends
     String messageTypecode = dictUtils
         .getDictItemCode("messageType", "催缴通知", jsonObject.getString("nodeCode"));
     jsonObject.put("messageTypecode", messageTypecode);
-    return baseMapper.selectPayNotice(jsonObject);
+    page.put("records", baseMapper.selectPayNotice(jsonObject));
+    page.put("current", jsonObject.getInteger("current"));
+    page.put("size", jsonObject.getInteger("size"));
+    //查询总数据条数
+    long total = baseMapper.selectPayNoticeCount(jsonObject);
+    page.put("total", total);
+    long pageSize = jsonObject.getInteger("size");
+    page.put("page", total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
+    return page;
   }
 
   @Override

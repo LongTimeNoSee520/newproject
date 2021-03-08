@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.SmsSendMapper">
+  <resultMap id="BaseResultMap" type="com.zjtc.model.SmsSendInfo">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="receiver_id" property="receiverId" jdbcType="VARCHAR"/>
+    <result column="receiver_name" property="receiverName" jdbcType="VARCHAR"/>
+    <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
+    <result column="status" property="status" jdbcType="VARCHAR"/>
+    <result column="send_time" property="sendTime" jdbcType="TIMESTAMP"/>
+    <result column="receipt_time" property="receiptTime" jdbcType="TIMESTAMP"/>
+    <result column="sms_type" property="smsType" jdbcType="VARCHAR"/>
+    <result column="sms_id" property="smsId" jdbcType="VARCHAR"/>
+    <result column="exp1" property="exp1" jdbcType="VARCHAR"/>
+    <result column="exp2" property="exp2" jdbcType="VARCHAR"/>
+    <result column="exp3" property="exp3" jdbcType="VARCHAR"/>
+    <result column="description" property="description" jdbcType="VARCHAR"/>
+  </resultMap>
+
+</mapper>

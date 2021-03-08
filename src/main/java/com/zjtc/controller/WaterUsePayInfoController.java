@@ -321,6 +321,8 @@ public class WaterUsePayInfoController {
   @ApiOperation(value = "催缴通知列表查询")
   @RequestMapping(value = "selectPayNotice", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse selectPayNotice(@RequestHeader("token") String token, @ApiParam("{\n"
+      + "  \"current\":\"\"\n"
+      + "  \"size\":\"\"\n"
       + "  \"year\":\"年份,int\"\n"
       + "  \"unitCode\":\"单位编号 stirng\"\n"
       + "  \"status\":\"状态\"\n"
@@ -332,7 +334,7 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("userId", user.getId());
         jsonObject.put("nodeCode", user.getNodeCode());
-        List<Map<String, Object>> result = waterUsePayInfoService
+        Map<String, Object> result = waterUsePayInfoService
             .selectPayNotice(jsonObject);
         apiResponse.setData(result);
       } catch (Exception e) {
