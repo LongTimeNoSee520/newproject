@@ -134,7 +134,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
         .queryList(currPage, pageSize, unitName, userType, planYear, executed, unitCode, nodeCode, auditStatus, userId,path);
     for (UseWaterSelfDefinePlanVO useWaterSelfDefinePlanVO : waterSelfDefinePlans){
 //     未被审核和未被执行
-      if ("1".equals(useWaterSelfDefinePlanVO.getAuditStatus()) && "0".equals(useWaterSelfDefinePlanVO.getExecuted())){
+      if ("0".equals(useWaterSelfDefinePlanVO.getAuditStatus()) && "0".equals(useWaterSelfDefinePlanVO.getExecuted())){
         useWaterSelfDefinePlanVO.setAuditOperationStatus(true);
       }
     }
