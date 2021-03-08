@@ -70,6 +70,9 @@ public class UseWaterSelfDefinePlanServiceImpl extends
   @Autowired
   private SystemLogService systemLogService;
 
+  @Autowired
+  private UseWaterSelfDefinePlanMapper useWaterSelfDefinePlanMapper;
+
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
     ApiResponse response = new ApiResponse();
@@ -129,6 +132,12 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     // TODO: 2021/2/18 因为没有附件id,需要根据业务id在附件表里去查对应的业务id,现在的做法是默认有附件id的情况,错误
     List<UseWaterSelfDefinePlanVO> waterSelfDefinePlans = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType, planYear, executed, unitCode, nodeCode, auditStatus, userId,path);
+    for (UseWaterSelfDefinePlanVO useWaterSelfDefinePlanVO : waterSelfDefinePlans){
+//     审核通过并且未被执行
+      if ("2".equals(useWaterSelfDefinePlanVO.getAuditStatus()) && "0".equals(useWaterSelfDefinePlanVO.getExecuted())){
+        useWaterSelfDefinePlanVO.setExecutorStatus(true);
+      }
+    }
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -225,9 +234,9 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //>>>>>>>>> 第一步:更新自平表数据<<<<<<<<<
     for (String id : ids) {
 //    查询未审核过审核不通过信息
-      UseWaterSelfDefinePlan auditStatus = this.baseMapper.selectAuditStatus(id);
+      UseWaterSelfDefinePlan auditStatus = useWaterSelfDefinePlanMapper.selectAuditStatus(id);
 //      查询已经被执行信息
-      UseWaterSelfDefinePlan executed = this.baseMapper.selectExecuted(id);
+      UseWaterSelfDefinePlan executed = useWaterSelfDefinePlanMapper.selectExecuted(id);
 //      如果是未审核的数据不能被执行
       if (null != auditStatus) {
         response.recordError("单位名称为『" + auditStatus.getUnitName() + "』的数据未审核或审核不通过,不能执行");
@@ -347,7 +356,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
         log.error("用水计划自平审核消息推送失败");
       }
     }
-    if (zp > 0 && planAdd && water > 0) {
+    if (zp > 0 && planAdd ) {
       response.setCode(200);
       systemLogService.logInsert(user,"用水计划自平","用水计划自平执行","");
       return response;

@@ -110,8 +110,11 @@ public class UseWaterSelfDefinePlanVO extends Model<UseWaterSelfDefinePlanVO> {
    *
    */
   @ApiModelProperty("审核状态(0:未审核1:审核不通过,2:审核通过,3:在审核提交之前都默认为此值)")
-  @TableField(value = "audit_status", exist = true)
   private String auditStatus;
+
+  @ApiModelProperty("审核状态(0:未审核1:审核不通过,2:审核通过,3:在审核提交之前都默认为此值)")
+  @TableField(value = "auditStatusName", exist = false)
+  private String auditStatusName;
   /**
    *
    */
@@ -141,8 +144,12 @@ public class UseWaterSelfDefinePlanVO extends Model<UseWaterSelfDefinePlanVO> {
    *
    */
   @ApiModelProperty("是否执行")
-  @TableField(value = "executed", exist = true)
+  @TableField(value = "executed")
   private String executed;
+
+  @ApiModelProperty("是否执行")
+  @TableField(value = "executed", exist = false)
+  private String executedName;
   /**
    *
    */
@@ -180,6 +187,9 @@ public class UseWaterSelfDefinePlanVO extends Model<UseWaterSelfDefinePlanVO> {
 
   @ApiModelProperty("预览路径")
   private String preViewRealPath;
+
+  @ApiModelProperty("执行状态,用作前端验证是否可执行")
+  private boolean executorStatus = false;
 
   /**
    * 实例化

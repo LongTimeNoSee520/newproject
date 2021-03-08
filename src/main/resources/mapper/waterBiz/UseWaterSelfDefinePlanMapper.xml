@@ -57,7 +57,9 @@
     <result column="executor_id" property="executorId" jdbcType="VARCHAR"/>
     <result column="execute_result" property="executeResult" jdbcType="VARCHAR"/>
     <result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
+    <result column="auditStatusName" property="auditStatusName" jdbcType="VARCHAR"/>
     <result column="executed" property="executed" jdbcType="VARCHAR"/>
+    <result column="executedName" property="executedName" jdbcType="VARCHAR"/>
     <result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
     <collection property="selfDefineFiles" column="{id=id,preViewRealPath=preViewRealPath,nodeCode=node_code}" ofType="com.zjtc.model.File"
       select="selectSysAttrFileMap"/>
@@ -136,15 +138,17 @@
     executor,
     executor_id,
     execute_result,
+    audit_status,
     CASE audit_status
     WHEN 0 THEN '未审核'
     WHEN 1 THEN '审核不通过'
     WHEN 2 THEN '审核通过'
-    END as audit_status,
+    END as auditStatusName,
+    executed,
     CASE executed
     WHEN 0 THEN '未执行'
     WHEN 1 THEN '已执行'
-    END as executed,
+    END as executedName,
     #{path} AS preViewRealPath
     FROM
     t_w_use_water_self_define_plan t1
@@ -273,12 +277,62 @@
     plan_year= #{planYear}
   </select>
 
-  <select id="selectAuditStatus" resultMap="TWUseWaterSelfDefinePlanModel">
-    select * FROM t_w_use_water_self_define_plan WHERE (audit_status = '0' OR audit_status = '1')
+  <select id="selectAuditStatus" resultType="com.zjtc.model.UseWaterSelfDefinePlan">
+    select
+    id,
+    node_code as nodeCode,
+    use_water_unit_id,
+    unit_name as unitName,
+    unit_code,
+    water_meter_code,
+    plan_year,
+    cur_year_plan,
+    first_quarter,
+    second_quarter,
+    third_quarter,
+    fourth_quarter,
+    create_time,
+    audit_time,
+    audit_person,
+    audit_person_id,
+    audit_result,
+    execute_time,
+    executor,
+    executor_id,
+    execute_result,
+    executed,
+    audit_status,
+    fileId
+    FROM t_w_use_water_self_define_plan WHERE (audit_status = '0' OR audit_status = '1')
     and id = #{id}
   </select>
 
-  <select id="selectExecuted" resultMap="TWUseWaterSelfDefinePlanModel">
-    select * FROM t_w_use_water_self_define_plan WHERE executed = '1'  and id = #{id}
+  <select id="selectExecuted" resultType="com.zjtc.model.UseWaterSelfDefinePlan">
+    select
+    id,
+    node_code,
+    use_water_unit_id,
+    unit_name as unitName,
+    unit_code,
+    water_meter_code,
+    plan_year,
+    cur_year_plan,
+    first_quarter,
+    second_quarter,
+    third_quarter,
+    fourth_quarter,
+    create_time,
+    audit_time,
+    audit_person,
+    audit_person_id,
+    audit_result,
+    execute_time,
+    executor,
+    executor_id,
+    execute_result,
+    executed,
+    audit_status,
+    fileId
+    FROM t_w_use_water_self_define_plan WHERE executed = '1'  and id = #{id}
   </select>
 </mapper>
