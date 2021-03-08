@@ -1,4 +1,4 @@
-package com.zjtc.model.vo;
+package com.zjtc.model;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -60,7 +60,7 @@ public class SmsSendInfo extends Model<SmsSendInfo> {
 
 
   @ApiModelProperty("发送时间")
-  @TableField(value = "send_time", exist = true)
+    @TableField(value = "send_time", exist = true)
   private Date sendTime;
 
   @ApiModelProperty("回执时间")
