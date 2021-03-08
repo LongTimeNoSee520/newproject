@@ -153,6 +153,7 @@
     FROM
     t_w_use_water_self_define_plan t1
     WHERE t1.node_code = #{nodeCode}
+    and audit_status != 3
     <if test="unitName != null and unitName != ''">
       and t1.unit_name like '%${unitName}%'
     </if>
@@ -194,6 +195,7 @@
     t_w_use_water_self_define_plan t1
     WHERE 1 = 1
     AND t1.node_code = #{nodeCode}
+    and audit_status != 3
     <if test="unitName != null and unitName != ''">
       and t1.unit_name like '%${unitName}%'
     </if>

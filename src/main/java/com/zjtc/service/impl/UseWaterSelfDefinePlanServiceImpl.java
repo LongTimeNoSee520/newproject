@@ -157,6 +157,10 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       response.recordError("审核失败");
     }
     UseWaterSelfDefinePlan useWaterSelfDefinePlan = this.baseMapper.selectById(id);
+    if ("1".equals(useWaterSelfDefinePlan.getAuditStatus()) || "2".equals(useWaterSelfDefinePlan.getAuditStatus())){
+      response.recordError("已经审核过,不能再审核");
+      return response;
+    }
     String messageContent;
     if ("1".equals(auditStatus)) {
 //      消息推送用水单位
