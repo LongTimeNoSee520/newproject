@@ -87,3 +87,6 @@ file:
   preViewRealPath: http://120.79.162.253:8073
 waterSms:
   sendUrl: http://localhost:8080:/water/sms/smsManage/sendMessages
+waterReport:
+  reportUrl: http://localhost:8082:/water/service//todo/report
+

@@ -18,4 +18,17 @@ public class SystemConstants {
    */
   public static final String STATUS_NO = "0";
 
+  /**
+   * 市节点编码
+   */
+  public static final String  MUNICIPAL_NODE_CODE ="510100000000";
+  /**
+   * 计划超额审核人员id
+   */
+  public static final String  PLAN_EXCESS_AUDITOR_ID ="123";
+  /**
+   * 计划超额审核人员名称
+   */
+  public static final String  PLAN_EXCESS_AUDITOR_NAME ="测试";
+
 }

@@ -6,15 +6,22 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
+import com.zjtc.base.constant.SystemConstants;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.HttpUtil;
+import com.zjtc.base.util.JWTUtil;
 import com.zjtc.mapper.waterBiz.EndPaperMapper;
+import com.zjtc.model.DictItem;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.FlowProcess;
+import com.zjtc.model.Todo;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
+import com.zjtc.model.WaterUseData;
 import com.zjtc.model.vo.EndPaperVO;
+import com.zjtc.service.DictItemService;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
@@ -76,11 +83,20 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   @Autowired
   private SmsService smsService;
 
+  @Autowired
+  private DictItemService dictItemService;
+
+  @Autowired
+  private JWTUtil jwtUtil;
+
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
 
   @Value("${server.servlet-path}")
   private String contextPath;
+
+  @Value("${waterReport.reportUrl}")
+  private String reportUrl;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -196,7 +212,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     String opinions = jsonObject.getString("opinions");//意见
     String auditorName = jsonObject.getString("auditorName");//审核人员名称
     String auditorId = jsonObject.getString("auditorId");//审核人员id
-    String businessJson = jsonObject.getString("businessJson");
+//    String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
 
     EndPaper endPaper = this.baseMapper.selectById(id);
@@ -222,13 +238,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
         //设置办结单审核状态
         endPaper.setAuditStatus("1");//通过(本次通过且没有下一环节)
-
+        endPaper = this.report(user,endPaper);
         if ("1".equals(endPaper.getDataSources())) {//网上申报的办结单
-          UseWaterPlanAddWX waterPlanAddWX = new UseWaterPlanAddWX();
-          waterPlanAddWX.setId(endPaper.getWaterPlanWXId());
-          //只有通过时(且审核流程走完)，不通过则不修改
-          waterPlanAddWX.setAuditStatus("4");//微信端提交审核通过后办结单审核也通过
-          useWaterPlanAddWXService.update(waterPlanAddWX,user);
           /**网上申报的 需要通知用户到微信端确认(现场的不发通知)*/
           String messageContent1 ="";
           if ("0".equals(endPaper.getPaperType())) {//调整计划
@@ -241,12 +252,19 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
                     + addNumber + "方(第一水量"
                     + firstWater + "方，第二水量" + secondWater + "方)]审核已通过,请到微信端确认。";
           }
-          /**新增通知给用水单位*/
-          messageService.messageToUnit(endPaper.getUnitCode(), messageContent1,
-              AuditConstants.END_PAPER_TODO_TITLE);
-          /**短信通知给用水单位*/
-          smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent1, "计划通知");
-          //TODO webSocket推送到公共服务端
+          if(!"2".equals(endPaper.getAuditStatus())) {//没有超额
+            UseWaterPlanAddWX waterPlanAddWX = new UseWaterPlanAddWX();
+            waterPlanAddWX.setId(endPaper.getWaterPlanWXId());
+            //只有通过时(且审核流程走完)，不通过则不修改
+            waterPlanAddWX.setAuditStatus("4");//微信端提交审核通过后办结单审核也通过
+            useWaterPlanAddWXService.update(waterPlanAddWX,user);
+            /**新增通知给用水单位*/
+            messageService.messageToUnit(endPaper.getUnitCode(), messageContent1,
+                AuditConstants.END_PAPER_TODO_TITLE);
+            /**短信通知给用水单位*/
+            smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent1, "计划通知");
+            //TODO webSocket推送到公共服务端
+          }
         }
         /**新增通知给发起人*/
         //查询 流程的发起人
@@ -263,13 +281,16 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
                   + addNumber + "方(第一水量"
                   + firstWater + "方，第二水量" + secondWater + "方)]办结单审核已通过。";
         }
-        messageService
-            .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
-                AuditConstants.END_PAPER_MESSAGE_TYPE, messageContent);
-        /**短信通知给发起人*/
-        smsService.sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
-            messageContent, "计划通知");
-        //TODO ,webSocket推送到前端
+        if(!"2".equals(endPaper.getAuditStatus())) {
+          messageService
+              .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
+                  AuditConstants.END_PAPER_MESSAGE_TYPE, messageContent);
+          /**短信通知给发起人*/
+          smsService
+              .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
+                  messageContent, "计划通知");
+          //TODO ,webSocket推送到前端
+        }
       }
       if ("0".equals(auditStatus)) {//本次审核不通过(没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知)
         flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
@@ -328,7 +349,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
             "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
                 + addNumber + "方(第一水量" + firstWater + "方，第二水量" + secondWater + "方)。";
       }
-      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, businessJson,
+      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, JSONObject.toJSONString(endPaper),
           detailConfig, AuditConstants.END_PAPER_TODO_TYPE);
     }
     //更新审核流程数据
@@ -337,6 +358,70 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     flowProcessService.updateById(flowProcess);
     //更新办结单数据
     this.baseMapper.updateById(endPaper);
+  }
+
+  private EndPaper report(User user, EndPaper endPaper) throws Exception {
+    if ("1".equals(endPaper.getPaperType())) {//增加计划超额才上报
+      /**查询计划表信息*/
+      Wrapper wrapper = new EntityWrapper();
+      wrapper.eq("node_code", endPaper.getNodeCode());
+      wrapper.eq("unit_code", endPaper.getUnitCode());
+      wrapper.eq("plan_year", endPaper.getPlanYear());
+      UseWaterPlan useWaterPlan = planDailyAdjustmentService.selectOne(wrapper);
+      Double increaseLimit = Double.valueOf(
+          dictItemService.findByDictCode("increaseLimit", user.getNodeCode(), user.getNodeCode())
+              .getDictItemName());
+      if (!endPaper.getNodeCode().equals(SystemConstants.MUNICIPAL_NODE_CODE)
+          && endPaper.getAddNumber().compareTo(increaseLimit) > 0) {
+        //当前办结单不属于市级且计划超额
+        Todo todo = new Todo();
+        todo.setNodeCode(SystemConstants.MUNICIPAL_NODE_CODE);
+        todo.setExecutePersonId(SystemConstants.PLAN_EXCESS_AUDITOR_ID);
+        todo.setExecutePersonName(SystemConstants.PLAN_EXCESS_AUDITOR_NAME);
+        todo.setTodoTitle(AuditConstants.PLAN_EXCESS_TITLE);
+        todo.setTodoContent(
+            "取水单位" + endPaper.getUnitCode() + "（" + endPaper.getUnitName() + "）计划增加水量超过限额，需要市审批");
+        todo.setTodoType(AuditConstants.PLAN_EXCESS_TYPE);
+        todo.setTableName(AuditConstants.END_PAPER_TABLE);
+        todo.setBusinessId(endPaper.getId());
+        todo.setRegistrantId(user.getId());
+        todo.setRegistrant(user.getUsername());
+        todo.setSubmitNodeCode(user.getNodeCode());
+        todo.setSubmitNodeName(
+            dictItemService.findByDictCode("area", user.getNodeCode(), user.getNodeCode())
+                .getDictItemName());
+        JSONObject businessJson = new JSONObject();
+        businessJson.put("unitCode", endPaper.getUnitCode());
+        businessJson.put("unitName", endPaper.getUnitName());
+//        businessJson.put("planType", endPaper.getPaperType());
+        JSONObject originalPlan = new JSONObject();
+
+        originalPlan.put("yearPlan", useWaterPlan.getCurYearPlan());
+        originalPlan.put("firstQuarter", useWaterPlan.getFirstQuarter());
+        originalPlan.put("secondQuarter", useWaterPlan.getSecondQuarter());
+        originalPlan.put("thirdQuarter", useWaterPlan.getThirdQuarter());
+        originalPlan.put("fourthQuarter", useWaterPlan.getFourthQuarter());
+        businessJson.put("originalPlan", originalPlan);
+//      if ("0".equals(endPaper.getPaperType())){
+//        businessJson.put("reason","季度用水超额");
+//        JSONObject afterAdjust = new JSONObject();
+//        afterAdjust.put("firstQuarter",endPaper.getFirstQuarter());
+//        afterAdjust.put("secondQuarter",endPaper.getSecondQuarter());
+//        afterAdjust.put("thirdQuarter",endPaper.getThirdQuarter());
+//        afterAdjust.put("fourthQuarter",endPaper.getFourthQuarter());
+//        businessJson.put("afterAdjust",afterAdjust);
+//      }else if ("1".equals(endPaper.getPaperType())){
+        businessJson
+            .put("reason", "增加计划:" + endPaper.getAddNumber() + "方，超过规定额度" + increaseLimit + "方。");
+//      }
+        todo.setBusinessJson(businessJson.toJSONString());
+        String publicKey = jwtUtil.getPublicKey();
+        String token = jwtUtil.creatToken(user, publicKey);
+        HttpUtil.doPost(token, reportUrl, JSONObject.toJSONString(todo));
+        endPaper.setAuditStatus("2");
+      }
+    }
+    return endPaper;
   }
 
   @Override

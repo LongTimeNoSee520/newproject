@@ -26,4 +26,8 @@ public interface TodoService extends IService<Todo> {
    * @param businessId 业务id
    */
   boolean deleteByBusinessId(String businessId);
+
+  void report(User user, Todo todo);
+
+  void edit(User user,String businessId, String pass) throws Exception;
 }

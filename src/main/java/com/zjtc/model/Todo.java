@@ -81,6 +81,14 @@ public class Todo extends Model<Todo> {
   @TableField(value = "status", exist = true)
   private String status;
 
+  @ApiModelProperty("提交操作的nodeCode")
+  @TableField(value = "submit_node_code", exist = true)
+  private String submitNodeCode;
+
+  @ApiModelProperty("提交操作的所属区县")
+  @TableField(value = "submit_node_name", exist = true)
+  private String submitNodeName;
+
   @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
   @ApiModelProperty("创建时间")
   @TableField(value = "create_time", exist = true)
