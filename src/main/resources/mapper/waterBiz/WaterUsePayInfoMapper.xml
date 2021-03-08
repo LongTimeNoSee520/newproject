@@ -1068,6 +1068,7 @@
 		from t_w_water_use_pay_info
 		where node_code=#{nodeCode}
 		and  pay_status != '1'
+		and substring( unit_code, 5, 2 ) in(select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId} )
 		and pay_status != '5'
 		<if test="null !=year and year !=''">
 			and	count_year=#{year}
@@ -1137,6 +1138,7 @@
 		where node_code=#{nodeCode}
 		and  pay_status != '1'
 		and pay_status != '5'
+		and substring( unit_code, 5, 2 ) in(select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId} )
 		<if test="null !=year and year !=''">
 			and	count_year=#{year}
 		</if>
