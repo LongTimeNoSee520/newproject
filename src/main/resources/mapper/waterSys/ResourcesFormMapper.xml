@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterSys.ResourcesFormMapper">
+	<!-- ResourcesForm的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+	<resultMap id="result_ResourcesForm_Map" type="com.zjtc.model.ResourcesForm">
+		<id column="id" property="id" />
+		<result column="node_code" property="nodeCode" />
+		<result column="res_id" property="resId" />
+		<result column="query_field" property="queryField" />
+		<result column="create_time" property="createTime" />
+		<result column="edit_time" property="editTime" />
+		<result column="deleted" property="deleted" />
+	</resultMap>
+	</mapper>
