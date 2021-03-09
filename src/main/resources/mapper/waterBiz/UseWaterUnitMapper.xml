@@ -671,7 +671,7 @@
 
   <select id="exportQueryData" resultType="java.util.LinkedHashMap">
 
-    SELECT
+    select
     a.id,
     a.node_code,
     a.unit_code,
@@ -686,15 +686,12 @@
     ) as water_meter_code,
     a.responsibility_code,
     a.unit_name,
-    a.industry,
-    industryName=(select industry_name from t_w_quota_info where id=a.industry),
+    d.id as industry,
+    d.industryName,
     b.contacts,
     b.mobile_number,
     b.phone_number,
-    case when save_unit_type='1' then '是'
-    else '否' end as  save_unit_type,
-    case when signed='1' then '是'
-    else '否' end as  signed,
+    save_unit_type,
     unit_address,
     zip_name,
     zip_address,
@@ -733,6 +730,9 @@
     left join (
     select use_water_unit_Id,bank_of_deposit,bank_account,signed,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank from t_w_bank where deleted='0' and main='1'
     ) as c on c.use_water_unit_Id=a.id
+    left join (
+    select id,industry_name as industryName from t_w_quota_info
+    ) as d on d.id=a.industry
     WHERE
     a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
     where person_id=#{userId})
@@ -747,6 +747,10 @@
     <if test="null !=mobileNumber">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
       mobile_number like '%${mobileNumber}%' and deleted='0')
+    </if>
+    <if test="null !=contacts">
+      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
+      contacts like '%${contacts}%' and deleted='0')
     </if>
     <!--筛选银行账号-->
     <if test="null !=bankAccount">
@@ -779,6 +783,9 @@
     <!--责任书编号-->
     <if test=" null !=responsibilityCode">
       and a.responsibility_code like '%${responsibilityCode}%'
+    </if>
+    <if test="null !=industryName">
+      and industryName like '%${industryName}%'
     </if>
 
   </select>

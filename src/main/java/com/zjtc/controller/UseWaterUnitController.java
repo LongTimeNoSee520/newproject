@@ -270,8 +270,8 @@ public class UseWaterUnitController {
       + "  \"responsibilityCode\":\"责任书编号\",\n"
       + "  \"mobileMumber\":\"电话号码\",\n"
       + "  \"signed\":\"是否签约：0，否，1是\",\n"
-      + "  \"contacts\":\"联系人：0，否，1是\",\n"
-      + "  \"industryName\":\"行业名称：0否，1是\",\n"
+      + "  \"contacts\":\"联系人\",\n"
+      + "  \"industryName\":\"行业名称\",\n"
       + "  \"abnormal\":\"是否异常：0否，1是\"\n"
       + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
@@ -465,7 +465,7 @@ public class UseWaterUnitController {
   public ApiResponse exportQueryData
       (
           @ApiParam("{\n"
-              + "    \"unitCode\":\"单位编号\",\n"
+              + "    \"exportQueryData\":\"单位编号\",\n"
               + "    \"unitName\":\"单位名称\",\n"
               + "    \"waterMeterCode\":\"水表档案号\",\n"
               + "    \"unitCodeType\":\"用户类型\",\n"
@@ -473,6 +473,8 @@ public class UseWaterUnitController {
               + "    \"responsibilityCode\":\"责任书编号\",\n"
               + "    \"mobileMumber\":\"电话号码\",\n"
               + "    \"signed\":\"是否签约：0，否，1是\",\n"
+              + "  \"contacts\":\"联系人\",\n"
+              + "  \"industryName\":\"行业名称\",\n"
               + "    \"abnormal\":\"是否异常：0，否，1是\"\n"
               + "}") @RequestBody JSONObject jsonObject,
           HttpServletRequest request,
