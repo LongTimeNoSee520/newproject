@@ -221,7 +221,7 @@ public class WaterSavingUnitController {
    */
   @ResponseBody
   @ApiOperation(value = "下载模版")
-  @RequestMapping(value = "downloadTemplate", method = RequestMethod.POST)
+  @RequestMapping(value = "downloadTemplate", method = RequestMethod.GET)
   public ApiResponse downloadTemplate(HttpServletRequest request, HttpServletResponse response) {
     ApiResponse apiResponse = new ApiResponse();
     try {
