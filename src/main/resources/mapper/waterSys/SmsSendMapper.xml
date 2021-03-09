@@ -82,7 +82,7 @@
     and t3.phone_number=t1.mobileNumber
     where 1=1
     <choose>
-      <when test="null ==json.status and json.status==''">
+      <when test="null ==json.status or json.status==''">
         and 1=1
       </when>
       <when test="json.status ==3">
@@ -133,7 +133,7 @@
     and t3.phone_number=t1.mobileNumber
     where 1=1
     <choose>
-      <when test="null ==json.status and json.status==''">
+      <when test="null ==json.status or json.status==''">
         and 1=1
       </when>
       <when test="json.status ==3">
