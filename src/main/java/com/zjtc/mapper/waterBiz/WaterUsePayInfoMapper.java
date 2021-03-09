@@ -3,6 +3,7 @@ package com.zjtc.mapper.waterBiz;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.WaterUsePayInfo;
+import com.zjtc.model.vo.SendListVO;
 import com.zjtc.model.vo.WaterUsePayInfoVo;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
   List<Map<String, Object>> ThreePayMess(@Param("year") Integer year,
       @Param("unitId") String unitId);
 
-  List<Map<String, Object>> selectPayNotice(JSONObject jsonObject);
+  List<SendListVO> selectPayNotice(JSONObject jsonObject);
 
   long selectPayNoticeCount(JSONObject jsonObject);
 
@@ -63,6 +64,7 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
   List<Map<String, Object>> exportOtherBankInfo(JSONObject jsonObject);
 
   List<Map<String, Object>> exportQueryData(JSONObject jsonObject);
+
 
 
 }

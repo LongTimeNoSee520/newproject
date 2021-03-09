@@ -20,31 +20,129 @@
     <result column="description" property="description" jdbcType="VARCHAR"/>
   </resultMap>
 
-<!--  <resultMap id="ResultVoMap" type="com.zjtc.model.SmsSendStatusVo">-->
-<!--    <result column="unitCode" property="unitCode" jdbcType="VARCHAR"/>-->
-<!--    <result column="status" property="status" jdbcType="VARCHAR"/>-->
-<!--  </resultMap>-->
-  <select id="SmsSendMapper" resultMap="ResultVoMap">
-   select
-    a.unit_code as unitCode,
-    status
-    from
+  <resultMap id="ResultVoMap" type="com.zjtc.model.vo.SmsSendStatusVo">
+    <result column="unitCode" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="status" property="status" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <select id="queryAll" resultType="com.zjtc.model.vo.SendListVO">
+    SELECT
+    top ${json.pageSize} temp_row.*
+    FROM
     (
     select
-    #{unitCode} as unit_code,
-    #{phoneNumber}  as phone_number
-    )as a
+    row_number () over (order by t3.status ) AS rownumber,
+    t1.*,
+    case
+    when t3.status is null or t3.status ='' then '未发送'
+    when t3.status ='0' then '发送成功'
+    when t3.status='1' then '发送失败'
+    when t3.status='2' then '等待回执'
+    end as statusName
+    from
+    <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
+      select
+      #{item.id} as id,
+      #{item.unitCode} as unitCode,
+      #{item.unitName} as unitName,
+      #{item.countYear} as countYear,
+      #{item.countQuarter} as countQuarter,
+      #{item.mobileNumber} as mobileNumber,
+      #{item.exceedWater} as exceedWater,
+      #{item.increaseMoney} as increaseMoney,
+      #{item.receiverName} as receiverName
+    </foreach>
+    t1
     left join (
     select
-		top 1
+    id,
+    business_id
+    from t_sms_info as a
+    where message_type=#{json.messageTypecode}
+    ) as t2 on t2.business_id=t1.id
+    left join(
+    select
+    a.sms_id,
+    a.unit_code,
+    a.phone_number,
+    a.status
+    from t_sms_sendInfo as a
+    inner join
+    (
+    select
+    sms_id ,unit_code,phone_number,max(send_time) as send_time
+    from t_sms_sendInfo as a
+    group by sms_id ,unit_code,phone_number
+    )as b on a.sms_id=b.sms_id
+    and a.unit_code=b.unit_code
+    and a.phone_number=b.phone_number
+    and a.send_time=b.send_time
+    ) as t3 on t3.sms_id =t2.id
+    and t3.unit_code=t1.unitCode
+    and t3.phone_number=t1.mobileNumber
+    where 1=1
+    <choose>
+      <when test="null ==json.status and json.status==''">
+        and 1=1
+      </when>
+      <when test="json.status ==3">
+        and	status is null or status =''
+      </when>
+      <otherwise >
+        and	status=#{json.status}
+      </otherwise>
+    </choose>
+    ) temp_row
+    WHERE
+    rownumber > ( (#{json.current}-1)* #{json.pageSize} );
+  </select>
+
+  <select id="count" resultType="java.lang.Long">
+    select
+    count(1)
+    from
+    <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
+      select
+      #{item.id} as id,
+      #{item.unitCode} as unitCode,
+      #{item.unitName} as unitName,
+      #{item.countYear} as countYear,
+      #{item.countQuarter} as countQuarter,
+      #{item.mobileNumber} as mobileNumber,
+      #{item.exceedWater} as exceedWater,
+      #{item.increaseMoney} as increaseMoney,
+      #{item.receiverName} as receiverName
+    </foreach>
+    t1
+    left join (
+    select
+    id,
+    business_id
+    from t_sms_info as a
+    where message_type=#{json.messageTypecode}
+    ) as t2 on t2.business_id=t1.id
+    left join(
+    select
+    sms_id,
     unit_code,
     phone_number,
-		status
-    from t_sms_sendInfo
-    where unit_code=#{unitCode}
-    and phone_number=#{phoneNumber}
-    and node_code=#{nodeCode}
-    order by send_time desc
-    )as b on a.unit_code=b.unit_code and a.phone_number=b.phone_number
+    status
+    from 	t_sms_sendInfo
+    ) as t3 on t3.sms_id =t2.id
+    and t3.unit_code=t1.unitCode
+    and t3.phone_number=t1.mobileNumber
+    where 1=1
+    <choose>
+      <when test="null ==json.status and json.status==''">
+        and 1=1
+      </when>
+      <when test="json.status ==3">
+        and	status is null or status =''
+      </when>
+      <otherwise >
+        and	status=#{json.status}
+      </otherwise>
+    </choose>
+    ;
   </select>
 </mapper>

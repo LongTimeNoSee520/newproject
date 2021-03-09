@@ -86,7 +86,7 @@ public class SmsServiceImpl implements SmsService {
       sendInfo.put("messageType", messageType);
       List<JSONObject> sendTo = new ArrayList<>();
       JSONObject sendToInfo = new JSONObject();
-      sendToInfo.put("receiverName", send.getContacts());
+      sendToInfo.put("receiverName", send.getReceiverName());
       sendToInfo.put("phoneNumber", send.getMobileNumber());
       sendTo.add(sendToInfo);
       sendInfo.put("sendTo", sendTo);

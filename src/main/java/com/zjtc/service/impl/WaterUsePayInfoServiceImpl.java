@@ -7,6 +7,7 @@ import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.FileUtil;
+import com.zjtc.base.util.RedisUtil;
 import com.zjtc.mapper.waterBiz.UseWaterUnitMapper;
 import com.zjtc.mapper.waterBiz.WaterUsePayInfoMapper;
 import com.zjtc.model.Contacts;
@@ -24,6 +25,7 @@ import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.RefundOrRefundService;
+import com.zjtc.service.SmsSendService;
 import com.zjtc.service.SmsService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterUnitInvoiceService;
@@ -87,6 +89,10 @@ public class WaterUsePayInfoServiceImpl extends
   private FileService fileService;
   @Autowired
   private SmsService smsService;
+  @Autowired
+  private SmsSendService smsSendService;
+  @Autowired
+  private RedisUtil redisUtil;
 
   @Override
   public boolean saveModel(JSONObject jsonObject) {
@@ -313,7 +319,7 @@ public class WaterUsePayInfoServiceImpl extends
 
   @Override
   public Map<String, Object> selectPayNotice(JSONObject jsonObject) {
-    Map<String,Object> page=new HashMap<>();
+    Map<String, Object> page = new HashMap<>();
     Integer year = jsonObject.getInteger("year");
     if (null == year || "0".equals(year)) {
       //默认当年
@@ -321,14 +327,23 @@ public class WaterUsePayInfoServiceImpl extends
       year = now.get(Calendar.YEAR);
       jsonObject.put("year", year);
     }
+    //数据字典
     String messageTypecode = dictUtils
         .getDictItemCode("messageType", "催缴通知", jsonObject.getString("nodeCode"));
     jsonObject.put("messageTypecode", messageTypecode);
-    page.put("records", baseMapper.selectPayNotice(jsonObject));
+    //查询所有未缴费信息数据
+    List<SendListVO> noticeData = baseMapper.selectPayNotice(jsonObject);
+    if (noticeData.isEmpty()) {
+      return page;
+    }
+    //查询短信状态
+    //sql关键字
+    jsonObject.put("pageSize",jsonObject.getInteger("size"));
+    List<SendListVO> data= smsSendService.queryAll(noticeData, jsonObject);
+    long total= smsSendService.count(noticeData, jsonObject);
+    page.put("records", data);
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
-    //查询总数据条数
-    long total = baseMapper.selectPayNoticeCount(jsonObject);
     page.put("total", total);
     long pageSize = jsonObject.getInteger("size");
     page.put("page", total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
@@ -336,9 +351,9 @@ public class WaterUsePayInfoServiceImpl extends
   }
 
   @Override
-  public boolean send(JSONObject jsonObject,User user) throws Exception {
+  public boolean send(JSONObject jsonObject, User user) throws Exception {
     List<SendListVO> list = jsonObject.getJSONArray("data").toJavaList(SendListVO.class);
-    smsService.sendNotification(user,list, SmsConstants.SEND_NOTIFICATION_PAY,null);
+    smsService.sendNotification(user, list, SmsConstants.SEND_NOTIFICATION_PAY, null);
     return true;
   }
 

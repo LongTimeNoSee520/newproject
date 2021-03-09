@@ -516,7 +516,7 @@ public class WaterUsePayInfoController {
           + "\"countQuarter\": \"季度\",\n"
           + "\"countYear\": \"年度\",\n"
           + "\"mobileNumber\": \"手机号码\",\n"
-          + "\"contacts\": \"收件人\",\n"
+          + "\"receiverName\": \"收件人\",\n"
           + "\"statusName\": \"状态\"\n"
           + "\"exceedWater\": \"超计划水量\"\n"
           + "\"statusName\": \"加价费\"\n"

@@ -1,13 +1,9 @@
 package com.zjtc.model.vo;
 
 import com.baomidou.mybatisplus.activerecord.Model;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,6 +11,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SendListVO extends Model<SendListVO>{
+
+    @ApiModelProperty("业务id")
+    private String id;
 
     @ApiModelProperty("单位编号")
     private String unitCode;
@@ -26,7 +25,7 @@ public class SendListVO extends Model<SendListVO>{
     private String mobileNumber;
 
     @ApiModelProperty("接收人姓名")
-    private String contacts;
+    private String receiverName;
 
     @ApiModelProperty("年份")
     private Integer countYear;
@@ -41,6 +40,8 @@ public class SendListVO extends Model<SendListVO>{
     private Double increaseMoney;
 
 
+    @ApiModelProperty("状态值名称")
+    private String statusName;
 
 
 	@Override
