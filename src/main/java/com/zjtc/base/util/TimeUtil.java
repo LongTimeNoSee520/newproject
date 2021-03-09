@@ -407,4 +407,14 @@ public class TimeUtil {
     }
     return -1;
   }
+  /**
+   * 获取传入时间相差diff年的年份(Integer)
+   * @param date
+   * @return
+   */
+  public static Integer getYear(Date date,int yearDiff) {
+    return Integer.parseInt(
+        TimeUtil.formatTimeStr(TimeUtil.getMonthFirstYear(date, yearDiff)).substring(0, 4));
+
+  }
 }

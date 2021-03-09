@@ -1,7 +1,6 @@
 package com.zjtc.service;
 
 
-import com.nimbusds.jose.JOSEException;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.SendListVO;
 import java.util.List;

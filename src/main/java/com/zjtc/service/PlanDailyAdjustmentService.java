@@ -104,5 +104,7 @@ public interface PlanDailyAdjustmentService extends IService<UseWaterPlan> {
 	/**
 	 * 年计划自平通知
 	 */
-  void planAdjustNotification(User user, List<SendListVO> sendList, Integer year) throws Exception;
+  void planAdjustNotification(User user, List<SendListVO> sendList) throws Exception;
+
+	Map<String,Object> sendInfoPage(User user, JSONObject jsonObject);
 }

@@ -27,6 +27,7 @@ import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.PlanDailyAdjustmentService;
+import com.zjtc.service.SmsSendService;
 import com.zjtc.service.SmsService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
@@ -77,6 +78,8 @@ public class PlanDailyAdjustmentServiceImpl extends
   private CommonService commonService;
   @Autowired
   private SmsService smsService;
+  @Autowired
+  private SmsSendService smsSendService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -571,7 +574,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     /**待办表加数据*/
     if(StringUtils.isNotBlank(todoContent)) {
       String todoType = AuditConstants.END_PAPER_TODO_TYPE;
-      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, businessJson,
+      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, JSONObject.toJSONString(endPaper),
           detailConfig, todoType);
     }
     /**办结单新增*/
@@ -675,11 +678,90 @@ public class PlanDailyAdjustmentServiceImpl extends
   }
 
   @Override
-  public void planAdjustNotification(User user, List<SendListVO> sendList, Integer year)
+  public void planAdjustNotification(User user, List<SendListVO> sendList)
       throws Exception {
-   // String messageContent = "计划下达通知：你单位【单位名称】2021年用水计划已经下达，请你单位于7个工作日内前往公共服务平台或者微信公众号“成都市微管家”中办理计划自平。";
-    smsService.sendNotification(user,sendList, SmsConstants.SEND_NOTIFICATION_PLAN,year);
-    //todo
+    Date date = new Date();
+
+    long october =TimeUtil.getMonthFirstDay(TimeUtil.getMonthFirstYear(date,0),9).getTime();//本年10月的第一天
+    if (date.getTime() < october){//如果当前时间是本年10月1日前 则年份取当年
+      smsService.sendNotification(user, sendList, SmsConstants.SEND_NOTIFICATION_PLAN, TimeUtil.getYear(new Date(),0));
+    }else if (date.getTime()> october){//大于10月1日年份取下一年
+      smsService.sendNotification(user, sendList, SmsConstants.SEND_NOTIFICATION_PLAN,TimeUtil.getYear(new Date(), 1));
+    }
+  }
+
+  @Override
+  public Map<String, Object> sendInfoPage(User user, JSONObject jsonObject) {
+    Date date = new Date();
+    int current = jsonObject.getInteger("current");//当前页
+    int size = jsonObject.getInteger("size");//每页条数
+    String userId = user.getId();
+    String unitCode = jsonObject.getString("unitCode");//单位编号
+    String unitCodeGroup = jsonObject.getString("unitCodeGroup");//批次
+    String status = jsonObject.getString("status");//发送状态
+
+    Map<String, Object> map = new HashMap();
+//    map.put("nodeCode", nodeCode);
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
+    map.put("userId",userId);
+    if (StringUtils.isNotBlank(unitCode)) {
+      map.put("unitCode", unitCode);
+    }
+    if (StringUtils.isNotBlank(unitCodeGroup)) {
+      map.put("unitCodeGroup", unitCodeGroup);
+    }
+    //昨年的10月1日
+    long octoberOfLastYear =TimeUtil.getMonthFirstDay(TimeUtil.getMonthFirstYear(date,-1),9).getTime();//上年年10月1日
+    Date startTime = new Date(octoberOfLastYear);
+    //今年的10月1日
+    long octoberOfThisYear = TimeUtil.getMonthFirstDay(TimeUtil.getMonthFirstYear(date,0),9).getTime();//今年10月1日
+    Date endTime = new Date(octoberOfThisYear);
+    //当前时间
+    long currentTime = date.getTime();
+//    map.put("startTime",startTime);
+//    map.put("endTime",endTime);
+
+
+    String messageTypecode = SmsConstants.SEND_NOTIFICATION_PLAN;
+    JSONObject json =new JSONObject();
+    json.put("messageTypecode",messageTypecode);
+    if (currentTime<= octoberOfThisYear){
+      map.put("year",TimeUtil.getYear(date,0));//当年
+      json.put("startTime",startTime);
+      json.put("endTime",endTime);
+    }else if (currentTime > octoberOfThisYear ){
+      json.put("endTime",endTime);
+      map.put("year",TimeUtil.getYear(date,1));//下年
+    }
+    if (StringUtils.isNotBlank(status)) {
+      json.put("status", status);
+    }
+    Map<String, Object> result = new LinkedHashMap<>();
+    /**查询单位信息*/
+    List<SendListVO> list = this.baseMapper.queryUnit(map);
+    if (list.isEmpty()){
+      result.put("total",0);//满足条件的总条数
+      result.put("size", size);//每页条数
+      result.put("pages", 0);//一共有多少页
+      result.put("current", current);//当前页
+    }else {
+      /**查出满足条件的共有多少条*/
+      int num = smsSendService.sendInfoNum(list, json);
+      result.put("total", num);//满足条件的总条数
+      result.put("size", size);//每页条数
+      result.put("pages", (int) Math.ceil((double) num / size));//一共有多少页
+      result.put("current", current);//当前页
+    }
+    /**查出满足条件的数据*/
+    json.put("current", current);
+    json.put("pageSize", size);
+    List<Map<String,Object>> records = smsSendService.sendInfoPage(list,json);
+    result.put("records", records);
+    return result;
   }
 
   private List<String> handleFiles(List<FileVO> fileVOS){

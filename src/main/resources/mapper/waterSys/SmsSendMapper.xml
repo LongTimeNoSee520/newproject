@@ -145,4 +145,125 @@
     </choose>
     ;
   </select>
+  <select id="sendInfoNum" resultType="int">
+    select
+    count(1)
+    from
+    <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
+      select
+      #{item.id} as id,
+      #{item.unitCode} as unitCode,
+      #{item.unitName} as unitName,
+      #{item.mobileNumber} as mobileNumber,
+      #{item.receiverName} as receiverName
+    </foreach>
+    t1
+    left join (
+    select
+    id,
+    business_id
+    from t_sms_info as a
+    where message_type=#{json.messageTypecode}
+    ) as t2 on t2.business_id=t1.id
+    left join(
+    select
+    sms_id,
+    unit_code,
+    phone_number,
+    status
+    from 	t_sms_sendInfo
+    WHERE 1=1
+    <if test="null != json.startTime and null != json.endTime">
+      AND send_time >= #{json.startTime}
+      AND send_time &lt;= #{json.endTime}
+    </if>
+    <if test="null == json.startTime and null != json.endTime">
+      AND send_time >= #{json.endTime}
+    </if>
+    ) as t3 on t3.sms_id =t2.id
+    and t3.unit_code=t1.unitCode
+    and t3.phone_number=t1.mobileNumber
+    where 1=1
+    <choose>
+      <when test="null ==json.status or json.status==''">
+        and 1=1
+      </when>
+      <when test="json.status ==3">
+        and	status is null or status =''
+      </when>
+      <otherwise >
+        and	status=#{json.status}
+      </otherwise>
+    </choose>
+  </select>
+
+  <select id="sendInfoPage" resultType="com.zjtc.model.vo.SendListVO">
+    SELECT
+    top ${json.pageSize} temp_row.*
+    FROM
+    (
+    select
+    row_number () over (order by t3.status ) AS rownumber,
+    t1.*,
+    case
+    when t3.status is null or t3.status ='' then '未发送'
+    when t3.status ='0' then '发送成功'
+    when t3.status='1' then '发送失败'
+    when t3.status='2' then '等待回执'
+    end as statusName
+    from
+    <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
+      select
+      #{item.id} as id,
+      #{item.unitCode} as unitCode,
+      #{item.unitName} as unitName,
+      #{item.mobileNumber} as mobileNumber,
+      #{item.exceedWater} as exceedWater,
+      #{item.receiverName} as receiverName
+    </foreach>
+    t1
+    left join (
+    select
+    id,
+    business_id
+    from t_sms_info
+    where message_type=#{json.messageTypecode}
+    ) as t2 on t2.business_id=t1.id
+    left join(
+    select
+    sms_id,
+    unit_code,
+    phone_number,
+    status,
+    max(send_time) as send_time
+    from t_sms_sendInfo
+    WHERE 1=1
+    <if test="null != json.startTime and null != json.endTime">
+      AND send_time >= #{json.startTime}
+      AND send_time &lt;= #{json.endTime}
+    </if>
+    <if test="null == json.startTime and null != json.endTime">
+      AND a.send_time >= #{json.endTime}
+    </if>
+    GROUP BY  sms_id,unit_code,phone_number,status
+    )t3
+    ON t1.id=t3.sms_id
+    and t3.unit_code=t1.unitCode
+    and t3.phone_number=t1.mobileNumber
+    where 1=1
+    <choose>
+      <when test="null ==json.status or json.status==''">
+        and 1=1
+      </when>
+      <when test="json.status ==3">
+        and	t3.status is null or t3.status =''
+      </when>
+      <otherwise >
+        and	t3.status=#{json.status}
+      </otherwise>
+    </choose>
+    ) temp_row
+    WHERE
+    rownumber > ( (#{json.current}-1)* #{json.pageSize} );
+  </select>
 </mapper>

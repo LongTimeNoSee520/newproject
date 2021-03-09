@@ -407,28 +407,55 @@ public class PlanDailyAdjustmentController {
   @ApiOperation(value = "年计划自平通知")
   public ApiResponse planAdjustNotification(@RequestHeader("token") String token,
       @ApiParam("{\n"
-          + "\"year\": \"年份 \",\n"
           + "\"sendList\":(发送列表) [{\n"
+          + "\"id\": \"id\",\n"
           + "\"unitCode\": \"单位编号\",\n"
           + "\"unitName\": \"单位名称\",\n"
           + "\"mobileNumber\": \"手机号码\",\n"
-          + "\"contacts\": \"收件人\",\n"
+          + "\"receiverName\": \"收件人\",\n"
           + "}]\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("年计划自平通知 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
     List<SendListVO> sendList = jsonObject.getJSONArray("sendList").toJavaList(SendListVO.class);
-    Integer year = jsonObject.getInteger("year");
+//    Integer year = jsonObject.getInteger("year");
     if (null != sendList && sendList.size()>0) {
       try {
         User user = jwtUtil.getUserByToken(token);
-         planDailyAdjustmentService.planAdjustNotification(user, sendList,year);
+         planDailyAdjustmentService.planAdjustNotification(user, sendList);
       } catch (Exception e) {
         log.error("年计划自平通知发送失败,errMsg==={}" + e.getMessage());
         response.recordError(500);
       }
     } else {
       response.recordError("年计划自平通知参数不能为空");
+    }
+    return response;
+  }
+
+  @RequestMapping(value = "sendInfoPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "年计划自平通知发送列表信息查询")
+  public ApiResponse sendInfoPage(@RequestHeader("token") String token,
+      @ApiParam("{\"current\":\"当前页,数字类型\",\n"
+          + " \"size\":\"每页条数,数字类型\" ,\n"
+          + " \"unitCode\":\"单位编号\",\n"
+          + " \"unitCodeGroup\":\"批次\",\n"
+          + " \"status\":\"短信发送状态\",\n"
+          + "\"nodeCode\":\"节点编码\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("分页查询 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        User user = jwtUtil.getUserByToken(token);
+        Map<String, Object> result = planDailyAdjustmentService.sendInfoPage(user, jsonObject);
+        response.setData(result);
+      } catch (Exception e) {
+        log.error("分页查询失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("分页查询参数不能为空");
     }
     return response;
   }

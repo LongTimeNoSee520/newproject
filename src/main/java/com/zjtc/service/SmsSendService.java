@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.SmsSendInfo;
 import com.zjtc.model.vo.SendListVO;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author lianghao
@@ -25,4 +26,12 @@ public interface SmsSendService extends IService<SmsSendInfo> {
    * @return
    */
   long count(List<SendListVO> sendListVOS, JSONObject jsonObject);
+  /**
+   * 查询自平计划通知满足条件的数据条数
+   */
+  int sendInfoNum(List<SendListVO> list, JSONObject json);
+  /**
+   * 查询自平计划通知满足条件的数据
+   */
+  List<Map<String,Object>> sendInfoPage(List<SendListVO> list, JSONObject json);
 }
