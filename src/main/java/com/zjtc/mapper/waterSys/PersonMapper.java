@@ -57,4 +57,10 @@ public interface PersonMapper extends BaseMapper<Person> {
 
 
   List<Person> queryAll();
+
+  /**
+   * 根据id查询人员信息
+   * @param personId 人员id
+   */
+  List<Person> selectPersonAll(@Param("personId") String personId);
 }

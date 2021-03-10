@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.UseWaterPlanAddWXMapper;
+import com.zjtc.model.Person;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.UseWaterPlanAddWXVO;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.MessageService;
+import com.zjtc.service.PersonService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.SmsService;
 import com.zjtc.service.SystemLogService;
@@ -65,6 +67,9 @@ public class UseWaterPlanAddWXServiceImpl extends
 
   @Autowired
   private TodoService todoService;
+
+  @Autowired
+  private PersonService personService;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -153,7 +158,7 @@ public class UseWaterPlanAddWXServiceImpl extends
     ApiResponse response1 = null;
 //审核通过后进入办结单审核流程,向办结单中增加数据
     UseWaterPlanAddWX useWaterPlanAddWX = this.baseMapper.selectById(id);
-    String messageContent;
+    String messageContent = null;
     if ("1".equals(auditStatus)) {
       messageContent =
           "用水单位" + useWaterPlanAddWX.getUnitCode() +
@@ -183,16 +188,7 @@ public class UseWaterPlanAddWXServiceImpl extends
       messageService
           .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName,
               AuditConstants.GET_APPROVED, messageContent);
-////     待办
-//      todoService.add(
-//          useWaterPlanAddWX.getId(),
-//          user,
-//          auditorId,
-//          auditorName,
-//          messageContent,
-//          businessJson,
-//          detailConfig,
-//          AuditConstants.END_PAPER_TODO_TYPE);
+
     }
     if ("2".equals(useWaterPlanAddWX.getAuditStatus())) {
       JSONObject jsonObject = new JSONObject();
@@ -287,6 +283,24 @@ public class UseWaterPlanAddWXServiceImpl extends
       systemLogService.logInsert(user,"用水计划调整审核","用水计划增加/调整审核","");
 //      取消待办
       todoService.edit(id, user.getNodeCode(), user.getId());
+      //     发起待办
+      List<Person> personList = null;
+      try {
+        personList = personService.selectPersonAll(auditorId);
+      } catch (Exception e) {
+        log.error("查询下一环节审核人员为空:"+e.getMessage());
+      }
+      for (Person person : personList) {
+        todoService.add(
+            useWaterPlanAddWX.getId(),
+            user,
+            person.getId(),
+            person.getUserName(),
+            messageContent,
+            businessJson,
+            detailConfig,
+            AuditConstants.END_PAPER_TODO_TYPE);
+      }
       return response;
     } else {
       if (Objects.requireNonNull(response1).getCode() == 500){

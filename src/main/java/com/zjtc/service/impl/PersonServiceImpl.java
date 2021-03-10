@@ -29,4 +29,9 @@ public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> impleme
       response.setData(personList);
       return response;
   }
+
+  @Override
+  public List<Person> selectPersonAll(String personId) throws Exception{
+    return this.baseMapper.selectPersonAll(personId);
+  }
 }

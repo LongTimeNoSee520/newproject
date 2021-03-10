@@ -8,12 +8,14 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.UseWaterSelfDefinePlanMapper;
+import com.zjtc.model.Person;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.UseWaterSelfDefinePlanVO;
 import com.zjtc.service.MessageService;
+import com.zjtc.service.PersonService;
 import com.zjtc.service.SmsService;
 import com.zjtc.service.SystemLogService;
 import com.zjtc.service.TodoService;
@@ -76,6 +78,9 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 
   @Autowired
   private TodoService todoService;
+
+  @Autowired
+  private PersonService personService;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -154,7 +159,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 
   @Override
   public ApiResponse audit(User user, String id, String auditPerson, String auditPersonId,
-      String auditStatus, String auditResult) {
+      String auditStatus, String auditResult, String auditorName,
+      String auditorId, String businessJson, String detailConfig, String nextNodeId) {
     ApiResponse response = new ApiResponse();
     if (StringUtils.isBlank(id) || StringUtils.isBlank(auditPerson) || StringUtils
         .isBlank(auditPersonId) || StringUtils.isBlank(auditStatus)) {
@@ -165,7 +171,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       response.recordError("已经审核过,不能再审核");
       return response;
     }
-    String messageContent;
+    String messageContent = null;
     if ("1".equals(auditStatus)) {
 //      消息推送用水单位
       messageContent =
@@ -220,6 +226,24 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       systemLogService.logInsert(user,"用水计划自平","用水计划自平审核","");
  //      取消待办
       todoService.edit(id, user.getNodeCode(), user.getId());
+      //     发起待办
+      List<Person> personList = null;
+      try {
+        personList = personService.selectPersonAll(auditorId);
+      } catch (Exception e) {
+        log.error("查询下一环节审核人员为空:"+e.getMessage());
+      }
+      for (Person person : personList) {
+        todoService.add(
+            id,
+            user,
+            person.getId(),
+            person.getUserName(),
+            messageContent,
+            businessJson,
+            detailConfig,
+            AuditConstants.END_PAPER_TODO_TYPE);
+      }
       return response;
     }
     response.recordError("审核失败");
@@ -369,6 +393,10 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     if (zp > 0 && planAdd ) {
       response.setCode(200);
       systemLogService.logInsert(user,"用水计划自平","用水计划自平执行","");
+//      取消待办
+      for (String id : ids){
+      todoService.edit(id, user.getNodeCode(), user.getId());
+      }
       return response;
     } else {
       response.recordError("操作失败");

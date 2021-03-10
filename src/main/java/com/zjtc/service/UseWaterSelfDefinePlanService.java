@@ -34,7 +34,8 @@ public interface UseWaterSelfDefinePlanService extends IService<UseWaterSelfDefi
    * @return 结果集
    */
   ApiResponse audit(User user,String id, String auditPerson, String auditPersonId, String auditStatus,
-      String auditResult);
+      String auditResult, String auditorName,
+      String auditorId, String businessJson, String detailConfig, String nextNodeId);
 
   /**
    * 执行

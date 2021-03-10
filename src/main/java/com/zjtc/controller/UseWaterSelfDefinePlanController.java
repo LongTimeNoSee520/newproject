@@ -86,7 +86,14 @@ public class UseWaterSelfDefinePlanController {
   @RequestMapping(value = "audit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse audit(@RequestHeader("token") String token,
       @ApiParam("{\n"
-          + " \"id\":\"审核id\",\"auditStatus\":\"审核结果(1:不同意,2:同意)\",\"auditResult\":\"原因\"\n"
+          + " \"id\":\"审核id\","
+          + "\"auditStatus\":\"审核结果(1:不同意,2:同意)\","
+          + "\"auditResult\":\"原因\","
+          + "    \"auditorName\":\"下一环节审核人\",\n"
+          + "    \"auditorId\":\"下一环节Role审核人id\",\n"
+          + "    \"businessJson\":\"关联业务json数据(待办相关)\",\n"
+          + "    \"detailConfig\":\"详情配置文件(待办相关)\",\n"
+          + "    \"nextNodeId\":\"下一审核环节id\"\n"
           + "}")
       @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
@@ -107,9 +114,19 @@ public class UseWaterSelfDefinePlanController {
     if (null != jsonObject.getString("auditResult")) {
       auditResult = jsonObject.getString("auditResult");
     }
+//    下一环节审核人
+    String auditorName = jsonObject.getString("auditorName");
+//    下一环节审核人id
+    String auditorId = jsonObject.getString("auditorId");
+//    关联业务json数据(待办相关)
+    String businessJson = jsonObject.getString("businessJson");
+//    详情配置文件(待办相关)
+    String detailConfig = jsonObject.getString("detailConfig");
+//    下一审核环节id
+    String nextNodeId = jsonObject.getString("nextNodeId");
     try {
       response = tWUseWaterSelfDefinePlanService
-          .audit(user,id, user.getUsername(), user.getId(),auditStatus, auditResult);
+          .audit(user,id, user.getUsername(), user.getId(),auditStatus, auditResult,auditorName,auditorId,businessJson,detailConfig,nextNodeId);
       return response;
     } catch (Exception e) {
       log.error("审核自平申请异常==" + e.getMessage());
