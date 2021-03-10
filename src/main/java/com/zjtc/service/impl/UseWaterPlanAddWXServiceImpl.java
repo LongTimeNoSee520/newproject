@@ -183,16 +183,16 @@ public class UseWaterPlanAddWXServiceImpl extends
       messageService
           .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName,
               AuditConstants.GET_APPROVED, messageContent);
-//     待办
-      todoService.add(
-          useWaterPlanAddWX.getId(),
-          user,
-          auditorId,
-          auditorName,
-          messageContent,
-          businessJson,
-          detailConfig,
-          AuditConstants.END_PAPER_TODO_TYPE);
+////     待办
+//      todoService.add(
+//          useWaterPlanAddWX.getId(),
+//          user,
+//          auditorId,
+//          auditorName,
+//          messageContent,
+//          businessJson,
+//          detailConfig,
+//          AuditConstants.END_PAPER_TODO_TYPE);
     }
     if ("2".equals(useWaterPlanAddWX.getAuditStatus())) {
       JSONObject jsonObject = new JSONObject();
@@ -285,6 +285,8 @@ public class UseWaterPlanAddWXServiceImpl extends
       response.setCode(200);
 //      日志记录
       systemLogService.logInsert(user,"用水计划调整审核","用水计划增加/调整审核","");
+//      取消待办
+      todoService.edit(id, user.getNodeCode(), user.getId());
       return response;
     } else {
       if (Objects.requireNonNull(response1).getCode() == 500){

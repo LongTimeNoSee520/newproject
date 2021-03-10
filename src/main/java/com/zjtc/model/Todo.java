@@ -77,7 +77,7 @@ public class Todo extends Model<Todo> {
   @TableField(value = "detail_config", exist = true)
   private String detailConfig;
 
-  @ApiModelProperty("代办状态")
+  @ApiModelProperty("代办状态1已办0未办")
   @TableField(value = "status", exist = true)
   private String status;
 

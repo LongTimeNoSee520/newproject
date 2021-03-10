@@ -16,6 +16,7 @@ import com.zjtc.model.vo.UseWaterSelfDefinePlanVO;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.SmsService;
 import com.zjtc.service.SystemLogService;
+import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanService;
 import com.zjtc.service.UseWaterSelfDefinePlanService;
@@ -72,6 +73,9 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 
   @Autowired
   private UseWaterSelfDefinePlanMapper useWaterSelfDefinePlanMapper;
+
+  @Autowired
+  private TodoService todoService;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -214,6 +218,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       response.setCode(200);
       response.setMessage("审核成功");
       systemLogService.logInsert(user,"用水计划自平","用水计划自平审核","");
+ //      取消待办
+      todoService.edit(id, user.getNodeCode(), user.getId());
       return response;
     }
     response.recordError("审核失败");
