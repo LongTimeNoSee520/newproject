@@ -13,7 +13,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * WaterSavingUnit的路由接口服务
@@ -52,12 +52,12 @@ public class WaterSavingUnitController {
       + "  \"unitName\":\"单位名称\",\n"
       + "  \"legalRepresentative\":\"法人代表\"\n"
       + "  \n"
-      + "}")@RequestBody JSONObject jsonObject,@RequestHeader("token")String token) {
+      + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     log.info("分页查询 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse apiResponse = new ApiResponse();
     if (null != jsonObject) {
       try {
-        Map<String,Object> result = waterSavingUnitService.queryPage(jsonObject);
+        Map<String, Object> result = waterSavingUnitService.queryPage(jsonObject);
         apiResponse.setData(result);
         apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
       } catch (Exception e) {
@@ -78,64 +78,64 @@ public class WaterSavingUnitController {
   @ApiOperation(value = "修改")
   @RequestMapping(value = "edit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse edit(@RequestHeader("token") String token,
-     @ApiParam("{\n"
-         + "    \"id\":\"节水单位id\",\n"
-         + "    \"unitCode\":\"单位编号\",\n"
-         + "    \"unitName\":\"单位名称\",\n"
-         + "    \"address\":\"地址\",\n"
-         + "    \"legalRepresentative\":\"张三\",\n"
-         + "    \"phoneNumber\":\"联系电话\",\n"
-         + "    \"centralizedDepartment\":\"归口部门\",\n"
-         + "    \"reviewTime\":\"复查时间，时间戳\",\n"
-         + "    \"reviewScore\":\"复查分数 double\",\n"
-         + "    \"zipCode\":\"邮寄地址\",\n"
-         + "    \"createTime\":\"创建时间 时间戳\",\n"
-         + "    \"createScore\":\"创建分数\",\n"
-         + "    \"industrialAdded\":\"工业增加值 double\",\n"
-         + "    \"totalWaterQuantity\":\"总取水量 double\",\n"
-         + "    \"industrialAddedWater\":\"万元工业增加值取水量m3/万元 double\",\n"
-         + "    \"zbRate\":\"装表率 double\",\n"
-         + "    \"reuseRate\":\"复查率 double\",\n"
-         + "    \"leakageRale\":\"漏失率 double\",\n"
-         + "    \"remarks\":\"备注\",\n"
-         + "    \"sysFiles\":[\n"
-         + "        {\n"
-         + "            \"id\":\"附件id\",\n"
-         + "            \"fileName\":\"附件名\",\n"
-         + "            \"deleted\":\"是否删除 ，0否1是\",\n"
-         + "            \"url\":\"附件预览路径\"\n"
-         + "        }\n"
-         + "    ],\n"
-         + "    \"waterSavingUnitQuotaList\":[\n"
-         + "        {\n"
-         + "            \"id\":\"定量考核标准id\",\n"
-         + "            \"waterSavingUnitId\":\"节水单位id\",\n"
-         + "            \"quotaIndex\":\"定量指标考核\",\n"
-         + "            \"assessAlgorithm\":\"考核计算方法\",\n"
-         + "            \"assessStandard\":\"考核标准\",\n"
-         + "            \"standardLevel\":\"标准水平\",\n"
-         + "            \"companyScore\":\"企业分数 double\",\n"
-         + "            \"unitScore\":\"单位分数 double\",\n"
-         + "            \"checkScore\":\"自查分数 double\",\n"
-         + "            \"actualScore\":\"实际分数 double\",\n"
-         + "            \"remarks\":\"备注\"\n"
-         + "        }\n"
-         + "    ],\n"
-         + "    \"waterSavingUnitBaseList\":[\n"
-         + "        {\n"
-         + "            \"id\":\"基础考核标准id\",\n"
-         + "            \"waterSavingUnitId\":\"节水单位id\",\n"
-         + "            \"contents\":\"考核内容\",\n"
-         + "            \"assessMethod\":\"考核方法\",\n"
-         + "            \"assessStandard\":\"考核标准\",\n"
-         + "            \"companyScore\":\"企业分数 double\",\n"
-         + "            \"unitScore\":\"单位分数 double\",\n"
-         + "            \"checkScore\":\"自查分数 double\",\n"
-         + "            \"actualScore\":\"实际分数 double\",\n"
-         + "            \"remarks\":\"备注\"\n"
-         + "        }\n"
-         + "    ]\n"
-         + "}") @RequestBody JSONObject jsonObject) {
+      @ApiParam("{\n"
+          + "    \"id\":\"节水单位id\",\n"
+          + "    \"unitCode\":\"单位编号\",\n"
+          + "    \"unitName\":\"单位名称\",\n"
+          + "    \"address\":\"地址\",\n"
+          + "    \"legalRepresentative\":\"张三\",\n"
+          + "    \"phoneNumber\":\"联系电话\",\n"
+          + "    \"centralizedDepartment\":\"归口部门\",\n"
+          + "    \"reviewTime\":\"复查时间，时间戳\",\n"
+          + "    \"reviewScore\":\"复查分数 double\",\n"
+          + "    \"zipCode\":\"邮寄地址\",\n"
+          + "    \"createTime\":\"创建时间 时间戳\",\n"
+          + "    \"createScore\":\"创建分数\",\n"
+          + "    \"industrialAdded\":\"工业增加值 double\",\n"
+          + "    \"totalWaterQuantity\":\"总取水量 double\",\n"
+          + "    \"industrialAddedWater\":\"万元工业增加值取水量m3/万元 double\",\n"
+          + "    \"zbRate\":\"装表率 double\",\n"
+          + "    \"reuseRate\":\"复查率 double\",\n"
+          + "    \"leakageRale\":\"漏失率 double\",\n"
+          + "    \"remarks\":\"备注\",\n"
+          + "    \"sysFiles\":[\n"
+          + "        {\n"
+          + "            \"id\":\"附件id\",\n"
+          + "            \"fileName\":\"附件名\",\n"
+          + "            \"deleted\":\"是否删除 ，0否1是\",\n"
+          + "            \"url\":\"附件预览路径\"\n"
+          + "        }\n"
+          + "    ],\n"
+          + "    \"waterSavingUnitQuotaList\":[\n"
+          + "        {\n"
+          + "            \"id\":\"定量考核标准id\",\n"
+          + "            \"waterSavingUnitId\":\"节水单位id\",\n"
+          + "            \"quotaIndex\":\"定量指标考核\",\n"
+          + "            \"assessAlgorithm\":\"考核计算方法\",\n"
+          + "            \"assessStandard\":\"考核标准\",\n"
+          + "            \"standardLevel\":\"标准水平\",\n"
+          + "            \"companyScore\":\"企业分数 double\",\n"
+          + "            \"unitScore\":\"单位分数 double\",\n"
+          + "            \"checkScore\":\"自查分数 double\",\n"
+          + "            \"actualScore\":\"实际分数 double\",\n"
+          + "            \"remarks\":\"备注\"\n"
+          + "        }\n"
+          + "    ],\n"
+          + "    \"waterSavingUnitBaseList\":[\n"
+          + "        {\n"
+          + "            \"id\":\"基础考核标准id\",\n"
+          + "            \"waterSavingUnitId\":\"节水单位id\",\n"
+          + "            \"contents\":\"考核内容\",\n"
+          + "            \"assessMethod\":\"考核方法\",\n"
+          + "            \"assessStandard\":\"考核标准\",\n"
+          + "            \"companyScore\":\"企业分数 double\",\n"
+          + "            \"unitScore\":\"单位分数 double\",\n"
+          + "            \"checkScore\":\"自查分数 double\",\n"
+          + "            \"actualScore\":\"实际分数 double\",\n"
+          + "            \"remarks\":\"备注\"\n"
+          + "        }\n"
+          + "    ]\n"
+          + "}") @RequestBody JSONObject jsonObject) {
     log.info("修改==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
     if (null != jsonObject) {
@@ -164,7 +164,7 @@ public class WaterSavingUnitController {
   @ApiOperation(value = "删除")
   @RequestMapping(value = "remove", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse remove(@RequestHeader("token") String token,
-      @ApiParam("{\"id\":\"节水单位id\"}")@RequestBody JSONObject jsonObject) {
+      @ApiParam("{\"id\":\"节水单位id\"}") @RequestBody JSONObject jsonObject) {
     log.info("删除 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
     if (null != jsonObject) {
@@ -193,24 +193,19 @@ public class WaterSavingUnitController {
   @ApiOperation(value = "导入")
   @RequestMapping(value = "import", method = RequestMethod.POST)
   public ApiResponse excelImport(
-      @ApiParam("{\"id\":\"上传的导入附件id\"}") @RequestBody JSONObject jsonObject,
-      HttpServletRequest request,
-      HttpServletResponse response, @RequestHeader("token") String token) {
+      MultipartFile file,
+      @RequestHeader("token") String token) {
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
-    if (null != jsonObject && StringUtils.isNotBlank(jsonObject.getString("id"))) {
-      try {
-        jwtUtil.getUserByToken(token);
-        ApiResponse result = waterSavingUnitService
-            .importExcel(jsonObject.getString("id"), request, response, user);
-        apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
-        return result;
-      } catch (Exception e) {
-        log.error("导入错误,errMsg==={}", e.getMessage());
-        e.printStackTrace();
-        apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
-      }
-    } else {
+    try {
+      jwtUtil.getUserByToken(token);
+      ApiResponse result = waterSavingUnitService
+          .importExcel(file, user);
+      apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
+      return result;
+    } catch (Exception e) {
+      log.error("导入错误,errMsg==={}", e.getMessage());
+      e.printStackTrace();
       apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
     }
     return apiResponse;

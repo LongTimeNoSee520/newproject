@@ -14,12 +14,12 @@ import com.zjtc.model.WaterSavingUnitQuota;
 import com.zjtc.model.vo.WaterSavingUnitBaseVo;
 import com.zjtc.model.vo.WaterSavingUnitQuotaVo;
 import com.zjtc.model.vo.WaterSavingUnitVo;
+import com.zjtc.service.CommonService;
 import com.zjtc.service.FileService;
 import com.zjtc.service.WaterSavingUnitBaseService;
 import com.zjtc.service.WaterSavingUnitQuotaService;
 import com.zjtc.service.WaterSavingUnitService;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,12 +30,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
-import org.jxls.reader.ReaderBuilder;
-import org.jxls.reader.XLSReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * WaterSavingUnit的服务接口的实现类
@@ -73,6 +72,8 @@ public class WaterSavingUnitServiceImpl extends
   private WaterSavingUnitQuotaService waterSavingUnitQuotaService;
   @Autowired
   private WaterSavingUnitBaseService waterSavingUnitBaseService;
+  @Autowired
+  private CommonService commonService;
 
   @Override
   public boolean saveModel(JSONObject jsonObject) {
@@ -87,12 +88,12 @@ public class WaterSavingUnitServiceImpl extends
     boolean result = this.updateById(entity);
     //更新附件
     if (!entity.getSysFiles().isEmpty()) {
-       fileService.updateBusinessId(entity.getId(), entity.getSysFiles());
+      fileService.updateBusinessId(entity.getId(), entity.getSysFiles());
     }
-    if(!entity.getWaterSavingUnitQuotaList().isEmpty()){
+    if (!entity.getWaterSavingUnitQuotaList().isEmpty()) {
       waterSavingUnitQuotaService.updateBatchById(entity.getWaterSavingUnitQuotaList());
     }
-    if(!entity.getWaterSavingUnitBaseList().isEmpty()){
+    if (!entity.getWaterSavingUnitBaseList().isEmpty()) {
       waterSavingUnitBaseService.updateBatchById(entity.getWaterSavingUnitBaseList());
     }
 
@@ -127,7 +128,7 @@ public class WaterSavingUnitServiceImpl extends
   public Map<String, Object> queryPage(JSONObject jsonObject) {
     Map<String, Object> page = new LinkedHashMap<>();
     List<WaterSavingUnit> result = baseMapper.queryPage(jsonObject);
-    if(!result.isEmpty()){
+    if (!result.isEmpty()) {
       for (WaterSavingUnit waterSavingUnit : result) {
         if (!waterSavingUnit.getSysFiles().isEmpty()) {
           for (com.zjtc.model.File file : waterSavingUnit.getSysFiles()) {
@@ -140,8 +141,8 @@ public class WaterSavingUnitServiceImpl extends
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
     //查询总数据条数
-    long total= baseMapper.queryListTotal(jsonObject);
-    page.put("total",total);
+    long total = baseMapper.queryListTotal(jsonObject);
+    page.put("total", total);
     long pageSize = jsonObject.getInteger("size");
     page.put("page", total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
     return page;
@@ -152,34 +153,21 @@ public class WaterSavingUnitServiceImpl extends
    */
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public ApiResponse importExcel(String id, HttpServletRequest request,
-      HttpServletResponse response,
+  public ApiResponse importExcel(MultipartFile file,
       User user)
       throws Exception {
-    ApiResponse apiResponse = new ApiResponse();
-    com.zjtc.model.File sysAttrFile = fileService.selectById(id);
-    if (null != sysAttrFile) {
-      /** 导入 **/
-      String fileRealPath = fileUploadRootPath + "/" + sysAttrFile.getFilePath();
-      File file = new File(fileRealPath);
-      XLSReader mainReader;
-      InputStream inputXML = getClass().getClassLoader()
-          .getResourceAsStream("template/xml/waterSavingUnit.xml");
-      mainReader = ReaderBuilder.buildFromXML(inputXML);
-      InputStream inputXLS = new FileInputStream(file);
-      Map<String, Object> beans = new HashMap<>();
-      WaterSavingUnitVo certs = new WaterSavingUnitVo();
-      List<WaterSavingUnitQuotaVo> waterSavingUnitQuotaVo = new ArrayList<>();
-      List<WaterSavingUnitBaseVo> waterSavingUnitBaseVo = new ArrayList<>();
-      beans.put("entity", certs);
-      beans.put("info1", waterSavingUnitQuotaVo);
-      beans.put("info2", waterSavingUnitBaseVo);
-      mainReader.read(inputXLS, beans);
-      // 将导入数据转换成实体对象
-      return transform(certs, waterSavingUnitQuotaVo, waterSavingUnitBaseVo, user);
-    }
-    apiResponse.recordError("导入失败");
-    return apiResponse;
+    Map beans = new HashMap<String, List>();
+    WaterSavingUnitVo certs = new WaterSavingUnitVo();
+    List<WaterSavingUnitQuotaVo> waterSavingUnitQuotaVo = new ArrayList<>();
+    List<WaterSavingUnitBaseVo> waterSavingUnitBaseVo = new ArrayList<>();
+    beans.put("entity", certs);
+    beans.put("info1", waterSavingUnitQuotaVo);
+    beans.put("info2", waterSavingUnitBaseVo);
+    String xmlConfig = "template/xml/waterSavingUnit.xml";
+    Map result = commonService.importExcel(beans, file, xmlConfig, true);
+    return transform((WaterSavingUnitVo) result.get("entity"),
+        (List<WaterSavingUnitQuotaVo>) result.get("info1"),
+        (List<WaterSavingUnitBaseVo>) result.get("info2"), user);
   }
 
   /**

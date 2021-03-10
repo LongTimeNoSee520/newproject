@@ -8,11 +8,12 @@ import com.zjtc.model.WaterSavingUnit;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * WaterSavingUnit的服务接口
- * 
- * @author 
+ *
+ * @author
  *
  */
 public interface WaterSavingUnitService extends IService<WaterSavingUnit> {
@@ -47,7 +48,7 @@ public interface WaterSavingUnitService extends IService<WaterSavingUnit> {
 	/**
 	 * 导入
 	 */
-	ApiResponse importExcel(String id, HttpServletRequest request, HttpServletResponse response, User user)
+	ApiResponse importExcel(MultipartFile file, User user)
 			throws Exception;
 
 	/**
