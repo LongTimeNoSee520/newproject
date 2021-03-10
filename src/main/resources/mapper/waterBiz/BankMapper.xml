@@ -42,7 +42,24 @@
   </update>
 
   <select id="queryByUnitId" resultMap="bankMapper">
-    select * from t_w_bank where deleted = '0' and use_water_unit_Id = #{id}
+    select
+    id,
+    node_code,
+    entrust_unit_name,
+    bank_of_deposit,
+    bank_account,
+    people_bank_pay_sys_number,
+    agreement_number,
+    other_bank,
+    signed,
+    main,
+    revocation_date,
+    focus_user_remark,
+    use_water_unit_Id,
+    deleted,
+    bank_code
+
+    from t_w_bank where deleted = '0' and use_water_unit_Id = #{id}
   </select>
 
 
