@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Api;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author lianghao
@@ -145,19 +147,16 @@ public class WaterBalanceTestController {
     }
     return response;
   }
-  @RequestMapping(value = "importData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "importData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = "multipart/form-data;charset=utf8")
   @ApiOperation(value = "数据导入")
   public ApiResponse importData(@RequestHeader("token") String token,
-      @ApiParam("{ \n"
-          + "  \"filePath\":\"文件上传后返回对象中的filePath值\"\n"
-          + "}") @RequestBody JSONObject jsonObject) {
-    log.info("数据检查 ==== 参数{" + jsonObject.toJSONString() + "}");
+      @ApiParam("文件")@RequestParam("file") MultipartFile file) {
+    log.info("文件 ==== 文件{" + file.getName() + "}");
     ApiResponse response = new ApiResponse();
-    if (null != jsonObject) {
+    if (null != file) {
       try {
         User user = jwtUtil.getUserByToken(token);
-        String filePath = jsonObject.getString("filePath");
-        waterBalanceTestService.importData(user,filePath);
+        waterBalanceTestService.importData(user,file);
       } catch (Exception e) {
         log.error("数据导入出错:errMsg==={}" + e.getMessage());
         response.recordError(500);

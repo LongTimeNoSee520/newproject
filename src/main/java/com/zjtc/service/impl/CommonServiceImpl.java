@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -82,6 +83,41 @@ public class CommonServiceImpl implements CommonService{
     try {
       // 文件流
       inputXLS = new FileInputStream(file);
+      // xml配置文件流
+      Resource resource = new ClassPathResource(xmlConfig);
+      inputXML = getClass().getClassLoader()
+          .getResourceAsStream(xmlConfig);//非静态方法可以用此方法获取xml配置文件流
+      // 执行解析
+      XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
+      //按照xml中的配置将数据从文件中读入beens中对应key的value中
+      XLSReadStatus readStatus = mainReader.read(inputXLS, beans);
+      if (readStatus.isStatusOK()) {
+        log.debug("读取excel文件成功: 【{}】", fileName);
+      }
+    } catch (Exception e) {
+      handleException(e, isThrowException);
+    } finally {
+      try {
+        if (inputXLS != null) {
+          inputXLS.close();
+        }
+        if (inputXML != null) {
+          inputXML.close();
+        }
+      } catch (IOException e) {
+        log.error("parse excel error : 【{}】", e.getMessage());
+      }
+    }
+    return beans;
+  }
+
+  @Override
+  public Map<String, List> importExcel(Map<String, List> beans, MultipartFile file,
+      String xmlConfig, boolean isThrowException) throws Exception {
+    String fileName = file.getName();
+    InputStream inputXLS = file.getInputStream();
+    InputStream inputXML = null;
+    try {
       // xml配置文件流
       Resource resource = new ClassPathResource(xmlConfig);
       inputXML = getClass().getClassLoader()

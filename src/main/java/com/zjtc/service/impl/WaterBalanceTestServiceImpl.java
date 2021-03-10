@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author lianghao
@@ -138,7 +139,7 @@ public class WaterBalanceTestServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void importData(User user, String filePath) throws Exception {
+  public void importData(User user,MultipartFile file) throws Exception {
     String nodeCode = user.getNodeCode();
     Map beans = new HashMap<String, List>();
     WaterBalanceTestVO info = new WaterBalanceTestVO();
@@ -147,10 +148,10 @@ public class WaterBalanceTestServiceImpl extends
     beans.put("products", products);
     String xmlConfig = "template/xml/WaterBalanceTestManage.xml";
     Map result = new HashMap();
-    String fileRealPath =  fileUploadRootPath +"/"+ filePath;
-    //String fileRealPath =  "C:\\Users\\LH\\Desktop\\导入测试12.xlsx";
+//    String fileRealPath =  fileUploadRootPath +"/"+ filePath;
+//    //String fileRealPath =  "C:\\Users\\LH\\Desktop\\导入测试12.xlsx";
     /**excel数据解析写入bean*/
-    result = commonService.importExcel(beans, xmlConfig, fileRealPath,true);
+    result = commonService.importExcel(beans,file, xmlConfig,true);
     /**lombok的自动生成getter和setter的注解和mybatisPlus的注解有冲突 会导致其失效，所以需要另写一个不含冲突注解的VO*/
     info = (WaterBalanceTestVO) result.get("info");
     products = (List<WaterBalanceTestProductVO>) result.get("products");

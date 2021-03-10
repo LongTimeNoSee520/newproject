@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 公共接口
@@ -35,4 +36,7 @@ public interface CommonService  {
    */
   Map<String, List> importExcel(Map<String, List> beans, String xmlConfig,
       String fileRealPath,boolean isThrowException) throws Exception;
+
+  Map<String, List> importExcel(Map<String, List> beans,MultipartFile file,
+      String xmlConfig,boolean isThrowException) throws Exception;
 }

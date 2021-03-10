@@ -88,5 +88,5 @@ file:
 waterSms:
   sendUrl: http://localhost:8080:/water/sms/smsManage/sendMessages
 waterReport:
-  reportUrl: http://localhost:8082:/water/service//todo/report
+  reportUrl: http://localhost:8082:/water/service/todo/report
 

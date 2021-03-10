@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author lianghao
@@ -39,10 +40,10 @@ public interface WaterBalanceTestService extends IService<WaterBalanceTest> {
 	/**
 	 * 数据导入
 	 * @param user
-	 * @param filePath
+	 * @param file
 	 * @throws Exception
 	 */
-	void importData(User user, String filePath) throws Exception;
+	void importData(User user,MultipartFile file) throws Exception;
 
 	/**
 	 * 模板下载
