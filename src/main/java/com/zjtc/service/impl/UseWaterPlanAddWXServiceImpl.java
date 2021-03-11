@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.UseWaterPlanAddWXMapper;
 import com.zjtc.model.Person;
 import com.zjtc.model.UseWaterPlanAddWX;
@@ -70,6 +71,9 @@ public class UseWaterPlanAddWXServiceImpl extends
 
   @Autowired
   private PersonService personService;
+
+  @Autowired
+  private WebSocketUtil webSocketUtil;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -280,7 +284,7 @@ public class UseWaterPlanAddWXServiceImpl extends
     if (i > 0 && Objects.requireNonNull(response1).getCode() == 200) {
       response.setCode(200);
 //      日志记录
-      systemLogService.logInsert(user,"用水计划调整审核","用水计划增加/调整审核","");
+      systemLogService.logInsert(user,"用水计划调整审核","用水计划增加/调整审核通过","");
 //      取消待办
       todoService.edit(id, user.getNodeCode(), user.getId());
       //     发起待办
@@ -300,6 +304,8 @@ public class UseWaterPlanAddWXServiceImpl extends
             businessJson,
             detailConfig,
             AuditConstants.END_PAPER_TODO_TYPE);
+//        webSocket消息推送
+        webSocketUtil.pushWaterNews(person.getNodeCode(),person.getId());
       }
       return response;
     } else {

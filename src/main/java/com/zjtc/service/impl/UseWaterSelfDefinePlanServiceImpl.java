@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.UseWaterSelfDefinePlanMapper;
 import com.zjtc.model.Person;
 import com.zjtc.model.UseWaterPlan;
@@ -81,6 +82,9 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 
   @Autowired
   private PersonService personService;
+
+  @Autowired
+  private WebSocketUtil webSocketUtil;
 
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
@@ -223,10 +227,10 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     if (integer > 0) {
       response.setCode(200);
       response.setMessage("审核成功");
-      systemLogService.logInsert(user,"用水计划自平","用水计划自平审核","");
+      systemLogService.logInsert(user,"用水计划自平","用水计划自平审核通过","");
  //      取消待办
       todoService.edit(id, user.getNodeCode(), user.getId());
-      //     发起待办
+//     发起待办
       List<Person> personList = null;
       try {
         personList = personService.selectPersonAll(auditorId);
@@ -243,6 +247,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
             businessJson,
             detailConfig,
             AuditConstants.END_PAPER_TODO_TYPE);
+//        webSocket消息推送
+        webSocketUtil.pushWaterNews(user.getNodeCode(),user.getId());
       }
       return response;
     }
@@ -273,11 +279,11 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       UseWaterSelfDefinePlan executed = useWaterSelfDefinePlanMapper.selectExecuted(id);
 //      如果是未审核的数据不能被执行
       if (null != auditStatus) {
-        response.recordError("单位名称为『" + auditStatus.getUnitName() + "』的数据未审核或审核不通过,不能执行");
+        response.recordError("用水单位:" +auditStatus.getUnitCode()+"(" +auditStatus.getUnitName()+")" + "的数据未审核或审核不通过,不能执行");
         return response;
 //      如果是已经执行过的数据不能再被执行
       } else if (null != executed) {
-        response.recordError("单位名称为『" + executed.getUnitName() + "』的数据已经被执行,不能再被执行");
+        response.recordError("用水单位:" +auditStatus.getUnitCode()+"(" +auditStatus.getUnitName()+")" +"的数据已经被执行,不能再被执行");
         return response;
       }
     }
@@ -386,6 +392,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       try {
 //        短信通知用水单位
         smsService.sendMsgToUnit(user, useWaterSelfDefinePlan.getUnitCode(), messageContent, "计划通知");
+//      webSocket消息推送
+        webSocketUtil.pushPublicNews(useWaterSelfDefinePlan.getNodeCode(),useWaterSelfDefinePlan.getUnitCode());
       } catch (Exception e) {
         log.error("用水计划自平审核消息推送失败");
       }

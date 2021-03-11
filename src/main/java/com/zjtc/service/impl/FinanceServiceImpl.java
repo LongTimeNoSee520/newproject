@@ -64,7 +64,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
     for (Finance finance: finances) {
       String invoiceState = finance.getInvoiceState();
       if ("1".equals(invoiceState)) {
-        response.setMessage("单位名称为:" + finance.getUnitName() + "的数据已开票不能修改");
+        response.setMessage("用水单位:" +finance.getUnitCode()+"("+ finance.getUnitName() +")"+ "的数据已开票不能修改");
         return response;
       }
     }
@@ -91,7 +91,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
     for (Finance finance : finances) {
       String invoiceState = finance.getInvoiceState();
       if ("1".equals(invoiceState)) {
-        response.recordError("单位名称为:" + finance.getUnitName() + "的数据已开票不能删除");
+        response.recordError("用水单位:" +finance.getUnitCode()+"("+ finance.getUnitName() +")"+ "的数据已开票不能删除");
         return response;
       }
     }
