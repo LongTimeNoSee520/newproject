@@ -86,7 +86,17 @@ file:
   #文件上下文
   preViewRealPath: http://120.79.162.253:8073
 waterSms:
-  sendUrl: http://localhost:8080:/water/sms/smsManage/sendMessages
+  sendU
+
 waterReport:
   reportUrl: http://localhost:8082:/water/service/todo/report
 
+
+
+webSocket:
+  #节水平台待办webSocket地址
+  waterTodoUrl: http://localhost:8081/water/system/websocket/waterTodo
+  #节水平台消息webSocket地址
+  waterNewsUrl: http://localhost:8081/water/system/websocket/waterTodo
+  #公共服务平台消息webSocket地址
+  publicNewsUrl: http://localhost:8081/water/system/websocket/waterTodo
