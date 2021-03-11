@@ -3,6 +3,8 @@ package com.zjtc.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.Todo;
 import com.zjtc.model.User;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author lianghao
@@ -30,4 +32,6 @@ public interface TodoService extends IService<Todo> {
   void report(User user, Todo todo);
 
   void edit(User user,String businessId, String pass) throws Exception;
+
+  List<Map<String,Object>> queryList(User user);
 }

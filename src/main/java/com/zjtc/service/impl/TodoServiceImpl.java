@@ -10,6 +10,7 @@ import com.zjtc.model.FlowProcess;
 import com.zjtc.model.Todo;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
+import com.zjtc.service.DictItemService;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.MessageService;
@@ -17,6 +18,8 @@ import com.zjtc.service.SmsService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +40,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
   private FlowProcessService flowProcessService;
   @Autowired
   private UseWaterPlanAddWXService useWaterPlanAddWXService;
+  @Autowired
+  private DictItemService dictItemService;
 
   @Override
   public void add(String businessId, User user, String auditorId, String auditorName,
@@ -62,6 +67,9 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     todo.setDetailConfig(detailConfig);
     todo.setStatus(AuditConstants.BEFORE_TODO_STATUS);
     todo.setCreateTime(new Date());
+    todo.setSubmitNodeCode(user.getNodeCode());
+    String nodeName = dictItemService.findByDictCode("area",user.getNodeCode(),user.getNodeCode()).getDictItemName();
+    todo.setSubmitNodeName(nodeName);
     this.baseMapper.insert(todo);
   }
 
@@ -72,7 +80,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     wrapper.eq("node_code",nodeCode);
     wrapper.eq("execute_person_id",executePersonId);
     Todo todo= this.selectOne(wrapper);
-    todo.setStatus("1");
+    todo.setStatus(AuditConstants.AFTER_TODO_STATUS);
     todo.setOperationTime(new Date());
     return this.updateById(todo);
   }
@@ -150,5 +158,12 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     /**更新待办为已读*/
     this.edit(businessId,user.getNodeCode(),user.getId());
   }
+
+  @Override
+  public List<Map<String,Object>> queryList(User user) {
+
+    return this.baseMapper.queryList(user.getId(),user.getNodeCode());
+  }
+
 
 }

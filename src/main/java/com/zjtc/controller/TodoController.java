@@ -86,4 +86,24 @@ public class TodoController {
     return response;
   }
 
+  @RequestMapping(value = "queryList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "列表查询")
+  public ApiResponse queryList(@RequestHeader("token") String token,
+      @ApiParam("{}") @RequestBody JSONObject jsonObject) {
+    log.info("列表查询 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        User user = jwtUtil.getUserByToken(token);
+        response.setData( todoService.queryList(user));
+      } catch (Exception e) {
+        log.error("列表查询失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("分页查询参数不能为空");
+    }
+    return response;
+  }
+
 }
