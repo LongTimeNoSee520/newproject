@@ -91,12 +91,12 @@ waterSms:
 waterReport:
   reportUrl: http://localhost:8082:/water/service/todo/report
 
-
-
 webSocket:
   #节水平台待办webSocket地址
   waterTodoUrl: http://localhost:8081/water/system/websocket/waterTodo
   #节水平台消息webSocket地址
-  waterNewsUrl: http://localhost:8081/water/system/websocket/waterTodo
+  waterNewsUrl: http://localhost:8081/water/system/websocket/waterNews
+  #水量导入webSocket地址
+  exportWaterUrl: http://localhost:8081/water/system/websocket/exportWater
   #公共服务平台消息webSocket地址
-  publicNewsUrl: http://localhost:8081/water/system/websocket/waterTodo
+  publicNewsUrl: http://localhost:8081/water/system/websocket/publicNews

@@ -29,6 +29,12 @@ public class WebSocketUtil {
   private String waterNewsUrl;
 
   /**
+   * 水量导入webSocket地址
+   */
+  @Value("${webSocket.exportWater}")
+  private String exportWater;
+
+  /**
    * 公共服务平台消息webSocket地址
    */
   @Value("${webSocket.publicNewsUrl}")
@@ -38,10 +44,10 @@ public class WebSocketUtil {
    * 推送待办消息
    *
    * @param nodeCode 节点编码
-   * @param loginId 登录账号
+   * @param userId 用户唯一id
    */
-  public void pushWaterTodo(String nodeCode, String loginId) {
-    String url = waterTodoUrl + "?nodeCode=" + nodeCode + "&loginId=" + loginId;
+  public void pushWaterTodo(String nodeCode, String userId) {
+    String url = waterTodoUrl + "?nodeCode=" + nodeCode + "&userId=" + userId;
     doGet(url);
   }
 
@@ -49,10 +55,21 @@ public class WebSocketUtil {
    * 推送节水平台消息
    *
    * @param nodeCode 节点编码
-   * @param loginId 登录账号
+   * @param userId 用户唯一id
    */
-  public void pushWaterNews(String nodeCode, String loginId) {
-    String url = waterTodoUrl + "?nodeCode=" + nodeCode + "&loginId=" + loginId;
+  public void pushWaterNews(String nodeCode, String userId) {
+    String url = waterTodoUrl + "?nodeCode=" + nodeCode + "&userId=" + userId;
+    doGet(url);
+  }
+
+  /**
+   * 推送水量导入进度条消息
+   *
+   * @param nodeCode 节点编码
+   * @param userId 用户唯一id
+   */
+  public void pushExportWater(String nodeCode, String userId) {
+    String url = waterTodoUrl + "?nodeCode=" + nodeCode + "&userId=" + userId;
     doGet(url);
   }
 
@@ -63,7 +80,7 @@ public class WebSocketUtil {
    * @param unitCode 用水单位编号
    */
   public void pushPublicNews(String nodeCode, String unitCode) {
-    String url = waterTodoUrl + "?nodeCode=" + nodeCode + "&loginId=" + unitCode;
+    String url = waterTodoUrl + "?nodeCode=" + nodeCode + "&unitCode=" + unitCode;
     doGet(url);
   }
 
