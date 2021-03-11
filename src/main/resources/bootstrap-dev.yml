@@ -97,6 +97,6 @@ webSocket:
   #节水平台消息webSocket地址
   waterNewsUrl: http://localhost:8081/water/system/websocket/waterNews
   #水量导入webSocket地址
-  exportWaterUrl: http://localhost:8081/water/system/websocket/exportWater
+  waterExportUrl: http://localhost:8081/water/system/websocket/waterExport
   #公共服务平台消息webSocket地址
   publicNewsUrl: http://localhost:8081/water/system/websocket/publicNews
