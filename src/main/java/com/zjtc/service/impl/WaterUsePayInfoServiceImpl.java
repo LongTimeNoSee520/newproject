@@ -7,7 +7,7 @@ import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.FileUtil;
-import com.zjtc.base.util.RedisUtil;
+import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.UseWaterUnitMapper;
 import com.zjtc.mapper.waterBiz.WaterUsePayInfoMapper;
 import com.zjtc.model.Contacts;
@@ -92,7 +92,8 @@ public class WaterUsePayInfoServiceImpl extends
   @Autowired
   private SmsSendService smsSendService;
   @Autowired
-  private RedisUtil redisUtil;
+  private WebSocketUtil webSocketUtil;
+
 
   @Override
   public boolean saveModel(JSONObject jsonObject) {
@@ -222,6 +223,8 @@ public class WaterUsePayInfoServiceImpl extends
             JSONObject.toJSONString(entity),
             detailConfig,
             AuditConstants.PAY_TODO_TYPE);
+    /**websocket推送*/
+    webSocketUtil.pushWaterTodo(user.getNodeCode(),nextPersonId);
     /**新增流程实例表数据*/
     flowExampleService.add(user, entity.getId(), AuditConstants.PAY_TODO_TYPE);
     return apiResponse;
@@ -275,6 +278,8 @@ public class WaterUsePayInfoServiceImpl extends
             JSONObject.toJSONString(entity),
             detailConfig,
             AuditConstants.PAY_TODO_TYPE);
+    /**websocket推送*/
+    webSocketUtil.pushWaterTodo(user.getNodeCode(),nextPersonId);
     /**新增流程实例表数据*/
     flowExampleService.add(user, entity.getId(), AuditConstants.PAY_TODO_TYPE);
     return apiResponse;

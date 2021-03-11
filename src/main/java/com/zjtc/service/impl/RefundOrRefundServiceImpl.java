@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
+import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.RefundOrRefundMapper;
 import com.zjtc.mapper.waterSys.FlowProcessMapper;
 import com.zjtc.model.File;
@@ -59,6 +60,8 @@ public class RefundOrRefundServiceImpl extends
   private SmsService smsService;
   @Autowired
   private FlowProcessMapper flowProcessMapper;
+  @Autowired
+  private WebSocketUtil webSocketUtil;
   /**
    * 附件存储目录
    */
@@ -233,6 +236,8 @@ public class RefundOrRefundServiceImpl extends
             .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
                 messageContent,
                 "退减免通知");
+        /**websocket推送通知*/
+        webSocketUtil.pushWaterNews(user.getNodeCode(),firstProcess.getOperatorId());
       }
     } else {
       /**审核流程继续*/
@@ -276,6 +281,8 @@ public class RefundOrRefundServiceImpl extends
       }
       todoService.add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, JSONObject.toJSONString(entity),
           detailConfig, AuditConstants.PAY_TODO_TYPE);
+      /**websocket推送待办*/
+      webSocketUtil.pushWaterTodo(user.getNodeCode(),nextPersonId);
     }
     return true;
   }
