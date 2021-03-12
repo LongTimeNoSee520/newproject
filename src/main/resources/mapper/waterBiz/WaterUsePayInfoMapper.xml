@@ -652,7 +652,7 @@
 				year=#{year},
 				quarter
 				from
-				t_quarter_conf
+				t_w_quarter_conf
 				) t1
 				left join (
 				select
@@ -687,7 +687,7 @@
 				year=#{year}-1,
 				quarter
 				from
-				t_quarter_conf
+				t_w_quarter_conf
 				) t1
 				left join (
 				select
@@ -723,7 +723,7 @@
 				year=#{year}-2,
 				quarter
 				from
-				t_quarter_conf
+				t_w_quarter_conf
 				) t1
 				left join (
 				select
