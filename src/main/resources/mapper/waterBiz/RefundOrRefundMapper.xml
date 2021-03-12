@@ -63,11 +63,11 @@
 		where node_code=#{nodeCode}
 			<!--待审核-->
 		<if test="keyWrod==1">
-				and id in(select busIness_id as id  from t_sms_flow_process where audit_status='1' and operator_id=#{userId})
+				and id in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
 		</if>
 		<!--已审核-->
 		<if test="keyWrod==2">
-			and id in(select busIness_id as id  from t_sms_flow_process where (audit_status='2' or audit_status='3') and operator_id=#{userId})
+			and id in(select busIness_id as id  from t_flow_process where (audit_status='2' or audit_status='3') and operator_id=#{userId})
 		</if>
 		<if test="null !=unitCode and unitCode !=''">
 			and unit_code like '%${unitCode}%'
@@ -103,7 +103,7 @@
     FROM
     (
     SELECT id,operator_id, node_code, audit_status, operator ,operation_time,create_time,audit_content
-    FROM t_sms_flow_process WHERE business_id = #{id} and node_code=#{nodeCode}) AS t1
+    FROM t_flow_process WHERE business_id = #{id} and node_code=#{nodeCode}) AS t1
     LEFT JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t1.operator_id = t2.id
     LEFT JOIN ( SELECT id, org_name FROM t_org  where  node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
     order by t1.create_time ASC
@@ -179,11 +179,11 @@
 		where node_code=#{nodeCode}
 		<!--待审核-->
 		<if test="keyWrod==1">
-			and id in(select busIness_id as id  from t_sms_flow_process where audit_status='1' and operator_id=#{userId})
+			and id in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
 		</if>
 		<!--已审核-->
 		<if test="keyWrod==2">
-			and id not in(select busIness_id as id  from t_sms_flow_process where audit_status='1' and operator_id=#{userId})
+			and id not in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
 		</if>
 		<if test="null !=unitCode and unitCode !=''">
 			and unit_code like '%${unitCode}%'
@@ -218,11 +218,11 @@
 		where node_code=#{nodeCode}
 		<!--待审核-->
 		<if test="keyWrod==1">
-			and id in(select busIness_id as id  from t_sms_flow_process where audit_status='1' and operator_id=#{userId})
+			and id in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
 		</if>
 		<!--已审核-->
 		<if test="keyWrod==2">
-			and id not in(select busIness_id as id  from t_sms_flow_process where audit_status='1' and operator_id=#{userId})
+			and id not in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
 		</if>
 		<if test="null !=unitCode and unitCode !=''">
 			and unit_code like '%${unitCode}%'

@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
  * @date 2021/01/19
  */
 @ApiModel(value = "审核流程表", description = "审核流程表")
-@TableName("t_sms_flow_process")
+@TableName("t_flow_process")
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
