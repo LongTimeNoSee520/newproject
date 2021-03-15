@@ -8,6 +8,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.FileUtil;
 import com.zjtc.base.util.RedisUtil;
 import com.zjtc.base.util.TimeUtil;
+import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.WaterQuantityManageMapper;
 import com.zjtc.model.ImportLog;
 import com.zjtc.model.User;
@@ -88,6 +89,9 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 
   @Autowired
   private CommonService commonService;
+
+  @Autowired
+  private WebSocketUtil webSocketUtil;
 
   /**
    * 错误文件信息
@@ -274,7 +278,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     int size = (int) Math.ceil((double) infos.size() / 10);
     List<Integer> sendSocketIndex = new LinkedList<>();
     /**将要发送的下标有序存入list*/
-    for (int i =1; i<10; i++){
+    for (int i =1; i<=10; i++){
       sendSocketIndex.add(i*size);
     }
     /**解析完后,逐条检查数据，检查是否存在数据格式问题，和相同水表档案号在相同月份是否有多条数据*/
@@ -290,7 +294,10 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     for (int i = 1; i <= infos.size(); i++) {
       if (sendSocketIndex.contains(i)){
         double percent = (double)(sendSocketIndex.indexOf(i)+1)/10;
-        /**TODO 将完成百分比通过webSocket推送给前端(最后一次在接口代码最后发送)*/
+        /**将完成百分比通过webSocket推送给前端*/
+        webSocketUtil.pushWaterExport(nodeCode,user.getId(),String.valueOf(percent));
+      }else if (i==infos.size()){
+        webSocketUtil.pushWaterExport(nodeCode,user.getId(),String.valueOf(1));
       }
 
       WaterUseDataVO waterUseDataVO = infos.get(i - 1);
@@ -379,7 +386,6 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     jsonObject.put("countYear",waterUseDataList.get(0).getUseYear());
     jsonObject.put("unitIds",unitIds);
     redisUtil.set(fileProcessId,jsonObject,60*60*24*3);//保存3天
-    /**TODO 将完成百分比(100%)通过webSocket推送给前端(最后一次)*/
     return response;
   }
 

@@ -40,6 +40,16 @@
 		<result column="algorithm_rules" property="algorithmRules" jdbcType="VARCHAR"/>
 		<result column="creater_name" property="createrName" jdbcType="VARCHAR"/>
 		<result column="result" property="result" jdbcType="VARCHAR"/>
+		<result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
+		<collection property="auditFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
+			select="queryAuditFiles">
+		</collection>
+		<collection property="waterProofFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
+			select="queryWaterProofFiles">
+		</collection>
+		<collection property="otherFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
+			select="queryOtherFiles">
+		</collection>
 	</resultMap>
 
 	<resultMap id="PageResultMap" type="com.zjtc.model.vo.EndPaperVO">
@@ -240,6 +250,10 @@
 		and type='p'
 		and SUBSTRING(','+a.other_file_id,number,1)=','
 		) <!--将逗号隔开的字符串拆分为行-->
+	</select>
+	<select id="selectById" resultMap="BaseResultMap">
+		SELECT *,#{preViewRealPath} AS preViewRealPath FROM t_w_end_paper
+	  WHERE 	rescinded ='0'
 	</select>
   <!--<select id="queryAuditList" resultType="java.util.LinkedHashMap">-->
     <!--SELECT-->

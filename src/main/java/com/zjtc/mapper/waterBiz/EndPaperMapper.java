@@ -26,4 +26,6 @@ public interface EndPaperMapper extends BaseMapper<EndPaper> {
   void update(Map<String, Object> map);
   /**微信端确认后更新数据*/
   boolean updateFromWeChat(@Param("endPaper") EndPaper endPaper);
+  /**根据id查询办结单信息(包括附件信息，审核流程信息)*/
+  EndPaper selectById(@Param("id")String id, @Param("preViewRealPath") String preViewRealPath);
 }

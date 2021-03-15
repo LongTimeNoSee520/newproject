@@ -903,7 +903,10 @@
 	<select id="exportQueryData" resultType="java.util.LinkedHashMap">
 		SELECT
 		t1.id,
-		t1.pay_type as payType,
+		case t1.pay_type
+		when '2' then '现金'
+		when '3' then '转账'
+		else ''end as payType,
 		t1.unit_code AS unitCode,
 		t1.unit_name AS unitName,
 		t2.unit_code_group as unitCodeGroup,
@@ -923,14 +926,20 @@
 		t1.amount_receivable AS amountReceivable,
 		t1.actual_amount AS actualAmount,
 		t1.increase_money AS increaseMoney,
-		t1.pay_status AS payStatus,
 		<!--托收缴费状态，满足pay_status=1 -->
 		case t1.pay_status
-		when '1' then 1
-		else 0 end as payStatusName,
-		t1.entrusted,
-		t1.cash_check AS cashCheck,
-		t1.transfer_check AS transferCheck,
+		when '1' then '托收已缴费'
+		when '5' then '非托收已缴费'
+		else '未缴费' end AS payStatus,
+		case t1.entrusted
+		when '1' then '是'
+		else '否' end as entrusted,
+		case t1.cash_check
+		when '1' then '已审核'
+		else '未审核' end AS cashCheck,
+		case t1.transfer_check
+		when '1' then '已审核'
+		else '未审核' end AS transferCheck,
 		t1.printed,
 		t1.audit_time AS auditTime,
 		t1.audit_person AS auditPerson,
@@ -964,8 +973,8 @@
 		countDate=CAST(count_year AS VARCHAR(5))+'第'+CAST(count_quarter AS  VARCHAR(5))+'季度',
 		case
 		pay_status
-		when '1' THEN '1'
-		ELSE '0' END AS isSigning
+		when '1' THEN '是'
+		ELSE '否' END AS isSigning
 		FROM
 		( SELECT * FROM t_w_water_use_pay_info WHERE 1 = 1
 		<!--单位名称关键字查询-->

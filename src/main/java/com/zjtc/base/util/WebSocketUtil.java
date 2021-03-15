@@ -68,8 +68,8 @@ public class WebSocketUtil {
    * @param nodeCode 节点编码
    * @param userId 用户唯一id
    */
-  public void pushWaterExport(String nodeCode, String userId) {
-    String url = waterExport + "?nodeCode=" + nodeCode + "&userId=" + userId;
+  public void pushWaterExport(String nodeCode, String userId,String progress) {
+    String url = waterExport + "?nodeCode=" + nodeCode + "&userId=" + userId+ "&progress=" + progress;
     doGet(url);
   }
 

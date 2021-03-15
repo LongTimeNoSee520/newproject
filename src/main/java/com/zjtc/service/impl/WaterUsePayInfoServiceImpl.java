@@ -415,6 +415,9 @@ public class WaterUsePayInfoServiceImpl extends
             item.put("contacts" + (i + 1), contactsList.get(i).getContacts());
             item.put("mobileNumber" + (i + 1), contactsList.get(i).getMobileNumber());
             item.put("phoneNumber" + (i + 1), contactsList.get(i).getPhoneNumber());
+            if(i==2){
+              break;
+            }
           }
         }
       }

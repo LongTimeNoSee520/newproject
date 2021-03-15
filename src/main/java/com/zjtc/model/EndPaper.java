@@ -7,10 +7,13 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.zjtc.model.vo.FileVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -264,6 +267,20 @@ public class  EndPaper extends Model<EndPaper>{
     @TableField(value = "rescind_time",exist = true)
     private Date rescindTime;
 
+    @ApiModelProperty("审批申请附件(调整申请表等)信息列表")
+    List<FileVO> auditFiles;
+
+    @ApiModelProperty("近2月水量凭证附件(水费发票)信息列表")
+    List<FileVO> waterProofFiles;
+
+    @ApiModelProperty("其他证明材料信息列表")
+    List<FileVO> otherFiles;
+
+    @ApiModelProperty("预览路径")
+    private String preViewRealPath;
+
+    @ApiModelProperty("审核流程信息")
+    List<Map<String,Object>> auditMessages;
 
 	/**
 	 * 实例化
