@@ -9,6 +9,7 @@ import com.zjtc.model.UseWaterUnitMonitor;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.UseWaterMonitorExportVO;
 import com.zjtc.service.CommonService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.UseWaterUnitMonitorService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,6 +34,8 @@ public class UseWaterUnitMonitorServiceImpl extends
 
   @Autowired
   private CommonService commonService;
+  @Autowired
+  private SystemLogService systemLogService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -101,6 +104,8 @@ public class UseWaterUnitMonitorServiceImpl extends
     monitor.setDeleted("0");//未删除状态
     monitor.setNodeCode(user.getNodeCode());
     this.baseMapper.insert(monitor);
+    /**日志*/
+    systemLogService.logInsert(user,"用水单位监控","新增",null);
   }
 
   @Override
@@ -113,6 +118,8 @@ public class UseWaterUnitMonitorServiceImpl extends
     String nodeCode = user.getNodeCode();
     String userId = user.getId();
     this.baseMapper.initNextYear(userId,nodeCode,monitorType);
+    /**日志*/
+    systemLogService.logInsert(user,"用水单位监控","初始化下一年数据",null);
   }
 
   @Override
@@ -166,18 +173,23 @@ public class UseWaterUnitMonitorServiceImpl extends
     ColorCellValue color = new ColorCellValue();
     data.put("color",color);//单元格内调用方法是写法${color.showColor(m.firstQuarterRate)}
     String fileName = "用水单位监控情况一览表.xls";
+    String operateModule ="";
     if ("1".equals(monitorType)){
       data.put("titleStart",year+"重点");
       fileName=year+"重点用水单位监控情况一览表.xls";
+      operateModule="重点用水单位监控";
     }else if ("2".equals(monitorType)){
       data.put("titleStart",year+"节水型");
       fileName=year+"节水型用水单位监控情况一览表.xls";
+      operateModule="节水型用水单位监控";
     }
     final String template = "template/WaterUnitMonitoring.xls";
     boolean result = commonService.export(fileName,template,request,response,data);
     if (!result){
       apiResponse.recordError("导出出错");
     }
+    /**日志*/
+    systemLogService.logInsert(user,operateModule,"导出",null);
     return apiResponse;
   }
 

@@ -6,6 +6,7 @@ import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.QuotaInfo;
 import com.zjtc.model.User;
 import com.zjtc.service.QuotaInfoService;
+import com.zjtc.service.SystemLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -36,6 +37,9 @@ public class QuotaInfoController {
 
   @Autowired
   private JWTUtil jwtUtil;
+
+  @Autowired
+  private SystemLogService systemLogService;
 
   @ApiOperation(value = "新增")
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -86,7 +90,10 @@ public class QuotaInfoController {
     ApiResponse response = new ApiResponse();
     if (null != quotaInfo) {
       try {
-          quotaInfoService.edit(quotaInfo);
+        User user = jwtUtil.getUserByToken(token);
+        quotaInfoService.edit(quotaInfo);
+        /**日志*/
+        systemLogService.logInsert(user, "定额信息维护", "修改", null);
       } catch (Exception e) {
         log.error("修改失败,errMsg==={}", e.getMessage());
         e.printStackTrace();
@@ -110,9 +117,12 @@ public class QuotaInfoController {
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
     if (null != ids && ids.size() > 0) {
       try {
+        User user = jwtUtil.getUserByToken(token);
         boolean result = quotaInfoService.delete(ids);
         if (result) {
           response.setCode(200);
+          /**日志*/
+          systemLogService.logInsert(user, "定额信息维护", "删除", null);
         } else {
           response.recordError(500);
         }

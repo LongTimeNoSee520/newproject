@@ -17,6 +17,7 @@ import com.zjtc.model.vo.WaterUseDataVO;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.FileService;
 import com.zjtc.service.ImportLogService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.UseWaterUnitMeterService;
 import com.zjtc.service.WaterQuantityManageService;
 import com.zjtc.service.WaterUsePayInfoService;
@@ -89,6 +90,9 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 
   @Autowired
   private CommonService commonService;
+
+  @Autowired
+  private SystemLogService systemLogService;
 
   @Autowired
   private WebSocketUtil webSocketUtil;
@@ -402,6 +406,8 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     waterUsePayInfoService.initPayInfo(jsonObject);
     /**删除缓存*/
     redisUtil.del(fileProcessId);
+    /**日志*/
+    systemLogService.logInsert(user,"水量管理","导入",null);
   }
 
   /**解析excel数据到bean*/

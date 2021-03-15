@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.WaterBalanceTestService;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
@@ -36,6 +37,8 @@ public class WaterBalanceTestController {
 
   @Autowired
   private WaterBalanceTestService waterBalanceTestService;
+  @Autowired
+  private SystemLogService systemLogService;
   @Autowired
   private JWTUtil jwtUtil;
 
@@ -136,7 +139,10 @@ public class WaterBalanceTestController {
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
     if (null != ids && ids.size() > 0) {
       try {
+        User user = jwtUtil.getUserByToken(token);
         waterBalanceTestService.deleteModel(ids);
+        /**日志*/
+        systemLogService.logInsert(user,"水平衡测试","删除",null);
       } catch (Exception e) {
         log.error("删除失败,errMsg==={}", e.getMessage());
         e.printStackTrace();
@@ -173,7 +179,10 @@ public class WaterBalanceTestController {
       HttpServletResponse response, HttpServletRequest request) {
     ApiResponse apiResponse = new ApiResponse();
     try {
+      User user = jwtUtil.getUserByToken(token);
       waterBalanceTestService.downloadTemplate(request, response);
+      /**日志*/
+      systemLogService.logInsert(user,"水平衡测试","模板下载",null);
     } catch (Exception e) {
       log.error("模版下载错误,errMsg==={}", e.getMessage());
       e.printStackTrace();

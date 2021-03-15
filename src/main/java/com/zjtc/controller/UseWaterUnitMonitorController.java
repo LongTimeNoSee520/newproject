@@ -5,6 +5,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.UseWaterUnitMonitor;
 import com.zjtc.model.User;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.UseWaterUnitMonitorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,6 +37,9 @@ public class UseWaterUnitMonitorController {
 
   @Autowired
   private UseWaterUnitMonitorService useWaterUnitMonitorService;
+
+  @Autowired
+  private SystemLogService systemLogService;
 
   @Autowired
   private JWTUtil jwtUtil;
@@ -117,7 +121,10 @@ public class UseWaterUnitMonitorController {
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
     if (null != ids && ids.size() > 0) {
       try {
+        User user = jwtUtil.getUserByToken(token);
         useWaterUnitMonitorService.delete(ids);
+        /**日志*/
+        systemLogService.logInsert(user,"用水单位监控","删除",null);
       } catch (Exception e) {
         log.error("删除失败,errMsg==={}", e.getMessage());
         e.printStackTrace();

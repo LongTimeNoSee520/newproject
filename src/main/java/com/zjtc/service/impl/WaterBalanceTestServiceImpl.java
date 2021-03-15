@@ -14,6 +14,7 @@ import com.zjtc.model.vo.WaterBalanceTestProductVO;
 import com.zjtc.model.vo.WaterBalanceTestVO;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.FileService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.UseWaterUnitService;
 import com.zjtc.service.WaterBalanceTestProductService;
 import com.zjtc.service.WaterBalanceTestService;
@@ -70,6 +71,9 @@ public class WaterBalanceTestServiceImpl extends
   @Autowired
   private UseWaterUnitService useWaterUnitService;
 
+  @Autowired
+  private SystemLogService systemLogService;
+
   @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean updateModel(User user, JSONObject jsonObject) {
@@ -85,6 +89,8 @@ public class WaterBalanceTestServiceImpl extends
     this.updateOrInsertProducts(products, balanceTest.getId(), user.getNodeCode());
     /**附件信息更新*/
     this.handleFiles(files, balanceTest.getId());
+    /**日志*/
+    systemLogService.logInsert(user,"水平衡测试","修改",null);
     result = true;
     return result;
   }
@@ -182,6 +188,8 @@ public class WaterBalanceTestServiceImpl extends
     this.insert(balanceTest);
     /**水平衡测试产品相关信息新增*/
     waterBalanceTestProductService.add(products,user,balanceTest.getId());
+    /**日志*/
+    systemLogService.logInsert(user,"水平衡测试","导入",null);
   }
 
   @Override

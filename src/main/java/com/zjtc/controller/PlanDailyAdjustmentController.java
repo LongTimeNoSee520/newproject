@@ -8,6 +8,7 @@ import com.zjtc.model.User;
 import com.zjtc.model.vo.PrintVO;
 import com.zjtc.model.vo.SendListVO;
 import com.zjtc.service.PlanDailyAdjustmentService;
+import com.zjtc.service.SystemLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -43,6 +44,9 @@ public class PlanDailyAdjustmentController {
 
   @Autowired
   private JWTUtil jwtUtil;
+
+  @Autowired
+  private SystemLogService systemLogService;
 
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "分页查询")
@@ -108,7 +112,7 @@ public class PlanDailyAdjustmentController {
     ApiResponse response = new ApiResponse();
     if (null != jsonObject) {
       try {
-        //User user = jwtUtil.getUserByToken(token);
+        User user = jwtUtil.getUserByToken(token);
         String  id= jsonObject.getString("id");
         String editType = jsonObject.getString("editType");
         String remarks = jsonObject.getString("remarks");
@@ -116,6 +120,8 @@ public class PlanDailyAdjustmentController {
           response.recordError("id和修改备注的类型不能为空");
         }else {
           response = planDailyAdjustmentService.editRemarks(id, editType, remarks);
+          //日志
+          systemLogService.logInsert(user,"用水计划日常调整","修改备注",null);
           response.setCode(200);
         }
       } catch (Exception e) {
@@ -260,11 +266,13 @@ public class PlanDailyAdjustmentController {
     List<PrintVO> printList = jsonObject.getJSONArray("printList").toJavaList(PrintVO.class);
     if (null != printList) {
       try {
-       // User user = jwtUtil.getUserByToken(token);
+        User user = jwtUtil.getUserByToken(token);
         boolean result = planDailyAdjustmentService.signPrinted(printList);
         if (!result){
           response.recordError("修改打印状态失败");
         }
+        /**日志*/
+        systemLogService.logInsert(user,"用水计划日常调整","打印",null);
       } catch (Exception e) {
         log.error("修改打印状态失败,errMsg==={}" + e.getMessage());
         response.recordError(500);

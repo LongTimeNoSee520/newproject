@@ -7,6 +7,7 @@ import com.zjtc.mapper.waterBiz.UseWaterBasePlanMapper;
 import com.zjtc.model.UseWaterBasePlan;
 import com.zjtc.model.User;
 import com.zjtc.service.CommonService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.UseWaterBasePlanService;
 import com.zjtc.service.UseWaterUnitRoleService;
 import com.zjtc.service.WaterUsePayInfoService;
@@ -40,6 +41,8 @@ public class UseWaterBasePlanServiceImpl extends
   private WaterUsePayInfoService waterUsePayInfoService;
   @Autowired
   private CommonService commonService;
+  @Autowired
+  private SystemLogService systemLogService;
 
   @Override
   @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
@@ -70,6 +73,8 @@ public class UseWaterBasePlanServiceImpl extends
     jsonObject.put("countYear", useWaterBasePlan.getPlanYear());
     jsonObject.put("unitIds",unitIds);
     waterUsePayInfoService.initPayInfo(jsonObject);
+    /**日志*/
+    systemLogService.logInsert(user,"用水基建计划","新增",null);
     return response;
   }
 
@@ -101,6 +106,8 @@ public class UseWaterBasePlanServiceImpl extends
     jsonObject.put("countYear", useWaterBasePlan.getPlanYear());
     jsonObject.put("unitIds",unitIds);
     waterUsePayInfoService.initPayInfo(jsonObject);
+    /**日志*/
+    systemLogService.logInsert(user,"用水基建计划","修改",null);
     return response;
   }
 
@@ -216,6 +223,8 @@ public class UseWaterBasePlanServiceImpl extends
     if (!result){
       apiResponse.recordError("导出出错");
     }
+    /**日志*/
+    systemLogService.logInsert(user,"用水基建计划","导出",null);
     return apiResponse;
   }
 }

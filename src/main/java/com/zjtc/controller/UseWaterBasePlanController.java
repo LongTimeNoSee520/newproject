@@ -5,6 +5,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.UseWaterBasePlan;
 import com.zjtc.model.User;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.UseWaterBasePlanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,6 +39,9 @@ public class UseWaterBasePlanController {
 
   @Autowired
   private JWTUtil jwtUtil;
+
+  @Autowired
+  private SystemLogService systemLogService;
 
   @ApiOperation(value = "新增")
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -120,9 +124,12 @@ public class UseWaterBasePlanController {
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
     if (null != ids && ids.size() > 0) {
       try {
+        User user = jwtUtil.getUserByToken(token);
         boolean result = useWaterBasePlanService.delete(ids);
         if (result) {
           response.setCode(200);
+          /**日志*/
+          systemLogService.logInsert(user,"用水基建计划","删除",null);
         } else {
           response.recordError(500);
         }

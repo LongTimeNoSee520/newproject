@@ -7,6 +7,7 @@ import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.User;
 import com.zjtc.service.EndPaperService;
+import com.zjtc.service.SystemLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -41,6 +42,9 @@ public class SettlementFormManageController {
 
   @Autowired
   private JWTUtil jwtUtil;
+
+  @Autowired
+  private SystemLogService systemLogService;
 
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "分页查询")
@@ -106,13 +110,15 @@ public class SettlementFormManageController {
     ApiResponse response = new ApiResponse();
     if (null != jsonObject) {
       try {
-        // User user = jwtUtil.getUserByToken(token);
+        User user = jwtUtil.getUserByToken(token);
         List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
         if(ids.isEmpty()){
           response.recordError("撤销办结单id列表不能为空");
           return response;
         }
         response = endPaperService.cancelSettlement(ids);
+        /**日志*/
+        systemLogService.logInsert(user,"办结单管理","撤销",null);
       } catch (Exception e) {
         log.error("撤销失败,errMsg==={}" + e.getMessage());
         response.recordError(500);

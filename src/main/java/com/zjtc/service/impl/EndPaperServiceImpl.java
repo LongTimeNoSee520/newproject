@@ -28,6 +28,7 @@ import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.SmsService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanAddWXService;
@@ -90,6 +91,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Autowired
   private WebSocketUtil webSocketUtil;
+
+  @Autowired
+  private SystemLogService systemLogService;
 
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
@@ -366,6 +370,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     flowProcessService.updateById(flowProcess);
     //更新办结单数据
     this.baseMapper.updateById(endPaper);
+    /**日志*/
+    systemLogService.logInsert(user,"办结单管理","审核",null);
   }
 
   private EndPaper report(User user, EndPaper endPaper) throws Exception {
@@ -554,8 +560,12 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     messageService.messageToUnit(useWaterPlan.getUnitCode(),messageContent,AuditConstants.END_PAPER_TODO_TITLE);
     /**向用水单位发送短信*/
     smsService.sendMsgToUnit(user,useWaterPlan.getUnitCode(),messageContent,"计划通知");
-    //TODO webSocket向公共服务平台推送消息
+    // webSocket向公共服务平台推送消息
+    webSocketUtil.pushPublicNews(useWaterPlan.getNodeCode(),useWaterPlan.getUnitCode());
+    /**日志*/
+    systemLogService.logInsert(user,"办结单管理","执行",null);
     return response;
+
   }
 
   @Override

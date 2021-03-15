@@ -30,6 +30,7 @@ import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.SmsSendService;
 import com.zjtc.service.SmsService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.WaterUsePayInfoService;
@@ -83,6 +84,8 @@ public class PlanDailyAdjustmentServiceImpl extends
   private SmsSendService smsSendService;
   @Autowired
   private WebSocketUtil webSocketUtil;
+  @Autowired
+  private SystemLogService systemLogService;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -278,6 +281,8 @@ public class PlanDailyAdjustmentServiceImpl extends
       useWaterPlanAdd.setPrinted("0");
       useWaterPlanAdd.setStatus("2");//已审核，可累加
       useWaterPlanAddService.insert(useWaterPlanAdd);
+      /**日志*/
+      systemLogService.logInsert(user,"用水计划日常调整","计划日常调整",null);
     } else if (firstQuarterDiff == 0 && secondQuarterDiff == 0 && thirdQuarterDiff == 0
         && fourthQuarterDiff == 0) {
       //季度数据没有调整(业务只允许季度数据修改 和 增加计划 只能存在一种，且季度数据修改后，默认不能进行“增加计划”)
@@ -333,6 +338,8 @@ public class PlanDailyAdjustmentServiceImpl extends
         useWaterPlanAdd.setFirstWater(firstWater);
         useWaterPlanAdd.setSecondWater(secondWater);
         useWaterPlanAddService.insert(useWaterPlanAdd);
+        /**日志*/
+        systemLogService.logInsert(user,"用水计划日常调整","增加计划",null);
       }else {
         response.recordError("没有作任何修改");
         return response;
@@ -356,6 +363,8 @@ public class PlanDailyAdjustmentServiceImpl extends
         }
       }
       useWaterPlanAddService.updatePlanAdd(useWaterPlanAdds);
+    /**日志*/
+    systemLogService.logInsert(user,"用水计划日常调整","行内编辑调整计划",null);
     return response;
   }
 
@@ -395,6 +404,8 @@ public class PlanDailyAdjustmentServiceImpl extends
       useWaterPlan.setUpdateTime(new Date());
       useWaterPlan.setUpdateUserId(user.getId());
       this.baseMapper.updateById(useWaterPlan);
+      /**日志*/
+      systemLogService.logInsert(user,"用水计划日常调整","累加",null);
       /**重算加价*/
       JSONObject jsonObject = new JSONObject();
       jsonObject.put("countYear",useWaterPlanAdd.getPlanYear());
@@ -586,6 +597,8 @@ public class PlanDailyAdjustmentServiceImpl extends
     endPaperService.insert(endPaper);
     /**发起办结单后，将计划表中的“是否存在没有走完办结流程的办结单”的状态改为是(办结流程走完后或者撤销办结单后，改为否)。*/
     this.updateExistSettlement("1",unitCode,user.getNodeCode(),planYear);
+    /**日志*/
+    systemLogService.logInsert(user,"用水计划日常调整","发起办结单",null);
     return response;
   }
 
@@ -666,6 +679,8 @@ public class PlanDailyAdjustmentServiceImpl extends
     if (!result){
       apiResponse.recordError("导出出错");
     }
+    /**日志*/
+    systemLogService.logInsert(user,"用水计划日常调整","导出最新计划",null);
     return apiResponse;
   }
 
