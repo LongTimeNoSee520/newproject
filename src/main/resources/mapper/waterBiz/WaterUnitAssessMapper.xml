@@ -227,6 +227,9 @@
     <if test="unitName != null and unitName != ''">
       and  t6.unitName like '%${unitName}%'
     </if>
+    <if test="unitCode != null and unitCode != ''">
+      and  t6.unitCode like '%${unitCode}%'
+    </if>
   </select>
 
   <select id="queryList" resultMap="WaterUnitAssessModel">
@@ -426,6 +429,9 @@
     </if>
     <if test="unitName != null and unitName != ''">
     and  t6.unitName like '%${unitName}%'
+    </if>
+    <if test="unitCode != null and unitCode != ''">
+      and  t6.unitCode like '%${unitCode}%'
     </if>
     ) c
     WHERE

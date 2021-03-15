@@ -24,7 +24,8 @@ public interface WaterUnitAssessMapper {
       @Param("unitName") String unitName,
       @Param("accessYear") Integer accessYear,
       @Param("nodeCode") String nodeCode,
-      @Param("loginId") String loginId
+      @Param("loginId") String loginId,
+      @Param("unitCode") String unitCode
   );
 
   /**
@@ -43,7 +44,9 @@ public interface WaterUnitAssessMapper {
       @Param("unitName") String unitName,
       @Param("accessYear") Integer accessYear,
       @Param("nodeCode") String nodeCode,
-      @Param("loginId") String loginId);
+      @Param("loginId") String loginId,
+      @Param("unitCode") String unitCode
+  );
 
 
 }

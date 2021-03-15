@@ -65,6 +65,11 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
     if (null != jsonObject.getString("unitName")) {
       unitName = jsonObject.getString("unitName");
     }
+    //    单位名称
+    String unitCode = "";
+    if (null != jsonObject.getString("unitCode")) {
+      unitCode = jsonObject.getString("unitCode");
+    }
 //    开始年份
     Integer accessYear = null;
     if (null != jsonObject.getInteger("accessYear")) {
@@ -72,12 +77,12 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
     }
 //    总条数
     Integer total = waterUnitAssessMapper
-        .selectCount(unitName, accessYear, nodeCode, loginId);
+        .selectCount(unitName, accessYear, nodeCode, loginId, unitCode);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<WaterUnitAssessVO> waterUnitAssessVOS = waterUnitAssessMapper
-        .queryList(currPage, pageSize, unitName, accessYear, nodeCode, loginId);
+        .queryList(currPage, pageSize, unitName, accessYear, nodeCode, loginId, unitCode);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -96,6 +101,11 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
     if (null != jsonObject.getString("unitName")) {
       unitName = jsonObject.getString("unitName");
     }
+//    单位编码
+    String unitCode = "";
+    if (null != jsonObject.getString("unitCode")) {
+      unitCode = jsonObject.getString("unitCode");
+    }
 //    年份
     Integer accessYear = null;
     if (null != jsonObject.getInteger("accessYear")) {
@@ -107,10 +117,10 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
 //      endYear = jsonObject.getInteger("endYear");
 //    }
     Integer integer = this.waterUnitAssessMapper
-        .selectCount(unitName, accessYear, user.getNodeCode(), user.getId());
+        .selectCount(unitName, accessYear, user.getNodeCode(), user.getId(),unitCode);
     List<WaterUnitAssessVO> waterUnitAssess = this.waterUnitAssessMapper
-        .queryList(1, integer + 1, unitName, accessYear, user.getNodeCode(), user.getId()
-            );
+        .queryList(1, integer + 1, unitName, accessYear, user.getNodeCode(), user.getId(),unitCode
+        );
     Map<String, Object> data = new HashMap<>(16);
     data.put("waterUnitAssess", waterUnitAssess);
     data.put("nowDate", new Date());

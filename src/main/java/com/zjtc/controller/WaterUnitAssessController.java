@@ -43,6 +43,7 @@ public class WaterUnitAssessController {
       + "    \"size\":\"条数(必填)\",\n"
       + "    \"nodeCode\":\"节点编码(必填)\",\n"
       + "    \"unitName\":\"单位名称\",\n"
+      + "    \"unitCode\":\"单位编号\",\n"
       + "    \"accessYear\":\"年度(Integer)\n"
       + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {

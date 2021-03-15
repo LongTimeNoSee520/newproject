@@ -59,12 +59,12 @@ public class UseWaterSelfDefinePlanServiceImpl extends
   @Autowired
   private SmsService smsService;
 
+
   /**
    * 附件存储目录
    */
   @Value("${server.servlet-path}")
   private String contextPath;
-
   /**
    * 上下文
    */
