@@ -155,6 +155,12 @@ public class UseWaterUnitInvoice extends Model<UseWaterUnitInvoice>{
   @ApiModelProperty("实际金额")
   @TableField(value = "actualAmount",exist = false)
   private  double actualAmount;
+
+
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+  @ApiModelProperty("开票日期")
+  @TableField(value = "invoiceTime",exist = false)
+  private String invoiceTime;
 	/**
 	 * 实例化
 	 */

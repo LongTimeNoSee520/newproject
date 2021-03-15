@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.CommonUtil;
 import com.zjtc.base.util.JxlsUtils;
+import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.waterBiz.UseWaterUnitInvoiceMapper;
 import com.zjtc.model.UseWaterUnitInvoice;
 import com.zjtc.model.User;
@@ -415,6 +416,10 @@ public class UseWaterUnitInvoiceServiceImpl extends
     }
     List<UseWaterUnitInvoice> export = this.baseMapper
         .export(invoiceNumber, begin, end, enabled, received, user.getNodeCode(), user.getId());
+    for(UseWaterUnitInvoice waterUnitInvoice : export){
+      String invoiceTime = TimeUtil.formatTimeStr(waterUnitInvoice.getInvoiceDate());
+      waterUnitInvoice.setInvoiceTime(invoiceTime);
+    }
     Map<String, Object> data = new HashMap<>(16);
     data.put("export", export);
     data.put("nowDate", new Date());
