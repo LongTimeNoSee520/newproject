@@ -49,7 +49,7 @@ public class Todo extends Model<Todo> {
   @TableField(value = "todo_content", exist = true)
   private String todoContent;
 
-  @ApiModelProperty("代办类型")
+  @ApiModelProperty("待办类型码1退减免单2办结单3短信4用水计划超额")
   @TableField(value = "todo_type", exist = true)
   private String todoType;
 

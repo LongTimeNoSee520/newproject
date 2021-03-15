@@ -4,6 +4,7 @@ package com.zjtc.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
+import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.TodoMapper;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.FlowProcess;
@@ -42,7 +43,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
   private UseWaterPlanAddWXService useWaterPlanAddWXService;
   @Autowired
   private DictItemService dictItemService;
-
+  @Autowired
+  private WebSocketUtil webSocketUtil;
   @Override
   public void add(String businessId, User user, String auditorId, String auditorName,
       String todoContent, String businessJson, String detailConfig, String todoType) {
@@ -129,7 +131,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             AuditConstants.END_PAPER_TODO_TITLE);
         /**短信通知给用水单位*/
         smsService.sendMsgToUnit(user, endPaper.getUnitCode(), passContent, "计划通知");
-        //TODO webSocket推送到公共服务端
+        // webSocket推送到公共服务端
+        webSocketUtil.pushPublicNews(endPaper.getNodeCode(),endPaper.getUnitCode());
       }
       /**短信通知给发起人*/
       FlowProcess firstProcess = flowProcessService.selectFirstRecords(businessId);
@@ -140,8 +143,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
       smsService
           .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
               passContent1, "计划通知");
-      //TODO ,webSocket推送到前端
-
+      //webSocket推送给发起人
+      webSocketUtil.pushWaterNews(firstProcess.getNodeCode(),firstProcess.getOperatorId());
     }
    else if("1".equals(pass)){
       FlowProcess firstProcess = flowProcessService.selectFirstRecords(businessId);
@@ -153,7 +156,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
       smsService
           .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
               unPassContent1, "计划通知");
-      //TODO ,webSocket推送到前端
+      //webSocket推送给发起人
+      webSocketUtil.pushWaterNews(firstProcess.getNodeCode(),firstProcess.getOperatorId());
     }
     /**更新待办为已读*/
     this.edit(businessId,user.getNodeCode(),user.getId());

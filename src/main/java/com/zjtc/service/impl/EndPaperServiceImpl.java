@@ -10,6 +10,7 @@ import com.zjtc.base.constant.SystemConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.HttpUtil;
 import com.zjtc.base.util.JWTUtil;
+import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.EndPaperMapper;
 import com.zjtc.model.DictItem;
 import com.zjtc.model.EndPaper;
@@ -88,6 +89,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Autowired
   private JWTUtil jwtUtil;
+
+  @Autowired
+  private WebSocketUtil webSocketUtil;
 
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
@@ -215,7 +219,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 //    String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
 
-    EndPaper endPaper = this.baseMapper.selectById(id);
+    EndPaper endPaper = this.baseMapper.selectById(id,preViewRealPath);
+    endPaper.setAuditMessages(flowProcessService.queryAuditList(endPaper.getId(),endPaper.getNodeCode()));
     if (null != year && year) {
       /**选择了年计划*/
       endPaper.setAlgorithmRules("1");
@@ -263,7 +268,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
                 AuditConstants.END_PAPER_TODO_TITLE);
             /**短信通知给用水单位*/
             smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent1, "计划通知");
-            //TODO webSocket推送到公共服务端
+            // webSocket推送到公共服务端
+            webSocketUtil.pushPublicNews(endPaper.getNodeCode(),endPaper.getUnitCode());
           }
         }
         /**新增通知给发起人*/
@@ -289,7 +295,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
           smsService
               .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
                   messageContent, "计划通知");
-          //TODO ,webSocket推送到前端
+          //webSocket推送到前端
+        webSocketUtil.pushWaterNews(firstProcess.getNodeCode(),firstProcess.getOperatorId());
         }
       }
       if ("0".equals(auditStatus)) {//本次审核不通过(没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知)
@@ -312,7 +319,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
             AuditConstants.END_PAPER_TODO_TITLE);
         /**短信通知给用水单位*/
         smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent, "计划通知");
-        //TODO webSocket推送到公共服务端
+        // webSocket推送到公共服务端
+       webSocketUtil.pushPublicNews(endPaper.getNodeCode(),endPaper.getUnitCode());
       }
       //修改待办状态
       todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
@@ -351,6 +359,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       }
       todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, JSONObject.toJSONString(endPaper),
           detailConfig, AuditConstants.END_PAPER_TODO_TYPE);
+      //webSocket 推送消息给下一审核人员
+      webSocketUtil.pushWaterTodo(user.getNodeCode(),auditorId);
     }
     //更新审核流程数据
     flowProcess.setAuditContent(opinions);

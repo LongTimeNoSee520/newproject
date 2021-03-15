@@ -28,7 +28,7 @@
 	<select id="queryList" resultType="java.util.LinkedHashMap">
 		SELECT id,node_code AS nodeCode,todo_title AS todeTitle,todo_content AS todoContent,todo_type AS todoType,
 		business_json AS businessJson,submit_node_code AS submitNodeCode,submit_node_name AS submitNodeName,
-		CONVERT(varchar(100), create_time, 23) AS createTime
+		CONVERT(varchar(100), create_time, 20) AS createTime,registrant_id AS registrantId,registrant
 		FROM t_w_todo
 		WHERE execute_person_id = #{userId}
 		AND node_code =#{nodeCode}

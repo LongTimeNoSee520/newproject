@@ -9,6 +9,7 @@ import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.TimeUtil;
+import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.PlanDailyAdjustmentMapper;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.File;
@@ -80,6 +81,8 @@ public class PlanDailyAdjustmentServiceImpl extends
   private SmsService smsService;
   @Autowired
   private SmsSendService smsSendService;
+  @Autowired
+  private WebSocketUtil webSocketUtil;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -576,6 +579,8 @@ public class PlanDailyAdjustmentServiceImpl extends
       String todoType = AuditConstants.END_PAPER_TODO_TYPE;
       todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, JSONObject.toJSONString(endPaper),
           detailConfig, todoType);
+      /**webSocket推送*/
+      webSocketUtil.pushWaterTodo(user.getNodeCode(),auditorId);
     }
     /**办结单新增*/
     endPaperService.insert(endPaper);
