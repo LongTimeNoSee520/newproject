@@ -21,17 +21,19 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
 
   @Override
   public void add(String nodeCode, String operatorId, String operator, String messageType,
-      String messageContent) {
+      String messageContent, String businessId) {
     Message message = new Message();
     message.setCreateTime(new Date());
     message.setNodeCode(nodeCode);
     message.setMsgPersonId(operatorId);
     message.setMsgPersonName(operator);
     message.setMsgType(messageType);
-    if(AuditConstants.END_PAPER_MESSAGE_TYPE.equals(messageType)){
+    message.setCreateCode(nodeCode);
+    message.setBusinessId(businessId);
+    if (AuditConstants.END_PAPER_MESSAGE_TYPE.equals(messageType)) {
       message.setMsgTitle(AuditConstants.END_PAPER_MESSAGE_TITLE);
     }
-    if (AuditConstants.PAY_MESSAGE_TYPE.equals(messageType)){
+    if (AuditConstants.PAY_MESSAGE_TYPE.equals(messageType)) {
       message.setMsgTitle(AuditConstants.PAY_MESSAGE_TITLE);
     }
     message.setMsgContent(messageContent);
@@ -40,7 +42,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
   }
 
   @Override
-  public void messageToUnit(String unitCode, String messageContent,String msgTitle) {
+  public void messageToUnit(String unitCode, String messageContent, String msgTitle) {
     Message message = new Message();
     message.setCreateTime(new Date());
     message.setUnitCode(unitCode);
@@ -54,6 +56,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
   @Override
   public void updateStatus(String id) {
     Date operationTime = new Date();
-    this.baseMapper.updateStatus(id,operationTime);
+    this.baseMapper.updateStatus(id, operationTime);
   }
 }

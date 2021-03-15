@@ -230,7 +230,7 @@ public class RefundOrRefundServiceImpl extends
         }
         messageService
             .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
-                AuditConstants.PAY_MESSAGE_TYPE, messageContent);
+                AuditConstants.PAY_MESSAGE_TYPE, messageContent,entity.getId());
         /**短信通知发起人:*/
         smsService
             .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),

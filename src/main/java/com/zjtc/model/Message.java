@@ -1,18 +1,18 @@
 package com.zjtc.model;
 
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableName;
-import com.baomidou.mybatisplus.activerecord.Model;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import java.io.Serializable;
 
 /**
  * @author lianghao
@@ -71,6 +71,17 @@ public class Message extends Model<Message> {
   @TableField(value = "unit_code", exist = true)
   private String unitCode;
 
+  @ApiModelProperty("创建人code")
+  @TableField(value = "create_code", exist = true)
+  private String createCode;
+
+  @ApiModelProperty("创建人code名称")
+  @TableField(value = "create_code_name", exist = false)
+  private String createCodeName;
+
+  @ApiModelProperty("业务id")
+  @TableField(value = "business_id", exist = false)
+  private String businessId;
   /**
    * 实例化
    */

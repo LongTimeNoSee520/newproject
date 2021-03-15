@@ -139,7 +139,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
       //通知表新增
       messageService
           .add(endPaper.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
-              AuditConstants.END_PAPER_MESSAGE_TYPE, passContent1);
+              AuditConstants.END_PAPER_MESSAGE_TYPE, passContent1,businessId);
       smsService
           .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
               passContent1, "计划通知");
@@ -152,7 +152,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
       //通知表新增
       messageService
           .add(endPaper.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
-              AuditConstants.END_PAPER_MESSAGE_TYPE, unPassContent1);
+              AuditConstants.END_PAPER_MESSAGE_TYPE, unPassContent1,businessId);
       smsService
           .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
               unPassContent1, "计划通知");

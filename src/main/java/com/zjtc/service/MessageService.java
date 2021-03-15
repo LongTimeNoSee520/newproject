@@ -15,9 +15,10 @@ public interface MessageService extends IService<Message> {
    * @param operator 发起人姓名
    * @param messageType 消息类型
    * @param messageContent 消息内容
+   * @param businessId 业务id
    */
   void add(String nodeCode, String operatorId, String operator, String messageType,
-      String messageContent);
+      String messageContent,String businessId);
 
   /**
    * @param unitCode 单位编号

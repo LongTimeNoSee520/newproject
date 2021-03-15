@@ -12,7 +12,6 @@ import com.zjtc.base.util.HttpUtil;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.EndPaperMapper;
-import com.zjtc.model.DictItem;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.Todo;
@@ -20,7 +19,6 @@ import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
-import com.zjtc.model.WaterUseData;
 import com.zjtc.model.vo.EndPaperVO;
 import com.zjtc.service.DictItemService;
 import com.zjtc.service.EndPaperService;
@@ -290,7 +288,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         if(!"2".equals(endPaper.getAuditStatus())) {
           messageService
               .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
-                  AuditConstants.END_PAPER_MESSAGE_TYPE, messageContent);
+                  AuditConstants.END_PAPER_MESSAGE_TYPE, messageContent,id);
           /**短信通知给发起人*/
           smsService
               .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),

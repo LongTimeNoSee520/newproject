@@ -187,7 +187,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
               "方,第四季度计划:" + useWaterSelfDefinePlan.getFourthQuarter() + "方,审核已驳回。";
       messageService
           .add(useWaterSelfDefinePlan.getNodeCode(), auditPersonId, auditPerson,
-              AuditConstants.NOT_APPROVED, messageContent);
+              AuditConstants.NOT_APPROVED, messageContent,id);
       try {
         smsService.sendMsgToPromoter(user, auditPersonId, auditPerson, messageContent, "计划通知");
       } catch (Exception e) {
@@ -204,7 +204,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
               "方,第四季度计划:" + useWaterSelfDefinePlan.getFourthQuarter() + "方,审核已通过。";
       messageService
           .add(useWaterSelfDefinePlan.getNodeCode(), auditPersonId, auditPerson,
-              AuditConstants.GET_APPROVED, messageContent);
+              AuditConstants.GET_APPROVED, messageContent,id);
       try {
         smsService.sendMsgToPromoter(user, auditPersonId, auditPerson, messageContent, "计划通知");
       } catch (Exception e) {

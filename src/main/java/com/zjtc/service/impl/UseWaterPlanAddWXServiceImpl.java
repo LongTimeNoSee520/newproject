@@ -174,7 +174,7 @@ public class UseWaterPlanAddWXServiceImpl extends
               useWaterPlanAddWX.getCurYearPlan() + ",审核未通过,已被驳回。";
       messageService
           .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName,
-              AuditConstants.NOT_APPROVED, messageContent);
+              AuditConstants.NOT_APPROVED, messageContent,id);
       try {
         smsService.sendMsgToPromoter(user, auditPersonId, userName, messageContent, "计划通知");
       } catch (Exception e) {
@@ -191,7 +191,7 @@ public class UseWaterPlanAddWXServiceImpl extends
               useWaterPlanAddWX.getCurYearPlan() + ",审核已通过。";
       messageService
           .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName,
-              AuditConstants.GET_APPROVED, messageContent);
+              AuditConstants.GET_APPROVED, messageContent,id);
 
     }
     if ("2".equals(useWaterPlanAddWX.getAuditStatus())) {
