@@ -36,28 +36,28 @@
       and water_meter_code like '%${waterMeterCode}%'
     </if>
     <if test="waterNumberStart != null">
-      and water_number &gt; #{waterNumberStart}
+      and water_number &gt;= #{waterNumberStart}
     </if>
     <if test="waterNumberEnd != null">
-      and water_number &lt; #{waterNumberEnd}
+      and water_number &lt;= #{waterNumberEnd}
     </if>
     <if test="priceStart != null">
-      and price &gt; #{priceStart}
+      and price &gt;= #{priceStart}
     </if>
     <if test="priceEnd != null">
-      and price &lt; #{priceEnd}
+      and price &lt;= #{priceEnd}
     </if>
     <if test="caliberStart != null">
-      and caliber &gt; #{caliberStart}
+      and caliber &gt;= #{caliberStart}
     </if>
     <if test="caliberEnd != null">
-      and caliber &lt; #{caliberEnd}
+      and caliber &lt;= #{caliberEnd}
     </if>
     <if test="sectorStart != null">
-      and convert(int,sector) &gt; #{sectorStart}
+      and convert(int,sector) &gt;= #{sectorStart}
     </if>
     <if test="sectorEnd != null">
-      and convert(int,sector) &lt; #{sectorEnd}
+      and convert(int,sector) &lt;= #{sectorEnd}
     </if>
     <if test="useYearStart != null">
       and use_year >= #{useYearStart}

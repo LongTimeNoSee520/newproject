@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.ColorCellValue;
+import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.waterBiz.UseWaterUnitMonitorMapper;
 import com.zjtc.model.UseWaterUnitMonitor;
 import com.zjtc.model.User;
@@ -133,7 +134,8 @@ public class UseWaterUnitMonitorServiceImpl extends
   public void initNextYear(User user, String monitorType) {
     String nodeCode = user.getNodeCode();
     String userId = user.getId();
-    this.baseMapper.initNextYear(userId,nodeCode,monitorType);
+    Integer currentYear =  TimeUtil.getYear(new Date(),0);
+    this.baseMapper.initNextYear(userId,nodeCode,monitorType,currentYear);
     /**日志*/
     systemLogService.logInsert(user,"用水单位监控","初始化下一年数据",null);
   }

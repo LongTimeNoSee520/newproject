@@ -22,7 +22,7 @@ public interface UseWaterUnitMonitorMapper extends BaseMapper<UseWaterUnitMonito
   void updateDeleted(@Param("ids") List<String> ids);
 
   void initNextYear(@Param("userId") String userId, @Param("nodeCode") String nodeCode,
-      @Param("monitorType") String monitorType);
+      @Param("monitorType") String monitorType,@Param("currentYear")Integer currentYear);
 
   /**
    * 查询导出的数据

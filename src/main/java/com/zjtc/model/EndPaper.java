@@ -268,18 +268,23 @@ public class  EndPaper extends Model<EndPaper>{
     private Date rescindTime;
 
     @ApiModelProperty("审批申请附件(调整申请表等)信息列表")
+    @TableField(value = "auditFiles",exist = false)
     List<FileVO> auditFiles;
 
     @ApiModelProperty("近2月水量凭证附件(水费发票)信息列表")
+    @TableField(value = "waterProofFiles",exist = false)
     List<FileVO> waterProofFiles;
 
     @ApiModelProperty("其他证明材料信息列表")
+    @TableField(value = "otherFiles",exist = false)
     List<FileVO> otherFiles;
 
     @ApiModelProperty("预览路径")
+    @TableField(value = "preViewRealPath",exist = false)
     private String preViewRealPath;
 
     @ApiModelProperty("审核流程信息")
+    @TableField(value = "auditMessages",exist = false)
     List<Map<String,Object>> auditMessages;
 
 	/**
