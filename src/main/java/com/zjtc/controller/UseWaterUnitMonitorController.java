@@ -98,7 +98,7 @@ public class UseWaterUnitMonitorController {
     User user = jwtUtil.getUserByToken(token);
     if (null != monitor) {
       try {
-        useWaterUnitMonitorService.add(user, monitor);
+        response = useWaterUnitMonitorService.add(user, monitor);
       } catch (Exception e) {
         log.error("用水单位监控新增失败,errMsg==={}" + e.getMessage());
         response.recordError(500);

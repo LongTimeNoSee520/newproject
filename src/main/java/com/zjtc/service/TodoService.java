@@ -12,7 +12,17 @@ import java.util.Map;
  */
 public interface TodoService extends IService<Todo> {
 
-
+  /**
+   *
+   * @param businessId
+   * @param user 登录人员
+   * @param auditorId 审核人id
+   * @param auditorName 审核人
+   * @param todoContent 待办内容
+   * @param businessJson 业务json数据
+   * @param detailConfig
+   * @param todoType 待办类型
+   */
   void add(String businessId, User user, String auditorId, String auditorName, String todoContent,
        String businessJson, String detailConfig,String todoType);
 

@@ -28,7 +28,7 @@ public interface UseWaterUnitMonitorService extends IService<UseWaterUnitMonitor
    * @param user，monitor
    * @return
    */
-  void add(User user, UseWaterUnitMonitor monitor);
+  ApiResponse add(User user, UseWaterUnitMonitor monitor);
 
   /**
    * 逻辑删除
