@@ -301,7 +301,7 @@ public class UseWaterPlanAddWXServiceImpl extends
             person.getId(),
             person.getUserName(),
             messageContent,
-            businessJson,
+            JSONObject.toJSONString(useWaterPlanAddWX),
             detailConfig,
             AuditConstants.END_PAPER_TODO_TYPE);
 //        webSocket消息推送

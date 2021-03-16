@@ -244,7 +244,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
             person.getId(),
             person.getUserName(),
             messageContent,
-            businessJson,
+            JSONObject.toJSONString(useWaterSelfDefinePlan),
             detailConfig,
             AuditConstants.END_PAPER_TODO_TYPE);
 //        webSocket消息推送
