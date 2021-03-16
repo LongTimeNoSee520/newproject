@@ -562,13 +562,8 @@ public class UseWaterUnitServiceImpl extends
   }
 
   @Override
-  public UseWaterUnit selectByUnitCode(String unitCode, User user) {
-    Wrapper wrapper = new EntityWrapper();
-    wrapper.eq("deleted", "0");
-    wrapper.eq("node_code", user.getNodeCode());
-    wrapper.eq("unit_code", unitCode);
-    UseWaterUnit result = this.selectOne(wrapper);
-    return result;
+  public Map<String,Object> selectByUnitCode(String unitCode, User user) {
+    return  baseMapper.selectByUnitCode(unitCode,user.getNodeCode());
   }
 
   @Override

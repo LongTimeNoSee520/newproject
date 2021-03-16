@@ -369,7 +369,7 @@ public class UseWaterUnitController {
     User user = jwtUtil.getUserByToken(token);
     log.debug("根据单位编号查询单位信息");
     if (null != user) {
-      UseWaterUnit result = useWaterUnitService
+      Map<String,Object> result = useWaterUnitService
           .selectByUnitCode(jsonObject.getString("unitCode"), user);
       response.setData(result);
     } else {

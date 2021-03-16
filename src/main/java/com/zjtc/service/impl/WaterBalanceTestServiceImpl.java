@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.util.FileUtil;
 import com.zjtc.mapper.waterBiz.WaterBalanceTestMapper;
 import com.zjtc.model.File;
-import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterBalanceTest;
 import com.zjtc.model.WaterBalanceTestProduct;
@@ -180,8 +179,8 @@ public class WaterBalanceTestServiceImpl extends
     balanceTest.setDeleted("0");
     balanceTest.setNodeCode(user.getNodeCode());
     /**根据单位编号查询单位地址*/
-    UseWaterUnit useWaterUnit= useWaterUnitService.selectByUnitCode(balanceTest.getUnitCode(),user);
-    String unitAddress = null ==useWaterUnit ? null:useWaterUnit.getUnitAddress();
+    Map<String,Object>  useWaterUnit= useWaterUnitService.selectByUnitCode(balanceTest.getUnitCode(),user);
+    String unitAddress = null ==useWaterUnit ? null:useWaterUnit.get("unitAddress").toString();
     if (StringUtils.isNotBlank(unitAddress)){
       balanceTest.setUnitAddress(unitAddress);
     }
