@@ -63,7 +63,7 @@ public class FinanceController {
       response = financeService.insertFinance(finances, user.getNodeCode(),user);
       return response;
     } catch (Exception e) {
-      response.setMessage("新增加价费开票记录失败");
+      response.recordError("新增加价费开票记录失败");
       response.setCode(500);
       log.error("新增加价费开票记录失败,errMsg==={}" + e.getMessage());
       e.printStackTrace();
@@ -130,7 +130,7 @@ public class FinanceController {
       response = financeService.updateFinance(finances,user);
       return response;
     } catch (Exception e) {
-      response.setMessage("修改加价费开票记录失败");
+      response.recordError("修改加价费开票记录失败");
       response.setCode(500);
       log.error("修改加价费开票记录失败,errMsg==={}" + e.getMessage());
       e.printStackTrace();
@@ -162,7 +162,7 @@ public class FinanceController {
       return response;
     } catch (Exception e) {
       response.setCode(500);
-      response.setMessage("加价费用管理分页查询异常");
+      response.recordError("加价费用管理分页查询异常");
       log.error("加价费用管理分页查询错误,errMsg==={}", e.getMessage());
       e.printStackTrace();
     }

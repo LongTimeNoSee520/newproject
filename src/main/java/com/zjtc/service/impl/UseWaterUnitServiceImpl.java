@@ -563,7 +563,7 @@ public class UseWaterUnitServiceImpl extends
 
   @Override
   public Map<String,Object> selectByUnitCode(String unitCode, User user) {
-    return  baseMapper.selectByUnitCode(unitCode,user.getNodeCode());
+    return baseMapper.selectByUnitCode(unitCode,user.getNodeCode());
   }
 
   @Override

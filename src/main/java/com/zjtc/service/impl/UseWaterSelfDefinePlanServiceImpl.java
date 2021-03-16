@@ -228,8 +228,18 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       response.setCode(200);
       response.setMessage("审核成功");
       systemLogService.logInsert(user,"用水计划自平","用水计划自平审核通过","");
- //      取消待办
-      todoService.edit(id, user.getNodeCode(), user.getId());
+      List<Person> personList1 = null;
+      try {
+        personList1 = personService
+            .selectPersonByResCode("selfBalance", user.getNodeCode());
+      } catch (Exception e) {
+        log.error("根据资源code查询,资源下所有角色的所有人异常:"+e.getMessage());
+      }
+      assert personList1 != null;
+      for (Person person : personList1) {
+        //      取消待办
+        todoService.edit(id, person.getNodeCode(), person.getId());
+      }
 //     发起待办
       List<Person> personList = null;
       try {
@@ -237,6 +247,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       } catch (Exception e) {
         log.error("查询下一环节审核人员为空:"+e.getMessage());
       }
+      assert personList != null;
       for (Person person : personList) {
         todoService.add(
             id,

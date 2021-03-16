@@ -23,4 +23,11 @@ public interface PersonService extends IService<Person> {
    * @return 查询结果
    */
   List<Person> selectPersonAll(String personId) throws Exception;
+
+  /**
+   * 根据资源code查询,资源下所有角色的所有人
+   * @param resCode
+   * @return
+   */
+  List<Person> selectPersonByResCode(String resCode,String nodeCode) throws Exception;
 }

@@ -34,7 +34,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
   public ApiResponse insertFinance(List<Finance> finances, String nodeCode, User user) {
     ApiResponse response = new ApiResponse();
     if (finances.size() == 0 || StringUtils.isBlank(nodeCode)) {
-      response.setMessage("系统错误");
+      response.recordError("系统错误");
       return response;
     }
 //    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -58,13 +58,13 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
   public ApiResponse updateFinance(List<Finance> finances,User user) {
     ApiResponse response = new ApiResponse();
     if (finances.isEmpty()) {
-      response.setMessage("系统错误");
+      response.recordError("系统错误");
       return response;
     }
     for (Finance finance: finances) {
       String invoiceState = finance.getInvoiceState();
       if ("1".equals(invoiceState)) {
-        response.setMessage("用水单位:" +finance.getUnitCode()+"("+ finance.getUnitName() +")"+ "的数据已开票不能修改");
+        response.recordError("用水单位:" +finance.getUnitCode()+"("+ finance.getUnitName() +")"+ "的数据已开票不能修改");
         return response;
       }
     }
@@ -81,7 +81,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
   public ApiResponse deletedFinance(List<String> ids,User user) {
     ApiResponse response = new ApiResponse();
     if (ids.size() == 0) {
-      response.setMessage("系统错误");
+      response.recordError("系统错误");
       return response;
     }
     EntityWrapper<Finance> wrapper = new EntityWrapper<>();
@@ -112,7 +112,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
   public ApiResponse queryPageFinance(JSONObject jsonObject, String nodeCode) {
     ApiResponse response = new ApiResponse();
     if (null == jsonObject || StringUtils.isBlank(nodeCode)) {
-      response.setMessage("系统错误");
+      response.recordError("系统错误");
       return response;
     }
     Map<String, Object> map = new LinkedHashMap<>(10);
@@ -194,7 +194,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
   public ApiResponse countMoney(JSONObject jsonObject, String nodeCode) {
     ApiResponse response = new ApiResponse();
     if (null == jsonObject || StringUtils.isBlank(nodeCode)) {
-      response.setMessage("系统错误");
+      response.recordError("系统错误");
       return response;
     }
 
