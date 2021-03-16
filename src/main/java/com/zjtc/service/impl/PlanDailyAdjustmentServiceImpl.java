@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.constant.SmsConstants;
+import com.zjtc.base.constant.SystemConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.base.util.WebSocketUtil;
@@ -525,6 +526,8 @@ public class PlanDailyAdjustmentServiceImpl extends
     endPaper.setCreateType(useWaterPlan.getCreateType());
     endPaper.setAuditStatus("0");//发起时设置为未审核
     endPaper.setRescinded("0");//未撤销
+    endPaper.setFirstWater(firstWater);
+    endPaper.setSecondWater(secondWater);
     /**相关附件信息*/
     if (!auditFiles.isEmpty()){
       List<String> auditFileIds =this.handleFiles(auditFiles);
@@ -542,8 +545,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       endPaper.setOtherFileId(otherFileId);
     }
 
-    if (null != firstQuarter && null != secondQuarter && null != thirdQuarter
-        && null != fourthQuarter) {
+    if (SystemConstants.PLAN_CHANGE_TYPE_AJUST.equals(paperType)) {//调整计划
       endPaper.setFirstQuarter(firstQuarter);
       endPaper.setSecondQuarter(secondQuarter);
       endPaper.setThirdQuarter(thirdQuarter);
@@ -561,9 +563,7 @@ public class PlanDailyAdjustmentServiceImpl extends
               + firstQuarter + "方，第二季度水量" + secondQuarter + "方，第三季度水量" + thirdQuarter + "方，第四季度水量"
               + fourthQuarter + "方。";
     }
-    if (null != firstWater && null != secondWater) {
-      endPaper.setFirstWater(firstWater);
-      endPaper.setSecondWater(secondWater);
+    if (SystemConstants.PLAN_CHANGE_TYPE_ADD.equals(paperType)) {
       /**审核流程信息新增*/
       /**查询办结单审核流程的流程节点数据、流程线数据并复制到流程节点记录表、流程节点线记录表*/
       String flowCode="endPaperAddFlow";//增加计划审核流程

@@ -57,7 +57,8 @@ public class WaterQuantityManageController {
           + " \"caliberEnd\":\"口径区间结束数(小数Float)\",\n"
           + " \"sectorStart\":\"区段区间开始数 数字类型\",\n"
           + " \"sectorEnd\":\"区段区间结束数 数字类型\",\n"
-          + " \"useYear\":\"年份 数字类型\",\n"
+          + " \"useYearStart\":\"起始年份 数字类型\",\n"
+          + " \"useYearEnd:\"结束年份 数字类型\",\n"
           + "  \"nodeCode\":\"节点编码\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("分页查询水量 ==== 参数{" + jsonObject.toJSONString() + "}");

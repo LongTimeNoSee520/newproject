@@ -7,7 +7,7 @@
     <result column="id" property="id" jdbcType="VARCHAR"/>
     <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
     <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
-    <result column="unit_names" property="unitNames" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
     <result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
     <result column="use_year" property="useYear" jdbcType="INTEGER"/>
     <result column="use_month" property="useMonth" jdbcType="INTEGER"/>
@@ -59,12 +59,15 @@
     <if test="sectorEnd != null">
       and convert(int,sector) &lt; #{sectorEnd}
     </if>
-    <if test="useYear != null">
-      and use_year = #{useYear}
+    <if test="useYearStart != null">
+      and use_year >= #{useYearStart}
+    </if>
+    <if test="useYearEnd != null">
+      and use_year &lt;= #{useYearEnd}
     </if>
   </select>
   <select id="queryPage" resultType="java.util.LinkedHashMap">
-    SELECT t.id AS id, t.use_water_unit_id AS useWaterUnitId,t.unit_code AS unitCode,t.unit_names AS unitNames,unit_address AS unitAddress,
+    SELECT t.id AS id, t.use_water_unit_id AS useWaterUnitId,t.unit_code AS unitCode,t.unit_name AS unitName,unit_address AS unitAddress,
     convert(varchar(50),t.use_year)+'年' + convert(varchar(50),t.use_month) +'月' AS yearAndMonth,
     t.water_meter_code AS waterMeterCode,t.water_begin AS waterBegin,t.water_end AS waterEnd,
     t.water_number AS waterNumber,t.price AS price,t.caliber AS caliber,t.sector AS sector,
@@ -83,35 +86,35 @@
             <if test="waterMeterCode != null and waterMeterCode != ''">
              and water_meter_code like '%${waterMeterCode}%'
             </if>
-            <if test="waterMeterCode != null and waterMeterCode != ''">
-              and water_meter_code like '%${waterMeterCode}%'
-            </if>
             <if test="waterNumberStart != null">
-              and water_number &gt; #{waterNumberStart}
+              and water_number &gt;= #{waterNumberStart}
             </if>
             <if test="waterNumberEnd != null">
-              and water_number &lt; #{waterNumberEnd}
+              and water_number &lt;= #{waterNumberEnd}
             </if>
             <if test="priceStart != null">
-              and price &gt; #{priceStart}
+              and price &gt;= #{priceStart}
             </if>
             <if test="priceEnd != null">
-              and price &lt; #{priceEnd}
+              and price &lt;= #{priceEnd}
             </if>
             <if test="caliberStart != null">
               and caliber &gt; #{caliberStart}
             </if>
             <if test="caliberEnd != null">
-              and caliber &lt; #{caliberEnd}
+              and caliber &lt;= #{caliberEnd}
             </if>
             <if test="sectorStart != null">
-              and convert(int,sector) &gt; #{sectorStart}
+              and convert(int,sector) &gt;= #{sectorStart}
             </if>
             <if test="priceEnd != null">
-              and convert(int,sector) &lt; #{sectorEnd}
+              and convert(int,sector) &lt;= #{sectorEnd}
             </if>
-            <if test="useYear != null">
-              and use_year = #{useYear}
+            <if test="useYearStart != null">
+              and use_year >= #{useYearStart}
+            </if>
+            <if test="useYearEnd != null">
+              and use_year &lt;= #{useYearEnd}
             </if>
       )t1
       WHERE  rownumber > (#{current}-1)* #{size}
@@ -131,10 +134,10 @@
     </selectKey>
     <if test="num==0">
       INSERT INTO t_w_water_use_data(id,use_water_unit_id,use_year,use_month,water_meter_code,water_begin,water_end,water_number,price,caliber
-      ,sector,uid,water_use_kinds,unit_address,unit_names,node_code,type,unit_code,remarks)
+      ,sector,uid,water_use_kinds,unit_address,unit_name,node_code,type,unit_code,remarks)
       VALUES (#{waterUseData.id},#{waterUseData.useWaterUnitId},#{waterUseData.useYear},#{waterUseData.useMonth},#{waterUseData.waterMeterCode}
       ,#{waterUseData.waterBegin},#{waterUseData.waterEnd},#{waterUseData.waterNumber},#{waterUseData.price}, #{waterUseData.caliber}
-      ,#{waterUseData.sector},#{waterUseData.uid},#{waterUseData.waterUseKinds},#{waterUseData.unitAddress},#{waterUseData.unitNames}
+      ,#{waterUseData.sector},#{waterUseData.uid},#{waterUseData.waterUseKinds},#{waterUseData.unitAddress},#{waterUseData.unitName}
       ,#{waterUseData.nodeCode},#{waterUseData.type},#{waterUseData.unitCode},#{waterUseData.remarks})
     </if>
     <if test="num>0">
@@ -153,7 +156,7 @@
       uid=#{waterUseData.uid},
       water_use_kinds=#{waterUseData.waterUseKinds},
       unit_address=#{waterUseData.unitAddress},
-      unit_names=#{waterUseData.unitNames},
+      unit_name=#{waterUseData.unitName},
       node_code=#{waterUseData.nodeCode},
       type=#{waterUseData.type},
       unit_code=#{waterUseData.unitCode},
@@ -187,7 +190,7 @@
         isnull(SUM([10]), 0) AS octoberCount,
         isnull(SUM([11]), 0) AS novemberCount,
         isnull(SUM([12]), 0) AS decemberCount,
-        MAX (unit_names) AS unitNames,
+        MAX (unit_name) AS unitName,
         MAX (unit_address) AS unitAddresss,
         MAX(node_code) AS nodeCode
       FROM
@@ -205,7 +208,7 @@
             use_water_unit_id,
             sector,
             water_meter_code,
-            unit_names,
+            unit_name,
             unit_address,
             node_code
           FROM
@@ -272,7 +275,7 @@
         december_count,
         now_price,
         water_use_kinds,
-        unit_names,
+        unit_name,
         unit_address,
         node_code
       )
@@ -299,7 +302,7 @@
         t2.decemberCount,
         t2.price,
         t2.waterUseKinds,
-        t2.unitNames,
+        t2.unitName,
         t2.unitAddresss,
         t2.nodeCode
       ) ;

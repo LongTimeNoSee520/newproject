@@ -36,8 +36,8 @@ public class WaterUseData extends Model<WaterUseData> {
   private String unitCode;//单位编码
 
   @ApiModelProperty(value = "单位名称")
-  @TableField(value = "unit_names", exist = true)
-  private String unitNames;//单位名称
+  @TableField(value = "unit_name", exist = true)
+  private String unitName;//单位名称
 
   @ApiModelProperty(value = "单位地址")
   @TableField(value = "unit_address", exist = true)

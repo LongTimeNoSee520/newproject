@@ -118,7 +118,8 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     Integer caliberEnd = jsonObject.getInteger("caliberEnd");//口径区间结束数
     Integer sectorStart = jsonObject.getInteger("sectorStart");//区段区间开始数
     Integer sectorEnd = jsonObject.getInteger("sectorEnd");//区段区间结束数
-    Integer useYear = jsonObject.getInteger("useYear");//年份
+    Integer useYearStart = jsonObject.getInteger("useYearStart");//起始年份
+    Integer useYearEnd = jsonObject.getInteger("useYearEnd");//结束年份
 
     Map<String, Object> map = new HashMap();
     map.put("current", current);
@@ -159,8 +160,11 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     if (null != sectorStart){
       map.put("sectorEnd", sectorEnd);
     }
-    if (null != useYear){
-      map.put("useYear", useYear);
+    if (null != useYearStart){
+      map.put("useYearStart", useYearStart);
+    }
+    if (null != useYearEnd){
+      map.put("useYearEnd", useYearEnd);
     }
 
 
@@ -313,7 +317,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
         unitIds.add(waterUseData.getUseWaterUnitId());
       }
       waterUseData.setUnitCode(waterUseDataVO.getWaterMeterCode());//水表档案号作原始数据的单位编号
-      waterUseData.setUnitNames(waterUseDataVO.getUserName());
+      waterUseData.setUnitName(waterUseDataVO.getUserName());
       waterUseData.setUnitAddress(waterUseDataVO.getAddress());
       waterUseData.setWaterMeterCode(waterUseDataVO.getWaterMeterCode());
       waterUseData.setWaterUseKinds(waterUseDataVO.getWaterUseKinds());

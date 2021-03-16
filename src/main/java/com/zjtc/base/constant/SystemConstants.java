@@ -19,6 +19,14 @@ public class SystemConstants {
   public static final String STATUS_NO = "0";
 
   /**
+   * 计划调整类型-调整
+   */
+  public static final String PLAN_CHANGE_TYPE_AJUST = "0";
+  /**
+   * 计划调整类型-增加
+   */
+  public static final String PLAN_CHANGE_TYPE_ADD = "1";
+  /**
    * 市节点编码
    */
   public static final String  MUNICIPAL_NODE_CODE ="510100000000";
