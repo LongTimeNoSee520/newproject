@@ -79,7 +79,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param user
    * @return
    */
-  UseWaterUnit selectByUnitCode(String unitCode,User user);
+  Map<String,Object> selectByUnitCode(String unitCode,User user);
 
   /**
    *导出账户审核表

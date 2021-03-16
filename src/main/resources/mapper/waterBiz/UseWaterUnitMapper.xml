@@ -789,4 +789,30 @@
     </if>
 
   </select>
+
+  <select id="selectByUnitCode" resultType="java.util.LinkedHashMap">
+    select
+    t1.*,
+    t2.industry_name as industryName
+    from (
+    select
+    id,
+    industry,
+    unit_name as unitName,
+    unit_code as unitCode,
+    unit_address as unitAddress,
+    zip_name as zipName,
+    zip_address as zipAddress,
+    unit_code_group as unitCodeGroup,
+    unit_code_type as unitCodeType
+    from t_w_use_water_unit
+    where deleted='0'
+    and unit_code=#{unitCode}
+    and node_code=#{nodeCode}
+    ) as t1
+    left join
+    (
+    select id,industry_name  from t_w_quota_info
+    ) as t2 on t2.id=t1.industry
+  </select>
 </mapper>
