@@ -26,7 +26,7 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
   /**
    * 修改
    */
-  boolean updateModel(JSONObject jsonObject,User user);
+  ApiResponse updateModel(JSONObject jsonObject,User user);
 
   /**
    * 删除

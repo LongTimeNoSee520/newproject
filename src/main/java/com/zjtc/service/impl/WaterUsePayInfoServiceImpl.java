@@ -103,11 +103,14 @@ public class WaterUsePayInfoServiceImpl extends
   }
 
   @Override
-  public boolean updateModel(JSONObject jsonObject, User user) {
+  @Transactional(rollbackFor = Exception.class)
+  public ApiResponse updateModel(JSONObject jsonObject, User user) {
+    ApiResponse apiResponse = new ApiResponse();
     List<WaterUsePayInfo> entityList = jsonObject.getJSONArray("payInfoList")
         .toJavaList(WaterUsePayInfo.class);
     if (entityList.isEmpty()) {
-      return false;
+      apiResponse.recordError(500);
+      return apiResponse;
     }
     for (WaterUsePayInfo entity : entityList) {
 
@@ -125,13 +128,18 @@ public class WaterUsePayInfoServiceImpl extends
         useWaterUnitInvoice.setId(entity.getInvoiceId());
         useWaterUnitInvoice.setInvoiceDate(new Date());
         useWaterUnitInvoice.setPayInfoId(entity.getId());
-        useWaterUnitInvoiceService
+        apiResponse = useWaterUnitInvoiceService
             .updateInvoicesUnitMessage(useWaterUnitInvoice, user.getUsername(), user.getNodeCode());
+        if (500 == apiResponse.getCode()) {
+          return apiResponse;
+        }
       }
-      // boolean result = this.updateById(entity);
+      boolean result = this.updateById(entity);
+      if (!result) {
+        apiResponse.recordError(500);
+      }
     }
-    boolean result = this.updateBatchById(entityList);
-    return result;
+    return apiResponse;
   }
 
   @Override
@@ -224,7 +232,7 @@ public class WaterUsePayInfoServiceImpl extends
             detailConfig,
             AuditConstants.PAY_TODO_TYPE);
     /**websocket推送*/
-    webSocketUtil.pushWaterTodo(user.getNodeCode(),nextPersonId);
+    webSocketUtil.pushWaterTodo(user.getNodeCode(), nextPersonId);
     /**新增流程实例表数据*/
     flowExampleService.add(user, entity.getId(), AuditConstants.PAY_TODO_TYPE);
     return apiResponse;
@@ -279,7 +287,7 @@ public class WaterUsePayInfoServiceImpl extends
             detailConfig,
             AuditConstants.PAY_TODO_TYPE);
     /**websocket推送*/
-    webSocketUtil.pushWaterTodo(user.getNodeCode(),nextPersonId);
+    webSocketUtil.pushWaterTodo(user.getNodeCode(), nextPersonId);
     /**新增流程实例表数据*/
     flowExampleService.add(user, entity.getId(), AuditConstants.PAY_TODO_TYPE);
     return apiResponse;
@@ -343,9 +351,9 @@ public class WaterUsePayInfoServiceImpl extends
     }
     //查询短信状态
     //sql关键字
-    jsonObject.put("pageSize",jsonObject.getInteger("size"));
-    List<SendListVO> data= smsSendService.queryAll(noticeData, jsonObject);
-    long total= smsSendService.count(noticeData, jsonObject);
+    jsonObject.put("pageSize", jsonObject.getInteger("size"));
+    List<SendListVO> data = smsSendService.queryAll(noticeData, jsonObject);
+    long total = smsSendService.count(noticeData, jsonObject);
     page.put("records", data);
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
@@ -415,7 +423,7 @@ public class WaterUsePayInfoServiceImpl extends
             item.put("contacts" + (i + 1), contactsList.get(i).getContacts());
             item.put("mobileNumber" + (i + 1), contactsList.get(i).getMobileNumber());
             item.put("phoneNumber" + (i + 1), contactsList.get(i).getPhoneNumber());
-            if(i==2){
+            if (i == 2) {
               break;
             }
           }

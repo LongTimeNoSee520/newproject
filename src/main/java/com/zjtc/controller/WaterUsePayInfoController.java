@@ -113,11 +113,9 @@ public class WaterUsePayInfoController {
     User user = jwtUtil.getUserByToken(token);
     if (null != jsonObject && null != user) {
       try {
-        boolean result = waterUsePayInfoService.updateModel(jsonObject, user);
-        if (result) {
-          apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
-        } else {
-          apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
+        apiResponse = waterUsePayInfoService.updateModel(jsonObject, user);
+        if(apiResponse.getCode()==500){
+          return apiResponse;
         }
       } catch (Exception e) {
         log.error("新增错误,errMsg==={}", e.getMessage());
