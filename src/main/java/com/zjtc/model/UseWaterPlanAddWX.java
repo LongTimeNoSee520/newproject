@@ -259,6 +259,10 @@ public class UseWaterPlanAddWX extends Model<UseWaterPlanAddWX> {
   @TableField(value = "FrontCurYearPlan", exist = false)
   private Double FrontCurYearPlan;
 
+  @ApiModelProperty("增加水量")
+  @TableField(value = "add_number")
+  private Double addNumber;
+
   /**
    * 实例化
    */

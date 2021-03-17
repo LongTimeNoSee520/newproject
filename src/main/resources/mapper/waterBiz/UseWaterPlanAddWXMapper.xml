@@ -340,6 +340,9 @@
     <if test="useWaterPlanAddWX.secondWater != null and useWaterPlanAddWX.secondWater != ''">
       second_water = #{useWaterPlanAddWX.secondWater}
     </if>
+      <if test="useWaterPlanAddWX.addNumber != null and useWaterPlanAddWX.addNumber != ''">
+        add_number = #{useWaterPlanAddWX.addNumber}
+      </if>
     </set>
     where id = #{useWaterPlanAddWX.id}
   </update>
