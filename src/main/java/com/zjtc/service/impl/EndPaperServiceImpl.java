@@ -245,6 +245,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
         //设置办结单审核状态
         endPaper.setAuditStatus("1");//通过(本次通过且没有下一环节)
+        /**超额向市级发待办，并且办结单状态任然设为审核中*/
         endPaper = this.report(user,endPaper);
         if ("1".equals(endPaper.getDataSources())) {//网上申报的办结单
           /**网上申报的 需要通知用户到微信端确认(现场的不发通知)*/
@@ -264,6 +265,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
             waterPlanAddWX.setId(endPaper.getWaterPlanWXId());
             //只有通过时(且审核流程走完)，不通过则不修改
             waterPlanAddWX.setAuditStatus("4");//微信端提交审核通过后办结单审核也通过
+            waterPlanAddWX.setAddNumber(addNumber);
             useWaterPlanAddWXService.update(waterPlanAddWX,user);
             /**新增通知给用水单位*/
             messageService.messageToUnit(endPaper.getUnitCode(), messageContent1,
@@ -303,7 +305,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       }
       if ("0".equals(auditStatus)) {//本次审核不通过(没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知)
         flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
-        endPaper.setAuditStatus("2");//2处于审核中(已有审核记录的只要不是最终环节通过都为审核中状态)
+        endPaper.setAuditStatus("0");//0发起办结节点状态(已有审核记录的只要不是最终环节通过都为审核中状态)
         // 没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知和发短信给提交人
         /**通知发给用水单位*/
         String messageContent ="";
