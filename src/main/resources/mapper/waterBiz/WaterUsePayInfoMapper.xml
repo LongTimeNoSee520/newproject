@@ -321,9 +321,9 @@
 		and pay_status !=5
 		and  edited_actual ='0'
 		and  (invoice_num is null or invoice_num='')
-		<if test="null !=countYear">
+		<if test="null !=countYear and countYear !=''">
 			and count_year=#{countYear}
-		</if><if test="null !=countQuarter">
+		</if><if test="null !=countQuarter and countQuarter !=''">
 		and count_quarter=#{countQuarter}
 	</if>
 		<if test="unitIds.size()>0">
@@ -594,10 +594,10 @@
 		WHERE
 		( t.pay_status = 1 OR t.pay_status = 5 or edited_actual ='1' or  invoice_num is not null or invoice_num !='')
 		)
-		<if test="null !=countYear">
+		<if test="null !=countYear and  countYear !=''">
 			and t6.countYear=#{countYear}
 		</if>
-		<if test="null !=countQuarter">
+		<if test="null !=countQuarter and countQuarter !=''">
 			and t6.countQuarter=#{countQuarter}
 		</if>
 		<if test="unitIds.size()>0">
