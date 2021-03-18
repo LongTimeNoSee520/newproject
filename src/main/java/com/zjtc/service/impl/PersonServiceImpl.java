@@ -1,5 +1,6 @@
 package com.zjtc.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -49,6 +50,7 @@ public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> impleme
     jsonObject.put("nodeCode",nodeCode);
     doPost = HttpUtil.doPost(url, jsonObject.toJSONString());
     System.out.println(doPost);
-    return  null;
+    JSONObject json = JSON.parseObject(doPost);
+    return json.getJSONArray("data").toJavaList(Person.class);
   }
 }
