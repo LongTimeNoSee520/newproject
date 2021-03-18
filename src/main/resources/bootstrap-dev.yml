@@ -93,7 +93,7 @@ waterReport:
 #http请求路径
 #1.人员api
 waterSys:
-  selectPersonByResCode: http://localhost:8081:/water/system/person/selectPersonByResCode
+  selectPersonByResCode: http://localhost:8073:/water/system/person/selectPersonByResCode
 
 webSocket:
   #节水平台待办webSocket地址
