@@ -38,4 +38,8 @@ public interface QuotaInfoMapper extends BaseMapper<QuotaInfo> {
   List<QuotaInfo> selectByKeyword(@Param("keyword") String keyword);
 
   List<Map<String,Object>> queryIndustry(@Param("nodeCode") String nodeCode);
+
+  int queryNum(Map<String, Object> map);
+
+  List<Map<String,Object>> queryPage(Map<String, Object> map);
 }

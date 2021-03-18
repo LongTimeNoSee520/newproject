@@ -87,11 +87,14 @@
     <result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
     <result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
     <result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+    <result column="minus_pay_status" property="minusPayStatus" jdbcType="VARCHAR"/>
+    <result column="balance_test" property="balanceTest" jdbcType="VARCHAR"/>
+    <result column="create_type" property="createType" jdbcType="VARCHAR"/>
     <result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
     <result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
-    <!--<collection property="unpaidList" ofType="java.util.LinkedHashMap" column="unit_code"-->
-      <!--select="queryUnpaidList">-->
-    <!--</collection>-->
+    <collection property="unpaidList" ofType="java.util.LinkedHashMap" column="use_water_unit_id"
+      select="findPayBefore">
+    </collection>
   </resultMap>
   <resultMap id="ExportResultMap" type="com.zjtc.model.vo.UseWaterPlanExportVO">
     <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
@@ -244,7 +247,7 @@
   </select>
   <select id="queryMessage" resultMap="MessageResultMap">
     SELECT t1.use_water_unit_id,t1.unit_code,t1.unit_name,t1.water_meter_code,t1.plan_year,
-    t1.first_quarter,t1.second_quarter,t1.third_quarter,t1.fourth_quarter,
+    t1.first_quarter,t1.second_quarter,t1.third_quarter,t1.fourth_quarter,minus_pay_status,balance_test,create_type,
     COALESCE((SELECT sum(COALESCE(water_number,0))
              FROM t_w_water_use_data
              WHERE use_month=#{thisMonth}
@@ -277,9 +280,23 @@
       and unit_code like '%${unitCode}%'
     </if>
   </select>
-  <select id="queryUnpaidList" resultType="java.util.LinkedHashMap">
-    SELECT 1 AS a
+  <select id="findPayBefore" resultType="java.util.LinkedHashMap">
+    select
+    unit_code as unitCode,
+    unit_name as unitName,
+    count_quarter as countQuarter,
+    count_year  as countYear
+    from
+    t_w_water_use_pay_info
+    where use_water_unit_id=#{use_water_unit_id}
+    and  pay_status != '1'
+    and pay_status != '5'
+    order by count_year desc,count_quarter desc
   </select>
+
+  <!--<select id="queryUnpaidList" resultType="java.util.LinkedHashMap">-->
+    <!--SELECT 1 AS a-->
+  <!--</select>-->
   <select id="selectExportData" resultMap="ExportResultMap">
     SELECT
     uu.unit_code,

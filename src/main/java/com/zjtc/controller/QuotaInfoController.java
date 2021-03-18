@@ -173,4 +173,30 @@ public class QuotaInfoController {
     }
     return response;
   }
+  @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "分页查询定额信息")
+  public ApiResponse queryPage(@RequestHeader("token") String token,
+      @ApiParam("{\"current\":\"当前页,数字类型\",\n"
+          + "\"size\":\"每页条数,数字类型\",\n"
+          + "\"id\":\"右侧树选的行业的id\",\n"
+          + "\"industryCode\":\"代码\",\n"
+          + "\"industryName\":\"名称\",\n"
+          + "\"nodeCode\":\"节点编码\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("分页查询定额 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        User user =  jwtUtil.getUserByToken(token);
+        Map<String, Object> result = quotaInfoService.queryPage(user,jsonObject);
+        response.setData(result);
+      } catch (Exception e) {
+        log.error("分页查询定额失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("分页查询参数不能为空");
+    }
+    return response;
+  }
 }

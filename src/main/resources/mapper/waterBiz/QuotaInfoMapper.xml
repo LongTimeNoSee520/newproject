@@ -41,6 +41,33 @@
     AND deleted ='0'
     AND (parent_id IS NULL OR parent_id = '')
   </select>
+  <select id="queryNum" resultType="int">
+      SELECT COUNT (t1.id)
+      FROM (
+      SELECT id
+      FROM t_w_quota_info
+      WHERE deleted = '0'
+      AND node_code = #{nodeCode}
+      <if test="null==id  or id ==''">AND parent_id is NULL </if>
+      <if test="null !=id  and id !=''">AND parent_id = #{id}</if>
+      <if test="industryCode != null and industryCode !=''">AND industry_code LIKE '%${industryCode}%'</if>
+      <if test="industryName != null and industryName !=''">AND industry_name LIKE '%${industryName}%'</if>
+      )t1
+  </select>
+  <select id="queryPage" resultMap="BaseResultMap">
+    SELECT TOP  ${size} t1.*
+    FROM(SELECT row_number () OVER ( ORDER BY [create_time] DESC ,[id]) AS rownumber,*
+    FROM
+    t_w_quota_info
+    WHERE deleted = '0'
+    AND node_code = #{nodeCode}
+    <if test="null==id  or id ==''">AND parent_id is NULL </if>
+    <if test="id != null and id !=''">AND parent_id = #{id}</if>
+    <if test="industryCode != null and industryCode !=''">AND industry_code LIKE '%${industryCode}%'</if>
+    <if test="industryName != null and industryName !=''">AND industry_name LIKE '%${industryName}%'</if>
+    )t1
+    WHERE  rownumber > (#{current}-1)* #{size}
+  </select>
   <update id="update">
     UPDATE t_w_quota_info
     SET deleted = '0'

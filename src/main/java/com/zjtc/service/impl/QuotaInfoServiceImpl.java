@@ -9,6 +9,7 @@ import com.zjtc.service.QuotaInfoService;
 import com.zjtc.service.SystemLogService;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -97,6 +98,47 @@ public class QuotaInfoServiceImpl extends ServiceImpl<QuotaInfoMapper, QuotaInfo
     }
     //String nodeCode = user.getNodeCode();
     return this.baseMapper.queryIndustry(nodeCode);
+  }
+
+  @Override
+  public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
+
+    Map<String, Object> result = new HashMap<>();
+    Integer size = jsonObject.getInteger("size");
+    Integer current = jsonObject.getInteger("current");
+
+    String id = jsonObject.getString("id");
+    String industryCode = jsonObject.getString("industryCode");
+    String industryName = jsonObject.getString("industryName");
+
+    Map<String, Object> map = new HashMap<>();
+    map.put("size", size);
+    map.put("current", current);
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
+    if (StringUtils.isNotBlank(id)) {
+      map.put("id", id);
+    }
+    if (StringUtils.isNotBlank(industryCode)) {
+      map.put("industryCode", industryCode);
+    }
+    if (StringUtils.isNotBlank(industryName)) {
+      map.put("industryName", industryName);
+    }
+
+    /**查出满足条件的共有多少条*/
+    int num = this.baseMapper.queryNum(map);
+    result.put("total", num);//满足条件的总条数
+    result.put("size", size);//每页条数
+    result.put("pages", (int) Math.ceil((double) num / size));//一共有多少页
+    result.put("current", current);//当前页
+
+    List<Map<String, Object>> records = this.baseMapper.queryPage(map);
+    result.put("records", records);
+    return result;
   }
 
 

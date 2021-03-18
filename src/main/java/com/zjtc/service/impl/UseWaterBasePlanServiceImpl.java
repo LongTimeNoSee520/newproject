@@ -65,6 +65,9 @@ public class UseWaterBasePlanServiceImpl extends
     useWaterBasePlan.setCreateTime(new Date());
     useWaterBasePlan.setDeleted("0");
     useWaterBasePlan.setNodeCode(user.getNodeCode());
+    useWaterBasePlan.setCurYearPlan(
+        useWaterBasePlan.getOneQuarter() + useWaterBasePlan.getTwoQuarter() + useWaterBasePlan
+            .getThreeQuarter() + useWaterBasePlan.getFourQuarter());
     this.insert(useWaterBasePlan);
     /** 重算该用水单位该年加价费*/
     List<String>  unitIds = new ArrayList<>();
