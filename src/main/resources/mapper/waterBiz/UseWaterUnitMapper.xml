@@ -815,4 +815,23 @@
     select id,industry_name  from t_w_quota_info
     ) as t2 on t2.id=t1.industry
   </select>
+
+  <select id="selectCodeByName" resultType="java.util.LinkedHashMap">
+    select
+    unit_name as unitName,
+    unit_code as unitCode
+    from
+    (
+     select
+      unit_name,unit_code,unit_code_type
+     from t_w_use_water_unit
+    where deleted='0'
+    and node_code=#{nodeCode}
+    and unit_name like '%${unitName}%'
+    ) as t1
+    inner join (
+    select unit_type_code as unit_code_type from t_w_use_water_unit_role
+    where person_id=#{userId}
+    ) as t2 on t1.unit_code_type=t1.unit_code_type
+  </select>
 </mapper>

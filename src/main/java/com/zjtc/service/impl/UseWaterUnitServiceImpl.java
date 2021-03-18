@@ -678,6 +678,11 @@ public class UseWaterUnitServiceImpl extends
     commonService.export(fileName, templateName, request, response, data);
   }
 
+  @Override
+  public List<Map<String,Object>> selectCodeByName(JSONObject jsonObject) {
+    return baseMapper.selectCodeByName(jsonObject);
+  }
+
   /**
    * 验证单位编号是否重复
    */

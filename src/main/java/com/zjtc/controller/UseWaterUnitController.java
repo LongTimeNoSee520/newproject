@@ -278,10 +278,10 @@ public class UseWaterUnitController {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     log.debug("分页，参数param==={" + jsonObject.toString() + "}");
-    try{
+    try {
       if (null != jsonObject && null != user) {
-        String nodeCode =jsonObject.getString("nodeCode");
-        if(StringUtils.isBlank(nodeCode)){
+        String nodeCode = jsonObject.getString("nodeCode");
+        if (StringUtils.isBlank(nodeCode)) {
           jsonObject.put("nodeCode", user.getNodeCode());
         }
         jsonObject.put("userId", user.getId());
@@ -290,7 +290,7 @@ public class UseWaterUnitController {
       } else {
         response.recordError(500);
       }
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error("分页查询错误,errMsg==={}", e.getMessage());
       response.recordError(500);
     }
@@ -369,7 +369,7 @@ public class UseWaterUnitController {
     User user = jwtUtil.getUserByToken(token);
     log.debug("根据单位编号查询单位信息");
     if (null != user) {
-      Map<String,Object> result = useWaterUnitService
+      Map<String, Object> result = useWaterUnitService
           .selectByUnitCode(jsonObject.getString("unitCode"), user);
       response.setData(result);
     } else {
@@ -513,6 +513,31 @@ public class UseWaterUnitController {
         useWaterUnitService.exportMoreAndLess(jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出用水单位增减情况错误,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @ApiOperation(value = "根据单位名称查询单位编号")
+  @RequestMapping(value = "selectCodeByName", method = RequestMethod.POST)
+  public ApiResponse selectCodeByName
+      (@ApiParam("{\n"
+          + "\"unitCode\":\"单位编号\"\n"
+          + "}")@RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
+    log.info("根据单位名称查询单位编号 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    User user = jwtUtil.getUserByToken(token);
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != user) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        List<Map<String, Object>> result = useWaterUnitService.selectCodeByName(jsonObject);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("根据单位名称查询单位编号,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
       }
     } else {

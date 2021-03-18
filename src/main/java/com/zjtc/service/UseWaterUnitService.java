@@ -120,4 +120,9 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param response
    */
   void exportMoreAndLess(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+
+  /**
+   *根据单位名称查询单位编码
+   */
+  List<Map<String,Object>> selectCodeByName(JSONObject jsonObject);
 }
