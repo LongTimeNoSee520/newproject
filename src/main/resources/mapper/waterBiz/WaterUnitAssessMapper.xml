@@ -65,10 +65,34 @@
     ( t3.twoPracticalWater- t2.secondQuarter ) AS twoExceedWater,-- 第二季度超节量
     ( t3.threePracticalWater - t2.thirdQuarter ) AS threeExceedWater,-- 第三季度超节量
     ( t3.fourPracticalWater - t2.fourthQuarter ) AS fourExceedWater,-- 第四季度超节量
-    t5.oneStatus,--第一季度回收情况
-    t5.twoStatus,--第二季度回收情况
-    t5.threeStatus,--第三季度回收情况
-    t5.fourStatus --第四季度回收情况
+    CASE
+    t5.oneStatus
+    WHEN '0' THEN
+    '未缴纳'
+    WHEN '1' THEN
+    '已缴纳' ELSE '无加价'
+    END oneStatus, --第一季度回收情况
+    CASE
+    t5.twoStatus
+    WHEN '0' THEN
+    '未缴纳'
+    WHEN '1' THEN
+    '已缴纳' ELSE '无加价'
+    END twoStatus, --第二季度回收情况
+    CASE
+    t5.threeStatus
+    WHEN '0' THEN
+    '未缴纳'
+    WHEN '1' THEN
+    '已缴纳' ELSE '无加价'
+    END threeStatus, --第三季度回收情况
+    CASE
+    t5.fourStatus
+    WHEN '0' THEN
+    '未缴纳'
+    WHEN '1' THEN
+    '已缴纳' ELSE '无加价'
+    END fourStatus --第四季度回收情况
 
     FROM
     (
@@ -268,10 +292,34 @@
     ( t3.twoPracticalWater- t2.secondQuarter ) AS twoExceedWater,-- 第二季度超节量
     ( t3.threePracticalWater - t2.thirdQuarter ) AS threeExceedWater,-- 第三季度超节量
     ( t3.fourPracticalWater - t2.fourthQuarter ) AS fourExceedWater,-- 第四季度超节量
-    t5.oneStatus,--第一季度回收情况
-    t5.twoStatus,--第二季度回收情况
-    t5.threeStatus,--第三季度回收情况
-    t5.fourStatus --第四季度回收情况
+    CASE
+    t5.oneStatus
+    WHEN '0' THEN
+    '未缴纳'
+    WHEN '1' THEN
+    '已缴纳' ELSE '无加价'
+    END oneStatus, --第一季度回收情况
+    CASE
+    t5.twoStatus
+    WHEN '0' THEN
+    '未缴纳'
+    WHEN '1' THEN
+    '已缴纳' ELSE '无加价'
+    END twoStatus, --第二季度回收情况
+    CASE
+    t5.threeStatus
+    WHEN '0' THEN
+    '未缴纳'
+    WHEN '1' THEN
+    '已缴纳' ELSE '无加价'
+    END threeStatus, --第三季度回收情况
+    CASE
+    t5.fourStatus
+    WHEN '0' THEN
+    '未缴纳'
+    WHEN '1' THEN
+    '已缴纳' ELSE '无加价'
+    END fourStatus --第四季度回收情况
 
     FROM
     (
