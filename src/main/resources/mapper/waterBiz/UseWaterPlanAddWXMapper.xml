@@ -143,17 +143,6 @@
     second_quarter_quota,
     third_quarter_quota,
     fourth_quarter_quota,
-    (select t2.plan_year FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as FrontPlanYear, --当前年度
-    (select t2.first_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as FrontFirstQuarter,
-    --当前第一季度
-    (select t2.second_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as
-    FrontSecondQuarter, --当前第二季度
-    (select t2.third_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as FrontThirdQuarter,
-    --当前第三季度
-    (select t2.fourth_quarter FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as
-    FrontFourthQuarter, --当前第四季度
-    (select t2.cur_year_plan FROM t_w_use_water_plan t2 WHERE t1.id = t2.id ) as FrontCurYearPlan,
-    --当前年计划
     CASE
     t1.audit_status
     WHEN '0' THEN '未执行'
@@ -170,9 +159,6 @@
     WHEN '0' THEN '未打印'
     WHEN '1' THEN '已打印' ELSE '已打印'
     END printed, --是否打印
-<!--    audit_file_id,-->
-<!--    water_proof_file_id,-->
-<!--    other_file_id,-->
     #{path} AS preViewRealPath
     FROM
     t_wx_use_water_plan_add t1

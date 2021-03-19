@@ -7,6 +7,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.UseWaterPlanAddWXMapper;
 import com.zjtc.model.Person;
+import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.UseWaterPlanAddWXVO;
@@ -20,6 +21,7 @@ import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterPlanService;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -75,6 +77,8 @@ public class UseWaterPlanAddWXServiceImpl extends
   @Autowired
   private WebSocketUtil webSocketUtil;
 
+
+
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
     ApiResponse response = new ApiResponse();
@@ -114,6 +118,25 @@ public class UseWaterPlanAddWXServiceImpl extends
     List<UseWaterPlanAddWXVO> useWaterPlanAdds = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType,
             executed, nodeCode, auditStatus, userId, path);
+    UseWaterPlan useWaterPlan = null;
+    for (UseWaterPlanAddWXVO useWaterPlanAddWXVO : useWaterPlanAdds){
+      try {
+        useWaterPlan = useWaterPlanService
+           .selectUseWaterPlanAll(nodeCode, getYear(), useWaterPlanAddWXVO.getUseWaterUnitId(),useWaterPlanAddWXVO.getUnitCode());
+      } catch (Exception e) {
+        log.error("查询用水计划原始数据为空,数据id为:"+useWaterPlanAddWXVO.getUseWaterUnitId());
+      }
+      try {
+        useWaterPlanAddWXVO.setFrontCurYearPlan(useWaterPlan.getCurYearPlan());
+        useWaterPlanAddWXVO.setFrontPlanYear(useWaterPlan.getPlanYear());
+        useWaterPlanAddWXVO.setFrontFirstQuarter(useWaterPlan.getFirstQuarter());
+        useWaterPlanAddWXVO.setFrontSecondQuarter(useWaterPlan.getSecondQuarter());
+        useWaterPlanAddWXVO.setFrontThirdQuarter(useWaterPlan.getThirdQuarter());
+        useWaterPlanAddWXVO.setFrontFourthQuarter(useWaterPlan.getFourthQuarter());
+      } catch (Exception e) {
+        log.error("查询用水计划原始数据为空,数据id为:"+useWaterPlanAddWXVO.getUseWaterUnitId());
+      }
+    }
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
@@ -338,4 +361,12 @@ public class UseWaterPlanAddWXServiceImpl extends
     systemLogService.logInsert(user,"用水计划调整审核","修改审核/执行状态","");
     return i > 0;
   }
+
+  //获取当前年份
+  public static Integer getYear() {
+    Calendar date = Calendar.getInstance();
+    String year = String.valueOf(date.get(Calendar.YEAR));
+    return Integer.valueOf(year);
+  }
+
 }

@@ -39,4 +39,13 @@ public interface UseWaterPlanService extends IService<UseWaterPlan> {
 	* @return
 	*/
 	Page<UseWaterPlan> queryPage(JSONObject jsonObject);
+
+  /**
+   * 查询单位原始数据
+   * @param nodeCode 节点编码
+   * @param planYear 年份
+   * @param waterUnitId 单位id
+   * @return 结果集
+   */
+  UseWaterPlan selectUseWaterPlanAll(String nodeCode,Integer planYear,String waterUnitId,String unitCode);
 }

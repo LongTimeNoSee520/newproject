@@ -40,5 +40,25 @@
     <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
   </resultMap>
 
+  <select id="selectUseWaterPlanAll" resultMap="BaseResultMap">
+    SELECT
+    id,
+    plan_year ,
+    use_water_unit_id ,
+    unit_name,
+    cur_year_plan,
+    first_quarter ,
+    second_quarter ,
+    third_quarter ,
+    fourth_quarter
+    FROM
+    t_w_use_water_plan
+    WHERE
+    node_code = #{nodeCode}
+    AND plan_year = #{planYear}
+    AND use_water_unit_id = #{waterUnitId}
+    AND unit_code = #{unitCode}
+  </select>
+
 
 </mapper>

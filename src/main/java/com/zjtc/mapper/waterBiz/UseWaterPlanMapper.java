@@ -3,6 +3,7 @@ package com.zjtc.mapper.waterBiz;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.UseWaterPlan;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * TWUseWaterPlan的Dao接口
@@ -13,4 +14,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UseWaterPlanMapper extends BaseMapper<UseWaterPlan> {
 
+  UseWaterPlan selectUseWaterPlanAll(@Param("nodeCode") String nodeCode,@Param("planYear") Integer planYear,@Param("waterUnitId") String waterUnitId,@Param("unitCode")String unitCode);
 }
