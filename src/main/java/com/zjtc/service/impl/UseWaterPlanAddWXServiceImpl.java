@@ -272,7 +272,12 @@ public class UseWaterPlanAddWXServiceImpl extends
       jsonObject.put("waterProofFiles", waterProofFiles);
 
 //        其他证明材料id列表\"]没有时传[]
-      String[] split2 = useWaterPlanAddWX.getOtherFileId().split(",");
+      String[] split2 = new String[0];
+      try {
+        split2 = useWaterPlanAddWX.getOtherFileId().split(",");
+      } catch (Exception e) {
+       log.error("证明材料异常");
+      }
       Map<String, Object> map2 = new HashMap<>(10);
       List<Map<String, Object>> otherFiles = new ArrayList<>();
       for (String aa : split2) {
@@ -290,7 +295,7 @@ public class UseWaterPlanAddWXServiceImpl extends
       jsonObject.put("auditorId", auditorId);
       // TODO: 2021/1/21 待办相关数据来源,增加办结单表的对应数据
 //      关联业务json数据(待办相关)
-      jsonObject.put("businessJson", businessJson);
+      jsonObject.put("businessJson", JSONObject.toJSONString(useWaterPlanAddWX));
 //      详情配置文件(待办相关)
       jsonObject.put("detailConfig", detailConfig);
 //     下一审核环节id
@@ -344,9 +349,9 @@ public class UseWaterPlanAddWXServiceImpl extends
       return response;
     } else {
       if (Objects.requireNonNull(response1).getCode() == 500){
-        log.info(response1.getMessage());
+        log.info(response1.getMessage()+",数据id为:"+useWaterPlanAddWX.getId());
       }
-      response.recordError("操作失败");
+      response.recordError(response1.getMessage());
       return response;
     }
   }
