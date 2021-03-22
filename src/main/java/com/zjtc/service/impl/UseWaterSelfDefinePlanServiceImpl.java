@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 /**
  * TWUseWaterSelfDefinePlan的服务接口的实现类 用水自平计划表
@@ -162,6 +163,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
   public ApiResponse audit(User user, String id, String auditPerson, String auditPersonId,
       String auditStatus, String auditResult, String auditorName,
       String auditorId, String businessJson, String detailConfig, String nextNodeId) {
@@ -262,9 +264,11 @@ public class UseWaterSelfDefinePlanServiceImpl extends
         webSocketUtil.pushWaterNews(user.getNodeCode(),user.getId());
       }
       return response;
+    }else {
+      response.recordError("审核失败");
+      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+      return response;
     }
-    response.recordError("审核失败");
-    return response;
   }
 
   @Override
@@ -419,6 +423,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       return response;
     } else {
       response.recordError("操作失败");
+      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
       return response;
     }
   }

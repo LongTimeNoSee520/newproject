@@ -33,6 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 /**
  * @Author: ZhouDaBo
@@ -169,6 +171,7 @@ public class UseWaterPlanAddWXServiceImpl extends
 
   //===============
   @Override
+  @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
   public ApiResponse audit(String auditPersonId, String userName, String id, String auditStatus,
       String auditResult, Double firstWater, Double secondWater, User user, String auditorName,
       String auditorId, String businessJson, String detailConfig, String nextNodeId) {
@@ -352,6 +355,7 @@ public class UseWaterPlanAddWXServiceImpl extends
         log.info(response1.getMessage()+",数据id为:"+useWaterPlanAddWX.getId());
       }
       response.recordError(response1.getMessage());
+      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
       return response;
     }
   }
