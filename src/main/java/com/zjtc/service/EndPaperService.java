@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.SendListVO;
 import java.util.List;
 import java.util.Map;
 
@@ -48,4 +49,19 @@ public interface EndPaperService extends IService<EndPaper> {
    * @return
    */
   List<Map<String,Object>> nextAuditRole(String id, String nodeCode, String auditBtn);
+
+  /**
+   * 分页查询调整调整发送列表
+   * @param user
+   * @param jsonObject
+   * @return
+   */
+  Map<String,Object> sendInfoPage(User user, JSONObject jsonObject);
+
+  /**
+   * 调整结果通知
+   * @param user
+   * @param sendList
+   */
+  void adjustResultNotification(User user, List<SendListVO> sendList) throws Exception;
 }

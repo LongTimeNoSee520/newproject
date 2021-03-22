@@ -482,7 +482,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     Double fourthQuarter = jsonObject.getDouble("fourthQuarter");
     Double firstWater = jsonObject.getDouble("firstWater");
     Double secondWater = jsonObject.getDouble("secondWater");
-    String quarter = jsonObject.getString("quarter");//季度
+//    String quarter = jsonObject.getString("quarter");//季度
     String opinions = jsonObject.getString("opinions");//意见
     List<FileVO> auditFiles = jsonObject.getJSONArray("auditFiles").toJavaList(FileVO.class);
     List<FileVO> waterProofFiles = jsonObject.getJSONArray("waterProofFiles").toJavaList(FileVO.class);
@@ -520,7 +520,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     endPaper.setCreaterId(user.getId());
     endPaper.setCreaterName(user.getUsername());
     endPaper.setPlanYear(planYear);
-    endPaper.setChangeQuarter(quarter);
+   // endPaper.setChangeQuarter(quarter);
     endPaper.setMinusPayStatus(useWaterPlan.getMinusPayStatus());
     endPaper.setBalanceTest(useWaterPlan.getBalanceTest());
     endPaper.setCreateType(useWaterPlan.getCreateType());

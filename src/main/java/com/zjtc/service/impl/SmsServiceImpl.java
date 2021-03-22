@@ -80,6 +80,9 @@ public class SmsServiceImpl implements SmsService {
             .getCountQuarter() + "】季度，超计划用水【" + send.getExceedWater() + "】吨，产生加价费用【" + send
             .getIncreaseMoney() + "】元，请你单位收到本通知手7个工作日内到我中心完成缴费。";
         messageType="催缴通知";
+      }else if (notificationType.equals(SmsConstants.SEND_NOTIFICATION_ADJUST_RESULT)){
+        messageContent = "计划调整结果通知：你单位申请用水计划调整已核定，请你单位于7个工作日内前往公共服务平台或者微信公众号“成都市微管家”中办理计划确认。";
+        messageType="调整结果通知";
       }
       JSONObject sendInfo = new JSONObject();
       sendInfo.put("content", messageContent);

@@ -6,6 +6,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.SendListVO;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.SystemLogService;
 import io.swagger.annotations.Api;
@@ -210,7 +211,7 @@ public class SettlementFormManageController {
                 jsonObject.getString("auditBtn"));
         apiResponse.setData(result);
       } catch (Exception e) {
-        log.error("查询错误,errMsg==={}", e.getMessage());
+        log.error("查询失败,errMsg==={}", e.getMessage());
         e.printStackTrace();
         apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
       }
@@ -219,4 +220,66 @@ public class SettlementFormManageController {
     }
     return apiResponse;
   }
+  @RequestMapping(value = "sendInfoPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "计划调整结果发送列表信息查询")
+  public ApiResponse sendInfoPage(@RequestHeader("token") String token,
+      @ApiParam("{\"current\":\"当前页,数字类型\",\n"
+          + " \"size\":\"每页条数,数字类型\" ,\n"
+          + " \"unitCode\":\"单位编号\",\n"
+          + " \"status\":\"短信发送状态\",\n"
+          + "\"nodeCode\":\"节点编码\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("分页查询 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        User user = jwtUtil.getUserByToken(token);
+        response.setData(endPaperService.sendInfoPage(user, jsonObject));
+      } catch (Exception e) {
+        log.error("分页查询失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("分页查询参数不能为空");
+    }
+    return response;
+  }
+
+  @RequestMapping(value = "adjustResultNotification", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "调整结果通知")
+  public ApiResponse adjustResultNotification(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "\"sendList\":(发送列表) [{\n"
+          + "\"id\": \"id\",\n"
+          + "\"unitCode\": \"单位编号\",\n"
+          + "\"unitName\": \"单位名称\",\n"
+          + "\"mobileNumber\": \"手机号码\",\n"
+          + "\"receiverName\": \"收件人\",\n"
+//          + "\"paperType\": \"调整类型\",\n"
+//          + "\"changeQuarter\": \"调整季度\",\n"
+//          + "\"addNumber\": \"增加水量\",\n"
+//          + "\"firstQuarter\": \"一季度水量\",\n"
+//          + "\"secondQuarter\": \"二季度水量\",\n"
+//          + "\"thirdQuarter\": \"三季度水量\",\n"
+//          + "\"fourthQuarter\": \"四季度水量\",\n"
+          + "}]\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("调整结果通知 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    List<SendListVO> sendList = jsonObject.getJSONArray("sendList").toJavaList(SendListVO.class);
+//    Integer year = jsonObject.getInteger("year");
+    if (null != sendList && sendList.size()>0) {
+      try {
+        User user = jwtUtil.getUserByToken(token);
+        endPaperService.adjustResultNotification(user, sendList);
+      } catch (Exception e) {
+        log.error("调整结果通知发送失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("年计划自平通知参数不能为空");
+    }
+    return response;
+  }
+
 }

@@ -275,7 +275,7 @@
       )
     )
     AND plan_year = #{thisMonthYear}
-    AND (exist_settlement_form ='0' or exist_settlement_form ='' or exist_settlement_form is NULL) <!--不存在未完成的办结单-->
+    <!--   AND (exist_settlement_form ='0' or exist_settlement_form ='' or exist_settlement_form is NULL) 不存在未完成的办结单-->
     <if test="unitCode != null and unitCode != ''">
       and unit_code like '%${unitCode}%'
     </if>

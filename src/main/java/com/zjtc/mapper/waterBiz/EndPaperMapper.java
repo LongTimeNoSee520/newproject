@@ -4,6 +4,7 @@ package com.zjtc.mapper.waterBiz;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.vo.EndPaperVO;
+import com.zjtc.model.vo.SendListVO;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -28,4 +29,6 @@ public interface EndPaperMapper extends BaseMapper<EndPaper> {
   boolean updateFromWeChat(@Param("endPaper") EndPaper endPaper);
   /**根据id查询办结单信息(包括附件信息，审核流程信息)*/
   EndPaper selectById(@Param("id")String id, @Param("preViewRealPath") String preViewRealPath);
+  /**查询办结单信息*/
+  List<SendListVO> queryAfterAdjustUnit(Map<String, Object> map);
 }

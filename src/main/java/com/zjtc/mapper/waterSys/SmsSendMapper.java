@@ -26,4 +26,8 @@ public interface SmsSendMapper extends BaseMapper<SmsSendInfo> {
   int sendInfoNum(@Param("list")List<SendListVO> list,@Param("json") JSONObject json);
 
   List<Map<String,Object>> sendInfoPage(@Param("list")List<SendListVO> list, @Param("json")JSONObject json);
+
+  int sendResultNum(@Param("list")List<SendListVO> list, @Param("json")JSONObject json);
+
+  List<Map<String,Object>> sendResultPage(@Param("list")List<SendListVO> list, @Param("json")JSONObject json);
 }

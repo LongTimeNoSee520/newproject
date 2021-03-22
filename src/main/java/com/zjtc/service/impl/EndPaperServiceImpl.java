@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
+import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.constant.SystemConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.HttpUtil;
@@ -20,6 +21,7 @@ import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.EndPaperVO;
+import com.zjtc.model.vo.SendListVO;
 import com.zjtc.service.DictItemService;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.FlowExampleService;
@@ -27,6 +29,7 @@ import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.PlanDailyAdjustmentService;
+import com.zjtc.service.SmsSendService;
 import com.zjtc.service.SmsService;
 import com.zjtc.service.SystemLogService;
 import com.zjtc.service.TodoService;
@@ -94,6 +97,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Autowired
   private SystemLogService systemLogService;
+
+  @Autowired
+  private SmsSendService smsSendService;
 
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
@@ -271,7 +277,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
             messageService.messageToUnit(endPaper.getUnitCode(), messageContent1,
                 AuditConstants.END_PAPER_TODO_TITLE);
             /**短信通知给用水单位*/
-            smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent1, "计划通知");
+            smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent1, "调整结果通知");
             // webSocket推送到公共服务端
             webSocketUtil.pushPublicNews(endPaper.getNodeCode(),endPaper.getUnitCode());
           }
@@ -583,4 +589,59 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   public List<Map<String, Object>> nextAuditRole(String id, String nodeCode, String auditBtn) {
     return flowNodeInfoService.nextAuditRole(id, AuditConstants.END_PAPER_TABLE, nodeCode, auditBtn);
   }
+
+  @Override
+  public Map<String, Object> sendInfoPage(User user, JSONObject jsonObject) {
+    int current = jsonObject.getInteger("current");//当前页
+    int size = jsonObject.getInteger("size");//每页条数
+    String userId = user.getId();
+    String unitCode = jsonObject.getString("unitCode");//单位编号
+    String status = jsonObject.getString("status");//发送状态
+
+    Map<String, Object> map = new HashMap();
+    if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
+      map.put("nodeCode", jsonObject.getString("nodeCode"));
+    }else{
+      map.put("nodeCode", user.getNodeCode());
+    }
+    map.put("userId",userId);
+    if (StringUtils.isNotBlank(unitCode)) {
+      map.put("unitCode", unitCode);
+    }
+    String messageTypecode = SmsConstants.SEND_NOTIFICATION_ADJUST_RESULT;
+    JSONObject json =new JSONObject();
+    json.put("messageTypecode",messageTypecode);
+    if (StringUtils.isNotBlank(status)) {
+      json.put("status", status);
+    }
+    Map<String, Object> result = new LinkedHashMap<>();
+    /**查询单位信息*/
+    List<SendListVO> list = this.baseMapper.queryAfterAdjustUnit(map);
+    if (list.isEmpty()){
+      result.put("total",0);//满足条件的总条数
+      result.put("size", size);//每页条数
+      result.put("pages", 0);//一共有多少页
+      result.put("current", current);//当前页
+    }else {
+      /**查出满足条件的共有多少条*/
+      int num = smsSendService.sendResultNum(list, json);
+      result.put("total", num);//满足条件的总条数
+      result.put("size", size);//每页条数
+      result.put("pages", (int) Math.ceil((double) num / size));//一共有多少页
+      result.put("current", current);//当前页
+    }
+    /**查出满足条件的数据*/
+    json.put("current", current);
+    json.put("pageSize", size);
+
+    List<Map<String,Object>> records = smsSendService.sendResultPage(list,json);
+    result.put("records", records);
+    return result;
+  }
+
+  @Override
+  public void adjustResultNotification(User user, List<SendListVO> sendList) throws Exception {
+    smsService.sendNotification(user,sendList,SmsConstants.SEND_NOTIFICATION_ADJUST_RESULT,null);
+  }
+
 }

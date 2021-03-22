@@ -39,4 +39,14 @@ public class SmsSendServiceImpl extends ServiceImpl<SmsSendMapper, SmsSendInfo> 
   public List<Map<String, Object>> sendInfoPage(List<SendListVO> list, JSONObject json) {
     return this.baseMapper.sendInfoPage(list,json);
   }
+
+  @Override
+  public int sendResultNum(List<SendListVO> list, JSONObject json) {
+    return this.baseMapper.sendResultNum(list,json);
+  }
+
+  @Override
+  public List<Map<String, Object>> sendResultPage(List<SendListVO> list, JSONObject json) {
+    return this.baseMapper.sendResultPage(list,json);
+  }
 }

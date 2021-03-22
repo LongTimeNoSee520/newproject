@@ -41,11 +41,15 @@ public class SmsConstants {
   /**
    * 通知短信类型-缴费通知
    */
-  public  static final String SEND_NOTIFICATION_PAY = "1";
+  public  static final String SEND_NOTIFICATION_PAY = "7";
 
   /**
    * 通知短信类型-计划自平通知
    */
   public  static final String SEND_NOTIFICATION_PLAN = "2";
 
+  /**
+   * 通知短信类型-调整结果通知
+   */
+  public  static final String SEND_NOTIFICATION_ADJUST_RESULT = "9";
 }

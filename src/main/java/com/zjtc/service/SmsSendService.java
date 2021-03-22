@@ -34,4 +34,12 @@ public interface SmsSendService extends IService<SmsSendInfo> {
    * 查询自平计划通知满足条件的数据
    */
   List<Map<String,Object>> sendInfoPage(List<SendListVO> list, JSONObject json);
+  /**
+   * 查询调整结果通知满足条件的数据条数
+   */
+  int sendResultNum(List<SendListVO> list, JSONObject json);
+  /**
+   * 查查询调整结果通知满足条件的数据
+   */
+  List<Map<String,Object>> sendResultPage(List<SendListVO> list, JSONObject json);
 }
