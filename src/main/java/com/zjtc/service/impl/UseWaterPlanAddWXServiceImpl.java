@@ -80,7 +80,6 @@ public class UseWaterPlanAddWXServiceImpl extends
   private WebSocketUtil webSocketUtil;
 
 
-
   @Override
   public ApiResponse queryPage(JSONObject jsonObject, String nodeCode, String userId) {
     ApiResponse response = new ApiResponse();
@@ -121,12 +120,13 @@ public class UseWaterPlanAddWXServiceImpl extends
         .queryList(currPage, pageSize, unitName, userType,
             executed, nodeCode, auditStatus, userId, path);
     UseWaterPlan useWaterPlan = null;
-    for (UseWaterPlanAddWXVO useWaterPlanAddWXVO : useWaterPlanAdds){
+    for (UseWaterPlanAddWXVO useWaterPlanAddWXVO : useWaterPlanAdds) {
       try {
         useWaterPlan = useWaterPlanService
-           .selectUseWaterPlanAll(nodeCode, getYear(), useWaterPlanAddWXVO.getUseWaterUnitId(),useWaterPlanAddWXVO.getUnitCode());
+            .selectUseWaterPlanAll(nodeCode, getYear(), useWaterPlanAddWXVO.getUseWaterUnitId(),
+                useWaterPlanAddWXVO.getUnitCode());
       } catch (Exception e) {
-        log.error("查询用水计划原始数据为空,数据id为:"+useWaterPlanAddWXVO.getUseWaterUnitId());
+        log.error("查询用水计划原始数据为空,数据id为:" + useWaterPlanAddWXVO.getUseWaterUnitId());
       }
       try {
         useWaterPlanAddWXVO.setFrontCurYearPlan(useWaterPlan.getCurYearPlan());
@@ -136,7 +136,7 @@ public class UseWaterPlanAddWXServiceImpl extends
         useWaterPlanAddWXVO.setFrontThirdQuarter(useWaterPlan.getThirdQuarter());
         useWaterPlanAddWXVO.setFrontFourthQuarter(useWaterPlan.getFourthQuarter());
       } catch (Exception e) {
-        log.error("查询用水计划原始数据为空,数据id为:"+useWaterPlanAddWXVO.getUseWaterUnitId());
+        log.error("查询用水计划原始数据为空,数据id为:" + useWaterPlanAddWXVO.getUseWaterUnitId());
       }
     }
     map.put("total", total);
@@ -150,7 +150,7 @@ public class UseWaterPlanAddWXServiceImpl extends
   }
 
   @Override
-  public ApiResponse printed(List<String> ids,User user) {
+  public ApiResponse printed(List<String> ids, User user) {
     ApiResponse response = new ApiResponse();
     if (ids.isEmpty()) {
       response.recordError("系统异常");
@@ -163,7 +163,7 @@ public class UseWaterPlanAddWXServiceImpl extends
     }
     if (i > 0) {
       response.setCode(200);
-      systemLogService.logInsert(user,"用水计划调整审核","打印用水计划调整审核列表","");
+      systemLogService.logInsert(user, "用水计划调整审核", "打印用水计划调整审核列表", "");
       return response;
     }
     return response;
@@ -181,15 +181,23 @@ public class UseWaterPlanAddWXServiceImpl extends
       response.recordError("系统异常");
       return response;
     }
+    int i = 0;
 //    审核增加或调整水量申请
-    int i = this.baseMapper
-        .updateAudit(auditPersonId, userName, id, auditStatus, auditResult, new Date(), firstWater,
+    i = this.baseMapper
+        .updateAudit(auditPersonId, userName, id, auditStatus, auditResult, new Date(),
+            firstWater,
             secondWater);
+
+    if (i == 0) {
+      response.recordError("审核失败");
+      return response;
+    }
     ApiResponse response1 = null;
 //审核通过后进入办结单审核流程,向办结单中增加数据
     UseWaterPlanAddWX useWaterPlanAddWX = this.baseMapper.selectById(id);
     String messageContent = null;
     if ("1".equals(auditStatus)) {
+
       messageContent =
           "用水单位" + useWaterPlanAddWX.getUnitCode() +
               "(" + useWaterPlanAddWX.getUnitName() + ")" +
@@ -200,27 +208,16 @@ public class UseWaterPlanAddWXServiceImpl extends
               useWaterPlanAddWX.getCurYearPlan() + ",审核未通过,已被驳回。";
       messageService
           .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName,
-              AuditConstants.NOT_APPROVED, messageContent,id);
+              AuditConstants.NOT_APPROVED, messageContent, id);
+
       try {
         smsService.sendMsgToPromoter(user, auditPersonId, userName, messageContent, "计划通知");
       } catch (Exception e) {
         log.error("用水计划增加或调整审核短信发送失败");
       }
     } else if ("2".equals(auditStatus)) {
-      messageContent =
-          "用水单位" + useWaterPlanAddWX.getUnitCode() +
-              "(" + useWaterPlanAddWX.getUnitName() + ")" +
-              "用水计划增加或调整申请,第一季度计划:" + useWaterPlanAddWX.getFirstQuarter() +
-              " 方,第二季度计划:" + useWaterPlanAddWX.getSecondQuarter() +
-              "方,第三季度计划:" + useWaterPlanAddWX.getThirdQuarter() +
-              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,年计划水量:" +
-              useWaterPlanAddWX.getCurYearPlan() + ",审核已通过。";
-      messageService
-          .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName,
-              AuditConstants.GET_APPROVED, messageContent,id);
 
-    }
-    if ("2".equals(useWaterPlanAddWX.getAuditStatus())) {
+
       JSONObject jsonObject = new JSONObject();
 //      单位编号
       jsonObject.put("unitCode", useWaterPlanAddWX.getUnitCode());
@@ -279,7 +276,7 @@ public class UseWaterPlanAddWXServiceImpl extends
       try {
         split2 = useWaterPlanAddWX.getOtherFileId().split(",");
       } catch (Exception e) {
-       log.error("证明材料异常");
+        log.error("证明材料异常");
       }
       Map<String, Object> map2 = new HashMap<>(10);
       List<Map<String, Object>> otherFiles = new ArrayList<>();
@@ -304,70 +301,81 @@ public class UseWaterPlanAddWXServiceImpl extends
 //     下一审核环节id
       jsonObject.put("nextNodeId", nextNodeId);
       try {
-       response1 =    planDailyAdjustmentService.initiateSettlement(user, jsonObject);
+        response1 = planDailyAdjustmentService.initiateSettlement(user, jsonObject);
       } catch (Exception e) {
         log.error("转换json数据异常" + e.getMessage());
         response.recordError("系统异常");
         return response;
       }
-    }
-    log.info("审核通过往办结单中增加数据返回状态:"+ response1.getCode());
-    if (i > 0 && Objects.requireNonNull(response1).getCode() == 200) {
-      response.setCode(200);
+
+      messageContent =
+          "用水单位" + useWaterPlanAddWX.getUnitCode() +
+              "(" + useWaterPlanAddWX.getUnitName() + ")" +
+              "用水计划增加或调整申请,第一季度计划:" + useWaterPlanAddWX.getFirstQuarter() +
+              " 方,第二季度计划:" + useWaterPlanAddWX.getSecondQuarter() +
+              "方,第三季度计划:" + useWaterPlanAddWX.getThirdQuarter() +
+              "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,年计划水量:" +
+              useWaterPlanAddWX.getCurYearPlan() + ",审核已通过。";
+      messageService
+          .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName,
+              AuditConstants.GET_APPROVED, messageContent, id);
+
+      log.info("审核通过往办结单中增加数据返回状态:" + response1.getCode());
+      if (Objects.requireNonNull(response1).getCode() == 200) {
+        response.setCode(200);
 //      日志记录
-      systemLogService.logInsert(user,"用水计划调整审核","用水计划增加/调整审核通过","");
-      List<Person> personList1 = null;
-      try {
-        personList1 = personService
-            .selectPersonByResCode("waterAdjustAudit", user.getNodeCode());
-      } catch (Exception e) {
-        log.error("根据资源code查询,资源下所有角色的所有人异常:"+e.getMessage());
-      }
-      assert personList1 != null;
-      for (Person person : personList1) {
-        //      取消待办
-        todoService.edit(id, person.getNodeCode(), person.getId());
-      }
-      //     发起待办
-      List<Person> personList = null;
-      try {
-        personList = personService.selectPersonAll(auditorId);
-      } catch (Exception e) {
-        log.error("查询下一环节审核人员为空:"+e.getMessage());
-      }
-      assert personList != null;
-      for (Person person : personList) {
-        todoService.add(
-            useWaterPlanAddWX.getId(),
-            user,
-            person.getId(),
-            person.getUserName(),
-            messageContent,
-            JSONObject.toJSONString(useWaterPlanAddWX),
-            detailConfig,
-            AuditConstants.END_PAPER_TODO_TYPE);
+        systemLogService.logInsert(user, "用水计划调整审核", "用水计划增加/调整审核", "");
+        List<Person> personList1 = null;
+        try {
+          personList1 = personService
+              .selectPersonByResCode("waterAdjustAudit", user.getNodeCode());
+        } catch (Exception e) {
+          log.error("根据资源code查询,资源下所有角色的所有人异常:" + e.getMessage());
+        }
+        assert personList1 != null;
+        for (Person person : personList1) {
+          //      取消待办
+          todoService.edit(id, person.getNodeCode(), person.getId());
+        }
+        //     发起待办
+        List<Person> personList = null;
+        try {
+          personList = personService.selectPersonAll(auditorId);
+        } catch (Exception e) {
+          log.error("查询下一环节审核人员为空:" + e.getMessage());
+        }
+        assert personList != null;
+        for (Person person : personList) {
+          todoService.add(
+              useWaterPlanAddWX.getId(),
+              user,
+              person.getId(),
+              person.getUserName(),
+              messageContent,
+              JSONObject.toJSONString(useWaterPlanAddWX),
+              detailConfig,
+              AuditConstants.END_PAPER_TODO_TYPE);
 //        webSocket消息推送
-        webSocketUtil.pushWaterNews(person.getNodeCode(),person.getId());
+          webSocketUtil.pushWaterNews(person.getNodeCode(), person.getId());
+        }
+        return response;
+      } else if (Objects.requireNonNull(response1).getCode() == 500) {
+        log.info(response1.getMessage() + ",数据id为:" + useWaterPlanAddWX.getId());
+        response.recordError(response1.getMessage());
+        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        return response;
       }
-      return response;
-    } else {
-      if (Objects.requireNonNull(response1).getCode() == 500){
-        log.info(response1.getMessage()+",数据id为:"+useWaterPlanAddWX.getId());
-      }
-      response.recordError(response1.getMessage());
-      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-      return response;
     }
+    return response;
   }
 
-
   @Override
-  public boolean update(UseWaterPlanAddWX useWaterPlanAddWX,User user) {
+  public boolean update(UseWaterPlanAddWX useWaterPlanAddWX, User user) {
     if (StringUtils.isBlank(useWaterPlanAddWX.getId())) {
       return false;
     }
     int i = this.baseMapper.update(useWaterPlanAddWX);
-    systemLogService.logInsert(user,"用水计划调整审核","修改审核/执行状态","");
+    systemLogService.logInsert(user, "用水计划调整审核", "修改审核/执行状态", "");
     return i > 0;
   }
 

@@ -85,13 +85,16 @@
     <result column="FrontCurYearPlan" property="FrontCurYearPlan" jdbcType="DOUBLE"/>
     <result column="FrontPlanYear" property="FrontPlanYear" jdbcType="INTEGER"/>
     <result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
-    <collection property="auditFileIds" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
+    <collection property="auditFileIds" ofType="com.zjtc.model.File"
+      column="{id=id,preViewRealPath=preViewRealPath}"
       select="queryAuditFiles">
     </collection>
-    <collection property="waterProofFileIds" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
+    <collection property="waterProofFileIds" ofType="com.zjtc.model.File"
+      column="{id=id,preViewRealPath=preViewRealPath}"
       select="queryWaterProofFiles">
     </collection>
-    <collection property="otherFileIds" ofType="com.zjtc.model.File" column="{id=id,preViewRealPath=preViewRealPath}"
+    <collection property="otherFileIds" ofType="com.zjtc.model.File"
+      column="{id=id,preViewRealPath=preViewRealPath}"
       select="queryOtherFiles">
     </collection>
   </resultMap>
@@ -128,7 +131,7 @@
     WHEN 0 THEN '调整计划'
     WHEN 1 THEN '增加计划'
     ELSE '未知计划'
-    END  change_type_name,
+    END change_type_name,
     change_type as changeCode,
     change_quarter,
     create_time,
@@ -285,47 +288,66 @@
   <update id="updateAudit">
     UPDATE t_wx_use_water_plan_add
     SET
-    audit_person_id = #{ auditPersonId },
-    audit_person = #{ userName },
-    audit_status = #{ auditStatus },
-    audit_result = #{ auditResult },
-    audit_time = #{ auditTime },
-    first_water = #{firstWater},
-    second_water = #{secondWater}
+    <if test="auditPersonId != null and auditPersonId != ''">
+      audit_person_id = #{ auditPersonId },
+    </if>
+    <if test="userName != null and userName != ''">
+      audit_person = #{ userName },
+    </if>
+    <if test="auditStatus != null and auditStatus != ''">
+      audit_status = #{ auditStatus },
+    </if>
+    <if test=" auditResult != null and auditResult != ''">
+      audit_result = #{ auditResult },
+    </if>
+
+     audit_time = #{ auditTime },
+
+    <if test="firstWater != null and  firstWater != ''">
+      first_water = #{firstWater},
+    </if>
+    <if test="secondWater != null and secondWater != ''">
+      second_water = #{secondWater}
+    </if>
     WHERE
-    id = #{ id}
+    id = #{id}
   </update>
 
   <update id="update">
     update t_wx_use_water_plan_add
     <set>
-    <if test="useWaterPlanAddWX.executed != null and useWaterPlanAddWX.executed != ''">
-      executed = #{useWaterPlanAddWX.executed},
-    </if>
-    <if test="useWaterPlanAddWX.checkAdjustWater != null and useWaterPlanAddWX.checkAdjustWater != ''">
-      check_adjust_water  = #{useWaterPlanAddWX.checkAdjustWater},
-    </if>
-    <if test="useWaterPlanAddWX.firstQuarterQuota != null and useWaterPlanAddWX.firstQuarterQuota != ''">
-      first_quarter_quota = #{useWaterPlanAddWX.firstQuarterQuota},
-    </if>
-    <if test="useWaterPlanAddWX.secondQuarterQuota != null and useWaterPlanAddWX.secondQuarterQuota != ''">
-      second_quarter_quota = #{useWaterPlanAddWX.secondQuarterQuota},
-    </if>
-    <if test="useWaterPlanAddWX.thirdQuarterQuota != null and useWaterPlanAddWX.thirdQuarterQuota != ''">
-      third_quarter_quota  = #{useWaterPlanAddWX.thirdQuarterQuota},
-    </if>
-    <if test="useWaterPlanAddWX.fourthQuarterQuota != null and useWaterPlanAddWX.fourthQuarterQuota != ''">
-      fourth_quarter_quota = #{useWaterPlanAddWX.fourthQuarterQuota},
-    </if>
-    <if test="useWaterPlanAddWX.auditStatus != null and useWaterPlanAddWX.auditStatus != ''">
-      audit_status = #{useWaterPlanAddWX.auditStatus}
-    </if>
-    <if test="useWaterPlanAddWX.firstWater != null and useWaterPlanAddWX.firstWater != ''">
-      first_water = #{useWaterPlanAddWX.firstWater},
-    </if>
-    <if test="useWaterPlanAddWX.secondWater != null and useWaterPlanAddWX.secondWater != ''">
-      second_water = #{useWaterPlanAddWX.secondWater}
-    </if>
+      <if test="useWaterPlanAddWX.executed != null and useWaterPlanAddWX.executed != ''">
+        executed = #{useWaterPlanAddWX.executed},
+      </if>
+      <if
+        test="useWaterPlanAddWX.checkAdjustWater != null and useWaterPlanAddWX.checkAdjustWater != ''">
+        check_adjust_water = #{useWaterPlanAddWX.checkAdjustWater},
+      </if>
+      <if
+        test="useWaterPlanAddWX.firstQuarterQuota != null and useWaterPlanAddWX.firstQuarterQuota != ''">
+        first_quarter_quota = #{useWaterPlanAddWX.firstQuarterQuota},
+      </if>
+      <if
+        test="useWaterPlanAddWX.secondQuarterQuota != null and useWaterPlanAddWX.secondQuarterQuota != ''">
+        second_quarter_quota = #{useWaterPlanAddWX.secondQuarterQuota},
+      </if>
+      <if
+        test="useWaterPlanAddWX.thirdQuarterQuota != null and useWaterPlanAddWX.thirdQuarterQuota != ''">
+        third_quarter_quota = #{useWaterPlanAddWX.thirdQuarterQuota},
+      </if>
+      <if
+        test="useWaterPlanAddWX.fourthQuarterQuota != null and useWaterPlanAddWX.fourthQuarterQuota != ''">
+        fourth_quarter_quota = #{useWaterPlanAddWX.fourthQuarterQuota},
+      </if>
+      <if test="useWaterPlanAddWX.auditStatus != null and useWaterPlanAddWX.auditStatus != ''">
+        audit_status = #{useWaterPlanAddWX.auditStatus}
+      </if>
+      <if test="useWaterPlanAddWX.firstWater != null and useWaterPlanAddWX.firstWater != ''">
+        first_water = #{useWaterPlanAddWX.firstWater},
+      </if>
+      <if test="useWaterPlanAddWX.secondWater != null and useWaterPlanAddWX.secondWater != ''">
+        second_water = #{useWaterPlanAddWX.secondWater}
+      </if>
       <if test="useWaterPlanAddWX.addNumber != null and useWaterPlanAddWX.addNumber != ''">
         add_number = #{useWaterPlanAddWX.addNumber}
       </if>
