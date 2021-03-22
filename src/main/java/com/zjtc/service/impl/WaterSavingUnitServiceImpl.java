@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -83,9 +84,20 @@ public class WaterSavingUnitServiceImpl extends
   }
 
   @Override
-  public boolean updateModel(JSONObject jsonObject) {
+  @Transactional(rollbackFor = Exception.class)
+  public ApiResponse updateModel(JSONObject jsonObject,User user) {
+    ApiResponse apiResponse = new ApiResponse();
     WaterSavingUnit entity = jsonObject.toJavaObject(WaterSavingUnit.class);
-    boolean result = this.updateById(entity);
+    //验证当前单位编号是否已经存在(排己)
+    List<WaterSavingUnit> oldData = validateUnitCode(entity.getUnitCode(), user.getNodeCode(),
+        entity.getId());
+    if (!oldData.isEmpty()) {
+      //删除之前的单位数据
+      apiResponse.recordError("当前单位编号已存在");
+      return apiResponse;
+    }
+    //修改主数据
+    this.updateById(entity);
     //更新附件
     if (!entity.getSysFiles().isEmpty()) {
       fileService.updateBusinessId(entity.getId(), entity.getSysFiles());
@@ -97,7 +109,7 @@ public class WaterSavingUnitServiceImpl extends
       waterSavingUnitBaseService.updateBatchById(entity.getWaterSavingUnitBaseList());
     }
 
-    return result;
+    return apiResponse;
   }
 
   @Override
@@ -107,20 +119,20 @@ public class WaterSavingUnitServiceImpl extends
     WaterSavingUnit entity = new WaterSavingUnit();
     entity.setId(id);
     entity.setDeleted("1");
-    boolean flag1 = this.updateById(entity);
+    boolean flag = this.updateById(entity);
     /**删除定量考核指标数据*/
     WaterSavingUnitQuota waterSavingUnitQuota = new WaterSavingUnitQuota();
     waterSavingUnitQuota.setDeleted("1");
     Wrapper wrapper1 = new EntityWrapper();
     wrapper1.eq("water_saving_unit_id", id);
-    boolean flag2 = waterSavingUnitQuotaService.update(waterSavingUnitQuota, wrapper1);
+    waterSavingUnitQuotaService.update(waterSavingUnitQuota, wrapper1);
     /**删除基础考核指标数据*/
     WaterSavingUnitBase waterSavingUnitBase = new WaterSavingUnitBase();
     waterSavingUnitBase.setDeleted("1");
     Wrapper wrapper2 = new EntityWrapper();
     wrapper2.eq("water_saving_unit_id", id);
-    boolean flag3 = waterSavingUnitBaseService.update(waterSavingUnitBase, wrapper2);
-    return flag1 && flag2 && flag3;
+    waterSavingUnitBaseService.update(waterSavingUnitBase, wrapper2);
+    return flag;
   }
 
 
@@ -206,10 +218,13 @@ public class WaterSavingUnitServiceImpl extends
       apiResponse.recordError("无导入数据，不能导入！");
     }
     //验证该单位是否已经存在 存在：覆盖，不存在新增
-    List<WaterSavingUnit> oldData = validateUnitCode(result.getUnitCode(), user.getNodeCode());
+    List<WaterSavingUnit> oldData = validateUnitCode(result.getUnitCode(), user.getNodeCode(),
+        null);
     if (!oldData.isEmpty()) {
       //删除之前的单位数据
-      deleteModel(oldData.get(0).getId());
+      for (WaterSavingUnit item : oldData) {
+        deleteModel(item.getId());
+      }
     }
     this.insert(result);
     if (!waterSavingUnitQuotaVo.isEmpty()) {
@@ -273,11 +288,14 @@ public class WaterSavingUnitServiceImpl extends
     file.delete();
   }
 
-  public List<WaterSavingUnit> validateUnitCode(String unitCode, String nodeCode) {
+  private List<WaterSavingUnit> validateUnitCode(String unitCode, String nodeCode, String id) {
     EntityWrapper wrapper = new EntityWrapper();
     wrapper.eq("unit_code", unitCode);
     wrapper.eq("node_code", nodeCode);
     wrapper.eq("deleted", "0");
+    if (StringUtils.isNotBlank(id)) {
+      wrapper.notIn("id",id);
+    }
     return this.selectList(wrapper);
   }
 

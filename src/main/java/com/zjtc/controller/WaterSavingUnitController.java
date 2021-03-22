@@ -138,14 +138,10 @@ public class WaterSavingUnitController {
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("修改==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
+    User user=jwtUtil.getUserByToken(token);
     if (null != jsonObject) {
       try {
-        boolean result = waterSavingUnitService.updateModel(jsonObject);
-        if (result) {
-          apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
-        } else {
-          apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
-        }
+        apiResponse = waterSavingUnitService.updateModel(jsonObject,user);
       } catch (Exception e) {
         log.error("修改错误,errMsg==={}", e.getMessage());
         e.printStackTrace();

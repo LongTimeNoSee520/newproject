@@ -30,7 +30,7 @@ public interface WaterSavingUnitService extends IService<WaterSavingUnit> {
 	* @param jsonObject
 	* @return
 	*/
-	boolean updateModel(JSONObject jsonObject);
+	ApiResponse updateModel(JSONObject jsonObject,User user);
 
 	/**
 	* 删除
