@@ -109,7 +109,7 @@
     FROM
     (
     SELECT
-    row_number () OVER ( ORDER BY t1.unit_code DESC ) AS rownumber,
+    row_number () OVER ( ORDER BY t1.create_time DESC ) AS rownumber,
     id,
     node_code,
     use_water_unit_id,
