@@ -22,7 +22,7 @@ public interface PersonService extends IService<Person> {
    * 查询全部人员
    * @return 查询结果
    */
-  List<Person> selectPersonAll(String personId) throws Exception;
+  List<Person> selectPersonAll(String personId);
 
   /**
    * 根据资源code查询,资源下所有角色的所有人

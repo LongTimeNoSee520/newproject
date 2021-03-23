@@ -39,7 +39,7 @@ public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> impleme
   }
 
   @Override
-  public List<Person> selectPersonAll(String personId) throws Exception{
+  public List<Person> selectPersonAll(String personId) {
     return this.baseMapper.selectPersonAll(personId);
   }
 
