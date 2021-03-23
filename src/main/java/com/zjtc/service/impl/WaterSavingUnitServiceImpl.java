@@ -85,7 +85,7 @@ public class WaterSavingUnitServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public ApiResponse updateModel(JSONObject jsonObject,User user) {
+  public ApiResponse updateModel(JSONObject jsonObject, User user) {
     ApiResponse apiResponse = new ApiResponse();
     WaterSavingUnit entity = jsonObject.toJavaObject(WaterSavingUnit.class);
     //验证当前单位编号是否已经存在(排己)
@@ -103,12 +103,14 @@ public class WaterSavingUnitServiceImpl extends
       fileService.updateBusinessId(entity.getId(), entity.getSysFiles());
     }
     if (!entity.getWaterSavingUnitQuotaList().isEmpty()) {
-      waterSavingUnitQuotaService.updateBatchById(entity.getWaterSavingUnitQuotaList());
+      //更新
+      waterSavingUnitQuotaService
+          .updateOrDelete(entity.getWaterSavingUnitQuotaList(), entity.getId());
     }
     if (!entity.getWaterSavingUnitBaseList().isEmpty()) {
-      waterSavingUnitBaseService.updateBatchById(entity.getWaterSavingUnitBaseList());
+      waterSavingUnitBaseService
+          .updateOrDelete(entity.getWaterSavingUnitBaseList(), entity.getId());
     }
-
     return apiResponse;
   }
 
@@ -294,7 +296,7 @@ public class WaterSavingUnitServiceImpl extends
     wrapper.eq("node_code", nodeCode);
     wrapper.eq("deleted", "0");
     if (StringUtils.isNotBlank(id)) {
-      wrapper.notIn("id",id);
+      wrapper.notIn("id", id);
     }
     return this.selectList(wrapper);
   }

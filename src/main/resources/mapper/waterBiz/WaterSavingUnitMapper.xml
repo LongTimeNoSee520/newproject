@@ -143,7 +143,8 @@
     unit_score,
     check_score,
     actual_score,
-    remarks
+    remarks,
+    deleted
     from t_w_water_saving_unit_quota
     where deleted='0'
     and water_saving_unit_id=#{id}
@@ -161,7 +162,8 @@
   unit_score,
   check_score,
   actual_score,
-  remarks
+  remarks,
+  deleted
   from t_w_water_saving_unit_base
   where deleted='0'
   and water_saving_unit_id=#{id}

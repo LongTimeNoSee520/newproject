@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.WaterSavingUnitBase;
+import java.util.List;
 
 /**
  * WaterSavingUnitBase的服务接口
@@ -39,4 +40,8 @@ public interface WaterSavingUnitBaseService extends IService<WaterSavingUnitBase
 	* @return
 	*/
 	Page<WaterSavingUnitBase> queryPage(JSONObject jsonObject);
+	/**
+	 * 编辑或删除
+	 */
+	boolean updateOrDelete (List<WaterSavingUnitBase> list,String savingId );
 }
