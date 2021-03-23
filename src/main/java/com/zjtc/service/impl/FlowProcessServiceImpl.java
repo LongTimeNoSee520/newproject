@@ -103,4 +103,11 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     return this.baseMapper.ifNeedAudit(businessId,userId);
   }
 
+  @Override
+  public List<FlowProcess> queryAll(String nodeCode) {
+    Wrapper wrapper=new EntityWrapper();
+    wrapper.eq("node_code",nodeCode);
+    return this.selectList(wrapper);
+  }
+
 }

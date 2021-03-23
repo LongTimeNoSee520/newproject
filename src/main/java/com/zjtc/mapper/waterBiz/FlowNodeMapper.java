@@ -19,9 +19,13 @@ public interface FlowNodeMapper extends BaseMapper<FlowNode> {
 //  List<Map<String,Object>> firStAuditRole(@Param("nodeCode") String nodeCode);
 //
 //  List<Map<String,Object>> nextAuditRole(@Param("nodeCode") String nodeCode, @Param("id") String id);
+
   /**
    * 流程节点记录表字段与节点表一致，返回流程节点记录实体方便记录表新增
-   * */
+   */
   List<FlowNodeInfo> selectNodes(@Param("nodeCode") String nodeCode,
       @Param("flowCode") String flowCode);
+
+  long isFirstFlowNode(@Param("userId") String userId, @Param("nodeCode") String nodeCode,
+     @Param("flowCode") String flowCode);
 }

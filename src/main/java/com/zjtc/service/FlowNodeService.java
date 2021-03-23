@@ -22,4 +22,8 @@ public interface FlowNodeService extends IService<FlowNode> {
    * 查询办结单流程节点数据
    * */
   List<FlowNodeInfo> selectNodes(String nodeCode,String flowCode);
+  /**
+   * 查询当前用户是否是第一个审核流程
+   */
+  long isFirstFlowNode(String userId,String nodeCode,String flowCode);
 }

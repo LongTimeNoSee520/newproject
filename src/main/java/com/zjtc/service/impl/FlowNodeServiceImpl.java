@@ -23,4 +23,9 @@ public class FlowNodeServiceImpl extends ServiceImpl<FlowNodeMapper, FlowNode> i
   public List<FlowNodeInfo> selectNodes(String nodeCode,String flowCode) {
     return this.baseMapper.selectNodes(nodeCode,flowCode);
   }
+
+  @Override
+  public long isFirstFlowNode(String userId, String nodeCode, String flowCode) {
+    return baseMapper.isFirstFlowNode( userId,  nodeCode,  flowCode);
+  }
 }

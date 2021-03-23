@@ -1,98 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zjtc.mapper.waterBiz.RefundOrRefundMapper">
-	<!-- RefundOrRefund的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
-	<resultMap id="result_RefundOrRefund_Map" type="com.zjtc.model.RefundOrRefund">
-		<id column="id" property="id" jdbcType="VARCHAR"/>
-		<result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
-		<result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
-		<result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
-		<result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
-		<result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
-		<result column="pay_id" property="payId" jdbcType="VARCHAR"/>
-		<result column="type" property="type" jdbcType="VARCHAR"/>
-		<result column="typeName" property="typeName" jdbcType="VARCHAR"/>
-		<result column="quarter" property="quarter" jdbcType="VARCHAR"/>
-		<result column="year" property="year" jdbcType="INTEGER"/>
-		<result column="actual_amount" property="actualAmount" jdbcType="FLOAT"/>
-		<result column="money" property="money" jdbcType="FLOAT"/>
-		<result column="reason" property="reason" jdbcType="VARCHAR"/>
-		<result column="drawer" property="drawer" jdbcType="VARCHAR"/>
-		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
-		<result column="audit_person" property="auditPerson" jdbcType="VARCHAR"/>
-		<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP"/>
-		<result column="status" property="status" jdbcType="VARCHAR"/>
-		<result column="next_node_id" property="nextNodeId" jdbcType="VARCHAR"/>
-		<result column="is_revoke" property="isRevoke" jdbcType="VARCHAR"/>
-		<result column="treatment_advice" property="treatmentAdvice" jdbcType="VARCHAR"/>
-		<result column="editBtn" property="editBtn" jdbcType="VARCHAR"/>
-		<collection property="sysFiles" column="{id=id,nodeCode=node_code}" select="selectsysFile"
-			ofType="com.zjtc.model.File">
-		</collection>
-	</resultMap>
+  <!-- RefundOrRefund的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+  <resultMap id="result_RefundOrRefund_Map" type="com.zjtc.model.RefundOrRefund">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="pay_id" property="payId" jdbcType="VARCHAR"/>
+    <result column="type" property="type" jdbcType="VARCHAR"/>
+    <result column="typeName" property="typeName" jdbcType="VARCHAR"/>
+    <result column="quarter" property="quarter" jdbcType="VARCHAR"/>
+    <result column="year" property="year" jdbcType="INTEGER"/>
+    <result column="actual_amount" property="actualAmount" jdbcType="FLOAT"/>
+    <result column="money" property="money" jdbcType="FLOAT"/>
+    <result column="reason" property="reason" jdbcType="VARCHAR"/>
+    <result column="drawer" property="drawer" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="audit_person" property="auditPerson" jdbcType="VARCHAR"/>
+    <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP"/>
+    <result column="status" property="status" jdbcType="VARCHAR"/>
+    <result column="next_node_id" property="nextNodeId" jdbcType="VARCHAR"/>
+    <result column="is_revoke" property="isRevoke" jdbcType="VARCHAR"/>
+    <result column="treatment_advice" property="treatmentAdvice" jdbcType="VARCHAR"/>
+    <result column="editBtn" property="editBtn" jdbcType="VARCHAR"/>
+    <collection property="sysFiles" column="{id=id,nodeCode=node_code}" select="selectsysFile"
+      ofType="com.zjtc.model.File">
+    </collection>
+  </resultMap>
 
-	<resultMap id="sysAttrFileMap" type="com.zjtc.model.File">
-		<id column="id" property="id" jdbcType="VARCHAR"/>
-		<result column="file_path" property="filePath" jdbcType="VARCHAR"/>
-		<result column="file_name" property="fileName" jdbcType="VARCHAR"/>
-		<result column="deleted" property="deleted" jdbcType="VARCHAR"/>
-	</resultMap>
+  <resultMap id="sysAttrFileMap" type="com.zjtc.model.File">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+    <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+    <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+  </resultMap>
 
-	<select id="queryAll" resultMap="result_RefundOrRefund_Map">
-    select
-    id,
-    node_code,
-		use_water_unit_id,
-    unit_code,
-    unit_name,
-		water_meter_code,
-		create_time,
-		drawer,
-		quarter,
-		year,
-		money,
-		reason,
-		treatment_advice,
-		actual_amount,
-		case
-		t1.type
-		when'1' then '退款单'
-		when '2' then '减免单'
-		else '未知' end as typeName
-		from t_w_refund_or_refund t1
-		where node_code=#{nodeCode}
-			<!--待审核-->
-		<if test="keyWrod==1">
-				and id in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
-		</if>
-		<!--已审核-->
-		<if test="keyWrod==2">
-			and id in(select busIness_id as id  from t_flow_process where (audit_status='2' or audit_status='3') and operator_id=#{userId})
-		</if>
-		<if test="null !=unitCode and unitCode !=''">
-			and unit_code like '%${unitCode}%'
-		</if>
-		<if test="null !=unitName and unitName !=''" >
-			and unit_name like '%${unitName}%'
-		</if>
-		<if test="null !=waterMeterCode and waterMeterCode !=''">
-			and water_meter_code like '%${waterMeterCode}%'
-		</if>
-		<if test="null !=year and year !=''">
-			and t1.year =#{year}
-		</if>
-		<if test="null !=type and type !=''">
-			and t1.type =#{type}
-		</if>
-		<if test="null !=startTime and startTime !=''">
-			and t1.create_time &gt;= #{startTime}
-		</if>
-		<if test="null !=endTime and endTime !=''">
-			and t1.create_time &lt; #{endTime}
-		</if>
-	</select>
+  <select id="queryAll" resultMap="result_RefundOrRefund_Map">
 
-	<select id="queryAuditList" resultType="java.util.LinkedHashMap">
+  </select>
+
+  <select id="queryAuditList" resultType="java.util.LinkedHashMap">
     SELECT
     t1.id AS id,
     t1.operation_time AS operationTime,
@@ -108,7 +59,7 @@
     LEFT JOIN ( SELECT id, org_name FROM t_org  where  node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
     order by t1.create_time ASC
   </select>
-	<select id="selectsysFile" resultMap="sysAttrFileMap">
+  <select id="selectsysFile" resultMap="sysAttrFileMap">
     select
     id,
     file_path,
@@ -122,128 +73,144 @@
   </select>
 
 
-	<select id="queryPage" resultMap="result_RefundOrRefund_Map">
-		SELECT
-		top ${size}
-		*
-		FROM
-		(
-		SELECT
-		row_number ( ) over (
-		ORDER BY
-		create_time DESC
-		) AS rownumber,
-		id,
-		node_code,
-		use_water_unit_id,
-		unit_code,
-		unit_name,
-		water_meter_code,
-		create_time,
-		drawer,
-		quarter,
-		year,
-		money,
-		reason,
-		treatment_advice,
-		actual_amount,
-		case
-		t1.type
-		when'1' then '退款单'
-		when '2' then '减免单'
-		else '未知' end as typeName,
-		<!--修改按钮权限-->
-		case
-			when status='0'
-			and
-			(
-			SELECT
-			count(1)
-			FROM
-			(
-			SELECT
-			top 1
-			flow_node_role_id
-			FROM
-			t_flow_node
-			WHERE
-			flow_id = ( SELECT id FROM t_flow WHERE node_code =#{nodeCode} AND flow_code =#{flowCode})
-			ORDER BY
-			flow_sort ASC
-			) t1
-			inner join (select user_id ,role_id from  t_user_role_ref ) t4 on t4.role_id=t1.flow_node_role_id
-			where user_id=#{userId}
-			)>0  then '1'
-			else '0' end as editBtn
-		from t_w_refund_or_refund t1
-		where node_code=#{nodeCode}
-		<!--待审核-->
-		<if test="keyWrod==1">
-			and id in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
-		</if>
-		<!--已审核-->
-		<if test="keyWrod==2">
-			and id not in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
-		</if>
-		<if test="null !=unitCode and unitCode !=''">
-			and unit_code like '%${unitCode}%'
-		</if>
-		<if test="null !=unitName and unitName !=''" >
-			and unit_name like '%${unitName}%'
-		</if>
-		<if test="null !=waterMeterCode and waterMeterCode !=''">
-			and water_meter_code like '%${waterMeterCode}%'
-		</if>
-		<if test="null !=year and year !=''">
-			and t1.year =#{year}
-		</if>
-		<if test="null !=type and type !=''">
-			and t1.type =#{type}
-		</if>
-		<if test="null !=startTime and startTime !=''">
-			and t1.create_time &gt;= #{startTime}
-		</if>
-		<if test="null !=endTime and endTime !=''">
-			and t1.create_time &lt; #{endTime}
-		</if>
-		) temp_row
-		WHERE
-		rownumber > ( ( #{current}- 1 ) * #{size} );
-	</select>
+  <select id="queryPage" resultMap="result_RefundOrRefund_Map">
+    SELECT
+    top ${json.pageSize}
+    *
+    FROM
+    (
+    SELECT
+    row_number ( ) over (
+    ORDER BY
+    create_time DESC
+    ) AS rownumber,
+    id,
+    node_code,
+    use_water_unit_id,
+    unit_code,
+    unit_name,
+    water_meter_code,
+    create_time,
+    drawer,
+    quarter,
+    year,
+    money,
+    reason,
+    treatment_advice,
+    actual_amount,
+    case
+    t1.type
+    when'1' then '退款单'
+    when '2' then '减免单'
+    else '未知' end as typeName
+    from t_w_refund_or_refund t1
+    where node_code=#{json.nodeCode}
+    <!--待审核-->
+    <if test="json.keyWrod==1">
+      and id in(select busIness_id as id from
+      <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
+        select
+        #{item.businessId} as busIness_id,
+        #{item.operatorId} as operator_id,
+        #{item.auditStatus} as audit_status
+      </foreach>
+      t2
+      where audit_status='1' and operator_id=#{json.userId})
+    </if>
+    <!--已审核-->
+    <if test="json.keyWrod==2">
+      and id not in(
+      select busIness_id as id
+      from
+      <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
+        select
+        #{item.businessId} as busIness_id,
+        #{item.operatorId} as operator_id,
+        #{item.auditStatus} as audit_status
+      </foreach>
+      t2
+      where audit_status='1' and operator_id=#{json.userId})
+    </if>
+    <if test="null !=json.unitCode and json.unitCode !=''">
+      and unit_code like '%${json.unitCode}%'
+    </if>
+    <if test="null !=json.unitName and json.unitName !=''">
+      and unit_name like '%${json.unitName}%'
+    </if>
+    <if test="null !=json.waterMeterCode and json.waterMeterCode !=''">
+      and water_meter_code like '%${json.waterMeterCode}%'
+    </if>
+    <if test="null !=json.year and json.year !=''">
+      and t1.year =#{json.year}
+    </if>
+    <if test="null !=json.type and json.type !=''">
+      and t1.type =#{json.type}
+    </if>
+    <if test="null !=json.startTime and json.startTime !=''">
+      and t1.create_time &gt;= #{json.startTime}
+    </if>
+    <if test="null !=json.endTime and json.endTime !=''">
+      and t1.create_time &lt; #{json.endTime}
+    </if>
+    ) temp_row
+    WHERE
+    rownumber > ( ( #{json.current}- 1 ) * #{json.pageSize} );
+  </select>
 
-	<select id="queryListTotal" resultType="java.lang.Long">
-		select
-		count(1)
-		from t_w_refund_or_refund t1
-		where node_code=#{nodeCode}
-		<!--待审核-->
-		<if test="keyWrod==1">
-			and id in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
-		</if>
-		<!--已审核-->
-		<if test="keyWrod==2">
-			and id not in(select busIness_id as id  from t_flow_process where audit_status='1' and operator_id=#{userId})
-		</if>
-		<if test="null !=unitCode and unitCode !=''">
-			and unit_code like '%${unitCode}%'
-		</if>
-		<if test="null !=unitName and unitName !=''" >
-			and unit_name like '%${unitName}%'
-		</if>
-		<if test="null !=waterMeterCode and waterMeterCode !=''">
-			and water_meter_code like '%${waterMeterCode}%'
-		</if>
-		<if test="null !=year and year !=''">
-			and t1.year =#{year}
-		</if>
-		<if test="null !=type and type !=''">
-			and t1.type =#{type}
-		</if>
-		<if test="null !=startTime and startTime !=''">
-			and t1.create_time &gt;= #{startTime}
-		</if>
-		<if test="null !=endTime and endTime !=''">
-			and t1.create_time &lt; #{endTime}
-		</if>
-	</select>
+  <select id="queryListTotal" resultType="java.lang.Long">
+
+    SELECT
+    count(1)
+    from t_w_refund_or_refund t1
+    where node_code=#{json.nodeCode}
+    <!--待审核-->
+    <if test="json.keyWrod==1">
+      and id in(select busIness_id as id from
+      <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
+        select
+        #{item.businessId} as busIness_id,
+        #{item.operatorId} as operator_id,
+        #{item.auditStatus} as audit_status
+      </foreach>
+      t2
+      where audit_status='1' and operator_id=#{json.userId})
+    </if>
+    <!--已审核-->
+    <if test="json.keyWrod==2">
+      and id not in(
+      select busIness_id as id
+      from
+      <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
+        select
+        #{item.businessId} as busIness_id,
+        #{item.operatorId} as operator_id,
+        #{item.auditStatus} as audit_status
+      </foreach>
+      t2
+      where audit_status='1' and operator_id=#{json.userId})
+    </if>
+    <if test="null !=json.unitCode and json.unitCode !=''">
+      and unit_code like '%${json.unitCode}%'
+    </if>
+    <if test="null !=json.unitName and json.unitName !=''">
+      and unit_name like '%${json.unitName}%'
+    </if>
+    <if test="null !=json.waterMeterCode and json.waterMeterCode !=''">
+      and water_meter_code like '%${json.waterMeterCode}%'
+    </if>
+    <if test="null !=json.year and json.year !=''">
+      and t1.year =#{json.year}
+    </if>
+    <if test="null !=json.type and json.type !=''">
+      and t1.type =#{json.type}
+    </if>
+    <if test="null !=json.startTime and json.startTime !=''">
+      and t1.create_time &gt;= #{json.startTime}
+    </if>
+    <if test="null !=json.endTime and json.endTime !=''">
+      and t1.create_time &lt; #{json.endTime}
+    </if>
+    ;
+
+  </select>
 </mapper>

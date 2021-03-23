@@ -207,6 +207,7 @@ public class WaterUsePayInfoServiceImpl extends
     entity.setIsRevoke("0");
     entity.setStatus("0");
     entity.setType("1");
+    entity.setCreateTime(new Date());
     refundOrRefundService.insert(entity);
     /**新增附件*/
     if (!entity.getSysFiles().isEmpty()) {
@@ -263,6 +264,7 @@ public class WaterUsePayInfoServiceImpl extends
     entity.setIsRevoke("0");
     entity.setStatus("0");
     entity.setType("2");
+    entity.setCreateTime(new Date());
     refundOrRefundService.insert(entity);
     /**新增附件*/
     if (!entity.getSysFiles().isEmpty()) {

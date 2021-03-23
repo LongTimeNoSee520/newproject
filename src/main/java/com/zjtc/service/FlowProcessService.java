@@ -46,4 +46,7 @@ public interface FlowProcessService extends IService<FlowProcess> {
    * 查询是否需要当前登录人员审核
    * */
   int ifNeedAudit(String id, String userId);
+
+
+  List<FlowProcess> queryAll(String nodeCode);
 }

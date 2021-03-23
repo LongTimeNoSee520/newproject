@@ -16,6 +16,7 @@ import com.zjtc.model.WaterUsePayInfo;
 import com.zjtc.service.FileService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
+import com.zjtc.service.FlowNodeService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.RefundOrRefundService;
@@ -62,6 +63,8 @@ public class RefundOrRefundServiceImpl extends
   private FlowProcessMapper flowProcessMapper;
   @Autowired
   private WebSocketUtil webSocketUtil;
+  @Autowired
+  private FlowNodeService flowNodeService;
   /**
    * 附件存储目录
    */
@@ -124,6 +127,7 @@ public class RefundOrRefundServiceImpl extends
   @Override
   public Map<String, Object> queryPage(JSONObject jsonObject) {
     Map<String, Object> page = new LinkedHashMap<>();
+    String nodeCode=jsonObject.getString("nodeCode");
     String startTime = jsonObject.getString("startTime");
     String endTime = jsonObject.getString("endTime");
     jsonObject.put("flowCode", AuditConstants.PAY_FLOW_CODE);
@@ -133,14 +137,28 @@ public class RefundOrRefundServiceImpl extends
     if (StringUtils.isNotBlank(endTime)) {
       jsonObject.put("endTime", endTime + " 23:59:59");
     }
-    List<RefundOrRefund> list = baseMapper.queryPage(jsonObject);
+    //查询所有操作记录
+    List<FlowProcess> flowProcesses = flowProcessService.queryAll(nodeCode);
+    jsonObject.put("pageSize",jsonObject.getString("size"));
+    List<RefundOrRefund> list = baseMapper.queryPage(jsonObject, flowProcesses);
     if (!list.isEmpty()) {
       for (RefundOrRefund refundOrRefund : list) {
+        //审核操作记录
         refundOrRefund.setAuditFlow(
             flowProcessMapper.queryAuditList(refundOrRefund.getId(), refundOrRefund.getNodeCode()));
+        //附件
         if (!refundOrRefund.getSysFiles().isEmpty()) {
           for (File file : refundOrRefund.getSysFiles()) {
             file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());
+          }
+          //当前退减免单是否可修改
+         long flag= flowNodeService
+              .isFirstFlowNode(jsonObject.getString("userId"), nodeCode,
+                  jsonObject.getString("flowCode"));
+          if(flag>0 && "0".equals(refundOrRefund.getStatus())){
+            refundOrRefund.setEditBtn("1");
+          }else{
+            refundOrRefund.setEditBtn("0");
           }
         }
       }
@@ -149,7 +167,7 @@ public class RefundOrRefundServiceImpl extends
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
     //查询总数据条数
-    long total = baseMapper.queryListTotal(jsonObject);
+    long total = baseMapper.queryListTotal(jsonObject, flowProcesses);
     page.put("total", total);
     long pageSize = jsonObject.getInteger("size");
     page.put("page", total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
@@ -230,14 +248,14 @@ public class RefundOrRefundServiceImpl extends
         }
         messageService
             .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
-                AuditConstants.PAY_MESSAGE_TYPE, messageContent,entity.getId());
+                AuditConstants.PAY_MESSAGE_TYPE, messageContent, entity.getId());
         /**短信通知发起人:*/
         smsService
             .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
                 messageContent,
                 "退减免通知");
         /**websocket推送通知*/
-        webSocketUtil.pushWaterNews(user.getNodeCode(),firstProcess.getOperatorId());
+        webSocketUtil.pushWaterNews(user.getNodeCode(), firstProcess.getOperatorId());
       }
     } else {
       /**审核流程继续*/
@@ -279,10 +297,11 @@ public class RefundOrRefundServiceImpl extends
                 .getMoney()
                 + "元";
       }
-      todoService.add(entity.getId(), user, nextPersonId, nextPersonName, todoContent, JSONObject.toJSONString(entity),
+      todoService.add(entity.getId(), user, nextPersonId, nextPersonName, todoContent,
+          JSONObject.toJSONString(entity),
           detailConfig, AuditConstants.PAY_TODO_TYPE);
       /**websocket推送待办*/
-      webSocketUtil.pushWaterTodo(user.getNodeCode(),nextPersonId);
+      webSocketUtil.pushWaterTodo(user.getNodeCode(), nextPersonId);
     }
     return true;
   }
