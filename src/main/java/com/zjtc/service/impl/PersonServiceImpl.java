@@ -25,6 +25,9 @@ public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> impleme
   @Value("${waterSys.selectPersonByResCode}")
   private String url;
 
+  @Value("${file.preViewRealPath}")
+  private String ipPort;
+
   @Override
   public ApiResponse selectPersonAll() {
     ApiResponse response = new ApiResponse();
@@ -48,7 +51,7 @@ public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> impleme
     JSONObject jsonObject=new JSONObject();
     jsonObject.put("resCode",resCode);
     jsonObject.put("nodeCode",nodeCode);
-    doPost = HttpUtil.doPost(url, jsonObject.toJSONString());
+    doPost = HttpUtil.doPost(ipPort+url, jsonObject.toJSONString());
     System.out.println(doPost);
     JSONObject json = JSON.parseObject(doPost);
     return json.getJSONArray("data").toJavaList(Person.class);
