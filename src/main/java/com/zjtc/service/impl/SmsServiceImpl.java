@@ -32,6 +32,9 @@ public class SmsServiceImpl implements SmsService {
   @Autowired
   private JWTUtil jwtUtil;
 
+  @Value("${file.preViewRealPath}")
+  private String ipPort;
+
   @Value("${waterSms.sendUrl}")
   private String sendUrl;
   @Autowired
@@ -102,7 +105,7 @@ public class SmsServiceImpl implements SmsService {
     postJson.put("msgList",sendInfoList);
     String publicKey = jwtUtil.getPublicKey();
     String token = jwtUtil.creatToken(user, publicKey);
-    HttpUtil.doPost(token, sendUrl, postJson.toJSONString());
+    HttpUtil.doPost(token, ipPort + sendUrl, postJson.toJSONString());
   }
 
   private void sendMessages(User user, String messageContent, String phoneNumber, String receiverId,
@@ -126,7 +129,7 @@ public class SmsServiceImpl implements SmsService {
     msgList.add(jsonObject);
     JSONObject postJson = new JSONObject();
     postJson.put("msgList",msgList);
-    HttpUtil.doPost(token, sendUrl, postJson.toJSONString());
+    HttpUtil.doPost(token, ipPort + sendUrl, postJson.toJSONString());
   }
 
 }

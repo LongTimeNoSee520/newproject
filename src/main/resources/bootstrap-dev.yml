@@ -86,14 +86,14 @@ file:
   #文件上下文
   preViewRealPath: http://120.79.162.253:8073
 waterSms:
-  sendU
+  sendUrl: /water/sms/smsManage/sendMessages
 
 waterReport:
-  reportUrl: http://localhost:8082:/water/service/todo/report
+  reportUrl: /water/service/todo/report
 #http请求路径
 #1.人员api
 waterSys:
-  selectPersonByResCode: http://localhost:8073/water/system/person/selectPersonByResCode
+  selectPersonByResCode: /water/system/person/selectPersonByResCode
 
 webSocket:
   #节水平台待办webSocket地址
