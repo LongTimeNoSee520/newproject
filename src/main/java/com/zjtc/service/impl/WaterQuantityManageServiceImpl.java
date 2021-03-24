@@ -303,9 +303,17 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
       if (sendSocketIndex.contains(i)){
         double percent = (double)(sendSocketIndex.indexOf(i)+1)/10;
         /**将完成百分比通过webSocket推送给前端*/
-        webSocketUtil.pushWaterExport(nodeCode,user.getId(),String.valueOf(percent));
+        try {
+          webSocketUtil.pushWaterExport(nodeCode,user.getId(),String.valueOf(percent));
+        }catch (Exception e){
+          log.error("水量导入webSocket推送失败,errMsg==={}" + e.getMessage());
+        }
       }else if (i==infos.size()){
-        webSocketUtil.pushWaterExport(nodeCode,user.getId(),String.valueOf(1));
+        try {
+          webSocketUtil.pushWaterExport(nodeCode,user.getId(),String.valueOf(1));
+        }catch (Exception e){
+          log.error("水量导入webSocket推送失败,errMsg==={}" + e.getMessage());
+        }
       }
 
       WaterUseDataVO waterUseDataVO = infos.get(i - 1);

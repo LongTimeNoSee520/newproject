@@ -8,8 +8,8 @@ spring:
   application: sms
   mvc:
     async:
-      #请求超时时间10分钟
-      request-timeout: 6000000
+      #请求超时时间1小时
+      request-timeout: 36000000
 #  datasource:
 #    type: com.alibaba.druid.pool.DruidDataSource
 #    druid:
@@ -97,10 +97,10 @@ waterSys:
 
 webSocket:
   #节水平台待办webSocket地址
-  waterTodoUrl: http://localhost:8081/water/system/websocket/waterTodo
+  waterTodoUrl: /water/system/websocket/waterTodo
   #节水平台消息webSocket地址
-  waterNewsUrl: http://localhost:8081/water/system/websocket/waterNews
+  waterNewsUrl: /water/system/websocket/waterNews
   #水量导入webSocket地址
-  waterExportUrl: http://localhost:8081/water/system/websocket/waterExport
+  waterExportUrl: /water/system/websocket/waterExport
   #公共服务平台消息webSocket地址
-  publicNewsUrl: http://localhost:8081/water/system/websocket/publicNews
+  publicNewsUrl: /water/system/websocket/publicNews

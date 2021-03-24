@@ -17,6 +17,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class WebSocketUtil {
 
+  @Value("${file.preViewRealPath}")
+  private String ipPort;
+
   /**
    * 节水平台待办webSocket地址
    */
@@ -31,8 +34,8 @@ public class WebSocketUtil {
   /**
    * 水量导入webSocket地址
    */
-  @Value("${webSocket.waterExport}")
-  private String waterExport;
+  @Value("${webSocket.waterExportUrl}")
+  private String waterExportUrl;
 
   /**
    * 公共服务平台消息webSocket地址
@@ -47,7 +50,7 @@ public class WebSocketUtil {
    * @param userId 用户唯一id
    */
   public void pushWaterTodo(String nodeCode, String userId) {
-    String url = waterTodoUrl + "?nodeCode=" + nodeCode + "&userId=" + userId;
+    String url = ipPort + waterTodoUrl + "?nodeCode=" + nodeCode + "&userId=" + userId;
     doGet(url);
   }
 
@@ -58,7 +61,7 @@ public class WebSocketUtil {
    * @param userId 用户唯一id
    */
   public void pushWaterNews(String nodeCode, String userId) {
-    String url = waterNewsUrl + "?nodeCode=" + nodeCode + "&userId=" + userId;
+    String url = ipPort + waterNewsUrl + "?nodeCode=" + nodeCode + "&userId=" + userId;
     doGet(url);
   }
 
@@ -69,7 +72,7 @@ public class WebSocketUtil {
    * @param userId 用户唯一id
    */
   public void pushWaterExport(String nodeCode, String userId,String progress) {
-    String url = waterExport + "?nodeCode=" + nodeCode + "&userId=" + userId+ "&progress=" + progress;
+    String url = ipPort + waterExportUrl + "?nodeCode=" + nodeCode + "&userId=" + userId+ "&progress=" + progress;
     doGet(url);
   }
 
@@ -80,7 +83,7 @@ public class WebSocketUtil {
    * @param unitCode 用水单位编号
    */
   public void pushPublicNews(String nodeCode, String unitCode) {
-    String url = publicNewsUrl + "?nodeCode=" + nodeCode + "&unitCode=" + unitCode;
+    String url = ipPort + publicNewsUrl + "?nodeCode=" + nodeCode + "&unitCode=" + unitCode;
     doGet(url);
   }
 
