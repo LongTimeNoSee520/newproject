@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.WaterMonthUseDataMapper;
+import com.zjtc.model.User;
 import com.zjtc.model.WaterMonthUseData;
 import com.zjtc.service.CommonService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.WaterMonthUseDataService;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public class WaterMonthUseDataServiceImpl extends
     WaterMonthUseDataService {
   @Autowired
   private CommonService commonService;
+  @Autowired
+  private SystemLogService systemLogService;
 
 
   @Override
@@ -91,7 +95,7 @@ public class WaterMonthUseDataServiceImpl extends
   }
 
   @Override
-  public void export(JSONObject jsonObject, HttpServletRequest request,
+  public void export(User user,JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     List<WaterMonthUseData> list = baseMapper.export(jsonObject);
     Map<String, Object> data = new HashMap<>();
@@ -102,5 +106,6 @@ public class WaterMonthUseDataServiceImpl extends
     String fileName = "用水户水量查询结果.xlsx";
     String templateName = "template/waterMonthUseData.xlsx";
     commonService.export(fileName, templateName, request, response, data);
+    systemLogService.logInsert(user,"用水单位水量查询","导出",null);
   }
 }

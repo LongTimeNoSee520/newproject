@@ -2,8 +2,8 @@ package com.zjtc.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.IService;
+import com.zjtc.model.User;
 import com.zjtc.model.WaterMonthUseData;
-import com.zjtc.model.WaterUseData;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +61,7 @@ public interface WaterMonthUseDataService extends IService<WaterMonthUseData> {
    * @param request
    * @param response
    */
-  void export(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+  void export(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 
 
 }

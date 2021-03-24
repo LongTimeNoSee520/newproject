@@ -370,7 +370,7 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        waterUsePayInfoService.exportQueryData(jsonObject, request, response);
+        waterUsePayInfoService.exportQueryData(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出查询结果失败,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -398,7 +398,7 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        waterUsePayInfoService.exportUser(jsonObject, request, response);
+        waterUsePayInfoService.exportUser(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出用户信息失败,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -426,7 +426,7 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        waterUsePayInfoService.exportPayInfo(jsonObject, request, response);
+        waterUsePayInfoService.exportPayInfo(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出计划用水户超计划情况汇总表失败,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -454,7 +454,7 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        ApiResponse result = waterUsePayInfoService.exportBankInfo(jsonObject, request, response);
+        ApiResponse result = waterUsePayInfoService.exportBankInfo(user,jsonObject, request, response);
         if (result.getCode() == 500) {
           return result;
         }
@@ -486,7 +486,7 @@ public class WaterUsePayInfoController {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
         ApiResponse result = waterUsePayInfoService
-            .exportOtherBankInfo(jsonObject, request, response);
+            .exportOtherBankInfo(user,jsonObject, request, response);
         if (500 == result.getCode()) {
           return result;
         }

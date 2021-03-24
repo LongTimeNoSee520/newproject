@@ -1,13 +1,11 @@
 package com.zjtc.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.User;
 import java.util.List;
 import java.util.Map;
-import springfox.documentation.spring.web.json.Json;
 
 
 /**
@@ -18,27 +16,13 @@ import springfox.documentation.spring.web.json.Json;
  */
 public interface RefundOrRefundService extends IService<RefundOrRefund> {
 
-	/**
-	* 保存
-	* @param jsonObject
-	* @return
-	*/
-	boolean saveModel(JSONObject jsonObject);
 
 	/**
 	* 修改
 	* @param jsonObject
 	* @return
 	*/
-	boolean updateModel(JSONObject jsonObject);
-
-	/**
-	* 删除
-	* @param jsonObject
-	* @return
-	*/
-	boolean deleteModel(JSONObject jsonObject);
-
+	boolean updateModel(User user,JSONObject jsonObject);
 	/**
 	* 查询所有
 	* @return
@@ -65,7 +49,7 @@ public interface RefundOrRefundService extends IService<RefundOrRefund> {
 	 * @param jsonObject
 	 * @return
 	 */
-	boolean	revoke(JSONObject jsonObject);
+	boolean	revoke(JSONObject jsonObject,User user);
 
 	/**
 	 * 判断当前数据是否有退缴费记录

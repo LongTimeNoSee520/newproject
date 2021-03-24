@@ -107,7 +107,7 @@ public class WaterMonthUseDataController {
     if (null != user && null != jsonObject) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
-        waterMonthUseDataService.export(jsonObject, request, response);
+        waterMonthUseDataService.export(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出月使用水量错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);

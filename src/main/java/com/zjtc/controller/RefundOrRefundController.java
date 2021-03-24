@@ -97,9 +97,10 @@ public class RefundOrRefundController {
       + "}") @RequestHeader("token") String token, @RequestBody JSONObject jsonObject) {
     log.info("修改==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
     if (null != jsonObject) {
       try {
-        boolean result = refundOrRefundService.updateModel(jsonObject);
+        boolean result = refundOrRefundService.updateModel(user,jsonObject);
         if (result) {
           apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
         } else {
@@ -197,7 +198,7 @@ public class RefundOrRefundController {
     if (null != jsonObject) {
       try {
         boolean result = refundOrRefundService
-            .revoke(jsonObject);
+            .revoke(jsonObject,user);
         if (result) {
           apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
         } else {

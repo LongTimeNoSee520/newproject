@@ -165,9 +165,10 @@ public class WaterSavingUnitController {
       @ApiParam("{\"id\":\"节水单位id\"}") @RequestBody JSONObject jsonObject) {
     log.info("删除 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
+    User user=jwtUtil.getUserByToken(token);
     if (null != jsonObject) {
       try {
-        boolean result = waterSavingUnitService.deleteModel(jsonObject.getString("id"));
+        boolean result = waterSavingUnitService.deleteModel(jsonObject.getString("id"),user);
         if (result) {
           apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
         } else {

@@ -395,7 +395,7 @@ public class UseWaterUnitController {
     if (null != user) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
-        useWaterUnitService.exportAccountAudit(jsonObject, request, response);
+        useWaterUnitService.exportAccountAudit(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出账户审核表错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -420,7 +420,7 @@ public class UseWaterUnitController {
     if (null != user) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
-        useWaterUnitService.exportForm(jsonObject, request, response);
+        useWaterUnitService.exportForm(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出开通格式错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -448,7 +448,7 @@ public class UseWaterUnitController {
     if (null != user) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
-        useWaterUnitService.exportRevoca(jsonObject, request, response);
+        useWaterUnitService.exportRevoca(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出撤销格式错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -486,7 +486,7 @@ public class UseWaterUnitController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        useWaterUnitService.exportQueryData(jsonObject, request, response);
+        useWaterUnitService.exportQueryData(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出查询结果错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -510,7 +510,7 @@ public class UseWaterUnitController {
     if (null != user) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
-        useWaterUnitService.exportMoreAndLess(jsonObject, request, response);
+        useWaterUnitService.exportMoreAndLess(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出用水单位增减情况错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);

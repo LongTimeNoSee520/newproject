@@ -18,12 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface WaterSavingUnitService extends IService<WaterSavingUnit> {
 
-	/**
-	* 保存
-	* @param jsonObject
-	* @return
-	*/
-	boolean saveModel(JSONObject jsonObject);
 
 	/**
 	* 修改
@@ -37,7 +31,7 @@ public interface WaterSavingUnitService extends IService<WaterSavingUnit> {
 	* @param id
 	* @return
 	*/
-	boolean deleteModel(String id);
+	boolean deleteModel(String id, User user);
 
 	/**
 	* 分页查询

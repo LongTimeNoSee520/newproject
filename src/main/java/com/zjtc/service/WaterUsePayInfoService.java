@@ -21,17 +21,9 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
   /**
    * 保存
    */
-  boolean saveModel(JSONObject jsonObject);
-
-  /**
-   * 修改
-   */
   ApiResponse updateModel(JSONObject jsonObject,User user);
 
-  /**
-   * 删除
-   */
-  boolean deleteModel(JSONObject jsonObject);
+
 
   /**
    * 分页查询
@@ -112,7 +104,7 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @param request
    * @param response
    */
-  void exportQueryData(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+  void exportQueryData(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 
   /**
    * 导出用户信息
@@ -120,7 +112,7 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @param request
    * @param response
    */
-  void exportUser(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
+  void exportUser(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
       throws IOException;
 
   /**
@@ -129,7 +121,7 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @param request
    * @param response
    */
-  void exportPayInfo(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+  void exportPayInfo(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 
   /**
    * 导出本行数据
@@ -137,7 +129,7 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @param request
    * @param response
    */
-  ApiResponse exportBankInfo(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
+  ApiResponse exportBankInfo(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
       throws IOException;
 
   /**
@@ -146,6 +138,6 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @param request
    * @param response
    */
-  ApiResponse exportOtherBankInfo(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
+  ApiResponse exportOtherBankInfo(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
       throws IOException;
 }

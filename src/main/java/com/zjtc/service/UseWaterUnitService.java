@@ -87,7 +87,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param request
    * @param response
    */
-  void exportAccountAudit(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+  void exportAccountAudit(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 
   /**
    * 导出开通格式
@@ -95,7 +95,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param request
    * @param response
    */
-  void exportForm(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+  void exportForm(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 
   /**
    * 导出撤销格式
@@ -103,7 +103,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param request
    * @param response
    */
-  void exportRevoca(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+  void exportRevoca(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 
   /**
    * 导出查询结果
@@ -111,7 +111,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param request
    * @param response
    */
-  void exportQueryData(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+  void exportQueryData(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 
   /**
    * 导出用水单位增减情况表
@@ -119,7 +119,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param request
    * @param response
    */
-  void exportMoreAndLess(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+  void exportMoreAndLess(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 
   /**
    *根据单位名称查询单位编码

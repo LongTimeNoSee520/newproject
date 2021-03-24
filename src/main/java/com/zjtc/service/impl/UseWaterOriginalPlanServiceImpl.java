@@ -14,6 +14,7 @@ import com.zjtc.model.User;
 import com.zjtc.service.AlgorithmService;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.MessageService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.UseWaterOriginalPlanService;
 import com.zjtc.service.UseWaterPlanService;
 import com.zjtc.service.UseWaterSelfDefinePlanService;
@@ -50,10 +51,12 @@ public class UseWaterOriginalPlanServiceImpl extends
   private MessageService messageService;
   @Autowired
   private CommonService commonService;
+  @Autowired
+  private SystemLogService systemLogService;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public ApiResponse save(JSONObject jsonObject) {
+  public ApiResponse save(User user,JSONObject jsonObject) {
     ApiResponse apiResponse = new ApiResponse();
     List<UseWaterOriginalPlan> entity = jsonObject.getJSONArray("data")
         .toJavaList(UseWaterOriginalPlan.class);
@@ -79,6 +82,7 @@ public class UseWaterOriginalPlanServiceImpl extends
       return apiResponse;
     }
     this.insertOrUpdateBatch(entity);
+    systemLogService.logInsert(user,"用水计划编制","新增",null);
     return apiResponse;
   }
 
@@ -199,23 +203,10 @@ public class UseWaterOriginalPlanServiceImpl extends
       }
     }
     //todo:微信
+    systemLogService.logInsert(user,"用水计划编制","编制",null);
     return apiResponse;
   }
 
-
-  @Override
-  public boolean updateModel(JSONObject jsonObject) {
-    UseWaterOriginalPlan entity = jsonObject.toJavaObject(UseWaterOriginalPlan.class);
-    boolean result = this.updateById(entity);
-    return result;
-  }
-
-  @Override
-  public boolean deleteModel(JSONObject jsonObject) {
-    UseWaterOriginalPlan entity = jsonObject.toJavaObject(UseWaterOriginalPlan.class);
-    boolean result = this.deleteById(entity);
-    return result;
-  }
 
   @Override
   public Map<String, Object> queryPageOld(JSONObject jsonObject) {
@@ -749,7 +740,7 @@ public class UseWaterOriginalPlanServiceImpl extends
   }
 
   @Override
-  public void exportOldData(JSONObject jsonObject, HttpServletRequest request,
+  public void exportOldData(User user,JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     List<UseWaterOriginalPlan> list = jsonObject.getJSONArray("data")
         .toJavaList(UseWaterOriginalPlan.class);
@@ -763,10 +754,11 @@ public class UseWaterOriginalPlanServiceImpl extends
     String fileName = nowYear + "年度计划编制汇总.xlsx";
     String templateName = "template/useWaterOriginalPlanOld.xlsx";
     commonService.export(fileName, templateName, request, response, data);
+    systemLogService.logInsert(user,"用水计划编制","导出老户",null);
   }
 
   @Override
-  public void exportNewData(JSONObject jsonObject, HttpServletRequest request,
+  public void exportNewData(User user,JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     List<UseWaterOriginalPlan> list = jsonObject.getJSONArray("data")
         .toJavaList(UseWaterOriginalPlan.class);
@@ -778,6 +770,7 @@ public class UseWaterOriginalPlanServiceImpl extends
     String fileName = "新增户计划编制汇总.xlsx";
     String templateName = "template/useWaterOriginalPlanOld.xlsx";
     commonService.export(fileName, templateName, request, response, data);
+    systemLogService.logInsert(user,"用水计划编制","导出新户",null);
   }
 
   private List<Map<String, Object>> initPlanOld(int year, String userType, String unitCodeStart,

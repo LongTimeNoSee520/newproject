@@ -16,6 +16,7 @@ import com.zjtc.model.vo.WaterSavingUnitQuotaVo;
 import com.zjtc.model.vo.WaterSavingUnitVo;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.FileService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.WaterSavingUnitBaseService;
 import com.zjtc.service.WaterSavingUnitQuotaService;
 import com.zjtc.service.WaterSavingUnitService;
@@ -75,13 +76,9 @@ public class WaterSavingUnitServiceImpl extends
   private WaterSavingUnitBaseService waterSavingUnitBaseService;
   @Autowired
   private CommonService commonService;
+  @Autowired
+  private SystemLogService systemLogService;
 
-  @Override
-  public boolean saveModel(JSONObject jsonObject) {
-    WaterSavingUnit entity = jsonObject.toJavaObject(WaterSavingUnit.class);
-    boolean result = this.insert(entity);
-    return result;
-  }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -111,12 +108,13 @@ public class WaterSavingUnitServiceImpl extends
       waterSavingUnitBaseService
           .updateOrDelete(entity.getWaterSavingUnitBaseList(), entity.getId());
     }
+    systemLogService.logInsert(user,"节水型用水单位","修改",null);
     return apiResponse;
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public boolean deleteModel(String id) {
+  public boolean deleteModel(String id, User user) {
     /**删除节水单位主数据*/
     WaterSavingUnit entity = new WaterSavingUnit();
     entity.setId(id);
@@ -134,6 +132,7 @@ public class WaterSavingUnitServiceImpl extends
     Wrapper wrapper2 = new EntityWrapper();
     wrapper2.eq("water_saving_unit_id", id);
     waterSavingUnitBaseService.update(waterSavingUnitBase, wrapper2);
+    systemLogService.logInsert(user,"节水型用水单位","删除",null);
     return flag;
   }
 
@@ -179,6 +178,7 @@ public class WaterSavingUnitServiceImpl extends
     beans.put("info2", waterSavingUnitBaseVo);
     String xmlConfig = "template/xml/waterSavingUnit.xml";
     Map result = commonService.importExcel(beans, file, xmlConfig, true);
+    systemLogService.logInsert(user,"节水型用水单位","导入",null);
     return transform((WaterSavingUnitVo) result.get("entity"),
         (List<WaterSavingUnitQuotaVo>) result.get("info1"),
         (List<WaterSavingUnitBaseVo>) result.get("info2"), user);
@@ -225,7 +225,7 @@ public class WaterSavingUnitServiceImpl extends
     if (!oldData.isEmpty()) {
       //删除之前的单位数据
       for (WaterSavingUnit item : oldData) {
-        deleteModel(item.getId());
+        deleteModel(item.getId(),user);
       }
     }
     this.insert(result);

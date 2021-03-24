@@ -23,26 +23,14 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	* @param jsonObject
 	* @return
 	*/
-	ApiResponse save(JSONObject jsonObject);
+	ApiResponse save(User user,JSONObject jsonObject);
 	/**
 	 * 老户/新户编制
 	 * @param jsonObject
 	 * @return
 	 */
 	ApiResponse saveOriginal(JSONObject jsonObject, User user);
-	/**
-	* 修改
-	* @param jsonObject
-	* @return
-	*/
-	boolean updateModel(JSONObject jsonObject);
 
-	/**
-	* 删除
-	* @param jsonObject
-	* @return
-	*/
-	boolean deleteModel(JSONObject jsonObject);
 
 	/**
 	* 老户分页查询
@@ -102,7 +90,7 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	 * @param request
 	 * @param response
 	 */
-	void exportOldData(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+	void exportOldData(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 
 	/**
 	 * 导出新户数据
@@ -110,5 +98,5 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	 * @param request
 	 * @param response
 	 */
-	void exportNewData(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+	void exportNewData(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 }

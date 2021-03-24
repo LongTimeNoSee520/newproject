@@ -19,6 +19,7 @@ import com.zjtc.service.BankService;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.ContactsService;
 import com.zjtc.service.FileService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.UseWaterQuotaService;
 import com.zjtc.service.UseWaterUnitMeterService;
 import com.zjtc.service.UseWaterUnitModifyService;
@@ -87,6 +88,8 @@ public class UseWaterUnitServiceImpl extends
   private CommonService commonService;
   @Autowired
   DictUtils dictUtils;
+  @Autowired
+  SystemLogService systemLogService;
   /**
    * 附件上传盘符
    */
@@ -170,7 +173,7 @@ public class UseWaterUnitServiceImpl extends
       useWaterUnitRefService
           .save(entity.getUseWaterUnitIdRef(), entity.getId(), user.getNodeCode());
     }
-
+    systemLogService.logInsert(user, "用水单位管理", "新增", null);
     return apiResponse;
 
   }
@@ -195,7 +198,8 @@ public class UseWaterUnitServiceImpl extends
           .maxUnitCode(entity.getUnitCode(), entity.getId(), user.getNodeCode());
       maxCount = craeatRank(maxCount);
       apiResponse.setData(maxCount);
-      return apiResponse;    }
+      return apiResponse;
+    }
     /*********************************************************/
     /**1.修改数据*/
     /**1.1 修改用水单位信息*/
@@ -230,6 +234,7 @@ public class UseWaterUnitServiceImpl extends
         useWaterUnitRefService
             .save(entity.getId(), userWaterUnitId, user.getNodeCode());
       }
+      systemLogService.logInsert(user, "用水单位管理", "修改", null);
     }
 
     /**更改指定的单位为主户*/
@@ -419,6 +424,7 @@ public class UseWaterUnitServiceImpl extends
         useWaterUnitRefService.deleteById(parList.get(0).getId());
       }
     }
+    systemLogService.logInsert(user, "用水单位管理", "删除", null);
     return true;
   }
 
@@ -446,8 +452,9 @@ public class UseWaterUnitServiceImpl extends
               useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
             }
           }
-          if(useWaterUnitIdRef.length()>0){
-            item.setUseWaterUnitIdRef(useWaterUnitIdRef.substring(0, useWaterUnitIdRef.length() - 1));
+          if (useWaterUnitIdRef.length() > 0) {
+            item.setUseWaterUnitIdRef(
+                useWaterUnitIdRef.substring(0, useWaterUnitIdRef.length() - 1));
           }
         }
         //查询所属区域
@@ -562,12 +569,12 @@ public class UseWaterUnitServiceImpl extends
   }
 
   @Override
-  public Map<String,Object> selectByUnitCode(String unitCode, User user) {
-    return baseMapper.selectByUnitCode(unitCode,user.getNodeCode());
+  public Map<String, Object> selectByUnitCode(String unitCode, User user) {
+    return baseMapper.selectByUnitCode(unitCode, user.getNodeCode());
   }
 
   @Override
-  public void exportAccountAudit(JSONObject jsonObject, HttpServletRequest request,
+  public void exportAccountAudit(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     List<Map<String, Object>> list = baseMapper
         .exportAccountAudit(jsonObject.getString("nodeCode"));
@@ -579,11 +586,11 @@ public class UseWaterUnitServiceImpl extends
     String fileName = "计划用水户账户审核表.xlsx";
     String templateName = "template/accountAudit.xlsx";
     commonService.export(fileName, templateName, request, response, data);
-
+    systemLogService.logInsert(user, "用水单位管理", "导出账户审核表", null);
   }
 
   @Override
-  public void exportForm(JSONObject jsonObject, HttpServletRequest request,
+  public void exportForm(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     List<Map<String, Object>> list = baseMapper
         .exportForm(jsonObject.getString("nodeCode"));
@@ -595,10 +602,11 @@ public class UseWaterUnitServiceImpl extends
     String fileName = "计划用水户开通格式.xlsx";
     String templateName = "template/form.xlsx";
     commonService.export(fileName, templateName, request, response, data);
+    systemLogService.logInsert(user, "用水单位管理", "导出开通格式", null);
   }
 
   @Override
-  public void exportRevoca(JSONObject jsonObject, HttpServletRequest request,
+  public void exportRevoca(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     String nodeCode = jsonObject.getString("nodeCode");
     //开始时间
@@ -633,12 +641,13 @@ public class UseWaterUnitServiceImpl extends
     String fileName = "计划用水户撤销格式.xlsx";
     String templateName = "template/Revoca.xlsx";
     commonService.export(fileName, templateName, request, response, data);
+    systemLogService.logInsert(user,"用水单位管理","导出撤销格式",null);
   }
 
   @Override
-  public void exportQueryData(JSONObject jsonObject, HttpServletRequest request,
+  public void exportQueryData(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
-    List<Map<String,Object>> map = baseMapper.exportQueryData(jsonObject);
+    List<Map<String, Object>> map = baseMapper.exportQueryData(jsonObject);
     if (!map.isEmpty()) {
       for (Map item : map) {
         //查询电话号码
@@ -652,19 +661,19 @@ public class UseWaterUnitServiceImpl extends
         }
       }
     }
-      Map<String, Object> data = new HashMap<>();
-      data.put("excelData", map);
-      data.put("nowDate", new Date());
-      SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
-      data.put("dateFormat", dateFmt);
-      String fileName = "用水户界面查询结果.xlsx";
-      String templateName = "template/useWaterUnitData.xlsx";
-      commonService.export(fileName, templateName, request, response, data);
-
+    Map<String, Object> data = new HashMap<>();
+    data.put("excelData", map);
+    data.put("nowDate", new Date());
+    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+    data.put("dateFormat", dateFmt);
+    String fileName = "用水户界面查询结果.xlsx";
+    String templateName = "template/useWaterUnitData.xlsx";
+    commonService.export(fileName, templateName, request, response, data);
+    systemLogService.logInsert(user,"用水单位管理","导出查询结果",null);
   }
 
   @Override
-  public void exportMoreAndLess(JSONObject jsonObject, HttpServletRequest request,
+  public void exportMoreAndLess(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     List<Map<String, Object>> list = baseMapper
         .exportMoreAndLess(jsonObject.getString("nodeCode"));
@@ -676,10 +685,11 @@ public class UseWaterUnitServiceImpl extends
     String fileName = "用水单位增减情况表.xlsx";
     String templateName = "template/useWaterUnitMoreAndLess.xlsx";
     commonService.export(fileName, templateName, request, response, data);
+    systemLogService.logInsert(user,"用水单位管理","导出用水单位增减情况",null);
   }
 
   @Override
-  public List<Map<String,Object>> selectCodeByName(JSONObject jsonObject) {
+  public List<Map<String, Object>> selectCodeByName(JSONObject jsonObject) {
     return baseMapper.selectCodeByName(jsonObject);
   }
 

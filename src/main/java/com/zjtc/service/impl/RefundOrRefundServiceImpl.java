@@ -21,6 +21,7 @@ import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.RefundOrRefundService;
 import com.zjtc.service.SmsService;
+import com.zjtc.service.SystemLogService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.WaterUsePayInfoService;
 import java.util.Date;
@@ -65,6 +66,8 @@ public class RefundOrRefundServiceImpl extends
   private WebSocketUtil webSocketUtil;
   @Autowired
   private FlowNodeService flowNodeService;
+  @Autowired
+  private SystemLogService systemLogService;
   /**
    * 附件存储目录
    */
@@ -77,29 +80,19 @@ public class RefundOrRefundServiceImpl extends
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
 
-  @Override
-  public boolean saveModel(JSONObject jsonObject) {
-    RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
-    boolean result = this.insert(entity);
-    return result;
-  }
 
   @Override
-  public boolean updateModel(JSONObject jsonObject) {
+  @Transactional(rollbackFor = Exception.class)
+  public boolean updateModel(User user,JSONObject jsonObject) {
     RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
     boolean flag = true;
     if (!entity.getSysFiles().isEmpty()) {
       flag = fileService.updateBusinessId(entity.getId(), entity.getSysFiles());
     }
+    systemLogService.logInsert(user,"退减免单管理","修改",null);
     return this.updateById(entity) && flag;
   }
 
-  @Override
-  public boolean deleteModel(JSONObject jsonObject) {
-    RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
-    boolean result = this.deleteById(entity);
-    return result;
-  }
 
   @Override
   public List<RefundOrRefund> queryAll(JSONObject jsonObject) {
@@ -307,7 +300,8 @@ public class RefundOrRefundServiceImpl extends
   }
 
   @Override
-  public boolean revoke(JSONObject jsonObject) {
+  @Transactional(rollbackFor = Exception.class)
+  public boolean revoke(JSONObject jsonObject,User user) {
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
     Wrapper wrapper = new EntityWrapper();
     wrapper.in("id", ids);
@@ -316,6 +310,7 @@ public class RefundOrRefundServiceImpl extends
     boolean result = this.update(refundOrRefund, wrapper);
     /**更新撤销状态*/
     /**删除待办数据*/
+    systemLogService.logInsert(user,"退减免单管理","撤销",null);
     return result && todoService.deleteBatchIds(ids);
   }
 

@@ -159,7 +159,7 @@ public class UseWaterOriginalPlanController {
     if (null != jsonObject && null!=user) {
       try {
         jsonObject.put("nodeCode",user.getNodeCode());
-        ApiResponse result = useWaterOriginalPlanService.save(jsonObject);
+        ApiResponse result = useWaterOriginalPlanService.save(user,jsonObject);
         if(200!=result.getCode()){
           return result;
         }
@@ -377,7 +377,7 @@ public class UseWaterOriginalPlanController {
     ApiResponse apiResponse = new ApiResponse();
     if (null != user) {
       try {
-        useWaterOriginalPlanService.exportOldData(jsonObject, request, response);
+        useWaterOriginalPlanService.exportOldData(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出老户数据错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -401,7 +401,7 @@ public class UseWaterOriginalPlanController {
     ApiResponse apiResponse = new ApiResponse();
     if (null != user) {
       try {
-        useWaterOriginalPlanService.exportNewData(jsonObject, request, response);
+        useWaterOriginalPlanService.exportNewData(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出新户数据错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);

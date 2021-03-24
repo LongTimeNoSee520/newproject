@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.Finance;
-import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.User;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public interface FinanceService extends IService<Finance> {
    *
    * @param jsonObject 分页数据
    * @param nodeCode   节点编码
-   * @return 分页查询结果
+   * @return
    */
   ApiResponse queryPageFinance(JSONObject jsonObject, String nodeCode);
 
