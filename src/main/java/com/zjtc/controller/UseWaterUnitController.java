@@ -525,7 +525,7 @@ public class UseWaterUnitController {
   @RequestMapping(value = "selectCodeByName", method = RequestMethod.POST)
   public ApiResponse selectCodeByName
       (@ApiParam("{\n"
-          + "\"unitCode\":\"单位编号\"\n"
+          + "\"unitName\":\"单位编号\"\n"
           + "}")@RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     log.info("根据单位名称查询单位编号 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     User user = jwtUtil.getUserByToken(token);
