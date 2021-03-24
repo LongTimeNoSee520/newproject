@@ -63,12 +63,12 @@
 		<result property="deleteTime" column="delete_time" jdbcType="TIMESTAMP"/>
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
 </resultMap>
-	<resultMap id="fileMap" type="com.zjtc.model.vo.FileVO">
-		<id column="id" property="id" jdbcType="VARCHAR"/>
-		<result column="file_name" property="fileName" jdbcType="VARCHAR"/>
-		<result column="file_path" property="filePath" jdbcType="VARCHAR"/>
-		<result column="deleted" property="deleted" jdbcType="VARCHAR"/>
-	</resultMap>
+	<!--<resultMap id="fileMap" type="com.zjtc.model.vo.FileVO">-->
+		<!--<id column="id" property="id" jdbcType="VARCHAR"/>-->
+		<!--<result column="file_name" property="fileName" jdbcType="VARCHAR"/>-->
+		<!--<result column="file_path" property="filePath" jdbcType="VARCHAR"/>-->
+		<!--<result column="deleted" property="deleted" jdbcType="VARCHAR"/>-->
+	<!--</resultMap>-->
 	<select id="queryNum" resultType="int">
 		select count(id) from t_w_water_balance_test
     WHERE deleted ='0'
@@ -103,8 +103,9 @@
 		WHERE deleted = '0'
 		AND balance_test_id =#{id}
 	</select>
-	<select id="queryFiles" resultMap="fileMap">
-		SELECT id, file_name,#{preViewRealPath}+ file_path AS file_path,deleted
+	<select id="queryFiles" resultType="java.util.LinkedHashMap">
+		SELECT id, file_name AS fileName,#{preViewRealPath}+ file_path AS filePath,deleted,size,
+		CONVERT(varchar(100), create_time, 23) AS createTime
 		FROM t_file
 		WHERE deleted ='0'
 		AND business_id = #{id}
