@@ -110,15 +110,20 @@ public class UseWaterUnitServiceImpl extends
   @Transactional(rollbackFor = Exception.class)
   public ApiResponse save(UseWaterUnit entity, User user) {
     ApiResponse apiResponse = new ApiResponse();
-    //当前序号，取unitCode 7-9位
-    String rank = entity.getUnitCode().substring(7, 9);
+    //当前用户类型，取unitCode
+    String unitType = entity.getUnitCode().substring(4, 6);
     /**验证当前用户是否有操作当前类型的权限*/
+    /**如果已有当前类型,则无权限，反之，有权限*/
     boolean flag = useWaterUnitRoleService
         .checkUserRight(user.getId(), entity.getUnitCode(), user.getNodeCode());
-    if (!flag) {
+    List<String> unitTypeList= selectAllType(user.getNodeCode());
+    if (!flag && unitTypeList.contains(unitType)) {
       //当前用户没有操作权限
-      apiResponse.recordError("当前用户没有操作该类型权限");
+      apiResponse.recordError("当前用户没有操作该类型权限,请联系管理员!");
       return apiResponse;
+    }else{
+      //新增该用户类型权限
+     // todo:
     }
     /**验证单位编号是否重复,先查询出当前节点编码*/
     if (ValidateUnit(entity.getUnitCode(), user.getNodeCode(), entity.getId())) {
@@ -183,13 +188,18 @@ public class UseWaterUnitServiceImpl extends
   @Transactional(rollbackFor = Exception.class)
   public ApiResponse update(UseWaterUnit entity, User user) {
     ApiResponse apiResponse = new ApiResponse();
+    String unitType = entity.getUnitCode().substring(4, 6);
     /**验证当前用户是否有操作当前类型的权限*/
     boolean flag = useWaterUnitRoleService
         .checkUserRight(user.getId(), entity.getUnitCode(), user.getNodeCode());
-    if (!flag) {
+    List<String> unitTypeList= selectAllType(user.getNodeCode());
+    if (!flag && unitTypeList.contains(unitType)) {
       //当前用户没有操作权限
-      apiResponse.recordError("当前用户没有操作该类型权限");
+      apiResponse.recordError("当前用户没有操作该类型权限,请联系管理员！");
       return apiResponse;
+    }else {
+      //新增该用户类型权限
+      //todo:
     }
     /**验证单位编号是否重复,先查询出当前节点编码*/
     if (ValidateUnit(entity.getUnitCode(), user.getNodeCode(), entity.getId())) {
@@ -515,12 +525,17 @@ public class UseWaterUnitServiceImpl extends
   public ApiResponse createunitCode(User user, String unitCode, String id) {
     ApiResponse apiResponse = new ApiResponse();
     /**验证当前用户是否有新增当前批次的权限*/
+    String unitType = unitCode.substring(4, 6);
     boolean flag = useWaterUnitRoleService
         .checkUserRight(user.getId(), unitCode, user.getNodeCode());
-    if (!flag) {
+    List<String> unitTypeList= selectAllType(user.getNodeCode());
+    if (!flag && unitTypeList.contains(unitType)) {
       //当前用户没有操作权限
-      apiResponse.recordError("当前用户没有操作该类型权限");
+      apiResponse.recordError("当前用户没有操作该类型权限,请联系管理员!");
       return apiResponse;
+    }else{
+      //新增该用户类型权限
+      // todo:
     }
     /**排序号：查询当前节点编码、当前批次,节点编码后三位最大值*/
     String maxCount = baseMapper.maxUnitCode(unitCode, id, user.getNodeCode());
