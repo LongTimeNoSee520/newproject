@@ -7,6 +7,7 @@ import com.zjtc.model.User;
 import com.zjtc.service.UseWaterUnitRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,10 @@ public class UseWaterUnitRoleController {
 
   @RequestMapping(value = "selectByIdUnitTypeCodeAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "查询所有操作批次")
-  public ApiResponse selectByIdUnitTypeCodeAll( @RequestBody JSONObject jsonObject,
+  public ApiResponse selectByIdUnitTypeCodeAll(@ApiParam("{\n"
+      + "\"personId\":\"人员id\",\n"
+      + "\"nodeCode\":\"节点编码\"\n"
+      + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("查询所有操作批次 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
@@ -81,7 +85,11 @@ public class UseWaterUnitRoleController {
 
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "确认授权")
-  public ApiResponse add( @RequestBody JSONObject jsonObject,
+  public ApiResponse add(@ApiParam("{\n"
+      + "\"personId\":\"人员id\",\n"
+      + "\"nodeCode\":\"节点编码\",\n"
+      + "\"unitTypeCodes\":[\"批次号\"]\n"
+      + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("确认授权 ==== 参数{" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
