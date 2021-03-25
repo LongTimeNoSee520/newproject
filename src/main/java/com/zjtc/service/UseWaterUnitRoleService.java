@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterUnitRole;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: ZhouDaBo
@@ -37,4 +36,20 @@ public interface UseWaterUnitRoleService extends IService<UseWaterUnitRole> {
    * @return 集合
    */
   ApiResponse selectUserRelevanceRoleMessage(String nodeCode);
+
+  /**
+   * 根据人员id查询所有操作批次
+   * @param personId 人员id
+   * @param nodeCode 节点编码
+   * @return 结果集
+   */
+  ApiResponse selectByIdUnitTypeCodeAll(String personId,String nodeCode);
+
+  /**
+   * 授权单位批次号
+   * @param personId 角色id
+   * @param unitTypeCodes 单位批次号
+   * @return 响应状态
+   */
+  ApiResponse add(String personId,String nodeCode,List<String> unitTypeCodes);
 }

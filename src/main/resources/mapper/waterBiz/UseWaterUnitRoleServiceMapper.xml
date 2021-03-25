@@ -56,4 +56,20 @@
     and t1.deleted = '0'
   </select>
 
+  <select id="selectByIdUnitTypeCodeAll" resultType="java.lang.String">
+    SELECT
+    unit_type_code
+    FROM
+    t_w_use_water_unit_role
+    WHERE
+    person_id = #{personId}
+    <if test="nodeCode != null and nodeCode != ''">
+    AND node_code = #{nodeCode}
+    </if>
+  </select>
+
+  <delete id="deletedByPersonId">
+    DELETE  t_w_use_water_unit_role WHERE person_id = #{personId}
+  </delete>
+
 </mapper>

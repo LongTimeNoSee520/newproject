@@ -40,4 +40,20 @@ public interface UseWaterUnitRoleMapper extends BaseMapper<UseWaterUnitRole> {
    * @return 集合
    */
   Map<Object,List<String>> selectUserRelevanceRoleMessage(@Param("nodeCode") String nodeCode);
+
+  /**
+   * 根据人员id查询所有操作批次
+   * @param personId 人员id
+   * @param nodeCode 节点编码
+   * @return 结果集
+   */
+  List<String> selectByIdUnitTypeCodeAll(@Param("personId") String personId,@Param("nodeCode") String nodeCode);
+
+
+  /**
+   * 根据人员id删除批次号
+   * @param personId 人员id
+   * @return 结果集
+   */
+  int deletedByPersonId(@Param("personId") String personId);
 }

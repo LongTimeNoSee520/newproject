@@ -7,6 +7,7 @@ import com.zjtc.model.User;
 import com.zjtc.service.UseWaterUnitRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -54,5 +55,52 @@ public class UseWaterUnitRoleController {
     return response;
   }
 
+  @RequestMapping(value = "selectByIdUnitTypeCodeAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "查询所有操作批次")
+  public ApiResponse selectByIdUnitTypeCodeAll( @RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
+    log.info("查询所有操作批次 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null == user){
+      response.recordError("系统异常");
+      return response;
+    }
+    String personId = jsonObject.getString("personId");
+    String nodeCode = jsonObject.getString("nodeCode");
+    try {
+      response = useWaterUnitRoleService.selectByIdUnitTypeCodeAll(personId,nodeCode);
+      return response;
+    } catch (Exception e) {
+      response.recordError("查询人员信息和关联权限模块类型异常");
+      e.printStackTrace();
+    }
+    return response;
+  }
+
+
+  @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "确认授权")
+  public ApiResponse add( @RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
+    log.info("确认授权 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null == user){
+      response.recordError("系统异常");
+      return response;
+    }
+    String personId = jsonObject.getString("personId");
+    String nodeCode = jsonObject.getString("nodeCode");
+    List<String> unitTypeCodes = jsonObject.getJSONArray("unitTypeCodes").toJavaList(String.class);
+    try {
+      response = useWaterUnitRoleService.add(personId,nodeCode,unitTypeCodes);
+      return response;
+    } catch (Exception e) {
+      response.recordError("确认授权异常");
+      e.printStackTrace();
+    }
+    return response;
+  }
 
 }
