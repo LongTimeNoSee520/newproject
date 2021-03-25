@@ -250,7 +250,8 @@
     printed as printed,
     create_time as createTime,
     assess_quarter as assessQuarter,
-    planed as planed
+    planed as planed,
+    added
     FROM
     t_w_use_water_original_plan
     WHERE
@@ -801,7 +802,8 @@
     printed as printed,
     create_time as createTime,
     assess_quarter as assessQuarter,
-    planed as planed
+    planed as planed,
+    added
     FROM
     t_w_use_water_original_plan
     WHERE

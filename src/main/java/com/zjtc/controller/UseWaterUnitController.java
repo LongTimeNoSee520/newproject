@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -538,6 +539,25 @@ public class UseWaterUnitController {
         apiResponse.setData(result);
       } catch (Exception e) {
         log.error("根据单位名称查询单位编号,errMsg==={}", e.getMessage());
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @ApiOperation(value = "查询所有的用户类型")
+  @RequestMapping(value = "selectAllType/{nodeCode}", method = RequestMethod.GET)
+  public ApiResponse selectAllType(@PathVariable("nodeCode") String nodeCode) {
+    log.info("根据单位名称查询单位编号 ==== 参数{" + nodeCode != null ? nodeCode.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    if (null != nodeCode) {
+      try {
+        List<String> result = useWaterUnitService.selectAllType(nodeCode);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("查询所有的用户类型,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
       }
     } else {

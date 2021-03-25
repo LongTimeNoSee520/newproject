@@ -111,4 +111,6 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   Map<String,Object> selectByUnitCode (@Param("unitCode") String unitCode,@Param("nodeCode")String nodeCode);
 
   List<Map<String,Object>> selectCodeByName(JSONObject jsonObject);
+
+  List<String> selectAllType(String nodeCode);
 }

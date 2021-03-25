@@ -835,4 +835,12 @@
     where person_id=#{userId}
     ) as t2 on t1.unit_code_type=t1.unit_code_type
   </select>
+
+  <select id="selectAllType" resultType="java.lang.String">
+   SELECT
+    unit_code_type
+    from t_w_use_water_unit
+    where node_code=#{nodeCode}
+    GROUP BY unit_code_type
+  </select>
 </mapper>

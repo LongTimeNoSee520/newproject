@@ -698,6 +698,11 @@ public class UseWaterUnitServiceImpl extends
     return baseMapper.selectCodeByName(jsonObject);
   }
 
+  @Override
+  public List<String> selectAllType(String nodeCode) {
+    return baseMapper.selectAllType(nodeCode);
+  }
+
   /**
    * 验证单位编号是否重复
    */
