@@ -3,8 +3,8 @@ package com.zjtc.model.vo;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zjtc.model.Bank;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.File;
@@ -17,8 +17,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
 /**
  * @author yuyantian
@@ -32,6 +30,10 @@ public class UseWaterUnitVo extends Model<UseWaterUnitVo> {
   @ApiModelProperty("主键")
   @TableId(value = "id", type = IdType.UUID)
   private String id;
+
+  @ApiModelProperty(value = "节点编码")
+  @TableField(value = "node_code", exist = false)
+  private String nodeCode;
 
   @ApiModelProperty(value = "单位编码，必填")
   @TableField(value = "unit_code", exist = false)
@@ -89,12 +91,16 @@ public class UseWaterUnitVo extends Model<UseWaterUnitVo> {
   @TableField(value = "remark", exist = false)
   private String remark;
 
+  @ApiModelProperty(value = "是否已删除,0：否，1：是")
+  @TableField(value = "deleted", exist = false)
+  private String deleted;
+
   @ApiModelProperty(value = "部门")
   @TableField(value = "department", exist = false)
   private String department;
 
   @ApiModelProperty(value = "所属区域")
-  @TableField(value = "area_country", exist = true)
+  @TableField(value = "area_country", exist = false)
   private String areaCountry;
 
   @ApiModelProperty(value = "所属区域名称")
@@ -105,6 +111,11 @@ public class UseWaterUnitVo extends Model<UseWaterUnitVo> {
   @TableField(value = "abnormal", exist = false)
   private String abnormal;
 
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+  @ApiModelProperty(value = "创建时间")
+  @TableField(value = "create_time", exist = false)
+  private Date createTime;
+
   @ApiModelProperty(value = "异常原因")
   @TableField(value = "abnormal_cause", exist = false)
   private String abnormalCause;
@@ -114,7 +125,7 @@ public class UseWaterUnitVo extends Model<UseWaterUnitVo> {
   private String responsibilityCode;
 
   @ApiModelProperty(value = "批次,取unit_code 3-4 位")
-  @TableField(value = "unit_code_group", exist = true)
+  @TableField(value = "unit_code_group", exist = false)
   private String unitCodeGroup;
 
   @ApiModelProperty(value = "类型,取unit_code 5-6 位")
@@ -200,6 +211,10 @@ public class UseWaterUnitVo extends Model<UseWaterUnitVo> {
   @ApiModelProperty(value = "单位名称修改日志")
   @TableField(exist = false)
   private List<UseWaterUnitModify> ModifyList;
+
+  @ApiModelProperty(value = "主户单位id")
+  @TableField(exist = false)
+  private String imainUnitId;
 
   @Override
   protected Serializable pkVal() {

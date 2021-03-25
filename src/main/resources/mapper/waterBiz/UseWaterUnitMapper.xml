@@ -487,6 +487,7 @@
     a.id ,
     a.unit_code as unitCode,
     a.unit_name as unitName ,
+    a.imain,
     STUFF((
     SELECT ',' + water_meter_code
     FROM t_w_use_water_unit_meter

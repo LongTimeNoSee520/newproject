@@ -1,15 +1,11 @@
 package com.zjtc.model.vo;
 
 import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
-import javax.jws.WebParam.Mode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 相关编号信息
@@ -29,6 +25,9 @@ public class UseWaterUnitRefVo  extends Model<UseWaterUnitRefVo> {
 
   @ApiModelProperty("单位名称")
   private String unitName;
+
+  @ApiModelProperty("是否主户")
+  private String imain;
 
   @ApiModelProperty("水表档案号")
   private String waterMeterCode;

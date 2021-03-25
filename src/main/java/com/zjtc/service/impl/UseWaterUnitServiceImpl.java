@@ -142,6 +142,7 @@ public class UseWaterUnitServiceImpl extends
     entity.setUnitCodeGroup(entity.getUnitCode().substring(2, 4));
     //类型
     entity.setUnitCodeType(entity.getUnitCode().substring(4, 6));
+    UseWaterUnit param= entity;
     this.insert(entity);
     /**新增水表数据*/
     if (!entity.getMeterList().isEmpty()) {
@@ -213,7 +214,7 @@ public class UseWaterUnitServiceImpl extends
             user.getUsername(), user.getId());
     this.updateById(entity);
     /**1.2选择主户*/
-    String userWaterUnitId = entity.getUseWaterUnitIdRef(); //选择的主户
+    String userWaterUnitId = entity.getImainUnitId(); //选择的主户
     if (StringUtils.isNotBlank(userWaterUnitId)) {
       /**1.2.1如果选择主户，是相关联的数据，只修改主户字段*/
       List<String> redIds = useWaterUnitRefService.findIdList(entity.getId(), user.getNodeCode());
@@ -450,6 +451,10 @@ public class UseWaterUnitServiceImpl extends
           if (!useWaterUnitRefList.isEmpty()) {
             for (UseWaterUnitRefVo useWaterUnitRefVo : useWaterUnitRefList) {
               useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
+              //主户单位id
+              if("1".equals(useWaterUnitRefVo.getImain())){
+                item.setImainUnitId(useWaterUnitRefVo.getId());
+              }
             }
           }
           if (useWaterUnitIdRef.length() > 0) {

@@ -130,7 +130,7 @@ public class UseWaterUnitController {
           + "    \"unitCode\":\"单位编号\",\n"
           + "    \"unitName\":\"单位名称\",\n"
           + "    \"industry\":\"所属行业，取所属行业id\",\n"
-          + "    \"useWaterUnitIdRef\":\"主户选择，取选择的单位id\",\n"
+          + "    \"imainUnitId\":\"主户选择，取选择的单位id\",\n"
           + "    \"areaCountry\":\"字典：area_country_code\",\n"
           + "    \"unitAddress\":\"地址\",\n"
           + "    \"zipAddress\":\"邮寄地址\",\n"

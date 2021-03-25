@@ -13,7 +13,6 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -53,10 +52,6 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
   @ApiModelProperty(value = "所属行业id")
   @TableField(value = "industry", exist = true)
   private String industry;
-
-  @ApiModelProperty(value = "所属行业名称")
-  @TableField(exist = false)
-  private String industryName;
 
   @ApiModelProperty(value = "邮寄名称")
   @TableField(value = "zip_name", exist = true)
@@ -110,10 +105,6 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
   @ApiModelProperty(value = "所属区域")
   @TableField(value = "area_country", exist = true)
   private String areaCountry;
-
-  @ApiModelProperty(value = "所属区域名称")
-  @TableField(exist = false)
-  private String areaCountryName;
 
   @ApiModelProperty(value = "是否异常")
   @TableField(value = "abnormal", exist = true)
@@ -170,6 +161,10 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
   @ApiModelProperty(value = "单位名称修改日志")
   @TableField(exist = false)
   private List<UseWaterUnitModify> ModifyList;
+
+  @ApiModelProperty(value = "主户单位id")
+  @TableField(exist = false)
+  private String imainUnitId;
 
   @Override
   protected Serializable pkVal() {
