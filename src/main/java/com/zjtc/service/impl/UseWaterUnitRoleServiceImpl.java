@@ -13,6 +13,7 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 /**
  * @Author: ZhouDaBo
@@ -93,6 +94,7 @@ public class UseWaterUnitRoleServiceImpl extends
     int i = this.baseMapper.deletedByPersonId(personId);
     if (i == 0) {
       response.recordError("系统异常");
+      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
       return response;
     }
 //    批量新增
@@ -107,11 +109,11 @@ public class UseWaterUnitRoleServiceImpl extends
     }
     boolean b = this.insertBatch(unitRoles);
     if (b) {
-      response.recordError("授权成功");
-      return response;
-    } else {
-      response.recordError("授权失败");
+      response.setCode(200);
+      response.setMessage("授权成功");
       return response;
     }
+    response.recordError("授权失败");
+    return response;
   }
 }
