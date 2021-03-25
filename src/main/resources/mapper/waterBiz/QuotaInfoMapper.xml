@@ -7,6 +7,7 @@
     <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
     <result column="parent_id" property="parentId" jdbcType="VARCHAR"/>
     <result column="industry_name" property="industryName" jdbcType="VARCHAR"/>
+    <result column="industry_code" property="industryCode" jdbcType="VARCHAR"/>
     <result column="quota_unit" property="quotaUnit" jdbcType="VARCHAR"/>
     <result column="quota_value" property="quotaValue" jdbcType="FLOAT"/>
     <result column="common_value" property="commonValue" jdbcType="FLOAT"/>

@@ -45,6 +45,7 @@ public class QuotaInfoController {
   @RequestMapping(value = "add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse add(@RequestHeader("token") String token, @ApiParam("{\n"
       + "  \"advanceValue\":\"先进值,float\",\n"
+      + "  \"industryCode\": \"行业code\",\n"
       + "  \"industryName\": \"行业名称\",\n"
       + "  \"parentId\": \"上级行业id\",\n"
       + "  \"quotaUnit\": \"定额单位\",\n"
