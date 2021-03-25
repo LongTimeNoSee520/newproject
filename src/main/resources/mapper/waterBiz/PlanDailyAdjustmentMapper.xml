@@ -128,6 +128,8 @@
     SELECT unit_type_code
     FROM t_w_use_water_unit_role
     WHERE person_id = #{userId}
+    UNION  ALL
+    SELECT 'NO_THIS_CODE' AS unit_type_code
     )
     <if test="unitCode != null and unitCode != ''">
       and unit_code like '%${unitCode}%'
@@ -170,6 +172,8 @@
     SELECT unit_type_code
     FROM t_w_use_water_unit_role
     WHERE person_id = #{userId}
+    UNION  ALL
+    SELECT 'NO_THIS_CODE' AS unit_type_code
     )
     <if test="unitCode != null and unitCode != ''">
       and unit_code like '%${unitCode}%'
@@ -226,6 +230,8 @@
     SELECT unit_type_code
     FROM t_w_use_water_unit_role
     WHERE person_id = #{userId}
+    UNION  ALL
+    SELECT 'NO_THIS_CODE' AS unit_type_code
     )
     <if test="unitCode != null and unitCode != ''">
       and unit_code like '%${unitCode}%'
@@ -272,6 +278,8 @@
            SELECT unit_type_code
            FROM t_w_use_water_unit_role
            WHERE person_id = #{userId}
+           UNION  ALL
+           SELECT 'NO_THIS_CODE' AS unit_type_code
       )
     )
     AND plan_year = #{thisMonthYear}
@@ -327,6 +335,8 @@
         SELECT unit_type_code
         FROM t_w_use_water_unit_role
         WHERE person_id = #{userId}
+        UNION  ALL
+        SELECT 'NO_THIS_CODE' AS unit_type_code
       )
     )
     AND p.plan_year = #{planYear}
@@ -368,6 +378,8 @@
     SELECT unit_type_code
     FROM t_w_use_water_unit_role
     WHERE person_id = #{userId}
+    UNION  ALL
+    SELECT 'NO_THIS_CODE' AS unit_type_code
     )
     <if test="unitCode != null and unitCode != ''">and unit_code like '%${unitCode}%'
     </if>

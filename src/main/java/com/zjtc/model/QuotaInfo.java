@@ -37,6 +37,10 @@ public class QuotaInfo extends Model<QuotaInfo> {
   @TableField(value = "parent_id", exist = true)
   private String parentId;
 
+  @ApiModelProperty("上级行业名称")
+  @TableField(value = "parent_name", exist = false)
+  private String parentName;
+
   @ApiModelProperty(value = "行业名称")
   @TableField(value = "industry_name", exist = true)
   private String industryName;

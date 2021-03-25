@@ -82,6 +82,8 @@
 		SELECT unit_type_code
 		FROM t_w_use_water_unit_role
 		WHERE person_id = #{userId}
+		UNION  ALL
+		SELECT 'NO_THIS_CODE' AS unit_type_code
 		)
 		<if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
 		<if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>

@@ -49,6 +49,8 @@
            SELECT unit_type_code
            FROM t_w_use_water_unit_role
            WHERE person_id = #{userId}
+            UNION  ALL
+            SELECT 'NO_THIS_CODE' AS unit_type_code
            ) <!-- in条件是查询当前登录者能查询的类型的单位基建计划年份-->
             )t1
     ORDER BY t1.plan_year ASC
@@ -65,6 +67,8 @@
            SELECT unit_type_code
            FROM t_w_use_water_unit_role
            WHERE person_id = #{userId}
+            UNION  ALL
+            SELECT 'NO_THIS_CODE' AS unit_type_code
            )
           <if test="planYear != null">AND plan_year = #{planYear} </if>
           <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
@@ -94,6 +98,8 @@
                           SELECT unit_type_code
                           FROM t_w_use_water_unit_role
                           WHERE person_id = #{userId}
+                          UNION  ALL
+                          SELECT 'NO_THIS_CODE' AS unit_type_code
                           )
                       <if test="planYear != null">AND plan_year = #{planYear} </if>
                       <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
@@ -127,6 +133,8 @@
     SELECT unit_type_code
     FROM t_w_use_water_unit_role
     WHERE person_id = #{userId}
+    UNION  ALL
+    SELECT 'NO_THIS_CODE' AS unit_type_code
     )
     <if test="planYear != null">AND plan_year = #{planYear} </if>
     <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>

@@ -79,6 +79,7 @@ public class QuotaInfoController {
           + "  \"id\": \"id\",\n"
           + "  \"advanceValue\":\"先进值,float\",\n"
           + "  \"industryName\": \"行业名称\",\n"
+          + "  \"industryCode\": \"行业code\",\n"
           + "  \"parentId\": \"上级行业id\",\n"
           + "  \"quotaUnit\": \"定额单位\",\n"
           + "  \"quotaValue\":\"定额标准单位值,float\",\n"

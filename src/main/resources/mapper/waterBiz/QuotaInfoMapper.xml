@@ -6,6 +6,7 @@
     <id column="id" property="id" jdbcType="VARCHAR"/>
     <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
     <result column="parent_id" property="parentId" jdbcType="VARCHAR"/>
+    <result column="parent_name" property="parentName" jdbcType="VARCHAR"/>
     <result column="industry_name" property="industryName" jdbcType="VARCHAR"/>
     <result column="industry_code" property="industryCode" jdbcType="VARCHAR"/>
     <result column="quota_unit" property="quotaUnit" jdbcType="VARCHAR"/>
@@ -20,7 +21,7 @@
   </resultMap>
 
   <select id="queryAll" resultMap="BaseResultMap">
-    SELECT * FROM t_w_quota_info
+    SELECT t1.*,(SELECT industry_name FROM t_w_quota_info WHERE id = t1.parent_id) AS parent_name FROM t_w_quota_info t1
     WHERE deleted ='0'
     <if test="ids != null">
       AND id IN
@@ -56,7 +57,7 @@
       )t1
   </select>
   <select id="queryPage" resultMap="BaseResultMap">
-    SELECT TOP  ${size} t1.*
+    SELECT TOP  ${size} t1.*,(SELECT industry_name FROM  t_w_quota_info WHERE id = t1.parent_id) AS parent_name
     FROM(SELECT row_number () OVER ( ORDER BY [create_time] DESC ,[id]) AS rownumber,*
     FROM
     t_w_quota_info
@@ -75,6 +76,7 @@
     <if test="quotaInfo.nodeCode != null and quotaInfo.nodeCode != ''">,node_code = #{quotaInfo.nodeCode} </if>
     <if test="quotaInfo.parentId != null and quotaInfo.parentId != ''">,parent_id = #{quotaInfo.parentId} </if>
     <if test="quotaInfo.industryName != null and quotaInfo.industryName != ''">,industry_name = #{quotaInfo.industryName} </if>
+    <if test="quotaInfo.industryCode != null and quotaInfo.industryCode != ''">,industry_code = #{quotaInfo.industryCode} </if>
     <if test="quotaInfo.quotaUnit != null and quotaInfo.quotaUnit != ''">,quota_unit = #{quotaInfo.quotaUnit} </if>
     <if test="quotaInfo.quotaValue != null">,quota_value = #{quotaInfo.quotaValue} </if>
     <if test="quotaInfo.remark != null and quotaInfo.remark != ''">,remark = #{quotaInfo.remark} </if>
