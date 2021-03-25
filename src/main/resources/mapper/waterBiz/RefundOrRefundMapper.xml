@@ -105,6 +105,7 @@
     else '未知' end as typeName
     from t_w_refund_or_refund t1
     where node_code=#{json.nodeCode}
+    and is_revoke='0'
     <!--待审核-->
     <if test="json.keyWrod==1">
       and id in(select busIness_id as id from

@@ -320,6 +320,7 @@ public class RefundOrRefundServiceImpl extends
     entityWrapper.eq("pay_id", payId);
     entityWrapper.eq("node_code", nodeCode);
     entityWrapper.eq("status", AuditConstants.AWAIT_APPROVED);
+    entityWrapper.eq("is_revoke","0");
     return this.selectCount(entityWrapper) > 0 ? true : false;
   }
 
