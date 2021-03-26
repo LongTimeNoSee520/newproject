@@ -447,7 +447,6 @@ public class UseWaterUnitServiceImpl extends
   public Map<String, Object> queryPage(JSONObject jsonObject) {
     String nodeCode = jsonObject.getString("nodeCode");
     Map<String, Object> page = new LinkedHashMap<>();
-    jsonObject.put("dictCode", AREA_COUNTRY_CODE);
     List<UseWaterUnitVo> result = baseMapper.queryPage(jsonObject);
     if (!result.isEmpty()) {
       for (UseWaterUnitVo item : result) {
@@ -478,7 +477,7 @@ public class UseWaterUnitServiceImpl extends
         }
         //查询所属区域
         item.setAreaCountryName(
-            dictUtils.getDictItemName("area_country_code", item.getAreaCountry(), nodeCode));
+            dictUtils.getDictItemName(AREA_COUNTRY_CODE, item.getAreaCountry(), nodeCode));
       }
     }
     page.put("records", result);
