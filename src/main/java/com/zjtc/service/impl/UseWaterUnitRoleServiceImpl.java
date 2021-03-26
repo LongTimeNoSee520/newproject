@@ -116,4 +116,34 @@ public class UseWaterUnitRoleServiceImpl extends
     response.recordError("授权失败");
     return response;
   }
+
+
+  @Override
+  public ApiResponse addUseWaterUnitRole(String personId, String nodeCode,
+      List<String> unitTypeCodes) {
+
+    ApiResponse response = new ApiResponse();
+    List<UseWaterUnitRole> unitRoles = new ArrayList<>();
+    if (StringUtils.isBlank(personId) || StringUtils.isBlank(nodeCode) || unitTypeCodes.isEmpty()) {
+      response.recordError("系统异常");
+      return response;
+    }
+    //    批量新增
+    for (String unitTypeCode : unitTypeCodes) {
+      UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
+      useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
+      useWaterUnitRole.setPersonId(personId);
+      useWaterUnitRole.setUnitTypeCode(unitTypeCode);
+      useWaterUnitRole.setNodeCode(nodeCode);
+      useWaterUnitRole.setCreateTime(new Date());
+      unitRoles.add(useWaterUnitRole);
+    }
+    boolean b = this.saveBatch(unitRoles);
+    if (b) {
+      response.setCode(200);
+      return response;
+    }
+    response.recordError("授权失败");
+    return response;
+  }
 }

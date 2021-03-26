@@ -52,4 +52,12 @@ public interface UseWaterUnitRoleService extends IService<UseWaterUnitRole> {
    * @return 响应状态
    */
   ApiResponse add(String personId,String nodeCode,List<String> unitTypeCodes);
+
+  /**
+   * 授权单位批次号
+   * @param personId 角色id
+   * @param unitTypeCodes 单位批次号
+   * @return 响应状态
+   */
+  ApiResponse addUseWaterUnitRole(String personId,String nodeCode,List<String> unitTypeCodes);
 }
