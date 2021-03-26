@@ -154,11 +154,6 @@
 	<select id="queryPage" resultMap="PageResultMap">
 		SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_code,t1.unit_name,#{preViewRealPath} AS preViewRealPath,
 		t1.water_meter_code,t1.paper_type,<!--申报(调整)类型code-->
-		(SELECT dict_item_name
-		  FROM t_dict_item
-		  WHERE dict_id =(SELECT id FROM t_dict WHERE dict_code = 'changeType')
-		  AND  dict_item_code = t1.paper_type
-		)AS paper_type_name,<!--申报(调整)类型名称-->
 		CASE t1.data_sources WHEN '1' THEN '网上申报' WHEN '2' THEN '现场申报' END AS data_sources,
 		t1.create_time,t1.creater_id,t1.creater_name,t1.plan_year,t1.change_quarter,t1.cur_year_plan,
 	  t1.first_water,t1.second_water,t1.add_number,t1.add_way,t1.minus_pay_status,t1.balance_test,

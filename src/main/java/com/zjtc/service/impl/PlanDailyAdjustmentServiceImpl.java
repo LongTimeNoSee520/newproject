@@ -9,6 +9,7 @@ import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.constant.SystemConstants;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.PlanDailyAdjustmentMapper;
@@ -23,6 +24,7 @@ import com.zjtc.model.vo.PrintVO;
 import com.zjtc.model.vo.SendListVO;
 import com.zjtc.model.vo.UseWaterPlanExportVO;
 import com.zjtc.service.CommonService;
+import com.zjtc.service.DictItemService;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.FileService;
 import com.zjtc.service.FlowExampleService;
@@ -87,6 +89,8 @@ public class PlanDailyAdjustmentServiceImpl extends
   private WebSocketUtil webSocketUtil;
   @Autowired
   private SystemLogService systemLogService;
+  @Autowired
+  private DictUtils dictUtils;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -144,7 +148,19 @@ public class PlanDailyAdjustmentServiceImpl extends
 
     /**查出满足条件的数据*/
     List<PlanDailyAdjustmentVO> records = this.baseMapper.queryPage(map);
-    result.put("records", records);
+    List<PlanDailyAdjustmentVO> results = new ArrayList<>();
+    for (PlanDailyAdjustmentVO planDailyAdjustmentVO : records) {
+      for (Map<String, Object> map1 : planDailyAdjustmentVO.getAdjustList()) {
+        String dictItemCode = map1.get("planType").toString();
+        if (!dictItemCode.isEmpty()) {
+          map1.put("planTypeName", dictUtils
+              .getDictItemName("changeType", map1.get("planType").toString(),
+                  planDailyAdjustmentVO.getNodeCode()));
+        }
+      }
+      results.add(planDailyAdjustmentVO);
+    }
+    result.put("records", results);
     return result;
   }
 

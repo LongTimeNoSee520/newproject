@@ -3,6 +3,7 @@ package com.zjtc.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.DictUtils;
 import com.zjtc.mapper.waterBiz.UseWaterBasePlanMapper;
 import com.zjtc.model.UseWaterBasePlan;
 import com.zjtc.model.User;
@@ -43,6 +44,8 @@ public class UseWaterBasePlanServiceImpl extends
   private CommonService commonService;
   @Autowired
   private SystemLogService systemLogService;
+  @Autowired
+  private DictUtils dictUtils;
 
   @Override
   @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
@@ -179,6 +182,13 @@ public class UseWaterBasePlanServiceImpl extends
 
     /**查出满足条件的数据*/
     List<UseWaterBasePlan> useWaterBasePlanList = this.baseMapper.queryPage(map);
+    for (UseWaterBasePlan basePlan: useWaterBasePlanList){
+      if (!basePlan.getNature().isEmpty()) {
+        basePlan.setNatureName(dictUtils
+            .getDictItemName("useWaterNature", basePlan.getNature(),
+                basePlan.getNodeCode()));
+      }
+    }
     result.put("records", useWaterBasePlanList);
     return result;
   }

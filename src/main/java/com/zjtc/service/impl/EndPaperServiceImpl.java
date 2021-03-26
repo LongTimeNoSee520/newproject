@@ -9,6 +9,7 @@ import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.constant.SystemConstants;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.HttpUtil;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.base.util.WebSocketUtil;
@@ -101,6 +102,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   @Autowired
   private SmsSendService smsSendService;
 
+  @Autowired
+  private DictUtils dictUtils;
+
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
 
@@ -174,6 +178,11 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
      }else {
        paperVO.setNeedAudit(true);
      }
+     /**查询字典项名称*/
+      if (!paperVO.getPaperType().isEmpty()) {
+        paperVO.setPaperTypeName(
+            dictUtils.getDictItemName("changeType", paperVO.getPaperType(), paperVO.getNodeCode()));
+      }
     }
     result.put("records", records);
     return result;
