@@ -124,7 +124,7 @@ public class UseWaterUnitServiceImpl extends
       //新增该用户类型权限
       List<String> strArr=new ArrayList<>();
       strArr.add(unitType);
-      useWaterUnitRoleService.add(user.getId(),user.getNodeCode(),strArr);
+      useWaterUnitRoleService.addUseWaterUnitRole(user.getId(),user.getNodeCode(),strArr);
     }
     /**验证单位编号是否重复,先查询出当前节点编码*/
     if (ValidateUnit(entity.getUnitCode(), user.getNodeCode(), entity.getId())) {
@@ -202,7 +202,7 @@ public class UseWaterUnitServiceImpl extends
       //新增该用户类型权限
       List<String> strArr=new ArrayList<>();
       strArr.add(unitType);
-      useWaterUnitRoleService.add(user.getId(),user.getNodeCode(),strArr);
+      useWaterUnitRoleService.addUseWaterUnitRole(user.getId(),user.getNodeCode(),strArr);
     }
     /**验证单位编号是否重复,先查询出当前节点编码*/
     if (ValidateUnit(entity.getUnitCode(), user.getNodeCode(), entity.getId())) {
@@ -539,7 +539,7 @@ public class UseWaterUnitServiceImpl extends
       //新增该用户类型权限
       List<String> strArr=new ArrayList<>();
       strArr.add(unitType);
-      useWaterUnitRoleService.add(user.getId(),user.getNodeCode(),strArr);
+      useWaterUnitRoleService.addUseWaterUnitRole(user.getId(),user.getNodeCode(),strArr);
     }
     /**排序号：查询当前节点编码、当前批次,节点编码后三位最大值*/
     String maxCount = baseMapper.maxUnitCode(unitCode, id, user.getNodeCode());
