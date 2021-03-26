@@ -1,6 +1,6 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.ContactsMapper;
 import com.zjtc.model.Contacts;
 import com.zjtc.service.ContactsService;
@@ -69,7 +69,7 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
          contacts.setUnitCode(unitCode);
          contacts.setUseWaterUnitId(useWaterUnitId);
     }
-    return this.insertBatch(contactsList);
+    return this.saveBatch(contactsList);
   }
   }
 

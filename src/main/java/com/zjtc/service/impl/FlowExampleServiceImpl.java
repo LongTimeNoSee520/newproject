@@ -1,8 +1,8 @@
 package com.zjtc.service.impl;
 
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.mapper.waterBiz.FlowExampleMapper;
 import com.zjtc.model.FlowExample;
@@ -40,10 +40,10 @@ public class FlowExampleServiceImpl extends ServiceImpl<FlowExampleMapper, FlowE
 
   @Override
   public boolean edit(String nodeCode, String businessId) {
-    EntityWrapper entityWrapper=new EntityWrapper();
-    entityWrapper.eq("node_code",nodeCode);
-    entityWrapper.eq("business_id",businessId);
-    FlowExample flowExample= this.selectOne(entityWrapper);
+    QueryWrapper entityQueryWrapper=new QueryWrapper();
+    entityQueryWrapper.eq("node_code",nodeCode);
+    entityQueryWrapper.eq("business_id",businessId);
+    FlowExample flowExample= this.getOne(entityQueryWrapper);
     flowExample.setFlowStatus("2");
     return this.updateById(flowExample);
   }

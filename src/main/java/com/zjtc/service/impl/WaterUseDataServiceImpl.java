@@ -1,7 +1,6 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.WaterUseDataMapper;
 import com.zjtc.model.WaterUseData;
 import com.zjtc.service.WaterUseDataService;

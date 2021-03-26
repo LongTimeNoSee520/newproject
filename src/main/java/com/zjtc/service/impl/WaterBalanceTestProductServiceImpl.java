@@ -1,6 +1,6 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.WaterBalanceTestProductMapper;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterBalanceTestProduct;
@@ -37,7 +37,7 @@ public class WaterBalanceTestProductServiceImpl extends
          product.setCreateTime(new Date());
          product.setBalanceTestId(balanceTestId);
          product.setDeleted("0");
-         this.insert(product);
+         this.save(product);
 		}
 	}
 }

@@ -1,9 +1,8 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.UseWaterOriginalPlanMapper;
 import com.zjtc.model.Algorithm;
@@ -81,7 +80,7 @@ public class UseWaterOriginalPlanServiceImpl extends
     if (200 != apiResponse.getCode()) {
       return apiResponse;
     }
-    this.insertOrUpdateBatch(entity);
+    this.saveOrUpdateBatch(entity);
     systemLogService.logInsert(user,"用水计划编制","新增",null);
     return apiResponse;
   }
@@ -190,11 +189,11 @@ public class UseWaterOriginalPlanServiceImpl extends
       return apiResponse;
     }
     /**2.数据保存至用水计划原始表*/
-    this.insertOrUpdateBatch(entity);
+    this.saveOrUpdateBatch(entity);
     /**3.保存至用水计划表*/
-    useWaterPlanService.insertBatch(useWaterPlanList);
+    useWaterPlanService.saveBatch(useWaterPlanList);
     /**4.保存至自平表*/
-    useWaterSelfDefinePlanService.insertBatch(selfDefinePlanList);
+    useWaterSelfDefinePlanService.saveBatch(selfDefinePlanList);
     /**微信公众号：通知用水单位*/
     if (!unitCodeList.isEmpty()) {
       for (Map map : unitCodeList) {
@@ -733,10 +732,10 @@ public class UseWaterOriginalPlanServiceImpl extends
 
   @Override
   public boolean deleteAllNotplaned(String nodeCode) {
-    Wrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("planed", "0");
     wrapper.eq("node_code", nodeCode);
-    return this.delete(wrapper);
+    return this.remove(wrapper);
   }
 
   @Override
@@ -964,10 +963,10 @@ public class UseWaterOriginalPlanServiceImpl extends
    */
   private boolean findPlanRecord(int year, String nodeCode) {
     /**这里不需要查询人员的类型权限，因为保存编制初始化第一次保存一定是保存所有*/
-    Wrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("node_code", nodeCode);
     wrapper.eq("plan_year", year);
-    int count = useWaterPlanService.selectCount(wrapper);
+    int count = useWaterPlanService.count(wrapper);
     return count > 0 ? false : true;
   }
 

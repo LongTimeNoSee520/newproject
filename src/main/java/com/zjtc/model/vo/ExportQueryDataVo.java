@@ -1,5 +1,5 @@
 package com.zjtc.model.vo;
-import com.baomidou.mybatisplus.annotations.TableField;
+
 import com.zjtc.model.Bank;
 import com.zjtc.model.Contacts;
 import io.swagger.annotations.ApiModel;

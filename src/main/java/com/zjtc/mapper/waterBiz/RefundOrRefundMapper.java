@@ -1,7 +1,7 @@
 package com.zjtc.mapper.waterBiz;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.RefundOrRefund;
 import java.util.List;

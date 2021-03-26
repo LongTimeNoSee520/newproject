@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.FileUtil;
 import com.zjtc.base.util.PoiUtil;
@@ -68,7 +68,7 @@ public class WaterSavingEfficiencyManageServiceImpl extends
       }
       if(!updateList.isEmpty()){
         //新增或修改
-        result=insertOrUpdateBatch(updateList);
+        result=saveOrUpdateBatch(updateList);
       }
       if(!deleteList.isEmpty()){
         //逻辑删除
@@ -118,7 +118,7 @@ public class WaterSavingEfficiencyManageServiceImpl extends
         manage.setLevelAnalysis(item[8]);
         entity.add(manage);
       }
-      this.insertBatch(entity);
+      this.saveBatch(entity);
     } else {
       response.recordError("无导入数据，请核对！");
     }

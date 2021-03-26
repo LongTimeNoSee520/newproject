@@ -1,11 +1,9 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.waterBiz.FileMapper;
 import com.zjtc.model.File;
@@ -16,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +30,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
   @Override
   public boolean saveModel(JSONObject jsonObject) {
     File entity = jsonObject.toJavaObject(File.class);
-    boolean result = this.insert(entity);
+    boolean result = this.save(entity);
     return result;
   }
 
@@ -45,20 +44,13 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
   @Override
   public boolean deleteModel(JSONObject jsonObject) {
     File entity = jsonObject.toJavaObject(File.class);
-    boolean result = this.deleteById(entity);
+    boolean result = this.removeById(entity);
     return result;
   }
 
   @Override
   public Page<File> queryPage(JSONObject jsonObject) {
-    File entity = jsonObject.toJavaObject(File.class);
-    Page<File> page = new Page<File>(jsonObject.getInteger("current"),
-        jsonObject.getInteger("size"));
-    page.setSearchCount(true);
-    page.setOptimizeCountSql(true);
-    EntityWrapper<File> eWrapper = new EntityWrapper<File>(entity);
-    Page<File> result = this.selectPage(page, eWrapper);
-    return result;
+   return null;
   }
 
   @Override
@@ -99,7 +91,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     if (null != sysAttrFiles) {
       for (File sysAttrFile : sysAttrFiles) {
         if (null != sysAttrFile.getId() && sysAttrFile.getDeleted().equals("0")) {
-          sysAttrFile = this.selectById(sysAttrFile.getId());
+          sysAttrFile = this.getById(sysAttrFile.getId());
           sysAttrFile.setBusinessId(businessId);
           updatelist.add(sysAttrFile);
         } else if (null != sysAttrFile.getId() && sysAttrFile.getDeleted().equals("1")) {
@@ -112,7 +104,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
       if (deleteList.size() > 0) {
         File file=new File();
         file.setDeleted("1");
-        Wrapper wrapper=new EntityWrapper();
+        QueryWrapper wrapper=new QueryWrapper();
         wrapper.in("id",deleteList);
         result = this.update(file,wrapper);
       }
@@ -123,20 +115,20 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
 
   @Override
   public boolean removeByBusinessId(String businessId) {
-    EntityWrapper entityWrapper=new EntityWrapper();
-    entityWrapper.eq("business_id",businessId);
+    QueryWrapper entityQueryWrapper=new QueryWrapper();
+    entityQueryWrapper.eq("business_id",businessId);
     File file=new File();
     file.setDeleted("1");
-    return update(file,entityWrapper);
+    return update(file,entityQueryWrapper);
   }
 
   @Override
   public boolean removeByBusinessIds(List<String> businessIds) {
-    EntityWrapper entityWrapper=new EntityWrapper();
-    entityWrapper.in("business_id",businessIds);
+    QueryWrapper entityQueryWrapper=new QueryWrapper();
+    entityQueryWrapper.in("business_id",businessIds);
     File file=new File();
     file.setDeleted("1");
-    return update(file,entityWrapper);
+    return update(file,entityQueryWrapper);
   }
 
 
@@ -144,14 +136,14 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
   public boolean removeBusinessId(String fileId) {
     boolean result = false;
     if (StringUtils.isNotEmpty(fileId)) {
-      Wrapper<File> wrapper = new EntityWrapper<>();
+      QueryWrapper<File> wrapper = new QueryWrapper<>();
       if (fileId.indexOf(",") > 0) {
         String[] ids = fileId.split(",");
         List<String> idsList = Arrays.asList(ids);
-        result = this.deleteBatchIds(idsList);
+        result = this.removeByIds(idsList);
 
       } else {
-        result = this.deleteById(fileId);
+        result = this.removeById(fileId);
       }
     }
 

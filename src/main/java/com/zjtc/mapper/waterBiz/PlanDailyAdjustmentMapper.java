@@ -1,12 +1,11 @@
 package com.zjtc.mapper.waterBiz;
 
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.vo.PlanDailyAdjustmentVO;
 import com.zjtc.model.vo.SendListVO;
 import com.zjtc.model.vo.UseWaterPlanExportVO;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;

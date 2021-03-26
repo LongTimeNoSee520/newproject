@@ -1,8 +1,7 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.UseWaterUnitRefMapper;
 import com.zjtc.model.UseWaterUnitRef;
 import com.zjtc.service.UseWaterUnitRefService;
@@ -31,9 +30,9 @@ public class UseWaterUnitRefServiceImpl extends
     sum.add(rootId);
     //根据根节点遍历树
     //查询当前单位id得所有关联单位id
-    Wrapper entityWrapper = new EntityWrapper();
-    entityWrapper.eq("use_water_unit_id", rootId);
-    List<UseWaterUnitRef> useWaterUnitRefs = this.selectList(entityWrapper);
+    QueryWrapper entityQueryWrapper = new QueryWrapper();
+    entityQueryWrapper.eq("use_water_unit_id", rootId);
+    List<UseWaterUnitRef> useWaterUnitRefs = this.list(entityQueryWrapper);
     List<String> result =new ArrayList<>();
     if (!useWaterUnitRefs.isEmpty()) {
       for(UseWaterUnitRef item:useWaterUnitRefs ){
@@ -55,7 +54,7 @@ public class UseWaterUnitRefServiceImpl extends
     useWaterUnitRef.setCreateTime(new Date());
     useWaterUnitRef.setUseWaterUnitId(useWaterUnitId);
     useWaterUnitRef.setUseWaterUnitIdRef(useWaterUnitIdRef);
-    return this.insert(useWaterUnitRef);
+    return this.save(useWaterUnitRef);
   }
 
   @Override
@@ -66,11 +65,11 @@ public class UseWaterUnitRefServiceImpl extends
   private void recursion(List<String> param) {
     //查询当前单位id得所有关联单位id
     List<String> refList = new ArrayList<>();
-    Wrapper entityWrapper = new EntityWrapper();
+    QueryWrapper entityQueryWrapper = new QueryWrapper();
     for (String item : param) {
       sum.add(item);
-      entityWrapper.eq("use_water_unit_id", item);
-      List<UseWaterUnitRef> result = this.selectList(entityWrapper);
+      entityQueryWrapper.eq("use_water_unit_id", item);
+      List<UseWaterUnitRef> result = this.list(entityQueryWrapper);
       if (result.size() > 0 ) {
         for(UseWaterUnitRef items:result)
         refList.add(items.getUseWaterUnitIdRef());
@@ -89,10 +88,10 @@ public class UseWaterUnitRefServiceImpl extends
    */
   private void findPrent(String id, String nodeCode) {
     String param=null;
-    Wrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("node_code", nodeCode);
     wrapper.eq("use_water_unit_id_ref", id);
-    List<UseWaterUnitRef> result = this.selectList(wrapper);
+    List<UseWaterUnitRef> result = this.list(wrapper);
     if (!result.isEmpty()) {
       findPrent(result.get(0).getUseWaterUnitId(), nodeCode);
     }else{

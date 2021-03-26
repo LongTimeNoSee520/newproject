@@ -1,6 +1,6 @@
 package com.zjtc.model.vo;
 
-import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import java.io.Serializable;
 import java.util.List;

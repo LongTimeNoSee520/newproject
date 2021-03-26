@@ -1,6 +1,6 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.waterBiz.SystemLogMapper;
 import com.zjtc.model.SystemLog;
@@ -38,7 +38,7 @@ public class SystemLogServiceImpl extends ServiceImpl<SystemLogMapper, SystemLog
 //    log.setOpenId(openId);
 //    log.setPhoneNumber(phoneNumber);
       log.setSysModule("节水业务端");
-      result= this.insert(log);
+      result= this.save(log);
     }catch (Exception e){
       log.error("日志新增错误！操作详情:节水业务端" + operateModule + operateContent + "时间-" + TimeUtil
           .formatDateToTime(new Date()) + "===错误：" + e);

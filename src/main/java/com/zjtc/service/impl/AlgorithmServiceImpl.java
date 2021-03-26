@@ -1,15 +1,14 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.AlgorithmMapper;
 import com.zjtc.model.Algorithm;
 import com.zjtc.service.AlgorithmService;
 import com.zjtc.service.UseWaterOriginalPlanService;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +55,7 @@ public class AlgorithmServiceImpl extends ServiceImpl<AlgorithmMapper, Algorithm
 
   @Override
   public Algorithm queryAlgorithm(String nodeCode, String algorithmType) {
-    Wrapper condition = new EntityWrapper();
+    QueryWrapper condition = new QueryWrapper();
     condition.eq("node_code", nodeCode);
     condition.eq("algorithm_type", algorithmType);
     List<Algorithm> algorithms = this.baseMapper.selectList(condition);

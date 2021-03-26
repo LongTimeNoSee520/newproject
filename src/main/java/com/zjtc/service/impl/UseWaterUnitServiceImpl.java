@@ -1,9 +1,8 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.DictUtils;
 import com.zjtc.mapper.waterBiz.UseWaterUnitMapper;
@@ -150,7 +149,7 @@ public class UseWaterUnitServiceImpl extends
     //类型
     entity.setUnitCodeType(entity.getUnitCode().substring(4, 6));
     UseWaterUnit param= entity;
-    this.insert(entity);
+    this.save(entity);
     /**新增水表数据*/
     if (!entity.getMeterList().isEmpty()) {
       useWaterUnitMeterService
@@ -287,16 +286,16 @@ public class UseWaterUnitServiceImpl extends
       List<UseWaterUnitRefVo> useWaterUnitRefs = entity.getUseWaterUnitRefList();
       for (UseWaterUnitRefVo item : useWaterUnitRefs) {
         //查询当前节点的下级节点
-        Wrapper sonWrapper = new EntityWrapper();
-        sonWrapper.eq("node_code", user.getNodeCode());
-        sonWrapper.eq("use_water_unit_id", item.getId());
-        List<UseWaterUnitRef> sonList = useWaterUnitRefService.selectList(sonWrapper);
+        QueryWrapper sonQueryWrapper = new QueryWrapper();
+        sonQueryWrapper.eq("node_code", user.getNodeCode());
+        sonQueryWrapper.eq("use_water_unit_id", item.getId());
+        List<UseWaterUnitRef> sonList = useWaterUnitRefService.list(sonQueryWrapper);
         List<String> sonIds = new ArrayList<>();
         //查询当前节点的上级节点
-        Wrapper parWrapper = new EntityWrapper();
-        parWrapper.eq("node_code", user.getNodeCode());
-        parWrapper.eq("use_water_unit_id_ref", item.getId());
-        List<UseWaterUnitRef> parList = useWaterUnitRefService.selectList(parWrapper);
+        QueryWrapper parQueryWrapper = new QueryWrapper();
+        parQueryWrapper.eq("node_code", user.getNodeCode());
+        parQueryWrapper.eq("use_water_unit_id_ref", item.getId());
+        List<UseWaterUnitRef> parList = useWaterUnitRefService.list(parQueryWrapper);
         if (!parList.isEmpty() && !sonList.isEmpty()) {
           //当前节点的子节点跟当前节点的父节点关联
           for (UseWaterUnitRef ref : sonList) {
@@ -304,7 +303,7 @@ public class UseWaterUnitServiceImpl extends
             sonIds.add(ref.getId());
           }
           //删除当前节点与父节点的关联
-          useWaterUnitRefService.deleteById(parList.get(0).getId());
+          useWaterUnitRefService.removeById(parList.get(0).getId());
           //当前节点的子节点与当前节点的父节点重新建立关联
           useWaterUnitRefService.updateBatchById(sonList);
         }
@@ -312,7 +311,7 @@ public class UseWaterUnitServiceImpl extends
           useWaterUnitRefService.deleteBatch(sonIds);
         }
         if (sonList.isEmpty() && !parList.isEmpty()) {
-          useWaterUnitRefService.deleteById(parList.get(0).getId());
+          useWaterUnitRefService.removeById(parList.get(0).getId());
         }
       }
     }
@@ -370,7 +369,7 @@ public class UseWaterUnitServiceImpl extends
               items.setBusinessId(id);
             }
           }
-          fileService.insertBatch(file);
+          fileService.saveBatch(file);
         }
         /**2.5.用水定额信息同步*/
         if ("true".equals(refEditData.getQuotaFileColumn()) && !entity.getQuotaFile().isEmpty()) {
@@ -395,7 +394,7 @@ public class UseWaterUnitServiceImpl extends
     UseWaterUnit useWaterUnit = new UseWaterUnit();
     useWaterUnit.setDeleted("1");
     useWaterUnit.setDeleteTime(new Date());
-    Wrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.in("id", ids);
     this.update(useWaterUnit, wrapper);
     /**删除水表数据*/
@@ -411,16 +410,16 @@ public class UseWaterUnitServiceImpl extends
     /**删除相关编号信息数据 */
     for (String id : ids) {
       //查询当前节点的下级节点
-      Wrapper sonWrapper = new EntityWrapper();
-      sonWrapper.eq("node_code", user.getNodeCode());
-      sonWrapper.eq("use_water_unit_id", id);
-      List<UseWaterUnitRef> sonList = useWaterUnitRefService.selectList(sonWrapper);
+      QueryWrapper sonQueryWrapper = new QueryWrapper();
+      sonQueryWrapper.eq("node_code", user.getNodeCode());
+      sonQueryWrapper.eq("use_water_unit_id", id);
+      List<UseWaterUnitRef> sonList = useWaterUnitRefService.list(sonQueryWrapper);
       List<String> sonIds = new ArrayList<>();
       //查询当前节点的上级节点
-      Wrapper parWrapper = new EntityWrapper();
-      parWrapper.eq("node_code", user.getNodeCode());
-      parWrapper.eq("use_water_unit_id_ref", id);
-      List<UseWaterUnitRef> parList = useWaterUnitRefService.selectList(parWrapper);
+      QueryWrapper parQueryWrapper = new QueryWrapper();
+      parQueryWrapper.eq("node_code", user.getNodeCode());
+      parQueryWrapper.eq("use_water_unit_id_ref", id);
+      List<UseWaterUnitRef> parList = useWaterUnitRefService.list(parQueryWrapper);
       if (!parList.isEmpty() && !sonList.isEmpty()) {
         //当前节点的子节点跟当前节点的父节点关联
         for (UseWaterUnitRef ref : sonList) {
@@ -428,7 +427,7 @@ public class UseWaterUnitServiceImpl extends
           sonIds.add(ref.getId());
         }
         //删除当前节点与父节点的关联
-        useWaterUnitRefService.deleteById(parList.get(0).getId());
+        useWaterUnitRefService.removeById(parList.get(0).getId());
         //当前节点的子节点与当前节点的父节点重新建立关联
         useWaterUnitRefService.updateBatchById(sonList);
       }
@@ -436,7 +435,7 @@ public class UseWaterUnitServiceImpl extends
         useWaterUnitRefService.deleteBatch(sonIds);
       }
       if (sonList.isEmpty() && !parList.isEmpty()) {
-        useWaterUnitRefService.deleteById(parList.get(0).getId());
+        useWaterUnitRefService.removeById(parList.get(0).getId());
       }
     }
     systemLogService.logInsert(user, "用水单位管理", "删除", null);
@@ -583,14 +582,13 @@ public class UseWaterUnitServiceImpl extends
   @Override
   public List<Map<String, Object>> addUnitCodeList(User user) {
     //查询当前节点编码下所有可操作批次的所有单位的单位编码、单位名称
-    Wrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("deleted", "0");
     wrapper.eq("node_code", user.getNodeCode());
     List<String> param = useWaterUnitRoleService
         .selectUseWaterUnitRole(user.getId(), user.getNodeCode());
     wrapper.in("unit_code_type", param);
-    wrapper.setSqlSelect("id,unit_code as unitCode,unit_name as unitName");
-    return this.selectList(wrapper);
+    return this.list(wrapper);
   }
 
   @Override
@@ -727,14 +725,14 @@ public class UseWaterUnitServiceImpl extends
    * 验证单位编号是否重复
    */
   private Boolean ValidateUnit(String unitCode, String nodeCode, String id) {
-    EntityWrapper entityWrapper = new EntityWrapper();
-    entityWrapper.eq("node_code", nodeCode);
-    entityWrapper.eq("unit_code", unitCode);
-    entityWrapper.eq("deleted", "0");
+    QueryWrapper entityQueryWrapper = new QueryWrapper();
+    entityQueryWrapper.eq("node_code", nodeCode);
+    entityQueryWrapper.eq("unit_code", unitCode);
+    entityQueryWrapper.eq("deleted", "0");
     if (StringUtils.isNotBlank(id)) {
-      entityWrapper.notIn("id", id);
+      entityQueryWrapper.notIn("id", id);
     }
-    return this.selectCount(entityWrapper) > 0;
+    return this.count(entityQueryWrapper) > 0;
   }
 
   private boolean isEmptyId(String useWaterUnitIdRef, List<String> param) {

@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.FlowNodeLineInfoMapper;
 import com.zjtc.model.FlowNodeLineInfo;
 import com.zjtc.service.FlowNodeLineInfoService;
@@ -51,7 +51,7 @@ public class FlowNodeLineInfoServiceImpl extends
         flowNodeLineInfo.setId(UUID.randomUUID().toString().replace("-", ""));
         flowNodeLineInfo.setCreateTime(new Date());
       }
-      this.insertBatch(flowNodeLineInfos);
+      this.saveBatch(flowNodeLineInfos);
     }
   }
 }

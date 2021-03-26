@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.UseWaterUnitModifyMapper;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.UseWaterUnitModify;
@@ -37,12 +37,12 @@ public class UseWaterUnitModifyServiceImpl extends
       return false;
     }
     UseWaterUnitModify modify = new UseWaterUnitModify();
-    EntityWrapper<UseWaterUnit> useWaterUnitEntityWrapper = new EntityWrapper<>();
-    useWaterUnitEntityWrapper.eq("id", id);
-    useWaterUnitEntityWrapper.eq("node_code", nodeCode);
-    useWaterUnitEntityWrapper.eq("deleted", "0");
+    QueryWrapper<UseWaterUnit> useWaterUnitQueryWrapper = new QueryWrapper<>();
+    useWaterUnitQueryWrapper.eq("id", id);
+    useWaterUnitQueryWrapper.eq("node_code", nodeCode);
+    useWaterUnitQueryWrapper.eq("deleted", "0");
     List<UseWaterUnit> useWaterUnits = this.useWaterUnitService
-        .selectList(useWaterUnitEntityWrapper);
+        .list(useWaterUnitQueryWrapper);
     int insert = 0;
     for (UseWaterUnit useWaterUnit : useWaterUnits) {
       if (!useWaterUnit.getUnitName().equals(unitName)) {
@@ -65,17 +65,17 @@ public class UseWaterUnitModifyServiceImpl extends
 
   @Override
   public List<UseWaterUnitModify> selectUseWaterUnitModify(String id, String nodeCode) {
-    EntityWrapper<UseWaterUnitModify> entityWrapper = new EntityWrapper<>();
-    entityWrapper.eq("use_water_unit_id", id);
-    entityWrapper.eq("node_code", nodeCode);
-    return this.baseMapper.selectList(entityWrapper);
+    QueryWrapper<UseWaterUnitModify> entityQueryWrapper = new QueryWrapper<>();
+    entityQueryWrapper.eq("use_water_unit_id", id);
+    entityQueryWrapper.eq("node_code", nodeCode);
+    return this.baseMapper.selectList(entityQueryWrapper);
   }
 
 //  @Override
 //  public boolean deletedUseWaterUnitModify(String id) {
-//    EntityWrapper<UseWaterUnitModify> entityWrapper = new EntityWrapper<>();
-//    entityWrapper.eq("use_water_unitId", id);
-//    List<UseWaterUnitModify> useWaterUnitModifies = this.baseMapper.selectList(entityWrapper);
+//    QueryWrapper<UseWaterUnitModify> entityQueryWrapper = new QueryWrapper<>();
+//    entityQueryWrapper.eq("use_water_unitId", id);
+//    List<UseWaterUnitModify> useWaterUnitModifies = this.baseMapper.selectList(entityQueryWrapper);
 //    int integer = 0;
 //    for (UseWaterUnitModify unitModify : useWaterUnitModifies) {
 //      integer = this.baseMapper.deleteById(unitModify.getId());

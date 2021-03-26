@@ -2,7 +2,7 @@ package com.zjtc.service.impl;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.ImportLogMapper;
 import com.zjtc.model.ImportLog;
 import com.zjtc.model.User;
@@ -38,7 +38,7 @@ public class ImportLogServiceImpl extends ServiceImpl<ImportLogMapper, ImportLog
 
 	@Override
 	public boolean add(ImportLog importLog) {
-		boolean result=this.insert(importLog);
+		boolean result=this.save(importLog);
 		return result;
 	}
 

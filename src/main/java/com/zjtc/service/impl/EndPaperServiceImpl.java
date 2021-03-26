@@ -2,9 +2,8 @@ package com.zjtc.service.impl;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.constant.SystemConstants;
@@ -192,7 +191,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   public ApiResponse cancelSettlement(List<String> ids) {
     ApiResponse response = new ApiResponse();
     /**根据id查询*/
-    List<EndPaper> endPapers = this.selectBatchIds(ids);
+    List<EndPaper> endPapers = new ArrayList<>(this.listByIds(ids));
     for (EndPaper endPaper : endPapers) {
          /**处于审核中的办结单不能撤销*/
         if (!"0".equals(endPaper.getAuditStatus())) {//0为办结单提交审核还未经过下一环节审核的状态
@@ -394,11 +393,11 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   private EndPaper report(User user, EndPaper endPaper) throws Exception {
     if ("1".equals(endPaper.getPaperType())) {//增加计划超额才上报
       /**查询计划表信息*/
-      Wrapper wrapper = new EntityWrapper();
+      QueryWrapper wrapper = new QueryWrapper();
       wrapper.eq("node_code", endPaper.getNodeCode());
       wrapper.eq("unit_code", endPaper.getUnitCode());
       wrapper.eq("plan_year", endPaper.getPlanYear());
-      UseWaterPlan useWaterPlan = planDailyAdjustmentService.selectOne(wrapper);
+      UseWaterPlan useWaterPlan = planDailyAdjustmentService.getOne(wrapper);
       Double increaseLimit = Double.valueOf(
           dictItemService.findByDictCode("increaseLimit", user.getNodeCode(), user.getNodeCode())
               .getDictItemName());
@@ -471,18 +470,18 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       return response;
     }
     /**查询办结单信息*/
-    EndPaper endPaper = this.selectById(id);
+    EndPaper endPaper = this.getById(id);
     if (!("1".equals(endPaper.getAuditStatus()) && "1".equals(endPaper.getConfirmed()))){
       //审核没有完成或没有通过、没有确认
       response.recordError("该数据没有审核通过或者还未确认，不能执行");
        return response;
     }
     /**查询计划表信息*/
-    Wrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("node_code", endPaper.getNodeCode());
     wrapper.eq("unit_code", endPaper.getUnitCode());
     wrapper.eq("plan_year", endPaper.getPlanYear());
-    UseWaterPlan useWaterPlan = planDailyAdjustmentService.selectOne(wrapper);
+    UseWaterPlan useWaterPlan = planDailyAdjustmentService.getOne(wrapper);
     /**计划调整表信息*/
     UseWaterPlanAdd useWaterPlanAdd = new UseWaterPlanAdd();
     useWaterPlanAdd.setCreateTime(new Date());
@@ -544,7 +543,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     jsonObject.put("unitIds",unitIds);
     waterUsePayInfoService.initPayInfo(jsonObject1);
     /**调整表新增*/
-    useWaterPlanAddService.insert(useWaterPlanAdd);
+    useWaterPlanAddService.save(useWaterPlanAdd);
     /**更新办结单信息*/
     endPaper.setExecuted("1");//已执行
     endPaper.setExecutorId(user.getId());

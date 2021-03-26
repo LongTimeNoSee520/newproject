@@ -1,8 +1,7 @@
 package com.zjtc.service;
 
-import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.Bank;
-import com.zjtc.model.User;
 import java.util.List;
 
 /**

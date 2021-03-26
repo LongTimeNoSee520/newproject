@@ -2,9 +2,8 @@ package com.zjtc.service.impl;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.constant.SystemConstants;
@@ -24,7 +23,6 @@ import com.zjtc.model.vo.PrintVO;
 import com.zjtc.model.vo.SendListVO;
 import com.zjtc.model.vo.UseWaterPlanExportVO;
 import com.zjtc.service.CommonService;
-import com.zjtc.service.DictItemService;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.FileService;
 import com.zjtc.service.FlowExampleService;
@@ -297,7 +295,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       useWaterPlanAdd.setRemarks(remarks);
       useWaterPlanAdd.setPrinted("0");
       useWaterPlanAdd.setStatus("2");//已审核，可累加
-      useWaterPlanAddService.insert(useWaterPlanAdd);
+      useWaterPlanAddService.save(useWaterPlanAdd);
       /**日志*/
       systemLogService.logInsert(user,"用水计划日常调整","计划日常调整",null);
     } else if (firstQuarterDiff == 0 && secondQuarterDiff == 0 && thirdQuarterDiff == 0
@@ -354,7 +352,7 @@ public class PlanDailyAdjustmentServiceImpl extends
         useWaterPlanAdd.setStatus("2");//已审核，可累加
         useWaterPlanAdd.setFirstWater(firstWater);
         useWaterPlanAdd.setSecondWater(secondWater);
-        useWaterPlanAddService.insert(useWaterPlanAdd);
+        useWaterPlanAddService.save(useWaterPlanAdd);
         /**日志*/
         systemLogService.logInsert(user,"用水计划日常调整","增加计划",null);
       }else {
@@ -389,11 +387,11 @@ public class PlanDailyAdjustmentServiceImpl extends
   public ApiResponse accumulate(User user,UseWaterPlanAdd useWaterPlanAdd) {
     ApiResponse response = new ApiResponse();
    /**通过节点编码,单位编号,年份查询计划表数据*/
-    Wrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("node_code", useWaterPlanAdd.getNodeCode());
     wrapper.eq("unit_code", useWaterPlanAdd.getUnitCode());
     wrapper.eq("plan_year", useWaterPlanAdd.getPlanYear());
-    UseWaterPlan useWaterPlan = this.selectOne(wrapper);
+    UseWaterPlan useWaterPlan = this.getOne(wrapper);
     /**如果有未完成流程的办结单，则不允许操作*/
     if("1".equals(useWaterPlan.getExistSettlementForm())){
       response.recordError("计划存在未完成的办结单");
@@ -513,11 +511,11 @@ public class PlanDailyAdjustmentServiceImpl extends
     /**待办内容*/
     String todoContent ="";
     /**查询该用水单位是否存在没有走完办结流程的办结单*/
-    Wrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("node_code", user.getNodeCode());
     wrapper.eq("unit_code", unitCode);
     wrapper.eq("plan_year", planYear);
-    UseWaterPlan useWaterPlan = this.selectOne(wrapper);
+    UseWaterPlan useWaterPlan = this.getOne(wrapper);
      /**有则不让在发起*/
     if(null !=useWaterPlan && "1".equals(useWaterPlan.getExistSettlementForm())){
       response.recordError("该计划已存在未完成的办结单");
@@ -610,7 +608,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       webSocketUtil.pushWaterTodo(user.getNodeCode(),auditorId);
     }
     /**办结单新增*/
-    endPaperService.insert(endPaper);
+    endPaperService.save(endPaper);
     /**发起办结单后，将计划表中的“是否存在没有走完办结流程的办结单”的状态改为是(办结流程走完后或者撤销办结单后，改为否)。*/
     this.updateExistSettlement("1",unitCode,user.getNodeCode(),planYear);
     /**日志*/

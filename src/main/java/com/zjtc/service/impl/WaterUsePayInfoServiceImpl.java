@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.response.ApiResponse;
@@ -167,7 +167,7 @@ public class WaterUsePayInfoServiceImpl extends
     /**初始化加价*/
     List<WaterUsePayInfo> waterUsePayInfos = baseMapper.initPayInfo(jsonObject);
     if (!waterUsePayInfos.isEmpty()) {
-      result = this.insertBatch(waterUsePayInfos);
+      result = this.saveBatch(waterUsePayInfos);
     }
     return result;
 
@@ -199,7 +199,7 @@ public class WaterUsePayInfoServiceImpl extends
     entity.setStatus("0");
     entity.setType("1");
     entity.setCreateTime(new Date());
-    refundOrRefundService.insert(entity);
+    refundOrRefundService.save(entity);
     /**新增附件*/
     if (!entity.getSysFiles().isEmpty()) {
       fileService.updateBusinessId(entity.getId(), files);
@@ -257,7 +257,7 @@ public class WaterUsePayInfoServiceImpl extends
     entity.setStatus("0");
     entity.setType("2");
     entity.setCreateTime(new Date());
-    refundOrRefundService.insert(entity);
+    refundOrRefundService.save(entity);
     /**新增附件*/
     if (!entity.getSysFiles().isEmpty()) {
       fileService.updateBusinessId(entity.getId(), files);

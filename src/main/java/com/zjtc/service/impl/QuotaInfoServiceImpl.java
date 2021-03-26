@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.QuotaInfoMapper;
 import com.zjtc.model.QuotaInfo;
 import com.zjtc.model.User;
@@ -38,7 +38,7 @@ public class QuotaInfoServiceImpl extends ServiceImpl<QuotaInfoMapper, QuotaInfo
     quotaInfo.setNodeCode(nodeCode);
     /**日志*/
     systemLogService.logInsert(user, "定额信息维护", "新增", null);
-    return this.insert(quotaInfo);
+    return this.save(quotaInfo);
   }
 
   @Override

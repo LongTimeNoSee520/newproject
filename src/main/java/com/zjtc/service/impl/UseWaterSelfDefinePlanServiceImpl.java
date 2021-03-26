@@ -2,14 +2,12 @@ package com.zjtc.service.impl;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.UseWaterSelfDefinePlanMapper;
-import com.zjtc.model.Person;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;
@@ -303,7 +301,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       }
     }
 //>>>>>>>>>> 第二步:新增用水计划调整表<<<<<<<<<<
-    EntityWrapper<UseWaterSelfDefinePlan> wrapper = new EntityWrapper<>();
+    QueryWrapper<UseWaterSelfDefinePlan> wrapper = new QueryWrapper<>();
     List<UseWaterSelfDefinePlan> useWaterSelfDefinePlans = null;
 //    根据执行id查询出对应的数据
     wrapper.in("id", ids);
@@ -315,11 +313,11 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     UseWaterPlanAdd waterPlanAdd = new UseWaterPlanAdd();
 
     for (UseWaterSelfDefinePlan useWaterSelfDefinePlan : useWaterSelfDefinePlans) {
-      Wrapper<UseWaterPlan> wrapper1 = new EntityWrapper<>();
+      QueryWrapper<UseWaterPlan> wrapper1 = new QueryWrapper<>();
       wrapper1.eq("node_code", useWaterSelfDefinePlan.getNodeCode());
       wrapper1.eq("unit_code", useWaterSelfDefinePlan.getUnitCode());
       wrapper1.eq("plan_year", useWaterSelfDefinePlan.getPlanYear());
-      UseWaterPlan useWaterPlanModel = useWaterPlanService.selectOne(wrapper1);//实际上只有一条数据
+      UseWaterPlan useWaterPlanModel = useWaterPlanService.getOne(wrapper1);//实际上只有一条数据
       if (null == useWaterPlanModel) {
         response.recordError("系统异常,操作失败");
         return response;
@@ -386,7 +384,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
         zp = this.baseMapper.updateExecuteData(id, executor, executorId, new Date());
       }
 //      用水计划日常调整
-      planAdd = useWaterPlanAddService.insert(waterPlanAdd);
+      planAdd = useWaterPlanAddService.save(waterPlanAdd);
 //      修改用水计划表季度水量
       for (UseWaterPlan useWaterPlan : waterPlan) {
         water = this.baseMapper

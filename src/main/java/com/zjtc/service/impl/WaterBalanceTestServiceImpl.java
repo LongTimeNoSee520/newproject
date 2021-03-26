@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.util.FileUtil;
 import com.zjtc.mapper.waterBiz.WaterBalanceTestMapper;
 import com.zjtc.model.File;
@@ -184,7 +184,7 @@ public class WaterBalanceTestServiceImpl extends
     if (StringUtils.isNotBlank(unitAddress)){
       balanceTest.setUnitAddress(unitAddress);
     }
-    this.insert(balanceTest);
+    this.save(balanceTest);
     /**水平衡测试产品相关信息新增*/
     waterBalanceTestProductService.add(products,user,balanceTest.getId());
     /**日志*/
@@ -242,7 +242,7 @@ public class WaterBalanceTestServiceImpl extends
           product.setCreateTime(new Date());
           product.setDeleted("0");
 //          product.setProductCode()
-          waterBalanceTestProductService.insert(product);
+          waterBalanceTestProductService.save(product);
         }
       }
     }

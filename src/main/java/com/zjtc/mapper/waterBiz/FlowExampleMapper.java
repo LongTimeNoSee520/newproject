@@ -1,6 +1,6 @@
 package com.zjtc.mapper.waterBiz;
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.FlowExample;
 import org.apache.ibatis.annotations.Mapper;
 

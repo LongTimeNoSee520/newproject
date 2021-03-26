@@ -3,7 +3,7 @@ package com.zjtc.service.impl;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.FileUtil;
 import com.zjtc.base.util.RedisUtil;
@@ -383,7 +383,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
       file2.setNodeCode(user.getNodeCode());
       file2.setFilePath(filePath.substring(3,filePath.length()));
       files.add(file2);
-      fileService.insertBatch(files);
+      fileService.saveBatch(files);
       response.recordError("本次导入数据存在错误，请查看错误日志文件");
     }else {
       /**数据插入数据库,有则更新，无则新增*/
@@ -393,7 +393,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
       /**日志*/
       importLog.setImportStatus("1");
       /**附件信息*/
-      fileService.insertBatch(files);
+      fileService.saveBatch(files);
     }
     /**日志写入数据库*/
     importLogService.add(importLog);

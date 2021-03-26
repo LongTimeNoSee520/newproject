@@ -1,7 +1,7 @@
 package com.zjtc.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zjtc.base.constant.ResponseMsgConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterPlan;

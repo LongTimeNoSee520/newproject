@@ -1,7 +1,7 @@
 package com.zjtc.mapper.waterBiz;
 
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnitMeter;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;

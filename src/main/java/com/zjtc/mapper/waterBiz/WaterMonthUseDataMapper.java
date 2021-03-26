@@ -2,7 +2,7 @@ package com.zjtc.mapper.waterBiz;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.WaterMonthUseData;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;

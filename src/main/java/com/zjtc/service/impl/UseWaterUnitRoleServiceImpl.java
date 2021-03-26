@@ -1,6 +1,6 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.UseWaterUnitRoleMapper;
 import com.zjtc.model.UseWaterUnitRole;
@@ -107,7 +107,7 @@ public class UseWaterUnitRoleServiceImpl extends
       useWaterUnitRole.setCreateTime(new Date());
       unitRoles.add(useWaterUnitRole);
     }
-    boolean b = this.insertBatch(unitRoles);
+    boolean b = this.saveBatch(unitRoles);
     if (b) {
       response.setCode(200);
       response.setMessage("授权成功");

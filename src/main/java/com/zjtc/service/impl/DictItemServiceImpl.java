@@ -1,15 +1,15 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.mapper.waterSys.DictItemMapper;
 import com.zjtc.model.DictItem;
 import com.zjtc.service.DictItemService;
 import com.zjtc.service.DictService;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,7 +38,7 @@ public class DictItemServiceImpl extends ServiceImpl<DictItemMapper, DictItem> i
     dictItem.setNodeCode(nodeCode);
     dictItem.setDeleted("0");
     dictItem.setCreateTime(new Date());
-    return this.insert(dictItem);
+    return this.save(dictItem);
   }
 
   @Override
@@ -49,7 +49,7 @@ public class DictItemServiceImpl extends ServiceImpl<DictItemMapper, DictItem> i
   @Override
   public boolean delete(JSONObject jsonObject, String nodeCode) {
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
-    List<DictItem> dictItem = this.selectBatchIds(ids);
+    List<DictItem> dictItem = new ArrayList<>(this.listByIds(ids));
     if (!dictItem.isEmpty()) {
       /**逻辑删除字典项*/
       for (DictItem item : dictItem) {
@@ -82,12 +82,12 @@ public class DictItemServiceImpl extends ServiceImpl<DictItemMapper, DictItem> i
 
   @Override
   public DictItem findByDictCode(String dictCode, String dictItemCode, String nodeCode) {
-    return baseMapper.findByDictCode(dictCode, dictItemCode,nodeCode);
+    return baseMapper.findByDictCode(dictCode, dictItemCode, nodeCode);
   }
 
   @Override
   public DictItem findByDictName(String dictCode, String dictItemName, String nodeCode) {
-    return baseMapper.findByDictName(dictCode, dictItemName,nodeCode);
+    return baseMapper.findByDictName(dictCode, dictItemName, nodeCode);
   }
 
   @Override
@@ -102,7 +102,7 @@ public class DictItemServiceImpl extends ServiceImpl<DictItemMapper, DictItem> i
     //字典项id
     String id = dictItem.getId();
     /**验证字典项编码*/
-    Wrapper<DictItem> wrapper1 = new EntityWrapper<>();
+    QueryWrapper<DictItem> wrapper1 = new QueryWrapper<>();
     if (StringUtils.isNotBlank(id)) {
       //排己
       wrapper1.notIn("id", id);
@@ -111,13 +111,13 @@ public class DictItemServiceImpl extends ServiceImpl<DictItemMapper, DictItem> i
     wrapper1.eq("dict_item_code", dictItem.getDictItemCode());
     wrapper1.eq("deleted", "0");
     wrapper1.eq("node_code", nodeCode);
-    int result1 = this.selectCount(wrapper1);
+    int result1 = this.count(wrapper1);
     if (result1 > 0) {
       apiResponse.recordError("字典项编码不能重复");
       return apiResponse;
     }
     /**验证字典项排序号*/
-    Wrapper<DictItem> wrapper2 = new EntityWrapper<>();
+    QueryWrapper<DictItem> wrapper2 = new QueryWrapper<>();
     if (StringUtils.isNotBlank(id)) {
       //排己
       wrapper2.notIn("id", id);
@@ -125,8 +125,8 @@ public class DictItemServiceImpl extends ServiceImpl<DictItemMapper, DictItem> i
     wrapper2.eq("dict_id", dictItem.getDictId());
     wrapper2.eq("dict_item_rank", dictItem.getDictItemRank());
     wrapper2.eq("deleted", "0");
-    wrapper2.eq("node_code",nodeCode);
-    int result2 = this.selectCount(wrapper2);
+    wrapper2.eq("node_code", nodeCode);
+    int result2 = this.count(wrapper2);
     if (result2 > 0) {
       apiResponse.recordError("字典项排序号不能重复");
       return apiResponse;

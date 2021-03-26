@@ -1,7 +1,7 @@
 package com.zjtc.base.conf;
 
-import com.baomidou.mybatisplus.enums.DBType;
-import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,7 +23,7 @@ public class MybatisPlusConfig {
   public PaginationInterceptor paginationInterceptor() {
     PaginationInterceptor page = new PaginationInterceptor();
     //指定 MySQL 方言，否则它可能不知道怎么写分页函数
-    page.setDialectType(DBType.SQLSERVER.getDb());
+    page.setDialectType(DbType.SQL_SERVER.getDb());
     return page;
 
   }

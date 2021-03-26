@@ -1,7 +1,7 @@
 package com.zjtc.mapper.waterBiz;
 
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.vo.EndPaperVO;
 import com.zjtc.model.vo.SendListVO;

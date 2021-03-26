@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.mapper.waterBiz.MessageMapper;
 import com.zjtc.model.Message;

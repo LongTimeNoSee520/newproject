@@ -1,9 +1,8 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.UseWaterQuotaMapper;
 import com.zjtc.model.UseWaterQuota;
-
 import com.zjtc.service.UseWaterQuotaService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +29,7 @@ public class UseWaterQuotaServiceImpl extends ServiceImpl<UseWaterQuotaMapper, U
     if (ids.isEmpty()){
       return false;
     }else {
-    return this.deleteBatchIds(ids);
+    return this.removeByIds(ids);
     }
   }
 
@@ -67,7 +66,7 @@ public class UseWaterQuotaServiceImpl extends ServiceImpl<UseWaterQuotaMapper, U
         useWaterQuota.setNodeCode(nodeCode);
         useWaterQuota.setUseWaterUnitId(useWaterUnitId);
       }
-      return this.insertBatch(useWaterQuotaList);
+      return this.saveBatch(useWaterQuotaList);
     }
   }
 }

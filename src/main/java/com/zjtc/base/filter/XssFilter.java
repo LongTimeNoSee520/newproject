@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author yuchen
  * @date 2020/05/08
- * 
+ *
  */
 public class XssFilter implements Filter {
 

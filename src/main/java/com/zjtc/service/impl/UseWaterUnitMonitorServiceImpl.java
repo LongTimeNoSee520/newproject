@@ -1,9 +1,8 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.ColorCellValue;
 import com.zjtc.base.util.TimeUtil;
@@ -104,13 +103,13 @@ public class UseWaterUnitMonitorServiceImpl extends
   public ApiResponse add(User user, UseWaterUnitMonitor monitor) {
     ApiResponse response = new ApiResponse();
     /**查询是否已经存在该单位信息*/
-    Wrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("deleted", "0");
     wrapper.eq("node_code", user.getNodeCode());
     wrapper.eq("unit_code", monitor.getUnitCode());
     wrapper.eq("monitor_type", monitor.getMonitorType());
     wrapper.eq("year", monitor.getYear());
-    List<UseWaterUnitMonitor> monitors = this.selectList(wrapper);
+    List<UseWaterUnitMonitor> monitors = this.list(wrapper);
     if(!monitors.isEmpty()){
       response.recordError("该单位该年监控信息已存在，不能再次添加");
       return  response;

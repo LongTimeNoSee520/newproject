@@ -2,8 +2,8 @@ package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.HttpUtil;
 import com.zjtc.mapper.waterSys.PersonMapper;
@@ -31,7 +31,7 @@ public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> impleme
   @Override
   public ApiResponse selectPersonAll() {
     ApiResponse response = new ApiResponse();
-    EntityWrapper<Person> wrapper = new EntityWrapper<>();
+    QueryWrapper<Person> wrapper = new QueryWrapper<>();
     wrapper.eq("deleted", "0");
     List<Person> personList = this.baseMapper.queryAll();
       response.setData(personList);

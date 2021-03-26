@@ -1,7 +1,7 @@
 package com.zjtc.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterMonthUseData;
 import java.util.List;

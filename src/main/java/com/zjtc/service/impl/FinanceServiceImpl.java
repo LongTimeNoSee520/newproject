@@ -1,8 +1,8 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.FinanceMapper;
 import com.zjtc.model.Finance;
@@ -45,7 +45,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
       finance.setDeleted("0");
       finance.setNodeCode(nodeCode);
     }
-    boolean b = this.insertBatch(finances);
+    boolean b = this.saveBatch(finances);
     if (b) {
       response.setCode(200);
       systemLogService.logInsert(user,"加价费管理","新增加价费管理","");
@@ -84,10 +84,10 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
       response.recordError("系统错误");
       return response;
     }
-    EntityWrapper<Finance> wrapper = new EntityWrapper<>();
+    QueryWrapper<Finance> wrapper = new QueryWrapper<>();
     wrapper.in("id", ids);
     int b = 0;
-    List<Finance> finances = this.selectList(wrapper);
+    List<Finance> finances = this.list(wrapper);
     for (Finance finance : finances) {
       String invoiceState = finance.getInvoiceState();
       if ("1".equals(invoiceState)) {

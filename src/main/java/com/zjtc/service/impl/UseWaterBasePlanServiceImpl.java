@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.DictUtils;
 import com.zjtc.mapper.waterBiz.UseWaterBasePlanMapper;
@@ -71,7 +71,7 @@ public class UseWaterBasePlanServiceImpl extends
     useWaterBasePlan.setCurYearPlan(
         useWaterBasePlan.getOneQuarter() + useWaterBasePlan.getTwoQuarter() + useWaterBasePlan
             .getThreeQuarter() + useWaterBasePlan.getFourQuarter());
-    this.insert(useWaterBasePlan);
+    this.save(useWaterBasePlan);
     /** 重算该用水单位该年加价费*/
     List<String>  unitIds = new ArrayList<>();
     unitIds.add(useWaterBasePlan.getUseWaterUnitId());
@@ -125,7 +125,7 @@ public class UseWaterBasePlanServiceImpl extends
   @Override
   @Transactional(rollbackFor = Exception.class)//多个表中修改数据时，一个出错全部回滚
   public boolean delete(List<String> ids) {
-    List<UseWaterBasePlan> basePlans = this.selectBatchIds(ids);
+    List<UseWaterBasePlan> basePlans = new ArrayList<>(this.listByIds(ids));
     /**重算该用水单位该年加价费*/
     /**删除的数据年份前端会控制只会为同一年(分页查询时会给一个默认年份)*/
     //取第一条数据的年份即可

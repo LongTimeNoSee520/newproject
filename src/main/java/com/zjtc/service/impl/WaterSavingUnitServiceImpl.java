@@ -1,9 +1,8 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.FileUtil;
 import com.zjtc.mapper.waterBiz.WaterSavingUnitMapper;
@@ -123,13 +122,13 @@ public class WaterSavingUnitServiceImpl extends
     /**删除定量考核指标数据*/
     WaterSavingUnitQuota waterSavingUnitQuota = new WaterSavingUnitQuota();
     waterSavingUnitQuota.setDeleted("1");
-    Wrapper wrapper1 = new EntityWrapper();
+    QueryWrapper wrapper1 = new QueryWrapper();
     wrapper1.eq("water_saving_unit_id", id);
     waterSavingUnitQuotaService.update(waterSavingUnitQuota, wrapper1);
     /**删除基础考核指标数据*/
     WaterSavingUnitBase waterSavingUnitBase = new WaterSavingUnitBase();
     waterSavingUnitBase.setDeleted("1");
-    Wrapper wrapper2 = new EntityWrapper();
+    QueryWrapper wrapper2 = new QueryWrapper();
     wrapper2.eq("water_saving_unit_id", id);
     waterSavingUnitBaseService.update(waterSavingUnitBase, wrapper2);
     systemLogService.logInsert(user,"节水型用水单位","删除",null);
@@ -228,7 +227,7 @@ public class WaterSavingUnitServiceImpl extends
         deleteModel(item.getId(),user);
       }
     }
-    this.insert(result);
+    this.save(result);
     if (!waterSavingUnitQuotaVo.isEmpty()) {
       for (WaterSavingUnitQuotaVo item : waterSavingUnitQuotaVo) {
         WaterSavingUnitQuota param = new WaterSavingUnitQuota();
@@ -246,7 +245,7 @@ public class WaterSavingUnitServiceImpl extends
         quotaList.add(param);
       }
       //新增定量考核数据
-      waterSavingUnitQuotaService.insertBatch(quotaList);
+      waterSavingUnitQuotaService.saveBatch(quotaList);
     }
     if (!waterSavingUnitBaseVo.isEmpty()) {
       for (WaterSavingUnitBaseVo item : waterSavingUnitBaseVo) {
@@ -264,7 +263,7 @@ public class WaterSavingUnitServiceImpl extends
         baseList.add(param);
       }
       //新增定量考核数据
-      waterSavingUnitBaseService.insertBatch(baseList);
+      waterSavingUnitBaseService.saveBatch(baseList);
     }
     return apiResponse;
   }
@@ -291,14 +290,14 @@ public class WaterSavingUnitServiceImpl extends
   }
 
   private List<WaterSavingUnit> validateUnitCode(String unitCode, String nodeCode, String id) {
-    EntityWrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("unit_code", unitCode);
     wrapper.eq("node_code", nodeCode);
     wrapper.eq("deleted", "0");
     if (StringUtils.isNotBlank(id)) {
       wrapper.notIn("id", id);
     }
-    return this.selectList(wrapper);
+    return this.list(wrapper);
   }
 
 }

@@ -1,7 +1,7 @@
 package com.zjtc.mapper.waterSys;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.Dict;
 import java.util.List;
 import java.util.Map;

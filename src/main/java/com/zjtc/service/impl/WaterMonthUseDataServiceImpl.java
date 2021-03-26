@@ -1,8 +1,8 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.WaterMonthUseDataMapper;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterMonthUseData;
@@ -89,9 +89,9 @@ public class WaterMonthUseDataServiceImpl extends
 
   @Override
   public List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCode) {
-    EntityWrapper<WaterMonthUseData> wrapper = new EntityWrapper<>();
+    QueryWrapper<WaterMonthUseData> wrapper = new QueryWrapper<>();
     wrapper.in("water_meter_code",waterMeterCode);
-    return this.selectList(wrapper);
+    return this.list(wrapper);
   }
 
   @Override

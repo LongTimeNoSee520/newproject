@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.FlowNodeInfoMapper;
 import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.FlowNodeLineInfo;
@@ -75,7 +75,7 @@ public class FlowNodeInfoServiceImpl extends
       }
       /**插入重新设置了flow_node_id，next_node_id的"流程线表"数据到"流程线信息表"*/
       flowNodeLineInfoService.add(flowNodeLineInfos);
-      this.insertBatch(flowNodeInfos);
+      this.saveBatch(flowNodeInfos);
     }
     return newNextNodeId;
   }
@@ -99,9 +99,9 @@ public class FlowNodeInfoServiceImpl extends
 
   @Override
   public boolean isFirst(String id) {
-    EntityWrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("id", id);
     wrapper.eq("flow_sort", "1");
-    return this.selectCount(wrapper) > 0;
+    return this.count(wrapper) > 0;
   }
 }

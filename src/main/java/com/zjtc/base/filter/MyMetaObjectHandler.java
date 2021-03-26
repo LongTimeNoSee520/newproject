@@ -1,6 +1,6 @@
 package com.zjtc.base.filter;
 
-import com.baomidou.mybatisplus.mapper.MetaObjectHandler;
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.zjtc.base.constant.SystemConstants;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
@@ -17,7 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author  yuchen
  */
 @Component
-public class MyMetaObjectHandler extends MetaObjectHandler {
+public class MyMetaObjectHandler implements MetaObjectHandler {
 
 
   @Autowired

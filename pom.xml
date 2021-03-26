@@ -73,11 +73,11 @@
 			<version>3.3.2</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus-generator</artifactId>
-			<version>3.0.6</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.baomidou</groupId>-->
+			<!--<artifactId>mybatis-plus-generator</artifactId>-->
+			<!--<version>3.0.6</version>-->
+		<!--</dependency>-->
 
 		<!-- 数据库SQLserver -->
 		<dependency>

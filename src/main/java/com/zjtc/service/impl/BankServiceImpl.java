@@ -1,10 +1,9 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.BankMapper;
 import com.zjtc.model.Bank;
-import com.zjtc.model.User;
 import com.zjtc.service.BankService;
 import com.zjtc.service.SystemLogService;
 import java.util.ArrayList;
@@ -70,7 +69,7 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
       bank1.setNodeCode(nodeCode);
     }
 //    判断是本行还是他行(默认为建设银行)未实现
-    return this.insertBatch(bank);
+    return this.saveBatch(bank);
 
   }
 
@@ -93,14 +92,13 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
 
   @Override
   public List<Bank> selectBank(String useWaterUnitId, String nodeCode) {
-    EntityWrapper<Bank> wrapper = new EntityWrapper<>();
+    QueryWrapper<Bank> wrapper = new QueryWrapper<>();
     ArrayList<String> list = new ArrayList<>();
     wrapper.eq("deleted", 0);
     wrapper.eq("use_water_unit_Id", useWaterUnitId);
     wrapper.eq("node_code", nodeCode);
-    list.add("otherBank");
-    wrapper.orderDesc(list);
-    return this.selectList(wrapper);
+    wrapper.orderByDesc("main");
+    return this.list(wrapper);
   }
 
 }

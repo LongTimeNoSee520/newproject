@@ -93,7 +93,7 @@ public class FileController {
           /**Todo: node从token中获取*/
           sysAttrFile.setNodeCode(user.getNodeCode());
           /**附件表新增数据*/
-          fileService.insert(sysAttrFile);
+          fileService.save(sysAttrFile);
           Map<String, Object> result = new HashMap<>();
           String uploadPath =preViewRealPath + contextPath +fileUploadPath + fileName;
           sysAttrFile.setUrl(uploadPath);
@@ -146,7 +146,7 @@ public class FileController {
           /**Todo: node从token中获取*/
           sysAttrFile.setNodeCode(user.getNodeCode());
           /**附件表新增数据*/
-          fileService.insert(sysAttrFile);
+          fileService.save(sysAttrFile);
           String uploadPath = preViewRealPath + contextPath + fileUploadPath + fileName;
           sysAttrFile.setUrl(uploadPath);
           result.add(sysAttrFile);

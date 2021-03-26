@@ -2,7 +2,7 @@ package com.zjtc.mapper.waterSys;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.SmsSendInfo;
 import com.zjtc.model.vo.SendListVO;
 import java.util.List;

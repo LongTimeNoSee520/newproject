@@ -1,9 +1,8 @@
 package com.zjtc.service.impl;
 
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterSys.FlowProcessMapper;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.User;
@@ -60,15 +59,15 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     flowProcesses.add(commit);
     flowProcesses.add(commitAudit);
     flowProcesses.add(next);
-    this.insertBatch(flowProcesses);
+    this.saveBatch(flowProcesses);
   }
 
   @Override
   public FlowProcess getLastData(String nodeCode, String businessId) {
-    Wrapper auditWrapper = new EntityWrapper();
-    auditWrapper.eq("business_id", businessId);
-    auditWrapper.orderBy("create_time", false);
-    FlowProcess flowProcess = this.selectOne(auditWrapper);
+    QueryWrapper auditQueryWrapper = new QueryWrapper();
+    auditQueryWrapper.eq("business_id", businessId);
+    auditQueryWrapper.orderByDesc("create_time");
+    FlowProcess flowProcess = this.getOne(auditQueryWrapper);
     return flowProcess;
   }
 
@@ -81,15 +80,15 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     flowProcess.setOperatorId(operatorId);
     flowProcess.setCreateTime(new Date());
     flowProcess.setBusinessId(businessId);
-    this.insert(flowProcess);
+    this.save(flowProcess);
   }
 
   @Override
   public FlowProcess selectFirstRecords(String businessId) {
-    Wrapper auditWrapper = new EntityWrapper();
-    auditWrapper.eq("business_id", businessId);
-    auditWrapper.eq("audit_status", "0");
-    FlowProcess flowProcess = this.selectOne(auditWrapper);
+    QueryWrapper auditQueryWrapper = new QueryWrapper();
+    auditQueryWrapper.eq("business_id", businessId);
+    auditQueryWrapper.eq("audit_status", "0");
+    FlowProcess flowProcess = this.getOne(auditQueryWrapper);
     return flowProcess;
   }
 
@@ -105,9 +104,9 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
 
   @Override
   public List<FlowProcess> queryAll(String nodeCode) {
-    Wrapper wrapper=new EntityWrapper();
+    QueryWrapper wrapper=new QueryWrapper();
     wrapper.eq("node_code",nodeCode);
-    return this.selectList(wrapper);
+    return this.list(wrapper);
   }
 
 }

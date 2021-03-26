@@ -1,7 +1,7 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.CommonUtil;
 import com.zjtc.base.util.JxlsUtils;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.jws.soap.SOAPBinding.Use;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +78,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
         unitInvoiceList.add(unitInvoice);
       }
     }
-    boolean b = this.insertBatch(unitInvoiceList);
+    boolean b = this.saveBatch(unitInvoiceList);
     if (b) {
       systemLogService.logInsert(user,"发票管理","新增发票管理","");
       response.setCode(200);

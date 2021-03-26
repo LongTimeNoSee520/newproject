@@ -1,10 +1,8 @@
 package com.zjtc.service;
 
-import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.base.response.ApiResponse;
-import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.UseWaterUnitMeter;
-import com.zjtc.model.User;
 import java.util.List;
 import java.util.Map;
 

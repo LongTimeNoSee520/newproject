@@ -1,9 +1,8 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.WaterSavingUnitBaseMapper;
 import com.zjtc.model.WaterSavingUnitBase;
 import com.zjtc.service.WaterSavingUnitBaseService;
@@ -24,7 +23,7 @@ public class WaterSavingUnitBaseServiceImpl extends ServiceImpl<WaterSavingUnitB
 	@Override
 	public boolean saveModel(JSONObject jsonObject) {
 		WaterSavingUnitBase entity=jsonObject.toJavaObject(WaterSavingUnitBase.class);
-		boolean result=this.insert(entity);
+		boolean result=this.save(entity);
 		return result;
 	}
 
@@ -38,19 +37,14 @@ public class WaterSavingUnitBaseServiceImpl extends ServiceImpl<WaterSavingUnitB
 	@Override
 	public boolean deleteModel(JSONObject jsonObject) {
 		WaterSavingUnitBase entity=jsonObject.toJavaObject(WaterSavingUnitBase.class);
-		boolean result=this.deleteById(entity);
+		boolean result=this.removeById(entity);
 		return result;
 	}
 
 	@Override
 	public Page<WaterSavingUnitBase> queryPage(JSONObject jsonObject) {
-		WaterSavingUnitBase entity=jsonObject.toJavaObject(WaterSavingUnitBase.class);
-    	Page<WaterSavingUnitBase> page = new Page<WaterSavingUnitBase>(jsonObject.getInteger("current"),jsonObject.getInteger("size"));
-        page.setSearchCount(true);
-        page.setOptimizeCountSql(true);
-        EntityWrapper<WaterSavingUnitBase> eWrapper = new EntityWrapper<WaterSavingUnitBase>(entity);
-		Page<WaterSavingUnitBase> result=this.selectPage(page,eWrapper);
-		return result;
+
+		return null;
 	}
 
 	@Override
@@ -69,7 +63,7 @@ public class WaterSavingUnitBaseServiceImpl extends ServiceImpl<WaterSavingUnitB
 			}
 			if(!updateList.isEmpty()){
 				//新增或修改
-				result=insertOrUpdateBatch(updateList);
+				result=saveOrUpdateBatch(updateList);
 			}
 			if(!deleteList.isEmpty()){
 				//逻辑删除

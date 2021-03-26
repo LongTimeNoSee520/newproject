@@ -1,9 +1,8 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.RefundOrRefundMapper;
@@ -172,7 +171,7 @@ public class RefundOrRefundServiceImpl extends
   public boolean audit(JSONObject jsonObject, User user) throws Exception {
     //退减免单id
     String id = jsonObject.getString("id");
-    RefundOrRefund entity = this.selectById(id);
+    RefundOrRefund entity = this.getById(id);
     //审核内容
     String content = jsonObject.getString("content");
     //下一环节审核人id
@@ -218,7 +217,7 @@ public class RefundOrRefundServiceImpl extends
       flowExampleService.edit(user.getNodeCode(), entity.getId());
       if ("1".equals(auditBtn)) {
         /**如果是退款单，修改过实收*/
-        WaterUsePayInfo waterUsePayInfo = waterUsePayInfoService.selectById(entity.getPayId());
+        WaterUsePayInfo waterUsePayInfo = waterUsePayInfoService.getById(entity.getPayId());
         if ("1".equals(entity.getType()) && !waterUsePayInfo.getActualAmount()
             .equals(entity.getActualAmount())) {
           waterUsePayInfoService.updateActualAmount(entity.getPayId(), entity.getActualAmount());
@@ -303,7 +302,7 @@ public class RefundOrRefundServiceImpl extends
   @Transactional(rollbackFor = Exception.class)
   public boolean revoke(JSONObject jsonObject,User user) {
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
-    Wrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.in("id", ids);
     RefundOrRefund refundOrRefund = new RefundOrRefund();
     refundOrRefund.setIsRevoke("1");
@@ -311,17 +310,17 @@ public class RefundOrRefundServiceImpl extends
     /**更新撤销状态*/
     /**删除待办数据*/
     systemLogService.logInsert(user,"退减免单管理","撤销",null);
-    return result && todoService.deleteBatchIds(ids);
+    return result && todoService.removeByIds(ids);
   }
 
   @Override
   public boolean auditCount(String payId, String nodeCode) {
-    Wrapper entityWrapper = new EntityWrapper();
-    entityWrapper.eq("pay_id", payId);
-    entityWrapper.eq("node_code", nodeCode);
-    entityWrapper.eq("status", AuditConstants.AWAIT_APPROVED);
-    entityWrapper.eq("is_revoke","0");
-    return this.selectCount(entityWrapper) > 0 ? true : false;
+    QueryWrapper entityQueryWrapper = new QueryWrapper();
+    entityQueryWrapper.eq("pay_id", payId);
+    entityQueryWrapper.eq("node_code", nodeCode);
+    entityQueryWrapper.eq("status", AuditConstants.AWAIT_APPROVED);
+    entityQueryWrapper.eq("is_revoke","0");
+    return this.count(entityQueryWrapper) > 0 ? true : false;
   }
 
   @Override

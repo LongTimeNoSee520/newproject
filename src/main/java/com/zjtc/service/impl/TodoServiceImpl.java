@@ -1,8 +1,8 @@
 package com.zjtc.service.impl;
 
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.TodoMapper;
@@ -77,11 +77,11 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
 
   @Override
   public boolean edit(String businessId, String nodeCode,String executePersonId) {
-    EntityWrapper wrapper=new EntityWrapper();
+    QueryWrapper wrapper=new QueryWrapper();
     wrapper.eq("business_id",businessId);
     wrapper.eq("node_code",nodeCode);
     wrapper.eq("execute_person_id",executePersonId);
-    Todo todo= this.selectOne(wrapper);
+    Todo todo= this.getOne(wrapper);
     todo.setStatus(AuditConstants.AFTER_TODO_STATUS);
     todo.setOperationTime(new Date());
     return this.updateById(todo);
@@ -102,7 +102,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
   @Override
   public void edit(User user,String businessId, String pass) throws Exception {
     /**查询业务数据*/
-   EndPaper endPaper = endPaperService.selectById(businessId);
+   EndPaper endPaper = endPaperService.getById(businessId);
     String  passContent =
         "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
             + endPaper.getAddNumber()+ "方(第一水量"

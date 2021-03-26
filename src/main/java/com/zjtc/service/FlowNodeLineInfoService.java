@@ -1,6 +1,6 @@
 package com.zjtc.service;
 
-import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.FlowNodeLineInfo;
 import java.util.List;
 

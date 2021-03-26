@@ -1,6 +1,6 @@
 package com.zjtc.mapper.waterBiz;
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnitMonitor;
 import com.zjtc.model.vo.UseWaterMonitorExportVO;
 import java.util.List;

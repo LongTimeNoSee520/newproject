@@ -1,8 +1,7 @@
 package com.zjtc.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.UseWaterUnitMeterMapper;
 import com.zjtc.model.UseWaterUnitMeter;
@@ -77,7 +76,7 @@ public class UseWaterUnitMeterServiceImpl extends
         return false;
       }
     }
-    boolean b = this.insertBatch(useWaterUnitMeter);
+    boolean b = this.saveBatch(useWaterUnitMeter);
     return b && b1;
 
   }
@@ -100,7 +99,7 @@ public class UseWaterUnitMeterServiceImpl extends
 //    同时清空水使用量月数据表对应的部门id
     boolean b=false;
     if(!monthUseDatas.isEmpty()){
-      Wrapper wrapper=new EntityWrapper();
+      QueryWrapper wrapper=new QueryWrapper();
       wrapper.in("water_meter_code",monthUseDatas);
       WaterMonthUseData param=new WaterMonthUseData();
       param.setUseWaterUnitId("");
@@ -128,7 +127,7 @@ public class UseWaterUnitMeterServiceImpl extends
 
   @Override
   public List<UseWaterUnitMeter> selectUseWaterUnitMeter(String useWaterUnitId, String nodeCode) {
-    EntityWrapper<UseWaterUnitMeter> wrapper = new EntityWrapper<>();
+    QueryWrapper<UseWaterUnitMeter> wrapper = new QueryWrapper<>();
     wrapper.eq("use_water_unit_id", useWaterUnitId);
     wrapper.eq("node_code", nodeCode);
     return this.baseMapper.selectList(wrapper);
@@ -159,9 +158,9 @@ public class UseWaterUnitMeterServiceImpl extends
   @Override
   public Map<String, String> getMeterMap(String nodeCode) {
     Map<String, String> result = new HashMap<>();
-    Wrapper wrapper = new EntityWrapper();
+    QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("node_code", nodeCode);
-    List<UseWaterUnitMeter> list = this.selectList(wrapper);
+    List<UseWaterUnitMeter> list = this.list(wrapper);
     if (!list.isEmpty()) {
       for (UseWaterUnitMeter item : list) {
         result.put(item.getWaterMeterCode(), item.getUseWaterUnitId());
