@@ -1,0 +1,106 @@
+server:
+  port: 8082
+  servlet-path: /water/service
+  servlet:
+        session:
+          timeout: 10800
+spring:
+  application: sms
+  mvc:
+    async:
+      #请求超时时间10分钟
+      request-timeout: 6000000
+#  datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    druid:
+#      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#      url: jdbc:sqlserver://120.79.162.253:1433;databaseName=water_service
+#      username: sa
+#      password: harmony123!
+#      min-idle: 10
+#      max-active: 50
+  datasource:
+    waterBiz:
+      driverClassName : com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://172.23.34.6:1433;databaseName=water_service
+      username: sa
+      password: zjtc321!
+    waterSys:
+      driverClassName : com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://172.23.34.8:1433;databaseName=water_sys
+      username: sa
+      password: zjtc321!
+  redis:
+    host: 172.23.34.14
+    password: 123456
+    pool:
+      max-total: 500
+      max-idle: 100
+      max-wait: 10
+    port: 6379
+    timeout: 6000
+  http:
+    multipart:
+      enabled: true
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+mybatis-plus:
+  global-config:
+    logic-delete-value: 1
+    logic-not-delete-value: 0
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.zjtc
+  configuration:
+    call-setters-on-nulls: true
+swagger:
+  enable: true
+#短信
+sms:
+  #公网地址
+  ip: http://171.221.172.226:8088
+  #政务外网地址
+#  ip: http://10.1.231.75:8088
+  sendUrl: /v2/?op=sendsms
+  accessTokenUrl: /v2/?op=gettoken
+  sendReportUrl: /v2/?op=sendreport
+  #短信接入登录帐号
+  spid: 1
+  #短信接入登录密码
+  secret: 2
+
+#系统参数
+#rootConfig:
+#  rootIp: 120.79.162.253
+#  rootPort: 8073
+#  imgBrowsePath: /upload/
+#附件配置
+file:
+  #附件上传盘符
+  #    fileUploadRootPath: /Users/json
+  fileUploadRootPath: D:/
+  #附件上传目录
+  #    fileUploadPath : Desktop/file
+  fileUploadPath : /upload/
+#  #导入错误日志文件目录
+#  importErrorFilePath : importError
+  #文件上下文
+  preViewRealPath: http://172.23.22.42:8081
+waterSms:
+  sendUrl: /water/sms/smsManage/sendMessages
+
+waterReport:
+  reportUrl: /water/service/todo/report
+#http请求路径
+#1.人员api
+waterSys:
+  selectPersonByResCode: /water/system/person/selectPersonByResCode
+
+webSocket:
+  #节水平台待办webSocket地址
+  waterTodoUrl: http://172.23.22.42:8081/water/system/websocket/waterTodo
+  #节水平台消息webSocket地址
+  waterNewsUrl: http://172.23.22.42:8081/water/system/websocket/waterNews
+  #水量导入webSocket地址
+  waterExportUrl: http://172.23.22.42:8081/water/system/websocket/waterExport
+  #公共服务平台消息webSocket地址
+  publicNewsUrl: http://172.23.22.42:8081/water/system/websocket/publicNews
