@@ -17,15 +17,17 @@
     <result column="last_test_time" property="lastTestTime" jdbcType="TIMESTAMP"/>
     <result column="certificate_no" property="certificateNo" jdbcType="VARCHAR"/>
     <result column="leakage_rate" property="leakageRate" jdbcType="DOUBLE"/>
+    <association property="rate" javaType="java.lang.String" select="selectRate" column="id" />
     <collection property="products" ofType="com.zjtc.model.WaterBalanceTestProduct" column="id=id"
-    select="queryProducts">
-  </collection>
-    <collection property="manages" ofType="com.zjtc.model.WaterSavingEfficiencyManage" column="id=id"
+      select="queryProducts">
+    </collection>
+    <collection property="manages" ofType="com.zjtc.model.WaterSavingEfficiencyManage"
+      column="id=id"
       select="queryManages">
     </collection>
   </resultMap>
 
-  <resultMap  id="productMap" type="com.zjtc.model.WaterBalanceTestProduct">
+  <resultMap id="productMap" type="com.zjtc.model.WaterBalanceTestProduct">
     <id property="id" column="id" jdbcType="VARCHAR"/>
     <result property="nodeCode" column="node_code" jdbcType="VARCHAR"/>
     <result property="balanceTestId" column="balance_test_id" jdbcType="VARCHAR"/>
@@ -39,7 +41,7 @@
     <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
   </resultMap>
 
-  <resultMap  id="ManageMap" type="com.zjtc.model.WaterSavingEfficiencyManage">
+  <resultMap id="ManageMap" type="com.zjtc.model.WaterSavingEfficiencyManage">
     <id property="id" column="id" jdbcType="VARCHAR"/>
     <result property="nodeCode" column="node_code" jdbcType="VARCHAR"/>
     <result property="type" column="type" jdbcType="VARCHAR"/>
@@ -54,9 +56,10 @@
   </resultMap>
 
   <select id="queryPage" resultMap="pageResultMap">
-    SELECT TOP  ${size} t1.id,t1.node_code,t1.unit_code,t1.unit_name,
+    SELECT TOP ${size} t1.id,t1.node_code,t1.unit_code,t1.unit_name,
     t1.unit_address,t1.industry_name,t1.industry_code,t1.cover_space,t1.floor_space,t1.use_people_num,
-    t1.year_amount,CONVERT(varchar(100),t1.last_test_time, 23) AS last_test_time,t1.certificate_no,t1.leakage_rate
+    t1.year_amount,CONVERT(varchar(100),t1.last_test_time, 23) AS
+    last_test_time,t1.certificate_no,t1.leakage_rate
     FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,
     id,node_code,unit_code,unit_name,
     unit_address,industry_name,industry_code,cover_space,floor_space,use_people_num,
@@ -72,7 +75,7 @@
       and unit_name like '%${unitName}%'
     </if>
     )t1
-    WHERE  rownumber > (#{current}-1)* #{size}
+    WHERE rownumber > (#{current}-1)* #{size}
   </select>
 
   <select id="queryListTotal" resultType="java.lang.Long">
@@ -107,4 +110,27 @@
       where deleted='0'
       and water_balance_test_id=#{id}
   </select>
+  <select id="selectRate" resultType="java.lang.String">
+    select
+    case
+    when t1.sum =0 then '0'
+    when t2.num =0 then '0'
+    else convert(decimal(10,2),round(t2.num*1.00/t1.sum,2)) end as rate
+    from (
+        select count(id) as sum
+        from
+        t_w_water_saving_efficiency_manage
+        where deleted='0'
+        and water_balance_test_id=#{id}
+        ) t1,
+        (
+        select count(id) as num
+        from
+        t_w_water_saving_efficiency_manage
+        where deleted='0'
+        and level_analysis='优'
+        and water_balance_test_id=#{id}
+        ) t2;
+
+	  </select>
 </mapper>
