@@ -217,7 +217,7 @@ public class WaterSavingUnitServiceImpl extends
       result.setRemarks(voList.getRemarks());
       result.setDeleted("0");
     } else {
-      apiResponse.recordError("无导入数据，不能导入！");
+      apiResponse.recordError("无导入数据，无法导入！");
     }
     //验证该单位是否已经存在 存在：覆盖，不存在新增
     List<WaterSavingUnit> oldData = validateUnitCode(result.getUnitCode(), user.getNodeCode(),
