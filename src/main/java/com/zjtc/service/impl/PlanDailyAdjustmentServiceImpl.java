@@ -244,7 +244,11 @@ public class PlanDailyAdjustmentServiceImpl extends
   @Override
   public ApiResponse adjustPlan(User user,JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
-    String id = jsonObject.getString("id");
+
+    String useWaterUnitId = jsonObject.getString("useWaterUnitId");
+    String unitCode = jsonObject.getString("unitCode");
+    String planType = jsonObject.getString("planType");
+    Integer planYear = jsonObject.getInteger("planYear");
     Double firstQuarter =jsonObject.getDouble("firstQuarter");
     Double secondQuarter = jsonObject.getDouble("secondQuarter");
     Double thirdQuarter = jsonObject.getDouble("thirdQuarter");
@@ -257,50 +261,59 @@ public class PlanDailyAdjustmentServiceImpl extends
     String remarks = jsonObject.getString("remarks");//备注
 
     /**根据id查询数据库原数据*/
-    UseWaterPlan  useWaterPlan =this.baseMapper.selectById(id);
+    QueryWrapper wrapper = new QueryWrapper();
+    wrapper.eq("use_water_unit_id",useWaterUnitId);
+    wrapper.eq("unit_code",unitCode);
+    wrapper.eq("plan_year",planYear);
+    UseWaterPlan  useWaterPlan =this.getOne(wrapper);
     /**如果有未完成流程的办结单，则不允许操作*/
     if("1".equals(useWaterPlan.getExistSettlementForm())){
       response.recordError("该计划存在未完成的办结单");
       return response;
     }
-    /**计算每个季度与原数据的差值*/
-    Double firstQuarterDiff = firstQuarter - useWaterPlan.getFirstQuarter();//填写的与原数据作差
-    Double secondQuarterDiff = secondQuarter - useWaterPlan.getSecondQuarter();
-    Double thirdQuarterDiff = thirdQuarter - useWaterPlan.getThirdQuarter();
-    Double fourthQuarterDiff = fourthQuarter - useWaterPlan.getFourthQuarter();
-    /**判断季度数据是否有修改*/
-    if(firstQuarterDiff != 0 || secondQuarterDiff != 0 || thirdQuarterDiff != 0 || fourthQuarterDiff != 0){
-      /**判断四个季度的总和是否与年计划相等*/
-      if ((firstQuarter+secondQuarter+thirdQuarter+fourthQuarter) != useWaterPlan.getCurYearPlan()){
-        response.recordError("四个季度和不等于年计划，不能修改");
-        return response;
-      }
-      /**相等，且有修改，则在计划调整表新增一条“日常调整”信息*/
-      UseWaterPlanAdd useWaterPlanAdd =new UseWaterPlanAdd();
-      useWaterPlanAdd.setPlanType("0");//日常调整
-      useWaterPlanAdd.setCreateTime(new Date());
-      useWaterPlanAdd.setCreaterId(user.getId());
-      useWaterPlanAdd.setCreater(user.getUsername());
-      useWaterPlanAdd.setCurYearPlan(0d);//double
-      useWaterPlanAdd.setFirstQuarter(firstQuarterDiff);
-      useWaterPlanAdd.setSecondQuarter(secondQuarterDiff);
-      useWaterPlanAdd.setThirdQuarter(thirdQuarterDiff);
-      useWaterPlanAdd.setFourthQuarter(fourthQuarterDiff);
-      useWaterPlanAdd.setPlanYear(useWaterPlan.getPlanYear());
-      useWaterPlanAdd.setNodeCode(useWaterPlan.getNodeCode());
-      useWaterPlanAdd.setUnitCode(useWaterPlan.getUnitCode());
-      useWaterPlanAdd.setUnitName(useWaterPlan.getUnitName());
-      useWaterPlanAdd.setUseWaterUnitId(useWaterPlan.getUseWaterUnitId());
-      useWaterPlanAdd.setWaterMeterCode(useWaterPlan.getWaterMeterCode());
-      useWaterPlanAdd.setRemarks(remarks);
-      useWaterPlanAdd.setPrinted("0");
-      useWaterPlanAdd.setStatus("2");//已审核，可累加
-      useWaterPlanAddService.save(useWaterPlanAdd);
-      /**日志*/
-      systemLogService.logInsert(user,"用水计划日常调整","计划日常调整",null);
-    } else if (firstQuarterDiff == 0 && secondQuarterDiff == 0 && thirdQuarterDiff == 0
-        && fourthQuarterDiff == 0) {
-      //季度数据没有调整(业务只允许季度数据修改 和 增加计划 只能存在一种，且季度数据修改后，默认不能进行“增加计划”)
+    if (SystemConstants.PLAN_CHANGE_TYPE_AJUST.equals(planType)) {
+      /**计算每个季度与原数据的差值*/
+      Double firstQuarterDiff = firstQuarter - useWaterPlan.getFirstQuarter();//填写的与原数据作差
+      Double secondQuarterDiff = secondQuarter - useWaterPlan.getSecondQuarter();
+      Double thirdQuarterDiff = thirdQuarter - useWaterPlan.getThirdQuarter();
+      Double fourthQuarterDiff = fourthQuarter - useWaterPlan.getFourthQuarter();
+      /**判断季度数据是否有修改*/
+      if (firstQuarterDiff != 0 || secondQuarterDiff != 0 || thirdQuarterDiff != 0
+          || fourthQuarterDiff != 0) {
+        /**判断四个季度的总和是否与年计划相等*/
+        if ((firstQuarter + secondQuarter + thirdQuarter + fourthQuarter) != useWaterPlan
+            .getCurYearPlan()) {
+          response.recordError("四个季度和不等于年计划，不能修改");
+          return response;
+        }
+        /**相等，且有修改，则在计划调整表新增一条“日常调整”信息*/
+        UseWaterPlanAdd useWaterPlanAdd = new UseWaterPlanAdd();
+        useWaterPlanAdd.setPlanType("0");//日常调整
+        useWaterPlanAdd.setCreateTime(new Date());
+        useWaterPlanAdd.setCreaterId(user.getId());
+        useWaterPlanAdd.setCreater(user.getUsername());
+        useWaterPlanAdd.setCurYearPlan(0d);//double
+        useWaterPlanAdd.setFirstQuarter(firstQuarterDiff);
+        useWaterPlanAdd.setSecondQuarter(secondQuarterDiff);
+        useWaterPlanAdd.setThirdQuarter(thirdQuarterDiff);
+        useWaterPlanAdd.setFourthQuarter(fourthQuarterDiff);
+        useWaterPlanAdd.setPlanYear(useWaterPlan.getPlanYear());
+        useWaterPlanAdd.setNodeCode(useWaterPlan.getNodeCode());
+        useWaterPlanAdd.setUnitCode(useWaterPlan.getUnitCode());
+        useWaterPlanAdd.setUnitName(useWaterPlan.getUnitName());
+        useWaterPlanAdd.setUseWaterUnitId(useWaterPlan.getUseWaterUnitId());
+        useWaterPlanAdd.setWaterMeterCode(useWaterPlan.getWaterMeterCode());
+        useWaterPlanAdd.setRemarks(remarks);
+        useWaterPlanAdd.setPrinted("0");
+        useWaterPlanAdd.setStatus("2");//已审核，可累加
+        useWaterPlanAddService.save(useWaterPlanAdd);
+        /**日志*/
+        systemLogService.logInsert(user, "用水计划日常调整", "计划日常调整", null);
+      }else {
+      response.recordError("没有作任何修改");
+      return response;
+    }
+    }else if (SystemConstants.PLAN_CHANGE_TYPE_ADD.equals(planType)) {//增加计划
       /**判断有没有增加水量*/
       if(addNumber != 0 && null != addNumber){
         /**有，新增一条“增加计划”信息*/

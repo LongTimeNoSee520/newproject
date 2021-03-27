@@ -166,16 +166,19 @@ public class PlanDailyAdjustmentController {
   @RequestMapping(value = "adjustPlan", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(value = "计划调整")
   public ApiResponse adjustPlan(@RequestHeader("token") String token,
-      @ApiParam("{\"id\": \"id\",\n"
-          + "\"firstQuarter\":  第一季度水量 数字,\n"
-          + "\"secondQuarter\": 第二季度水量 数字,\n"
-          + "\"thirdQuarter\": 第三季度水量 数字,\n"
-          + "\"fourthQuarter\": 第四季度水量 数字,\n"
-          + "\"firstWater\": 第一水量 数字,\n"
-          + "\"secondWater\":第二水量 数字,\n"
-          + "\"addNumber\": 增加的水量，数字,\n"
-          + "\"quarter\": 选择的季度 数字,\n"
-          + "\"year\": \"是否在年计划上增加 0否，1是\",\n"
+      @ApiParam("{\"useWaterUnitId\": \"用水单位id 必填\",\n"
+          + "\"unitCode\":  \"单位编号 必填\",\n"
+          + "\"planYear\": 年份 数字 必填,\n"
+          + "\"planType\":  \"调整类型：0调整计划1增加计划 必填\",\n"
+          + "\"firstQuarter\":  第一季度水量 数字 调整计划必填,\n"
+          + "\"secondQuarter\": 第二季度水量 数字 调整计划必填,\n"
+          + "\"thirdQuarter\": 第三季度水量 数字 调整计划必填,\n"
+          + "\"fourthQuarter\": 第四季度水量  数字 调整计划必填,\n"
+          + "\"firstWater\": 第一水量 数字 增加计划必填,\n"
+          + "\"secondWater\":第二水量  数字 增加计划必填,\n"
+          + "\"addNumber\": 增加的水量，数字 增加计划必填,\n"
+          + "\"quarter\": 选择的季度 数字 增加计划必填,\n"
+          + "\"year\": \"是否在年计划上增加 0否，1是 增加计划必填\",\n"
           + "\"remarks\": \"备注\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("计划调整 ==== 参数{" + jsonObject.toJSONString() + "}");
