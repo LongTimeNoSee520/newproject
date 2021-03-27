@@ -78,6 +78,18 @@ public class UseWaterQuota extends Model<UseWaterQuota> {
   @ApiModelProperty(value = "创建时间")
   @TableField(value = "create_time", exist = true)
   private Date createTime;
+
+  @ApiModelProperty(value ="定额标准单位值（先进值）")
+  @TableField(value = "advance_value", exist = true)
+  private Float advanceValue;
+
+  @ApiModelProperty(value = "定额标准单位值（通用值）")
+  @TableField(value = "common_value", exist = true)
+  private Float commonValue;
+
+  @ApiModelProperty(value = "综合利用率")
+  @TableField(value = "quota_rate", exist = true)
+  private Float quotaRate;
   @Override
   protected Serializable pkVal() {
     return null;

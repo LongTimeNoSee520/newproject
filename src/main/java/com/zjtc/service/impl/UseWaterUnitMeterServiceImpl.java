@@ -42,11 +42,11 @@ public class UseWaterUnitMeterServiceImpl extends
       return false;
     }
 //    水使用量月数据
-    WaterMonthUseData waterMonthUseData = new WaterMonthUseData();
     List<WaterMonthUseData> waterMonthUseDataList = new ArrayList<>();
     boolean b1 = false;
     //    遍历水表信息
     for (UseWaterUnitMeter useWaterUnitMeter1 : useWaterUnitMeter) {
+      WaterMonthUseData waterMonthUseData = new WaterMonthUseData();
 //      单位id
       useWaterUnitMeter1.setUseWaterUnitId(useWaterUnitId);
       useWaterUnitMeter1.setNodeCode(nodeCode);

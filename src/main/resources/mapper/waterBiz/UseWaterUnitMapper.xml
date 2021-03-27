@@ -53,7 +53,7 @@
       ofType="com.zjtc.model.UseWaterQuota">
     </collection>
     <collection property="ModifyList" column="{id=id,nodeCode=node_code}" select="selectModifyList"
-      ofType="com.zjtc.model.UseWaterQuota">
+      ofType="com.zjtc.model.UseWaterUnitModify">
     </collection>
     <!--<collection property="useWaterUnitRefList" column="{id=id,nodeCode=nodeCode}"
       select="selectuseWaterUnitRef"
@@ -115,6 +115,9 @@
     <result column="quota_unit" property="quotaUnit" jdbcType="VARCHAR"/>
     <result column="quota_value" property="quotaValue" jdbcType="FLOAT"/>
     <result column="amount" property="amount" jdbcType="FLOAT"/>
+    <result column="advance_value" property="advanceValue" jdbcType="FLOAT"/>
+    <result column="common_value" property="commonValue" jdbcType="FLOAT"/>
+    <result column="quota_rate" property="quotaRate" jdbcType="FLOAT"/>
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
   </resultMap>
 
@@ -283,7 +286,6 @@
     <if test="null !=signed">
       and a.id in (select use_water_unit_Id as id from t_w_bank where signed =#{signed} and
       deleted='0')
-      and signed=#{signed}
     </if>
     <!--是否异常-->
     <if test="null !=abnormal">
@@ -365,7 +367,6 @@
     <if test="null !=signed">
       and a.id in (select use_water_unit_Id as id from t_w_bank where signed =#{signed} and
       deleted='0')
-      and signed=#{signed}
     </if>
     <!--是否异常-->
     <if test="null !=abnormal">
@@ -464,7 +465,7 @@
   </select>
   <select id="selectUseWaterQuota" resultMap="BaseResultMap_UseWaterQuota">
     SELECT
-    id,industry,sub_industry,product,quota_unit,quota_value,amount,
+    id,industry,sub_industry,product,quota_unit,quota_value,amount,advance_value,common_value,quota_rate,
     (select industry_name as subIndustryName from t_w_quota_info where id=a.sub_industry)as subIndustryName,
     (select industry_name  as productName from t_w_quota_info where id=a.product) as productName
     FROM t_w_use_water_quota as a
@@ -622,8 +623,11 @@
       t_w_use_water_unit  as a
     left join (SELECT use_water_unit_id,contacts,mobile_number as mobileNumber from t_w_use_water_unit_contacts where main='1' ) as b on a.id =b.use_water_unit_id
     where a.node_code=#{nodeCode}
+    and
+    a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
+    where person_id=#{userId})
     ORDER BY
-      a.deleted
+    a.deleted
   </select>
 
   <select id="selectByIds" resultType="java.util.LinkedHashMap">
@@ -826,11 +830,12 @@
     where deleted='0'
     and node_code=#{nodeCode}
     and unit_name like '%${unitName}%'
-    ) as t1
-    inner join (
+    and unit_code_type in(
     select unit_type_code as unit_code_type from t_w_use_water_unit_role
     where person_id=#{userId}
-    ) as t2 on t1.unit_code_type=t1.unit_code_type
+    )
+    ) t1
+
   </select>
 
   <select id="selectAllType" resultType="java.lang.String">

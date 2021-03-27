@@ -535,11 +535,6 @@ public class UseWaterUnitServiceImpl extends
       //当前用户没有操作权限
       apiResponse.recordError("当前用户没有操作该类型权限,请联系管理员!");
       return apiResponse;
-    }else{
-      //新增该用户类型权限
-      List<String> strArr=new ArrayList<>();
-      strArr.add(unitType);
-      useWaterUnitRoleService.addUseWaterUnitRole(user.getId(),user.getNodeCode(),strArr);
     }
     /**排序号：查询当前节点编码、当前批次,节点编码后三位最大值*/
     String maxCount = baseMapper.maxUnitCode(unitCode, id, user.getNodeCode());

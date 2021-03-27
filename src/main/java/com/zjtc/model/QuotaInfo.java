@@ -75,11 +75,11 @@ public class QuotaInfo extends Model<QuotaInfo> {
   @TableField(value = "remark", exist = true)
   private String remark;
 
-  @ApiModelProperty(value ="定额单位先进值")
+  @ApiModelProperty(value ="定额标准单位值（先进值）")
   @TableField(value = "advance_value", exist = true)
   private Float advanceValue;
 
-  @ApiModelProperty(value = "定额单位通用值")
+  @ApiModelProperty(value = "定额标准单位值（通用值）")
   @TableField(value = "common_value", exist = true)
   private Float commonValue;
 
@@ -87,9 +87,6 @@ public class QuotaInfo extends Model<QuotaInfo> {
   @TableField(value = "quota_rate", exist = true)
   private Float quotaRate;
 
-  @ApiModelProperty(value = "时间参数，标准单位为天：365，标准单位为年：1")
-  @TableField(value = "time_param", exist = true)
-  private int timeParam;
 
   @Override
   protected Serializable pkVal() {
