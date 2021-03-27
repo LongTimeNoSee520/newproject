@@ -623,6 +623,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       json.put("status", status);
     }
     Map<String, Object> result = new LinkedHashMap<>();
+    List<Map<String,Object>> records =new ArrayList<>();
     /**查询单位信息*/
     List<SendListVO> list = this.baseMapper.queryAfterAdjustUnit(map);
     if (list.isEmpty()){
@@ -630,6 +631,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       result.put("size", size);//每页条数
       result.put("pages", 0);//一共有多少页
       result.put("current", current);//当前页
+      result.put("records", records);
     }else {
       /**查出满足条件的共有多少条*/
       int num = smsSendService.sendResultNum(list, json);
@@ -637,13 +639,12 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       result.put("size", size);//每页条数
       result.put("pages", (int) Math.ceil((double) num / size));//一共有多少页
       result.put("current", current);//当前页
+      /**查出满足条件的数据*/
+      json.put("current", current);
+      json.put("pageSize", size);
+      records = smsSendService.sendResultPage(list,json);
+      result.put("records", records);
     }
-    /**查出满足条件的数据*/
-    json.put("current", current);
-    json.put("pageSize", size);
-
-    List<Map<String,Object>> records = smsSendService.sendResultPage(list,json);
-    result.put("records", records);
     return result;
   }
 

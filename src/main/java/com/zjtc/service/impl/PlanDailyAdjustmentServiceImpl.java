@@ -775,6 +775,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       json.put("status", status);
     }
     Map<String, Object> result = new LinkedHashMap<>();
+    List<Map<String,Object>> records = new ArrayList<>();
     /**查询单位信息*/
     List<SendListVO> list = this.baseMapper.queryUnit(map);
     if (list.isEmpty()){
@@ -782,6 +783,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       result.put("size", size);//每页条数
       result.put("pages", 0);//一共有多少页
       result.put("current", current);//当前页
+      result.put("records", records);
     }else {
       /**查出满足条件的共有多少条*/
       int num = smsSendService.sendInfoNum(list, json);
@@ -789,12 +791,12 @@ public class PlanDailyAdjustmentServiceImpl extends
       result.put("size", size);//每页条数
       result.put("pages", (int) Math.ceil((double) num / size));//一共有多少页
       result.put("current", current);//当前页
+      /**查出满足条件的数据*/
+      json.put("current", current);
+      json.put("pageSize", size);
+      records = smsSendService.sendInfoPage(list,json);
+      result.put("records", records);
     }
-    /**查出满足条件的数据*/
-    json.put("current", current);
-    json.put("pageSize", size);
-    List<Map<String,Object>> records = smsSendService.sendInfoPage(list,json);
-    result.put("records", records);
     return result;
   }
 
