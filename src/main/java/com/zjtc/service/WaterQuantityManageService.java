@@ -57,4 +57,6 @@ public interface WaterQuantityManageService extends IService<WaterUseData> {
    * @param fileProcessId
 	 * */
   void importEnd(User user, String fileProcessId);
+
+	void insertMonthData(User user, String fileProcessId);
 }

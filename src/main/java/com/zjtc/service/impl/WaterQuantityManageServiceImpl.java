@@ -40,6 +40,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -422,6 +423,15 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     systemLogService.logInsert(user,"水量管理","导入",null);
   }
 
+  @Override
+  @Async("asyncExecutor")
+  public void insertMonthData(User user, String fileProcessId) {
+	  try {
+      this.importEnd(user,fileProcessId);
+    }catch (Exception e){
+	    log.error("月使用数据写入出错errMsg==={}", e.getMessage());
+    }
+  }
   /**解析excel数据到bean*/
 //  public  Map<String, List> importExcel(Map<String, List> beans, String xmlConfig,
 //      String fileRealPath, String uploadFileName,String nodeCode,boolean isThrowException) throws Exception {

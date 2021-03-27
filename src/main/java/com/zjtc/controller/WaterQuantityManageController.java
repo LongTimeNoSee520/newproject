@@ -148,6 +148,7 @@ public class WaterQuantityManageController {
         String fileProcessId = jsonObject.getString("fileProcessId");
         String fileName = jsonObject.getString("fileName");
         response = waterQuantityManageService.checkAndInsertData(user,fileProcessId,fileName);
+        waterQuantityManageService.insertMonthData(user,fileProcessId);
       } catch (Exception e) {
         log.error("数据检查/入库出错:errMsg==={}" + e.getMessage());
         response.recordError(500);
