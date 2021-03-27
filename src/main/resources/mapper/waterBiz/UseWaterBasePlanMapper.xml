@@ -100,7 +100,8 @@
                       <if test="planYear != null">AND plan_year = #{planYear} </if>
                       <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
                       <if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
-                      )
+                      UNION ALL
+                      SELECT 'NO_THIS_ID' AS id)
             )t1
         WHERE  rownumber > (#{current}-1)* #{size}
     )a
@@ -135,6 +136,7 @@
     <if test="planYear != null">AND plan_year = #{planYear} </if>
     <if test="unitCode != null and unitCode !=''">AND unit_code LIKE '%${unitCode}%'</if>
     <if test="unitName != null and unitName !=''">AND unit_name LIKE '%${unitName}%'</if>
-    )
+    UNION  ALL
+    SELECT 'NO_THIS_ID' AS id )
   </select>
 </mapper>

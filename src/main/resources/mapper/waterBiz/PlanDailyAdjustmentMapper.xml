@@ -146,6 +146,8 @@
     <if test="yearEnd != null">
       and plan_year &lt;= #{yearEnd}
     </if>
+    UNION  ALL
+    SELECT 'NO_THIS_ID' AS id
     )
   </select>
 
@@ -190,7 +192,8 @@
     <if test="yearEnd != null">
       and plan_year &lt;= #{yearEnd}
     </if>
-    )
+    UNION  ALL
+    SELECT 'NO_THIS_ID' AS id)
     )t1
     WHERE  rownumber > (#{current}-1)* #{size}
   </select>
@@ -243,7 +246,8 @@
     <if test="yearEnd != null">
       and plan_year &lt;= #{yearEnd}
     </if>
-    )
+    UNION  ALL
+    SELECT 'NO_THIS_ID' AS id)
     ORDER BY t1.unit_code ASC
   </select>
   <select id="queryMessage" resultMap="MessageResultMap">
@@ -276,7 +280,8 @@
            UNION  ALL
            SELECT 'NO_THIS_CODE' AS unit_type_code
       )
-    )
+    UNION  ALL
+    SELECT 'NO_THIS_ID' AS id)
     AND plan_year = #{thisMonthYear}
     <!--   AND (exist_settlement_form ='0' or exist_settlement_form ='' or exist_settlement_form is NULL) 不存在未完成的办结单-->
     <if test="unitCode != null and unitCode != ''">
@@ -382,6 +387,8 @@
         test="unitCodeGroup != null and unitCodeGroup != ''">
         and SUBSTRING(unit_code,3,2) = #{unitCodeGroup}
       </if>
+    UNION  ALL
+    SELECT 'NO_THIS_ID' AS id
        )
     )t1
     LEFT JOIN  (

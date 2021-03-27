@@ -79,6 +79,8 @@
   <if test="waterNumberEnd != null">
     and plan_year &lt; #{yearEnd}
   </if>
+  UNION  ALL
+  SELECT 'NO_THIS_ID' AS id
   )
   )t1
   WHERE  rownumber > (#{current}-1)* #{size}
