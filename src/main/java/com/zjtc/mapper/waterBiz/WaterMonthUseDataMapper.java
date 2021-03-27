@@ -55,4 +55,6 @@ public interface WaterMonthUseDataMapper extends BaseMapper<WaterMonthUseData> {
    * 查询导出需要的数据
    */
   List<WaterMonthUseData> export(JSONObject jsonObject);
+
+  boolean updateUnitBatch(@Param("list") List<WaterMonthUseData> list);
 }

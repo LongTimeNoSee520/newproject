@@ -108,4 +108,9 @@ public class WaterMonthUseDataServiceImpl extends
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user,"用水单位水量查询","导出",null);
   }
+
+  @Override
+  public boolean updateUnitBatch(List<WaterMonthUseData> list) {
+    return baseMapper.updateUnitBatch(list);
+  }
 }

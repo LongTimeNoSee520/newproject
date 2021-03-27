@@ -71,7 +71,7 @@ public class UseWaterUnitMeterServiceImpl extends
       }
       waterMonthUseDataList.add(waterMonthUseData);
 //      更新月使用量数据
-      b1 = waterMonthUseDataService.updateBatchById(waterMonthUseDataList);
+      b1 = waterMonthUseDataService.updateUnitBatch(waterMonthUseDataList);
       if (!b1) {
         return false;
       }

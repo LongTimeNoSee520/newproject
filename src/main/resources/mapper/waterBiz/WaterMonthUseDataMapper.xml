@@ -322,4 +322,13 @@
     </if>
   </select>
 
+  <update id="updateUnitBatch">
+    <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+      update t_w_water_month_use_data
+      <set>
+        use_water_unit_id=#{item.useWaterUnitId}
+      </set>
+      WHERE id=#{item.id}
+    </foreach>
+  </update>
 </mapper>

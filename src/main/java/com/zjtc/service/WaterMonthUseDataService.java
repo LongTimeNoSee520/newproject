@@ -64,4 +64,5 @@ public interface WaterMonthUseDataService extends IService<WaterMonthUseData> {
   void export(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 
 
+  boolean updateUnitBatch(List<WaterMonthUseData> list);
 }
