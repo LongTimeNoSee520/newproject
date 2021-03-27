@@ -115,16 +115,16 @@ public class UseWaterUnitServiceImpl extends
     /**如果已有当前类型,则无权限，反之，有权限*/
     boolean flag = useWaterUnitRoleService
         .checkUserRight(user.getId(), entity.getUnitCode(), user.getNodeCode());
-    List<String> unitTypeList= selectAllType(user.getNodeCode());
+    List<String> unitTypeList = selectAllType(user.getNodeCode());
     if (!flag && unitTypeList.contains(unitType)) {
       //当前用户没有操作权限
       apiResponse.recordError("当前用户没有操作该类型权限,请联系管理员!");
       return apiResponse;
-    }else{
+    } else {
       //新增该用户类型权限
-      List<String> strArr=new ArrayList<>();
+      List<String> strArr = new ArrayList<>();
       strArr.add(unitType);
-      useWaterUnitRoleService.addUseWaterUnitRole(user.getId(),user.getNodeCode(),strArr);
+      useWaterUnitRoleService.addUseWaterUnitRole(user.getId(), user.getNodeCode(), strArr);
     }
     /**验证单位编号是否重复,先查询出当前节点编码*/
     if (ValidateUnit(entity.getUnitCode(), user.getNodeCode(), entity.getId())) {
@@ -148,7 +148,7 @@ public class UseWaterUnitServiceImpl extends
     entity.setUnitCodeGroup(entity.getUnitCode().substring(2, 4));
     //类型
     entity.setUnitCodeType(entity.getUnitCode().substring(4, 6));
-    UseWaterUnit param= entity;
+    UseWaterUnit param = entity;
     this.save(entity);
     /**新增水表数据*/
     if (!entity.getMeterList().isEmpty()) {
@@ -193,16 +193,16 @@ public class UseWaterUnitServiceImpl extends
     /**验证当前用户是否有操作当前类型的权限*/
     boolean flag = useWaterUnitRoleService
         .checkUserRight(user.getId(), entity.getUnitCode(), user.getNodeCode());
-    List<String> unitTypeList= selectAllType(user.getNodeCode());
+    List<String> unitTypeList = selectAllType(user.getNodeCode());
     if (!flag && unitTypeList.contains(unitType)) {
       //当前用户没有操作权限
       apiResponse.recordError("当前用户没有操作该类型权限,请联系管理员！");
       return apiResponse;
-    }else {
+    } else {
       //新增该用户类型权限
-      List<String> strArr=new ArrayList<>();
+      List<String> strArr = new ArrayList<>();
       strArr.add(unitType);
-      useWaterUnitRoleService.addUseWaterUnitRole(user.getId(),user.getNodeCode(),strArr);
+      useWaterUnitRoleService.addUseWaterUnitRole(user.getId(), user.getNodeCode(), strArr);
     }
     /**验证单位编号是否重复,先查询出当前节点编码*/
     if (ValidateUnit(entity.getUnitCode(), user.getNodeCode(), entity.getId())) {
@@ -464,7 +464,7 @@ public class UseWaterUnitServiceImpl extends
             for (UseWaterUnitRefVo useWaterUnitRefVo : useWaterUnitRefList) {
               useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
               //主户单位id
-              if("1".equals(useWaterUnitRefVo.getImain())){
+              if ("1".equals(useWaterUnitRefVo.getImain())) {
                 item.setImainUnitId(useWaterUnitRefVo.getId());
               }
             }
@@ -530,7 +530,7 @@ public class UseWaterUnitServiceImpl extends
     String unitType = unitCode.substring(4, 6);
     boolean flag = useWaterUnitRoleService
         .checkUserRight(user.getId(), unitCode, user.getNodeCode());
-    List<String> unitTypeList= selectAllType(user.getNodeCode());
+    List<String> unitTypeList = selectAllType(user.getNodeCode());
     if (!flag && unitTypeList.contains(unitType)) {
       //当前用户没有操作权限
       apiResponse.recordError("当前用户没有操作该类型权限,请联系管理员!");
@@ -592,10 +592,16 @@ public class UseWaterUnitServiceImpl extends
   }
 
   @Override
-  public void exportAccountAudit(User user, JSONObject jsonObject, HttpServletRequest request,
+  public ApiResponse exportAccountAudit(User user, JSONObject jsonObject,
+      HttpServletRequest request,
       HttpServletResponse response) {
+    ApiResponse apiResponse = new ApiResponse();
     List<Map<String, Object>> list = baseMapper
         .exportAccountAudit(jsonObject.getString("nodeCode"));
+    if (list.isEmpty()) {
+      apiResponse.recordError("无导出数据！");
+      return apiResponse;
+    }
     Map<String, Object> data = new HashMap<>();
     data.put("excelData", list);
     data.put("nowDate", new Date());
@@ -605,13 +611,19 @@ public class UseWaterUnitServiceImpl extends
     String templateName = "template/accountAudit.xlsx";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "用水单位管理", "导出账户审核表", null);
+    return apiResponse;
   }
 
   @Override
-  public void exportForm(User user, JSONObject jsonObject, HttpServletRequest request,
+  public ApiResponse exportForm(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
+    ApiResponse apiResponse = new ApiResponse();
     List<Map<String, Object>> list = baseMapper
         .exportForm(jsonObject.getString("nodeCode"));
+    if (list.isEmpty()) {
+      apiResponse.recordError("无导出数据！");
+      return apiResponse;
+    }
     Map<String, Object> data = new HashMap<>();
     data.put("excelData", list);
     data.put("nowDate", new Date());
@@ -621,11 +633,13 @@ public class UseWaterUnitServiceImpl extends
     String templateName = "template/form.xlsx";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "用水单位管理", "导出开通格式", null);
+    return apiResponse;
   }
 
   @Override
-  public void exportRevoca(User user, JSONObject jsonObject, HttpServletRequest request,
+  public ApiResponse exportRevoca(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
+    ApiResponse apiResponse = new ApiResponse();
     String nodeCode = jsonObject.getString("nodeCode");
     //开始时间
     String startTime = jsonObject.getString("startTime");
@@ -651,6 +665,10 @@ public class UseWaterUnitServiceImpl extends
     }
     List<Map<String, Object>> list = baseMapper
         .exportRevoca(jsonObject);
+    if (list.isEmpty()) {
+      apiResponse.recordError("您所选择的时间区间无数据！");
+      return apiResponse;
+    }
     Map<String, Object> data = new HashMap<>();
     data.put("excelData", list);
     data.put("nowDate", new Date());
@@ -659,14 +677,19 @@ public class UseWaterUnitServiceImpl extends
     String fileName = "计划用水户撤销格式.xlsx";
     String templateName = "template/Revoca.xlsx";
     commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user,"用水单位管理","导出撤销格式",null);
+    systemLogService.logInsert(user, "用水单位管理", "导出撤销格式", null);
+    return apiResponse;
   }
 
   @Override
-  public void exportQueryData(User user, JSONObject jsonObject, HttpServletRequest request,
+  public ApiResponse exportQueryData(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
+    ApiResponse apiResponse=new ApiResponse();
     List<Map<String, Object>> map = baseMapper.exportQueryData(jsonObject);
-    if (!map.isEmpty()) {
+    if (map.isEmpty()) {
+      apiResponse.recordError("无导出数据！");
+      return apiResponse;
+    }
       for (Map item : map) {
         //查询电话号码
         List<Contacts> contactsList = contactsService.queryByUnitId(item.get("id").toString());
@@ -678,7 +701,6 @@ public class UseWaterUnitServiceImpl extends
           }
         }
       }
-    }
     Map<String, Object> data = new HashMap<>();
     data.put("excelData", map);
     data.put("nowDate", new Date());
@@ -687,14 +709,20 @@ public class UseWaterUnitServiceImpl extends
     String fileName = "用水户界面查询结果.xlsx";
     String templateName = "template/useWaterUnitData.xlsx";
     commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user,"用水单位管理","导出查询结果",null);
+    systemLogService.logInsert(user, "用水单位管理", "导出查询结果", null);
+    return apiResponse;
   }
 
   @Override
-  public void exportMoreAndLess(User user, JSONObject jsonObject, HttpServletRequest request,
+  public ApiResponse exportMoreAndLess(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
+    ApiResponse apiResponse=new ApiResponse();
     List<Map<String, Object>> list = baseMapper
         .exportMoreAndLess(jsonObject.getString("nodeCode"));
+    if (list.isEmpty()) {
+      apiResponse.recordError("无导出数据！");
+      return apiResponse;
+    }
     Map<String, Object> data = new HashMap<>();
     data.put("excelData", list);
     data.put("nowDate", new Date());
@@ -703,7 +731,8 @@ public class UseWaterUnitServiceImpl extends
     String fileName = "用水单位增减情况表.xlsx";
     String templateName = "template/useWaterUnitMoreAndLess.xlsx";
     commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user,"用水单位管理","导出用水单位增减情况",null);
+    systemLogService.logInsert(user, "用水单位管理", "导出用水单位增减情况", null);
+    return apiResponse;
   }
 
   @Override
