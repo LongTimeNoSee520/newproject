@@ -67,6 +67,7 @@ public class UseWaterUnitServiceImpl extends
     DANWEI_MAPPER.put("abnormal_cause", "abnormalCause");
   }
 
+
   @Autowired
   private UseWaterUnitRoleService useWaterUnitRoleService;
   @Autowired
@@ -104,6 +105,18 @@ public class UseWaterUnitServiceImpl extends
    * 所属区域字典码
    */
   private final static String AREA_COUNTRY_CODE = "area_country_code";
+
+  /**
+   * 附件存储目录
+   */
+  @Value("${server.servlet-path}")
+  private String contextPath;
+
+  /**
+   * 上下文
+   */
+  @Value("${file.preViewRealPath}")
+  private String preViewRealPath;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -477,6 +490,12 @@ public class UseWaterUnitServiceImpl extends
         //查询所属区域
         item.setAreaCountryName(
             dictUtils.getDictItemName(AREA_COUNTRY_CODE, item.getAreaCountry(), nodeCode));
+        //附件
+        if (!item.getSysFile().isEmpty()) {
+          for (File file : item.getSysFile()) {
+            file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());
+          }
+        }
       }
     }
     page.put("records", result);
