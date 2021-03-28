@@ -33,6 +33,7 @@
 
   <select id="selectWaterMeterCodeMyId" resultType="String">
     select id from t_w_water_month_use_data where 1=1
+    AND use_year = DateName(YEAR,GetDate())
     <if test="waterMeterCode != null and waterMeterCode != ''">
       and water_meter_code = #{waterMeterCode}
     </if>

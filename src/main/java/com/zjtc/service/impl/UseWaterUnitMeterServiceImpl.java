@@ -42,11 +42,11 @@ public class UseWaterUnitMeterServiceImpl extends
       return false;
     }
 //    水使用量月数据
+    WaterMonthUseData waterMonthUseData = new WaterMonthUseData();
     List<WaterMonthUseData> waterMonthUseDataList = new ArrayList<>();
     boolean b1 = false;
     //    遍历水表信息
     for (UseWaterUnitMeter useWaterUnitMeter1 : useWaterUnitMeter) {
-      WaterMonthUseData waterMonthUseData = new WaterMonthUseData();
 //      单位id
       useWaterUnitMeter1.setUseWaterUnitId(useWaterUnitId);
       useWaterUnitMeter1.setNodeCode(nodeCode);
@@ -71,7 +71,7 @@ public class UseWaterUnitMeterServiceImpl extends
       }
       waterMonthUseDataList.add(waterMonthUseData);
 //      更新月使用量数据
-      b1 = waterMonthUseDataService.updateUnitBatch(waterMonthUseDataList);
+      b1 = waterMonthUseDataService.updateBatchById(waterMonthUseDataList);
       if (!b1) {
         return false;
       }
@@ -87,9 +87,11 @@ public class UseWaterUnitMeterServiceImpl extends
     List<UseWaterUnitMeter> meters = this.baseMapper.selectUseWaterUnitMeter(id);
     List<String> ids = new ArrayList<>();
     List<String> monthUseDatas=new ArrayList<>();
-    for (UseWaterUnitMeter useWaterUnitMeter : meters) {
-      ids.add(useWaterUnitMeter.getId());
-      monthUseDatas.add(useWaterUnitMeter.getWaterMeterCode());
+    if(!meters.isEmpty()){
+      for (UseWaterUnitMeter useWaterUnitMeter : meters) {
+        ids.add(useWaterUnitMeter.getId());
+        monthUseDatas.add(useWaterUnitMeter.getWaterMeterCode());
+      }
     }
     if (ids.isEmpty()) {
       return false;
@@ -105,7 +107,7 @@ public class UseWaterUnitMeterServiceImpl extends
       param.setUseWaterUnitId("");
       b=waterMonthUseDataService.update(param,wrapper);
     }
- //   boolean b = waterMonthUseDataService.deletedUnit(ids);
+    //   boolean b = waterMonthUseDataService.deletedUnit(ids);
 ////    同时清空水使用量数据表对应的部门id
 //    boolean b1 = waterUseDataService.deletedUnit(ids);
     return integer > 0 && b;
