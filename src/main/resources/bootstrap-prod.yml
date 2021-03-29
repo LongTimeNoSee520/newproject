@@ -84,7 +84,7 @@ file:
 #  #导入错误日志文件目录
 #  importErrorFilePath : importError
   #文件上下文
-  preViewRealPath: http://172.23.22.42:8081
+  preViewRealPath: http://125.70.9.203:8081
 waterSms:
   sendUrl: /water/sms/smsManage/sendMessages
 

@@ -85,18 +85,18 @@
     <result column="FrontCurYearPlan" property="FrontCurYearPlan" jdbcType="DOUBLE"/>
     <result column="FrontPlanYear" property="FrontPlanYear" jdbcType="INTEGER"/>
     <result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
-    <collection property="auditFileIds" ofType="com.zjtc.model.File"
-      column="{id=id,preViewRealPath=preViewRealPath}"
-      select="queryAuditFiles">
-    </collection>
-    <collection property="waterProofFileIds" ofType="com.zjtc.model.File"
-      column="{id=id,preViewRealPath=preViewRealPath}"
-      select="queryWaterProofFiles">
-    </collection>
-    <collection property="otherFileIds" ofType="com.zjtc.model.File"
-      column="{id=id,preViewRealPath=preViewRealPath}"
-      select="queryOtherFiles">
-    </collection>
+    <!--<collection property="auditFileIds" ofType="com.zjtc.model.File"-->
+      <!--column="{id=id,preViewRealPath=preViewRealPath}"-->
+      <!--select="queryAuditFiles">-->
+    <!--</collection>-->
+    <!--<collection property="waterProofFileIds" ofType="com.zjtc.model.File"-->
+      <!--column="{id=id,preViewRealPath=preViewRealPath}"-->
+      <!--select="queryWaterProofFiles">-->
+    <!--</collection>-->
+    <!--<collection property="otherFileIds" ofType="com.zjtc.model.File"-->
+      <!--column="{id=id,preViewRealPath=preViewRealPath}"-->
+      <!--select="queryOtherFiles">-->
+    <!--</collection>-->
   </resultMap>
 
   <resultMap id="sysAttrFileMap" type="com.zjtc.model.vo.FileVO">
@@ -127,6 +127,9 @@
     fourth_quarter,
     first_water,
     second_water,
+    audit_file_id,
+    water_proof_file_id,
+    other_file_id,
     CASE change_type
     WHEN 0 THEN '调整计划'
     WHEN 1 THEN '增加计划'
@@ -165,17 +168,23 @@
     #{path} AS preViewRealPath
     FROM
     t_wx_use_water_plan_add t1
+    INNER JOIN
+    ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE
+    person_id = #{userId} ) t2
+    on SUBSTRING ( t1.unit_code, 5, 2 ) = t2.unit_type_code
     WHERE
     t1.node_code = #{nodeCode}
-    AND t1.id IN (
-    SELECT
-    id
-    FROM
-    t_wx_use_water_plan_add
-    WHERE
-    node_code = #{nodeCode}
-    AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE
-    person_id = #{userId} ))
+
+<!--    AND t1.id IN (
+     SELECT
+     id
+     FROM
+     t_wx_use_water_plan_add
+     WHERE
+     node_code = #{nodeCode}
+     AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE
+     person_id = #{userId} ))
+-->
     <if test="unitName != null and unitName != ''">
       and t1.unit_name like '%${unitName}%'
     </if>

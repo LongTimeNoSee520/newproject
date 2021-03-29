@@ -4,22 +4,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
-import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.UseWaterPlanAddWXMapper;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.UseWaterPlanAddWXVO;
-import com.zjtc.service.EndPaperService;
+import com.zjtc.service.FileService;
 import com.zjtc.service.MessageService;
-import com.zjtc.service.PersonService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.SmsService;
 import com.zjtc.service.SystemLogService;
-import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterPlanService;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,7 +44,7 @@ public class UseWaterPlanAddWXServiceImpl extends
     UseWaterPlanAddWXService {
 
   @Autowired
-  private EndPaperService endPaperService;
+  private FileService fileService;
 
   @Autowired
   private UseWaterPlanService useWaterPlanService;
@@ -68,15 +66,6 @@ public class UseWaterPlanAddWXServiceImpl extends
 
   @Autowired
   private SystemLogService systemLogService;
-
-  @Autowired
-  private TodoService todoService;
-
-  @Autowired
-  private PersonService personService;
-
-  @Autowired
-  private WebSocketUtil webSocketUtil;
 
 
   @Override
@@ -121,6 +110,7 @@ public class UseWaterPlanAddWXServiceImpl extends
     UseWaterPlan useWaterPlan = null;
     for (UseWaterPlanAddWXVO useWaterPlanAddWXVO : useWaterPlanAdds) {
       try {
+        useWaterPlanAddWXVO = this.getFiles(useWaterPlanAddWXVO, path);
         useWaterPlan = useWaterPlanService
             .selectUseWaterPlanAll(nodeCode, getYear(), useWaterPlanAddWXVO.getUseWaterUnitId(),
                 useWaterPlanAddWXVO.getUnitCode());
@@ -215,7 +205,6 @@ public class UseWaterPlanAddWXServiceImpl extends
         log.error("用水计划增加或调整审核短信发送失败");
       }
     } else if ("2".equals(auditStatus)) {
-
 
       JSONObject jsonObject = new JSONObject();
 //      单位编号
@@ -387,6 +376,26 @@ public class UseWaterPlanAddWXServiceImpl extends
     Calendar date = Calendar.getInstance();
     String year = String.valueOf(date.get(Calendar.YEAR));
     return Integer.valueOf(year);
+  }
+
+
+  /**
+   * 查询附件
+   */
+  private UseWaterPlanAddWXVO getFiles(UseWaterPlanAddWXVO waterPlanAddWXVO, String path) {
+    String auditFileId = waterPlanAddWXVO.getAuditFileId();
+    String otherFileId = waterPlanAddWXVO.getOtherFileId();
+    String waterProofFileId = waterPlanAddWXVO.getWaterProofFileId();
+    if (StringUtils.isNotBlank(auditFileId)) {
+      waterPlanAddWXVO.setAuditFileIds(fileService.findByBusinessIds(Arrays.asList(auditFileId.split(",")), path));
+    }
+    if (StringUtils.isNotBlank(otherFileId)) {
+      waterPlanAddWXVO.setOtherFileIds(fileService.findByBusinessIds(Arrays.asList(otherFileId.split(",")), path));
+    }
+    if (StringUtils.isNotBlank(waterProofFileId)) {
+      waterPlanAddWXVO.setWaterProofFileIds(fileService.findByBusinessIds(Arrays.asList(waterProofFileId.split(",")), path));
+    }
+    return waterPlanAddWXVO;
   }
 
 }

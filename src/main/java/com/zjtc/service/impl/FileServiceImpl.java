@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.mapper.waterBiz.FileMapper;
 import com.zjtc.model.File;
+import com.zjtc.model.vo.FileVO;
 import com.zjtc.service.FileService;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -129,6 +130,15 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     File file=new File();
     file.setDeleted("1");
     return update(file,entityQueryWrapper);
+  }
+
+  @Override
+  public List<FileVO> findByBusinessIds(List<String> businessIds, String fileContext) {
+    if(null != businessIds && businessIds.size()>0){
+
+      this.baseMapper.findByBusinessIds(businessIds,fileContext);
+    }
+    return null;
   }
 
 

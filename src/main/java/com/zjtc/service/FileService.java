@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.File;
+import com.zjtc.model.vo.FileVO;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,4 +59,12 @@ public interface FileService extends IService<File> {
    * 根据多个业务id批量删除附件
    */
   boolean removeByBusinessIds(List<String> businessId);
+
+  /**
+   * 根据业务Id集合查询（完成全路径的拼接）
+   * @param businessIds
+   * @param fileContext 附件地址上下文
+   * @return
+   */
+  List<FileVO> findByBusinessIds(List<String> businessIds,String fileContext);
 }
