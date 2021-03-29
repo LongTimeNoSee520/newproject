@@ -47,6 +47,8 @@ public interface FlowProcessService extends IService<FlowProcess> {
    * */
   int ifNeedAudit(String id, String userId);
 
+  List<Map<String, Object>> firstAuditRole(String flowCode, String nodeCode);
+
 
   List<FlowProcess> queryAll(String nodeCode);
 }

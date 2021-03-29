@@ -103,6 +103,12 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
   }
 
   @Override
+  public List<Map<String, Object>> firstAuditRole(String flowCode, String nodeCode) {
+    return baseMapper.firStAuditRole(flowCode, nodeCode);
+
+  }
+
+  @Override
   public List<FlowProcess> queryAll(String nodeCode) {
     QueryWrapper wrapper=new QueryWrapper();
     wrapper.eq("node_code",nodeCode);

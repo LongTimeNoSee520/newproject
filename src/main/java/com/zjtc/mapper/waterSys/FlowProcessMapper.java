@@ -18,4 +18,7 @@ public interface FlowProcessMapper extends BaseMapper<FlowProcess> {
       @Param("nodeCode") String nodeCode);
 
   int ifNeedAudit(@Param("businessId")String businessId, @Param("userId")String userId);
+
+  List<Map<String, Object>> firStAuditRole(@Param("flowCode") String flowCode,
+      @Param("nodeCode") String nodeCode);
 }

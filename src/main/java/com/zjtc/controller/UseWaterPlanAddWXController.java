@@ -5,6 +5,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
 import com.zjtc.service.FlowNodeInfoService;
+import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +40,9 @@ public class UseWaterPlanAddWXController {
 
   @Autowired
   private FlowNodeInfoService flowNodeInfoService;
+
+  @Autowired
+  private FlowProcessService flowProcessService;
 
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("用水计划调整审核查询")
@@ -175,14 +179,14 @@ public class UseWaterPlanAddWXController {
   @RequestMapping(value = "firstAuditRole", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("查询第一个审核流程id")
   public ApiResponse firstAuditRole(@ApiParam("   {\n"
-      + "     \"flowCode\":[\"打印的id\"]\n"
+      + "     \"flowCode\":\"流程编码\n"
       + "   }") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("打印办结单,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     if (user == null) {
-      response.setMessage("打印办结单失败");
+      response.setMessage("查询第一个审核流程失败");
       return response;
     }
     if (null == jsonObject) {
@@ -194,14 +198,14 @@ public class UseWaterPlanAddWXController {
       flowCode = jsonObject.getString("flowCode");
     }
     try {
-      List<Map<String, Object>> list = flowNodeInfoService
+      List<Map<String, Object>> list = flowProcessService
           .firstAuditRole(flowCode, user.getNodeCode());
       response.setData(list);
       return response;
     } catch (Exception e) {
       response.setCode(500);
-      response.setMessage("打印办结单异常");
-      log.error("打印办结单错误,errMsg==={}", e.getMessage());
+      response.setMessage("查询第一个审核流程异常");
+      log.error("查询第一个审核流程错误,errMsg==={}", e.getMessage());
       e.printStackTrace();
     }
     return response;
