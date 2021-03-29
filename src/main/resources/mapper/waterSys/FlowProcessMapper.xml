@@ -4,6 +4,20 @@
 <mapper namespace="com.zjtc.mapper.waterSys.FlowProcessMapper">
   <!--数据字典-->
 
+  <resultMap id="flowInfoResult" type="com.zjtc.model.FlowNodeInfo" >
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="flow_id" property="flowId" jdbcType="VARCHAR"/>
+    <result column="flow_node_name" property="flowNodeName" jdbcType="VARCHAR"/>
+    <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    <!--<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>-->
+    <result column="flow_node_role_id" property="flowNodeRoleId" jdbcType="VARCHAR"/>
+    <result column="flow_node_role_name" property="flowNodeRoleName" jdbcType="VARCHAR"/>
+    <result column="flow_node_code" property="flowNodeCode" jdbcType="VARCHAR"/>
+    <result column="flow_sort" property="flowSort" jdbcType="INTEGER"/>
+    <!--<result column="business_id" property="businessId" jdbcType="INTEGER"/>-->
+  </resultMap>
+
   <select id="queryAuditList" resultType="java.util.LinkedHashMap">
     SELECT
     t1.id AS id,
