@@ -1,4 +1,4 @@
-package com.zjtc.mapper.waterBiz;
+package com.zjtc.mapper.waterSys;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.FlowNodeInfo;

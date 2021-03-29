@@ -1,4 +1,4 @@
-package com.zjtc.mapper.waterBiz;
+package com.zjtc.mapper.waterSys;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.FlowNode;
@@ -27,5 +27,5 @@ public interface FlowNodeMapper extends BaseMapper<FlowNode> {
       @Param("flowCode") String flowCode);
 
   long isFirstFlowNode(@Param("userId") String userId, @Param("nodeCode") String nodeCode,
-     @Param("flowCode") String flowCode);
+      @Param("flowCode") String flowCode);
 }

@@ -43,6 +43,7 @@ public class UseWaterPlanAddWXServiceImpl extends
     ServiceImpl<UseWaterPlanAddWXMapper, UseWaterPlanAddWX> implements
     UseWaterPlanAddWXService {
 
+
   @Autowired
   private FileService fileService;
 
@@ -195,11 +196,13 @@ public class UseWaterPlanAddWXServiceImpl extends
               "方,第三季度计划:" + useWaterPlanAddWX.getThirdQuarter() +
               "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,年计划水量:" +
               useWaterPlanAddWX.getCurYearPlan() + ",审核未通过,已被驳回。";
+      /**发送消息**/
       messageService
           .add(useWaterPlanAddWX.getNodeCode(), auditPersonId, userName,
               AuditConstants.NOT_APPROVED, messageContent, id);
 
       try {
+        /**发送短信**/
         smsService.sendMsgToPromoter(user, auditPersonId, userName, messageContent, "计划通知");
       } catch (Exception e) {
         log.error("用水计划增加或调整审核短信发送失败");
@@ -238,10 +241,10 @@ public class UseWaterPlanAddWXServiceImpl extends
 
 //==========================================================================
 //       审批申请附件id列表\"]没有时传[]
-      String[] split = useWaterPlanAddWX.getAuditFileId().split(",");
-      Map<String, Object> map = new HashMap<>(10);
+      String[] auditFileIds = useWaterPlanAddWX.getAuditFileId().split(",");
+      Map<String, Object> map = new HashMap<>(16);
       List<Map<String, Object>> auditFiles = new ArrayList<>();
-      for (String dd : split) {
+      for (String dd : auditFileIds) {
         map.put("id", dd);
         map.put("deleted", "0");
         auditFiles.add(map);
@@ -249,10 +252,10 @@ public class UseWaterPlanAddWXServiceImpl extends
       jsonObject.put("auditFiles", auditFiles);
 
 //       近2月水量凭证附件id列表\"]没有时传[]
-      String[] split1 = useWaterPlanAddWX.getWaterProofFileId().split(",");
-      Map<String, Object> map1 = new HashMap<>(10);
+      String[] waterProofFileIds = useWaterPlanAddWX.getWaterProofFileId().split(",");
+      Map<String, Object> map1 = new HashMap<>(16);
       List<Map<String, Object>> waterProofFiles = new ArrayList<>();
-      for (String ss : split1) {
+      for (String ss : waterProofFileIds) {
         map1.put("id", ss);
         map1.put("deleted", 0);
         waterProofFiles.add(map1);
@@ -260,15 +263,10 @@ public class UseWaterPlanAddWXServiceImpl extends
       jsonObject.put("waterProofFiles", waterProofFiles);
 
 //        其他证明材料id列表\"]没有时传[]
-      String[] split2 = new String[0];
-      try {
-        split2 = useWaterPlanAddWX.getOtherFileId().split(",");
-      } catch (Exception e) {
-        log.error("证明材料异常");
-      }
-      Map<String, Object> map2 = new HashMap<>(10);
+      String[] otherFileIds = useWaterPlanAddWX.getOtherFileId().split(",");
+      Map<String, Object> map2 = new HashMap<>(16);
       List<Map<String, Object>> otherFiles = new ArrayList<>();
-      for (String aa : split2) {
+      for (String aa : otherFileIds) {
         map2.put("id", aa);
         map.put("deleted", "0");
         otherFiles.add(map);
@@ -387,13 +385,16 @@ public class UseWaterPlanAddWXServiceImpl extends
     String otherFileId = waterPlanAddWXVO.getOtherFileId();
     String waterProofFileId = waterPlanAddWXVO.getWaterProofFileId();
     if (StringUtils.isNotBlank(auditFileId)) {
-      waterPlanAddWXVO.setAuditFileIds(fileService.findByBusinessIds(Arrays.asList(auditFileId.split(",")), path));
+      waterPlanAddWXVO.setAuditFileIds(
+          fileService.findByBusinessIds(Arrays.asList(auditFileId.split(",")), path));
     }
     if (StringUtils.isNotBlank(otherFileId)) {
-      waterPlanAddWXVO.setOtherFileIds(fileService.findByBusinessIds(Arrays.asList(otherFileId.split(",")), path));
+      waterPlanAddWXVO.setOtherFileIds(
+          fileService.findByBusinessIds(Arrays.asList(otherFileId.split(",")), path));
     }
     if (StringUtils.isNotBlank(waterProofFileId)) {
-      waterPlanAddWXVO.setWaterProofFileIds(fileService.findByBusinessIds(Arrays.asList(waterProofFileId.split(",")), path));
+      waterPlanAddWXVO.setWaterProofFileIds(
+          fileService.findByBusinessIds(Arrays.asList(waterProofFileId.split(",")), path));
     }
     return waterPlanAddWXVO;
   }

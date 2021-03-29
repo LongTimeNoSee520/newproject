@@ -24,6 +24,7 @@ import com.zjtc.model.vo.EndPaperVO;
 import com.zjtc.model.vo.SendListVO;
 import com.zjtc.service.DictItemService;
 import com.zjtc.service.EndPaperService;
+import com.zjtc.service.FileService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
@@ -37,6 +38,7 @@ import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.WaterUsePayInfoService;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -104,6 +106,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   @Autowired
   private DictUtils dictUtils;
 
+  @Autowired
+  private FileService fileService;
+
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
 
@@ -170,6 +175,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     for(EndPaperVO paperVO :records){
       /**查询流程信息*/
      paperVO.setAuditMessages(flowProcessService.queryAuditList(paperVO.getId(),paperVO.getNodeCode()));
+     /** 查询附件 **/
+      paperVO = this.getFiles(paperVO,preViewRealPath);
      /**查询是否需要当前登录人员审核*/
      int i =flowProcessService.ifNeedAudit(paperVO.getId(),userId);
      if (i==0){
@@ -653,4 +660,28 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     smsService.sendNotification(user,sendList,SmsConstants.SEND_NOTIFICATION_ADJUST_RESULT,null);
   }
 
+
+  /**
+   * 查询附件
+   */
+  private EndPaperVO  getFiles(EndPaperVO paperVO, String path) {
+    try {
+      String auditFileId = paperVO.getAuditFileId();
+      String otherFileId = paperVO.getOtherFileId();
+      String waterProofFileId = paperVO.getWaterProofFileId();
+      if (StringUtils.isNotBlank(auditFileId)) {
+        paperVO.setAuditFiles(fileService.findByBusinessIds(Arrays.asList(auditFileId.split(",")), path));
+      }
+      if (StringUtils.isNotBlank(otherFileId)) {
+        paperVO.setOtherFiles(fileService.findByBusinessIds(Arrays.asList(otherFileId.split(",")), path));
+      }
+      if (StringUtils.isNotBlank(waterProofFileId)) {
+        paperVO.setWaterProofFiles(fileService.findByBusinessIds(Arrays.asList(waterProofFileId.split(",")), path));
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error("查询附件信息异常======={}"+e.getMessage());
+    }
+    return paperVO;
+  }
 }

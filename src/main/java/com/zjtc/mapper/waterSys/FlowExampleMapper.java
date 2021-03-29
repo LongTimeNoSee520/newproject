@@ -1,8 +1,7 @@
-package com.zjtc.mapper.waterBiz;
-
+package com.zjtc.mapper.waterSys;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zjtc.model.FlowNodeLineInfo;
+import com.zjtc.model.FlowExample;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,6 +9,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2021/01/19
  */
 @Mapper
-public interface FlowNodeLineInfoMapper extends BaseMapper<FlowNodeLineInfo> {
+public interface FlowExampleMapper extends BaseMapper<FlowExample> {
 
 }

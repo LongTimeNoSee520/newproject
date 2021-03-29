@@ -153,6 +153,19 @@ public class EndPaperVO extends Model<EndPaperVO>{
     @ApiModelProperty("是否需要审核")
     private boolean needAudit;
 
+    @ApiModelProperty("审批申请附件id")
+    private String auditFileId;
+    /**
+     *
+     */
+    @ApiModelProperty("近2月水量凭证附件id")
+    private String waterProofFileId;
+    /**
+     *
+     */
+    @ApiModelProperty("其他证明材料")
+    private String otherFileId;
+
 
 	@Override
 	protected Serializable pkVal() {

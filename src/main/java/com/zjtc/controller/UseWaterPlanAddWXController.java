@@ -60,21 +60,17 @@ public class UseWaterPlanAddWXController {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     if (user == null) {
-      response.setMessage("用水计划调整审核分页查询失败");
+      response.recordError("用水计划调整审核分页查询失败");
       return response;
     }
     if (null == jsonObject) {
       response.recordError("系统异常");
       return response;
     }
-    String nodeCode;
     try {
-    if (null != jsonObject.getString("nodeCode")) {
-       nodeCode = jsonObject.getString("nodeCode");
-      response = useWaterPlanAddWXService.queryPage(jsonObject,nodeCode, user.getId());
-    }else{
-      response = useWaterPlanAddWXService.queryPage(jsonObject, user.getNodeCode(), user.getId());
-    }
+      String nodeCode = null != jsonObject.getString("nodeCode") ? jsonObject.getString("nodeCode")
+          : user.getNodeCode();
+      response = useWaterPlanAddWXService.queryPage(jsonObject, nodeCode, user.getId());
       return response;
     } catch (Exception e) {
       response.setCode(500);
@@ -105,7 +101,7 @@ public class UseWaterPlanAddWXController {
     }
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
     try {
-      response = useWaterPlanAddWXService.printed(ids,user);
+      response = useWaterPlanAddWXService.printed(ids, user);
       return response;
     } catch (Exception e) {
       response.setCode(500);
@@ -164,7 +160,7 @@ public class UseWaterPlanAddWXController {
     try {
       response = useWaterPlanAddWXService
           .audit(user.getId(), user.getUsername(), id, auditStatus, auditResult, firstWater,
-              secondWater, user,auditorName,auditorId,businessJson,detailConfig,nextNodeId);
+              secondWater, user, auditorName, auditorId, businessJson, detailConfig, nextNodeId);
       return response;
     } catch (Exception e) {
       response.setCode(500);
@@ -194,7 +190,7 @@ public class UseWaterPlanAddWXController {
       return response;
     }
     String flowCode = null;
-    if (null != jsonObject.getString("flowCode")){
+    if (null != jsonObject.getString("flowCode")) {
       flowCode = jsonObject.getString("flowCode");
     }
     try {

@@ -92,15 +92,15 @@
 		<result column="can_execute" property="canExecute" jdbcType="BOOLEAN"/>
 		<!--<result column="need_audit" property="needAudit" jdbcType="BOOLEAN"/>-->
 		<result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
-		<collection property="auditFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
-		select="queryAuditFiles">
-		</collection>
-		<collection property="waterProofFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
-		select="queryWaterProofFiles">
-		</collection>
-		<collection property="otherFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"
-		select="queryOtherFiles">
-		</collection>
+		<!--<collection property="auditFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"-->
+		<!--select="queryAuditFiles">-->
+		<!--</collection>-->
+		<!--<collection property="waterProofFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"-->
+		<!--select="queryWaterProofFiles">-->
+		<!--</collection>-->
+		<!--<collection property="otherFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"-->
+		<!--select="queryOtherFiles">-->
+		<!--</collection>-->
 	<!--<collection property="unpaidList" ofType="java.util.LinkedHashMap" column="id"-->
 	<!--select="queryUnpaidList">-->
 	<!--</collection>-->
@@ -166,41 +166,34 @@
     <!--WHEN ((SELECT COUNT(id) FROM t_flow_process WHERE business_id =t1.id AND operator_id = #{userId} AND audit_status='1')>0)-->
     <!--THEN 1  ELSE 0 END AS need_audit,-->
     CASE WHEN (t1.confirmed ='1'AND t1.audit_status ='1' AND (executed IS NULL OR executed ='0' OR executed ='')) THEN 1 ELSE 0 END AS can_execute
-		FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,*
+		FROM(
+		SELECT
+		row_number () OVER ( ORDER BY [unit_code] ASC, [id] ) AS rownumber,*
 		FROM
-		t_w_end_paper
-		WHERE id IN
-		(SELECT id
-		FROM t_w_end_paper
-		WHERE  node_code = #{nodeCode}
-    AND (rescinded ='0' OR rescinded IS NULL OR rescinded ='')
-		AND SUBSTRING(unit_code,5,2) <!--类型-->
-		IN (
-		SELECT unit_type_code
-		FROM t_w_use_water_unit_role
-		WHERE person_id = #{userId}
-		UNION  ALL
-		SELECT 'NO_THIS_CODE' AS unit_type_code
-		)
+		t_w_end_paper t1
+		inner join (SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{userId} UNION ALL SELECT 'NO_THIS_CODE' AS unit_type_code) t2
+		on SUBSTRING ( t1.unit_code, 5, 2 ) = t2.unit_type_code
+		where
+		t1.node_code = #{nodeCode}
+		AND ( t1.rescinded = '0' OR t1.rescinded IS NULL OR t1.rescinded = '' )
 		<if test="unitCode != null and unitCode != ''">
-			and unit_code like '%${unitCode}%'
+			and t1.unit_code like '%${unitCode}%'
 		</if>
 		<if test="unitName != null and unitName != ''">
-			and unit_name like '%${unitName}%'
+			and t1.unit_name like '%${unitName}%'
 		</if>
 		<if test="executed != null and executed != ''">
-			and executed = #{executed}
+			and t1.executed = #{executed}
 		</if>
 		<if test="waterMeterCode != null and waterMeterCode != ''">
-			and water_meter_code like '%${waterMeterCode}%'
+			and t1.water_meter_code like '%${waterMeterCode}%'
 		</if>
 		<if test="applyTimeStart != null">
-			and create_time &gt;= #{applyTimeStart}
+			and t1.create_time &gt;= #{applyTimeStart}
 		</if>
 		<if test="applyTimeEnd != null">
-			and create_time &lt;= #{applyTimeEnd}
+			and t1.create_time &lt;= #{applyTimeEnd}
 		</if>
-		)
 		)t1
 		WHERE  rownumber > (#{current}-1)* #{size}
 	</select>

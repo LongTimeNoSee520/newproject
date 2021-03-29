@@ -2,7 +2,7 @@ package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zjtc.mapper.waterBiz.FlowNodeInfoMapper;
+import com.zjtc.mapper.waterSys.FlowNodeInfoMapper;
 import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.FlowNodeLineInfo;
 import com.zjtc.service.FlowNodeInfoService;
