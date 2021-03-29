@@ -2,6 +2,7 @@ package com.zjtc.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.User;
 import java.util.List;
@@ -51,4 +52,8 @@ public interface FlowProcessService extends IService<FlowProcess> {
 
 
   List<FlowProcess> queryAll(String nodeCode);
+
+  List<FlowNodeInfo> selectNodes(String nodeCode,String flowCode);
+
+  long isFirstFlowNode(String userId, String nodeCode, String flowCode);
 }

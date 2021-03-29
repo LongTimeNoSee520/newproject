@@ -9,6 +9,7 @@ import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowNodeLineInfoService;
 import com.zjtc.service.FlowNodeLineService;
 import com.zjtc.service.FlowNodeService;
+import com.zjtc.service.FlowProcessService;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +36,16 @@ public class FlowNodeInfoServiceImpl extends
   @Autowired
   private FlowNodeLineInfoService flowNodeLineInfoService;
 
+  @Autowired
+  private FlowProcessService  flowProcessService;
+
   @Override
   @Transactional(rollbackFor = Exception.class)
   public String selectAndInsert(String nodeCode, String businessId, String flowCode,
       String nextNodeId) {
     String newNextNodeId = "";
     /**从流程节点表查询办结单/退减免单审核流程节点数据*/
-    List<FlowNodeInfo> flowNodeInfos = flowNodeService.selectNodes(nodeCode, flowCode);
+    List<FlowNodeInfo> flowNodeInfos = flowProcessService.selectNodes(nodeCode, flowCode);
     /**从流程线表查询办结单/退减免单审核流程线数据*/
     List<FlowNodeLineInfo> flowNodeLineInfos = flowNodeLineService
         .selectLineInfo(flowCode, nodeCode);

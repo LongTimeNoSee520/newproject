@@ -67,6 +67,9 @@ public class RefundOrRefundServiceImpl extends
   private FlowNodeService flowNodeService;
   @Autowired
   private SystemLogService systemLogService;
+
+  @Autowired
+  private FlowProcessService processService;
   /**
    * 附件存储目录
    */
@@ -144,7 +147,7 @@ public class RefundOrRefundServiceImpl extends
             file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());
           }
           //当前退减免单是否可修改
-         long flag= flowNodeService
+         long flag= processService
               .isFirstFlowNode(jsonObject.getString("userId"), nodeCode,
                   jsonObject.getString("flowCode"));
           if(flag>0 && "0".equals(refundOrRefund.getStatus())){

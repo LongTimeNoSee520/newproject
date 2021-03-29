@@ -83,4 +83,30 @@
     t4.rank ASC
   </select>
 
+  <select id="selectNodes" resultMap="flowInfoResult">
+    SELECT id,node_code,flow_id,flow_node_name,remark,flow_node_role_id,
+    flow_node_role_name,flow_node_code,flow_sort
+    FROM t_flow_node
+    WHERE flow_id =(SELECT id FROM t_flow WHERE node_code = #{nodeCode} AND flow_code = #{flowCode})
+  </select>
+
+
+  <select id="isFirstFlowNode" resultType="java.lang.Long">
+    SELECT
+    count(1)
+    FROM
+    (
+    SELECT
+    top 1
+    flow_node_role_id
+    FROM
+    t_flow_node
+    WHERE
+    flow_id = ( SELECT id FROM t_flow WHERE node_code =#{nodeCode} AND flow_code =#{flowCode})
+    ORDER BY
+    flow_sort ASC
+    ) t1
+    inner join (select user_id ,role_id from  t_user_role_ref ) t4 on t4.role_id=t1.flow_node_role_id
+    where user_id=#{userId}
+  </select>
 </mapper>

@@ -4,6 +4,7 @@ package com.zjtc.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterSys.FlowProcessMapper;
+import com.zjtc.model.FlowNodeInfo;
 import com.zjtc.model.FlowProcess;
 import com.zjtc.model.User;
 import com.zjtc.service.FlowProcessService;
@@ -118,4 +119,14 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     return this.list(wrapper);
   }
 
+  @Override
+  public List<FlowNodeInfo> selectNodes(String nodeCode,String flowCode) {
+    return this.baseMapper.selectNodes(nodeCode,flowCode);
+  }
+
+
+  @Override
+  public long isFirstFlowNode(String userId, String nodeCode, String flowCode) {
+    return baseMapper.isFirstFlowNode( userId,  nodeCode,  flowCode);
+  }
 }
