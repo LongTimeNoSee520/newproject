@@ -109,7 +109,6 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
   @Override
   public List<Map<String, Object>> firstAuditRole(String flowCode, String nodeCode) {
     return flowProcessMapper.firStAuditRole(flowCode, nodeCode);
-
   }
 
   @Override

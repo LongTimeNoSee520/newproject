@@ -10,6 +10,7 @@ import com.zjtc.base.util.FileUtil;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.UseWaterUnitMapper;
 import com.zjtc.mapper.waterBiz.WaterUsePayInfoMapper;
+import com.zjtc.mapper.waterSys.FlowProcessMapper;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.UseWaterUnitInvoice;
@@ -97,6 +98,8 @@ public class WaterUsePayInfoServiceImpl extends
   @Autowired
   private SystemLogService systemLogService;
 
+  @Autowired
+  private FlowProcessMapper flowProcessMapper;
 
   @Override
   @Transactional(rollbackFor = Exception.class)

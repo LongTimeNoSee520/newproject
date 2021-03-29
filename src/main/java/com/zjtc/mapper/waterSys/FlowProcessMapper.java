@@ -21,4 +21,7 @@ public interface FlowProcessMapper extends BaseMapper<FlowProcess> {
 
   List<Map<String, Object>> firStAuditRole(@Param("flowCode") String flowCode,
       @Param("nodeCode") String nodeCode);
+
+  List<Map<String, Object>> secondAuditRole(@Param("flowCode") String flowCode,
+      @Param("nodeCode") String nodeCode);
 }

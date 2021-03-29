@@ -12,6 +12,7 @@ import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.PlanDailyAdjustmentMapper;
+import com.zjtc.mapper.waterSys.FlowProcessMapper;
 import com.zjtc.model.EndPaper;
 import com.zjtc.model.File;
 import com.zjtc.model.UseWaterPlan;
@@ -89,6 +90,9 @@ public class PlanDailyAdjustmentServiceImpl extends
   private SystemLogService systemLogService;
   @Autowired
   private DictUtils dictUtils;
+
+  @Autowired
+  private FlowProcessMapper flowProcessMapper;
 
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
@@ -715,10 +719,10 @@ public class PlanDailyAdjustmentServiceImpl extends
   public List<Map<String, Object>> secondAuditRole(String nodeCode,String changeType) {
     List<Map<String, Object>> result = new ArrayList<>();
     if ("0".equals(changeType)){//四个季度间调整
-      result = flowNodeInfoService
+      result = flowProcessMapper
           .secondAuditRole(AuditConstants.END_PAPER_ADJUST_FLOW_CODE, nodeCode);
     }else if ("1".equals(changeType)) {//增加计划
-      result = flowNodeInfoService
+      result = flowProcessMapper
           .secondAuditRole(AuditConstants.END_PAPER_ADD_FLOW_CODE, nodeCode);
     }
     return result;
