@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,6 +23,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowProcess> implements
     FlowProcessService {
+
+  @Autowired
+  private com.zjtc.mapper.waterSys.FlowProcessMapper flowProcessMapper;
 
   @Override
   public void create(User user, String businessId, String opinions, String auditorName,
@@ -104,7 +108,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
 
   @Override
   public List<Map<String, Object>> firstAuditRole(String flowCode, String nodeCode) {
-    return baseMapper.firStAuditRole(flowCode, nodeCode);
+    return flowProcessMapper.firStAuditRole(flowCode, nodeCode);
 
   }
 
