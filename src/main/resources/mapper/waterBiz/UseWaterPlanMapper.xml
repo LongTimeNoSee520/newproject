@@ -60,5 +60,51 @@
     AND unit_code = #{unitCode}
   </select>
 
+  <select id="selectUseWaterPlan" resultMap="BaseResultMap">
+    select top 1
+    id,
+    node_code,
+    use_water_unit_id,
+    unit_name,
+    unit_code,
+    algorithm_type,
+    water_meter_code,
+    plan_year,
+    base_water_amount,
+    before_last_year_water_amount,
+    last_year_water_amount,
+    three_year_avg,
+    now_price,
+    n8,
+    minus_pay_status,
+    balance_test,
+    create_type,
+    cur_year_base_plan,
+    cur_year_plan,
+    next_year_start_plan,
+    next_year_end_plan,
+    first_quarter,
+    second_quarter,
+    third_quarter,
+    fourth_quarter,
+    plan_type,
+    create_time,
+    update_user_id,
+    added,
+    reduce_plan,
+    reward_plan,
+    assess_quarter,
+    remarks,
+    update_time,
+    exist_settlement_form,
+    printed
+    FROM
+    t_w_use_water_plan
+    WHERE
+    node_code = #{nodeCode}
+    AND plan_year = #{planYear}
+    AND unit_code = #{unitCode}
+  </select>
+
 
 </mapper>

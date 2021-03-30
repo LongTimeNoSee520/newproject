@@ -324,11 +324,13 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     UseWaterPlanAdd waterPlanAdd = new UseWaterPlanAdd();
 
     for (UseWaterSelfDefinePlan useWaterSelfDefinePlan : useWaterSelfDefinePlans) {
-      QueryWrapper<UseWaterPlan> wrapper1 = new QueryWrapper<>();
-      wrapper1.eq("node_code", useWaterSelfDefinePlan.getNodeCode());
-      wrapper1.eq("unit_code", useWaterSelfDefinePlan.getUnitCode());
-      wrapper1.eq("plan_year", useWaterSelfDefinePlan.getPlanYear());
-      UseWaterPlan useWaterPlanModel = useWaterPlanService.getOne(wrapper1);//实际上只有一条数据
+//      QueryWrapper<UseWaterPlan> wrapper1 = new QueryWrapper<>();
+//      wrapper1.eq("node_code", useWaterSelfDefinePlan.getNodeCode());
+//      wrapper1.eq("unit_code", useWaterSelfDefinePlan.getUnitCode());
+//      wrapper1.eq("plan_year", useWaterSelfDefinePlan.getPlanYear());
+//      UseWaterPlan useWaterPlanModel = useWaterPlanService.getOne(wrapper1);//实际上只有一条数据
+      UseWaterPlan useWaterPlanModel = useWaterPlanService.selectUseWaterPlan(useWaterSelfDefinePlan.getNodeCode(),useWaterSelfDefinePlan.getUnitCode(),useWaterSelfDefinePlan.getPlanYear());
+     log.info("匹配到的用水计划表数据:"+useWaterPlanModel);
       if (null == useWaterPlanModel) {
         response.recordError("系统异常,操作失败");
         return response;

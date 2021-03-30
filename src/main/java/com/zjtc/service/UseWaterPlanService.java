@@ -48,4 +48,6 @@ public interface UseWaterPlanService extends IService<UseWaterPlan> {
    * @return 结果集
    */
   UseWaterPlan selectUseWaterPlanAll(String nodeCode,Integer planYear,String waterUnitId,String unitCode);
+
+  UseWaterPlan selectUseWaterPlan(String nodeCode, String unitCode, Integer planYear);
 }

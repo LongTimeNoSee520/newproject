@@ -49,4 +49,10 @@ public class UseWaterPlanServiceImpl extends ServiceImpl<UseWaterPlanMapper, Use
   public UseWaterPlan selectUseWaterPlanAll(String nodeCode, Integer planYear, String waterUnitId,String unitCode) {
 	  return this.baseMapper.selectUseWaterPlanAll(nodeCode,planYear,waterUnitId,unitCode);
   }
+
+  @Override
+  public UseWaterPlan selectUseWaterPlan(String nodeCode, String unitCode, Integer planYear) {
+
+    return this.baseMapper.selectUseWaterPlan( nodeCode,  unitCode,  planYear);
+  }
 }
