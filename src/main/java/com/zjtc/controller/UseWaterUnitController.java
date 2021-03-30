@@ -396,7 +396,7 @@ public class UseWaterUnitController {
     if (null != user) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
-        apiResponse= useWaterUnitService.exportAccountAudit(user,jsonObject, request, response);
+        apiResponse = useWaterUnitService.exportAccountAudit(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出账户审核表错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -421,7 +421,7 @@ public class UseWaterUnitController {
     if (null != user) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
-        apiResponse=useWaterUnitService.exportForm(user,jsonObject, request, response);
+        apiResponse = useWaterUnitService.exportForm(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出开通格式错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -449,7 +449,7 @@ public class UseWaterUnitController {
     if (null != user) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
-        apiResponse= useWaterUnitService.exportRevoca(user,jsonObject, request, response);
+        apiResponse = useWaterUnitService.exportRevoca(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出撤销格式错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -487,7 +487,7 @@ public class UseWaterUnitController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        apiResponse=useWaterUnitService.exportQueryData(user,jsonObject, request, response);
+        apiResponse = useWaterUnitService.exportQueryData(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出查询结果错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -511,7 +511,7 @@ public class UseWaterUnitController {
     if (null != user) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
-        apiResponse=useWaterUnitService.exportMoreAndLess(user,jsonObject, request, response);
+        apiResponse = useWaterUnitService.exportMoreAndLess(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出用水单位增减情况错误,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -527,7 +527,7 @@ public class UseWaterUnitController {
   public ApiResponse selectCodeByName
       (@ApiParam("{\n"
           + "\"unitName\":\"单位编号\"\n"
-          + "}")@RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
+          + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     log.info("根据单位名称查询单位编号 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     User user = jwtUtil.getUserByToken(token);
     ApiResponse apiResponse = new ApiResponse();
@@ -549,24 +549,23 @@ public class UseWaterUnitController {
 
   @ApiOperation(value = "查询所有的用户类型")
   @RequestMapping(value = "selectAllType", method = RequestMethod.POST)
-  public ApiResponse selectAllType(@RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
+  public ApiResponse selectAllType(@ApiParam("{\n"
+      + "\"nodeCode\":\"节点编码\"\n"
+      + "}")
+      @RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
     ApiResponse apiResponse = new ApiResponse();
-    User user = jwtUtil.getUserByToken(token);
-    if (null != user) {
-      if (StringUtils.isBlank(user.getNodeCode())){
-        apiResponse.recordError("该用户没有用户类型,请联系运维单位添加");
-        return apiResponse;
-      }
-      try {
-        List<String> result = useWaterUnitService.selectAllType(user.getNodeCode());
-        apiResponse.setData(result);
-      } catch (Exception e) {
-        log.error("查询所有的用户类型,errMsg==={}", e.getMessage());
-        apiResponse.recordError(500);
-      }
-    } else {
-      apiResponse.recordError("用户信息错误");
-
+    String nodeCode = jsonObject.getString("nodeCode");
+    if (StringUtils.isBlank(nodeCode)) {
+      apiResponse.recordError("该用户没有用户类型,请联系运维单位添加");
+      return apiResponse;
+    }
+    try {
+      List<String> result = useWaterUnitService.selectAllType(nodeCode);
+      apiResponse.setData(result);
+    } catch (Exception e) {
+      log.error("查询所有的用户类型,errMsg==={}", e.getMessage());
+      apiResponse.recordError(500);
     }
     return apiResponse;
   }
