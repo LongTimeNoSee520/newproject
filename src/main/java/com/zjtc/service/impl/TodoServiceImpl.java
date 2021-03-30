@@ -77,11 +77,12 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
 
   @Override
   public boolean edit(String businessId, String nodeCode,String executePersonId) {
-    QueryWrapper wrapper=new QueryWrapper();
-    wrapper.eq("business_id",businessId);
-    wrapper.eq("node_code",nodeCode);
-    wrapper.eq("execute_person_id",executePersonId);
-    Todo todo= this.getOne(wrapper);
+//    QueryWrapper wrapper=new QueryWrapper();
+//    wrapper.eq("business_id",businessId);
+//    wrapper.eq("node_code",nodeCode);
+//    wrapper.eq("execute_person_id",executePersonId);
+//    Todo todo= this.getOne(wrapper);
+    Todo todo=  this.baseMapper.selectTodoModel(businessId,nodeCode,executePersonId);
     todo.setStatus(AuditConstants.AFTER_TODO_STATUS);
     todo.setOperationTime(new Date());
     return this.updateById(todo);

@@ -34,4 +34,32 @@
 		AND node_code =#{nodeCode}
 		AND status = '0'
 	</select>
+
+  <select id="selectTodoModel" resultMap="result_Todo_Map">
+    select top 1
+    id,
+    node_code,
+    execute_person_id,
+    execute_person_name,
+    todo_title,
+    todo_content,
+    todo_type,
+    business_json,
+    table_name,
+    business_id,
+    registrant,
+    registrant_id,
+    detail_config,
+    status,
+    create_time,
+    operation_time,
+    submit_node_code,
+    submit_node_name
+    from
+    t_w_todo
+    where
+    business_id = #{businessId}
+    and node_code = #{nodeCode}
+    and execute_person_id = #{executePersonId}
+  </select>
 </mapper>

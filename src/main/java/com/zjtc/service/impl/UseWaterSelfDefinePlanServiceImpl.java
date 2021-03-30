@@ -385,7 +385,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
           useWaterSelfDefinePlan.getUnitName(),
           useWaterSelfDefinePlan.getUnitCode(),
           useWaterSelfDefinePlan.getPlanYear());
-      System.out.println("匹配到的用水计划表数据:" + waterPlan);
+      log.info("匹配到的用水计划表数据:" + waterPlan);
 
 //      用水计划日常调整
       planAdd = useWaterPlanAddService.save(waterPlanAdd);
