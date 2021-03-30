@@ -548,20 +548,25 @@ public class UseWaterUnitController {
   }
 
   @ApiOperation(value = "查询所有的用户类型")
-  @RequestMapping(value = "selectAllType/{nodeCode}", method = RequestMethod.GET)
-  public ApiResponse selectAllType(@PathVariable("nodeCode") String nodeCode) {
-    log.info("根据单位名称查询单位编号 ==== 参数{" + nodeCode != null ? nodeCode.toString() : "null" + "}");
+  @RequestMapping(value = "selectAllType", method = RequestMethod.POST)
+  public ApiResponse selectAllType(@RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     ApiResponse apiResponse = new ApiResponse();
-    if (null != nodeCode) {
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user) {
+      if (StringUtils.isBlank(user.getNodeCode())){
+        apiResponse.recordError("该用户没有用户类型,请联系运维单位添加");
+        return apiResponse;
+      }
       try {
-        List<String> result = useWaterUnitService.selectAllType(nodeCode);
+        List<String> result = useWaterUnitService.selectAllType(user.getNodeCode());
         apiResponse.setData(result);
       } catch (Exception e) {
         log.error("查询所有的用户类型,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
       }
     } else {
-      apiResponse.recordError(500);
+      apiResponse.recordError("用户信息错误");
+
     }
     return apiResponse;
   }
