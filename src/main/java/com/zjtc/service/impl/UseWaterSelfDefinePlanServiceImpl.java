@@ -322,12 +322,6 @@ public class UseWaterSelfDefinePlanServiceImpl extends
         response.recordError("系统异常,操作失败");
         return response;
       }
-      if (useWaterPlanModel.getCurYearPlan()
-          != (useWaterSelfDefinePlan.getFirstQuarter() + useWaterSelfDefinePlan.getSecondQuarter()
-          + useWaterSelfDefinePlan.getThirdQuarter() + useWaterSelfDefinePlan.getFourthQuarter())) {
-        response.recordError("四个季度水量总和与年计划水量不符");
-        return response;
-      }
 //      主键
       waterPlanAdd.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 //      节点编码
