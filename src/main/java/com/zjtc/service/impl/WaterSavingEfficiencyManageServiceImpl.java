@@ -84,9 +84,6 @@ public class WaterSavingEfficiencyManageServiceImpl extends
     Map<String, Object> page = new LinkedHashMap<>();
     //查询总数据条数
     long total = baseMapper.queryListTotal(jsonObject);
-    if (total <= 0) {
-      return page;
-    }
     List<Map<String, Object>> result = baseMapper.queryPage(jsonObject);
     page.put("records", result);
     page.put("current", jsonObject.getInteger("current"));
