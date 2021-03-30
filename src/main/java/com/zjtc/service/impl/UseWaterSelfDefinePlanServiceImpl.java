@@ -135,7 +135,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     }
 //    总条数
     Integer total = this.baseMapper
-        .selectCount(unitName, userType, planYear, executed, unitCode, nodeCode, auditStatus, userId);
+        .selectCount(unitName, userType, planYear, executed, unitCode, nodeCode, auditStatus,
+            userId);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
@@ -143,10 +144,12 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     String path = preViewRealPath + contextPath + "/";
     // TODO: 2021/2/18 因为没有附件id,需要根据业务id在附件表里去查对应的业务id,现在的做法是默认有附件id的情况,错误
     List<UseWaterSelfDefinePlanVO> waterSelfDefinePlans = this.baseMapper
-        .queryList(currPage, pageSize, unitName, userType, planYear, executed, unitCode, nodeCode, auditStatus, userId,path);
-    for (UseWaterSelfDefinePlanVO useWaterSelfDefinePlanVO : waterSelfDefinePlans){
+        .queryList(currPage, pageSize, unitName, userType, planYear, executed, unitCode, nodeCode,
+            auditStatus, userId, path);
+    for (UseWaterSelfDefinePlanVO useWaterSelfDefinePlanVO : waterSelfDefinePlans) {
 //     未被审核和未被执行
-      if ("0".equals(useWaterSelfDefinePlanVO.getAuditStatus()) && "0".equals(useWaterSelfDefinePlanVO.getExecuted())){
+      if ("0".equals(useWaterSelfDefinePlanVO.getAuditStatus()) && "0"
+          .equals(useWaterSelfDefinePlanVO.getExecuted())) {
         useWaterSelfDefinePlanVO.setAuditOperationStatus(true);
       }
     }
@@ -171,7 +174,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       response.recordError("审核失败");
     }
     UseWaterSelfDefinePlan useWaterSelfDefinePlan = this.baseMapper.selectById(id);
-    if ("1".equals(useWaterSelfDefinePlan.getAuditStatus()) || "2".equals(useWaterSelfDefinePlan.getAuditStatus())){
+    if ("1".equals(useWaterSelfDefinePlan.getAuditStatus()) || "2"
+        .equals(useWaterSelfDefinePlan.getAuditStatus())) {
       response.recordError("已经审核过,不能再审核");
       return response;
     }
@@ -187,7 +191,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
               "方,第四季度计划:" + useWaterSelfDefinePlan.getFourthQuarter() + "方,审核已驳回。";
       messageService
           .add(useWaterSelfDefinePlan.getNodeCode(), auditPersonId, auditPerson,
-              AuditConstants.NOT_APPROVED, messageContent,id);
+              AuditConstants.NOT_APPROVED, messageContent, id);
       try {
         smsService.sendMsgToPromoter(user, auditPersonId, auditPerson, messageContent, "计划通知");
       } catch (Exception e) {
@@ -204,7 +208,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
               "方,第四季度计划:" + useWaterSelfDefinePlan.getFourthQuarter() + "方,审核已通过。";
       messageService
           .add(useWaterSelfDefinePlan.getNodeCode(), auditPersonId, auditPerson,
-              AuditConstants.GET_APPROVED, messageContent,id);
+              AuditConstants.GET_APPROVED, messageContent, id);
       try {
         smsService.sendMsgToPromoter(user, auditPersonId, auditPerson, messageContent, "计划通知");
       } catch (Exception e) {
@@ -227,7 +231,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     if (integer > 0) {
       response.setCode(200);
       response.setMessage("审核成功");
-      systemLogService.logInsert(user,"用水计划自平","用水计划自平审核通过","");
+      systemLogService.logInsert(user, "用水计划自平", "用水计划自平审核通过", "");
 //      List<Person> personList1 = null;
 //      try {
 //        personList1 = personService
@@ -262,7 +266,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //        webSocketUtil.pushWaterNews(user.getNodeCode(),user.getId());
 //      }
       return response;
-    }else {
+    } else {
       response.recordError("审核失败");
       TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
       return response;
@@ -292,13 +296,20 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       UseWaterSelfDefinePlan executed = useWaterSelfDefinePlanMapper.selectExecuted(id);
 //      如果是未审核的数据不能被执行
       if (null != auditStatus) {
-        response.recordError("用水单位:" +auditStatus.getUnitCode()+"(" +auditStatus.getUnitName()+")" + "的数据未审核或审核不通过,不能执行");
+        response.recordError(
+            "用水单位:" + auditStatus.getUnitCode() + "(" + auditStatus.getUnitName() + ")"
+                + "的数据未审核或审核不通过,不能执行");
         return response;
 //      如果是已经执行过的数据不能再被执行
       } else if (null != executed) {
-        response.recordError("用水单位:" +auditStatus.getUnitCode()+"(" +auditStatus.getUnitName()+")" +"的数据已经被执行,不能再被执行");
+        response.recordError(
+            "用水单位:" + auditStatus.getUnitCode() + "(" + auditStatus.getUnitName() + ")"
+                + "的数据已经被执行,不能再被执行");
         return response;
       }
+
+      //      修改自平数据
+      zp = this.baseMapper.updateExecuteData(id, executor, executorId, new Date());
     }
 //>>>>>>>>>> 第二步:新增用水计划调整表<<<<<<<<<<
     QueryWrapper<UseWaterSelfDefinePlan> wrapper = new QueryWrapper<>();
@@ -373,10 +384,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
           useWaterSelfDefinePlan.getUnitCode(),
           useWaterSelfDefinePlan.getPlanYear());
       System.out.println("匹配到的用水计划表数据:" + waterPlan);
-//      修改自平数据
-      for (String id : ids) {
-        zp = this.baseMapper.updateExecuteData(id, executor, executorId, new Date());
-      }
+
 //      用水计划日常调整
       planAdd = useWaterPlanAddService.save(waterPlanAdd);
 //      修改用水计划表季度水量
@@ -398,19 +406,21 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       messageService.messageToUnit(useWaterSelfDefinePlan.getUnitCode(), messageContent, "自平计划执行");
       try {
 //        短信通知用水单位
-        smsService.sendMsgToUnit(user, useWaterSelfDefinePlan.getUnitCode(), messageContent, "计划通知");
+        smsService
+            .sendMsgToUnit(user, useWaterSelfDefinePlan.getUnitCode(), messageContent, "计划通知");
 //      webSocket消息推送
-        webSocketUtil.pushPublicNews(useWaterSelfDefinePlan.getNodeCode(),useWaterSelfDefinePlan.getUnitCode());
+        webSocketUtil.pushPublicNews(useWaterSelfDefinePlan.getNodeCode(),
+            useWaterSelfDefinePlan.getUnitCode());
       } catch (Exception e) {
         log.error("用水计划自平审核消息推送失败");
       }
     }
-    if (zp > 0 && planAdd ) {
+    if (zp > 0 && planAdd) {
       response.setCode(200);
-      systemLogService.logInsert(user,"用水计划自平","用水计划自平执行","");
+      systemLogService.logInsert(user, "用水计划自平", "用水计划自平执行", "");
 //      取消待办
-      for (String id : ids){
-      todoService.edit(id, user.getNodeCode(), user.getId());
+      for (String id : ids) {
+        todoService.edit(id, user.getNodeCode(), user.getId());
       }
       return response;
     } else {
