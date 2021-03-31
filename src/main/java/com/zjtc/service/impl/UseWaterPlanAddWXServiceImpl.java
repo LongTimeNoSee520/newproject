@@ -263,7 +263,12 @@ public class UseWaterPlanAddWXServiceImpl extends
       jsonObject.put("waterProofFiles", waterProofFiles);
 
 //        其他证明材料id列表\"]没有时传[]
-      String[] otherFileIds = useWaterPlanAddWX.getOtherFileId().split(",");
+      String[] otherFileIds = new String[0];
+      try {
+        otherFileIds = useWaterPlanAddWX.getOtherFileId().split(",");
+      } catch (Exception e) {
+       log.error("其他附件往办结单中存储异常:"+e.getMessage());
+      }
       Map<String, Object> map2 = new HashMap<>(16);
       List<Map<String, Object>> otherFiles = new ArrayList<>();
       for (String aa : otherFileIds) {
