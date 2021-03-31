@@ -602,7 +602,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Override
   public List<Map<String, Object>> nextAuditRole(String id, String nodeCode, String auditBtn) {
-    EndPaper endPaper= this.getById(id);
+    QueryWrapper wrapper=new QueryWrapper();
+    wrapper.eq("id",id);
+    EndPaper endPaper= getOne(wrapper);
     return flowNodeInfoService.nextAuditRole(endPaper.getNextNodeId(),id, nodeCode, auditBtn);
   }
 
