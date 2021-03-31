@@ -36,7 +36,7 @@ public interface EndPaperMapper extends BaseMapper<EndPaper> {
   /**
    * 根据id查询办结单信息(包括附件信息，审核流程信息)
    */
-  EndPaper selectById(@Param("id") String id, @Param("preViewRealPath") String preViewRealPath);
+  EndPaper findById(@Param("id") String id);
 
   /**
    * 查询办结单信息

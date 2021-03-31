@@ -123,7 +123,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
     int current = jsonObject.getInteger("current");//当前页
     int size = jsonObject.getInteger("size");//每页条数
-  //  String nodeCode = user.getNodeCode();//节点编码
+    //  String nodeCode = user.getNodeCode();//节点编码
     String userId = user.getId();
     String unitCode = jsonObject.getString("unitCode");//单位编号
     String unitName = jsonObject.getString("unitName");//单位名称
@@ -138,11 +138,11 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 //    map.put("nodeCode", nodeCode);
     if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
       map.put("nodeCode", jsonObject.getString("nodeCode"));
-    }else{
+    } else {
       map.put("nodeCode", user.getNodeCode());
     }
     map.put("userId", userId);
-    map.put("preViewRealPath",preViewRealPath + contextPath + "/");
+    map.put("preViewRealPath", preViewRealPath + contextPath + "/");
     if (StringUtils.isNotBlank(unitCode)) {
       map.put("unitCode", unitCode);
     }
@@ -172,19 +172,20 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
     /**查出满足条件的数据*/
     List<EndPaperVO> records = this.baseMapper.queryPage(map);
-    for(EndPaperVO paperVO :records){
+    for (EndPaperVO paperVO : records) {
       /**查询流程信息*/
-     paperVO.setAuditMessages(flowProcessService.queryAuditList(paperVO.getId(),paperVO.getNodeCode()));
-     /** 查询附件 **/
-      paperVO = this.getFiles(paperVO,preViewRealPath);
-     /**查询是否需要当前登录人员审核*/
-     int i =flowProcessService.ifNeedAudit(paperVO.getId(),userId);
-     if (i==0){
-       paperVO.setNeedAudit(false);
-     }else {
-       paperVO.setNeedAudit(true);
-     }
-     /**查询字典项名称*/
+      paperVO.setAuditMessages(
+          flowProcessService.queryAuditList(paperVO.getId(), paperVO.getNodeCode()));
+      /** 查询附件 **/
+      paperVO = this.getFiles(paperVO, preViewRealPath);
+      /**查询是否需要当前登录人员审核*/
+      int i = flowProcessService.ifNeedAudit(paperVO.getId(), userId);
+      if (i == 0) {
+        paperVO.setNeedAudit(false);
+      } else {
+        paperVO.setNeedAudit(true);
+      }
+      /**查询字典项名称*/
       if (!paperVO.getPaperType().isEmpty()) {
         paperVO.setPaperTypeName(
             dictUtils.getDictItemName("changeType", paperVO.getPaperType(), paperVO.getNodeCode()));
@@ -200,24 +201,24 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     /**根据id查询*/
     List<EndPaper> endPapers = new ArrayList<>(this.listByIds(ids));
     for (EndPaper endPaper : endPapers) {
-         /**处于审核中的办结单不能撤销*/
-        if (!"0".equals(endPaper.getAuditStatus())) {//0为办结单提交审核还未经过下一环节审核的状态
-          //如果不是刚提交未审核状态，则不能撤销
-          response.recordError("处于审核中或者审核通过的办结单不能撤销");
-          return response;
-        }else{
-          /**根据单位编号更新是否存在办结单状态为否*/
-          planDailyAdjustmentService
+      /**处于审核中的办结单不能撤销*/
+      if (!"0".equals(endPaper.getAuditStatus())) {//0为办结单提交审核还未经过下一环节审核的状态
+        //如果不是刚提交未审核状态，则不能撤销
+        response.recordError("处于审核中或者审核通过的办结单不能撤销");
+        return response;
+      } else {
+        /**根据单位编号更新是否存在办结单状态为否*/
+        planDailyAdjustmentService
             .updateExistSettlement("0", endPaper.getUnitCode(), endPaper.getNodeCode(),
                 endPaper.getPlanYear());
-          /**更新撤销状态和时间*/
-          endPaper.setRescinded("1");
-          endPaper.setRescindTime(new  Date());
-          this.updateById(endPaper);
-          /**删除待办数据*/
-          todoService.deleteByBusinessId(endPaper.getId());
-        }
+        /**更新撤销状态和时间*/
+        endPaper.setRescinded("1");
+        endPaper.setRescindTime(new Date());
+        this.updateById(endPaper);
+        /**删除待办数据*/
+        todoService.deleteByBusinessId(endPaper.getId());
       }
+    }
     return response;
   }
 
@@ -242,8 +243,10 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 //    String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
 
-    EndPaper endPaper = this.baseMapper.selectById(id,preViewRealPath);
-    endPaper.setAuditMessages(flowProcessService.queryAuditList(endPaper.getId(),endPaper.getNodeCode()));
+    EndPaper endPaper = this.baseMapper.findById(id);
+    endPaper = this.getFiles(endPaper, preViewRealPath);
+    endPaper.setAuditMessages(
+        flowProcessService.queryAuditList(endPaper.getId(), endPaper.getNodeCode()));
     if (null != year && year) {
       /**选择了年计划*/
       endPaper.setAlgorithmRules("1");
@@ -255,7 +258,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     endPaper.setAddNumber(addNumber);
     //查询审核流程下一环节信息
     List<Map<String, Object>> hasNext = flowNodeInfoService
-        .nextAuditRole(endPaper.getNextNodeId(),id, user.getNodeCode(), auditStatus);
+        .nextAuditRole(endPaper.getNextNodeId(), id, user.getNodeCode(), auditStatus);
     //获取当前环节的审核操作记录
     FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), endPaper.getId());
     if (hasNext.isEmpty()) { //审核流程结束(没有下一环节)
@@ -267,10 +270,10 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         //设置办结单审核状态
         endPaper.setAuditStatus("1");//通过(本次通过且没有下一环节)
         /**超额向市级发待办，并且办结单状态任然设为审核中*/
-        endPaper = this.report(user,endPaper);
+        endPaper = this.report(user, endPaper);
         if ("1".equals(endPaper.getDataSources())) {//网上申报的办结单
           /**网上申报的 需要通知用户到微信端确认(现场的不发通知)*/
-          String messageContent1 ="";
+          String messageContent1 = "";
           if ("0".equals(endPaper.getPaperType())) {//调整计划
             messageContent1 = "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")"
                 + "申请调整计划，调整后4个季度水量：第一季度" + firstQuarter + "方,第二季度" + secondQuarter + "方，第三季度"
@@ -281,20 +284,20 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
                     + addNumber + "方(第一水量"
                     + firstWater + "方，第二水量" + secondWater + "方)]审核已通过,请到微信端确认。";
           }
-          if(!"2".equals(endPaper.getAuditStatus())) {//没有超额
+          if (!"2".equals(endPaper.getAuditStatus())) {//没有超额
             UseWaterPlanAddWX waterPlanAddWX = new UseWaterPlanAddWX();
             waterPlanAddWX.setId(endPaper.getWaterPlanWXId());
             //只有通过时(且审核流程走完)，不通过则不修改
             waterPlanAddWX.setAuditStatus("4");//微信端提交审核通过后办结单审核也通过
             waterPlanAddWX.setAddNumber(addNumber);
-            useWaterPlanAddWXService.update(waterPlanAddWX,user);
+            useWaterPlanAddWXService.update(waterPlanAddWX, user);
             /**新增通知给用水单位*/
             messageService.messageToUnit(endPaper.getUnitCode(), messageContent1,
                 AuditConstants.END_PAPER_TODO_TITLE);
             /**短信通知给用水单位*/
             smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent1, "调整结果通知");
             // webSocket推送到公共服务端
-            webSocketUtil.pushPublicNews(endPaper.getNodeCode(),endPaper.getUnitCode());
+            webSocketUtil.pushPublicNews(endPaper.getNodeCode(), endPaper.getUnitCode());
           }
         }
         /**新增通知给发起人*/
@@ -312,16 +315,16 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
                   + addNumber + "方(第一水量"
                   + firstWater + "方，第二水量" + secondWater + "方)]办结单审核已通过。";
         }
-        if(!"2".equals(endPaper.getAuditStatus())) {
+        if (!"2".equals(endPaper.getAuditStatus())) {
           messageService
               .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
-                  AuditConstants.END_PAPER_MESSAGE_TYPE, messageContent,id);
+                  AuditConstants.END_PAPER_MESSAGE_TYPE, messageContent, id);
           /**短信通知给发起人*/
           smsService
               .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
                   messageContent, "计划通知");
           //webSocket推送到前端
-        webSocketUtil.pushWaterNews(firstProcess.getNodeCode(),firstProcess.getOperatorId());
+          webSocketUtil.pushWaterNews(firstProcess.getNodeCode(), firstProcess.getOperatorId());
         }
       }
       if ("0".equals(auditStatus)) {//本次审核不通过(没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知)
@@ -329,7 +332,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         endPaper.setAuditStatus("0");//0发起办结节点状态(已有审核记录的只要不是最终环节通过都为审核中状态)
         // 没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知和发短信给提交人
         /**通知发给用水单位*/
-        String messageContent ="";
+        String messageContent = "";
         if ("0".equals(endPaper.getPaperType())) {//调整计划
           messageContent = "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")"
               + "申请调整计划，调整后4个季度水量：第一季度" + firstQuarter + "方,第二季度" + secondQuarter + "方，第三季度"
@@ -345,7 +348,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         /**短信通知给用水单位*/
         smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent, "计划通知");
         // webSocket推送到公共服务端
-       webSocketUtil.pushPublicNews(endPaper.getNodeCode(),endPaper.getUnitCode());
+        webSocketUtil.pushPublicNews(endPaper.getNodeCode(), endPaper.getUnitCode());
       }
       //修改待办状态
       todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
@@ -382,10 +385,11 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
             "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
                 + addNumber + "方(第一水量" + firstWater + "方，第二水量" + secondWater + "方)。";
       }
-      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, JSONObject.toJSONString(endPaper),
+      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent,
+          JSONObject.toJSONString(endPaper),
           detailConfig, AuditConstants.END_PAPER_TODO_TYPE);
       //webSocket 推送消息给下一审核人员
-      webSocketUtil.pushWaterTodo(user.getNodeCode(),auditorId);
+      webSocketUtil.pushWaterTodo(user.getNodeCode(), auditorId);
     }
     //更新审核流程数据
     flowProcess.setAuditContent(opinions);
@@ -394,7 +398,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     //更新办结单数据
     this.baseMapper.updateById(endPaper);
     /**日志*/
-    systemLogService.logInsert(user,"办结单管理","审核",null);
+    systemLogService.logInsert(user, "办结单管理", "审核", null);
   }
 
   private EndPaper report(User user, EndPaper endPaper) throws Exception {
@@ -454,7 +458,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         todo.setBusinessJson(businessJson.toJSONString());
         String publicKey = jwtUtil.getPublicKey();
         String token = jwtUtil.creatToken(user, publicKey);
-        HttpUtil.doPost(token,preViewRealPath + reportUrl, JSONObject.toJSONString(todo));
+        HttpUtil.doPost(token, preViewRealPath + reportUrl, JSONObject.toJSONString(todo));
         endPaper.setAuditStatus("2");
       }
     }
@@ -466,10 +470,14 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   public ApiResponse executeSettlement(User user, JSONObject jsonObject) throws Exception {
     ApiResponse response = new ApiResponse();
     String id = jsonObject.getString("id");
-    Double firstQuarter = (null ==jsonObject.getDouble("firstQuarter")? 0:jsonObject.getDouble("firstQuarter"));
-    Double secondQuarter = (null == jsonObject.getDouble("secondQuarter")? 0:jsonObject.getDouble("secondQuarter"));
-    Double thirdQuarter = (null == jsonObject.getDouble("thirdQuarter")? 0:jsonObject.getDouble("thirdQuarter")) ;
-    Double fourthQuarter = (null ==jsonObject.getDouble("fourthQuarter")? 0:jsonObject.getDouble("fourthQuarter"));
+    Double firstQuarter = (null == jsonObject.getDouble("firstQuarter") ? 0
+        : jsonObject.getDouble("firstQuarter"));
+    Double secondQuarter = (null == jsonObject.getDouble("secondQuarter") ? 0
+        : jsonObject.getDouble("secondQuarter"));
+    Double thirdQuarter = (null == jsonObject.getDouble("thirdQuarter") ? 0
+        : jsonObject.getDouble("thirdQuarter"));
+    Double fourthQuarter = (null == jsonObject.getDouble("fourthQuarter") ? 0
+        : jsonObject.getDouble("fourthQuarter"));
     Double curYearPlan = jsonObject.getDouble("curYearPlan");
 
     if (curYearPlan != firstQuarter + secondQuarter + thirdQuarter + fourthQuarter) {
@@ -478,10 +486,10 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     }
     /**查询办结单信息*/
     EndPaper endPaper = this.getById(id);
-    if (!("1".equals(endPaper.getAuditStatus()) && "1".equals(endPaper.getConfirmed()))){
+    if (!("1".equals(endPaper.getAuditStatus()) && "1".equals(endPaper.getConfirmed()))) {
       //审核没有完成或没有通过、没有确认
       response.recordError("该数据没有审核通过或者还未确认，不能执行");
-       return response;
+      return response;
     }
     /**查询计划表信息*/
     QueryWrapper wrapper = new QueryWrapper();
@@ -533,8 +541,10 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       useWaterPlan.setFourthQuarter(fourthQuarter);
       /**调整结果*/
       endPaper.setResult(
-          "各季度依次变化:" + useWaterPlanAdd.getFirstQuarter().toString() + ";" + useWaterPlanAdd.getSecondQuarter().toString()
-              + ";" + useWaterPlanAdd.getThirdQuarter().toString() + ";" + useWaterPlanAdd.getFourthQuarter().toString()
+          "各季度依次变化:" + useWaterPlanAdd.getFirstQuarter().toString() + ";" + useWaterPlanAdd
+              .getSecondQuarter().toString()
+              + ";" + useWaterPlanAdd.getThirdQuarter().toString() + ";" + useWaterPlanAdd
+              .getFourthQuarter().toString()
               + "。");
     }
     /**更新计划表数据*/
@@ -544,10 +554,10 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     planDailyAdjustmentService.updateById(useWaterPlan);
     /**重算加价*/
     JSONObject jsonObject1 = new JSONObject();
-    jsonObject.put("countYear",useWaterPlanAdd.getPlanYear());
+    jsonObject.put("countYear", useWaterPlanAdd.getPlanYear());
     List<String> unitIds = new ArrayList<>();
     unitIds.add(useWaterPlanAdd.getUseWaterUnitId());
-    jsonObject.put("unitIds",unitIds);
+    jsonObject.put("unitIds", unitIds);
     waterUsePayInfoService.initPayInfo(jsonObject1);
     /**调整表新增*/
     useWaterPlanAddService.save(useWaterPlanAdd);
@@ -562,7 +572,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     endPaper.setFourthQuarter(fourthQuarter);
     this.updateById(endPaper);
     /**如果是来自微信(网上申报)，则更新微信调整表核定数*/
-    if("1".equals(endPaper.getDataSources())){
+    if ("1".equals(endPaper.getDataSources())) {
       UseWaterPlanAddWX useWaterPlanAddWX = new UseWaterPlanAddWX();
       useWaterPlanAddWX.setId(endPaper.getWaterPlanWXId());
       useWaterPlanAddWX.setCheckAdjustWater(curYearPlan);
@@ -571,7 +581,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       useWaterPlanAddWX.setThirdQuarterQuota(thirdQuarter);
       useWaterPlanAddWX.setFourthQuarterQuota(fourthQuarter);
       useWaterPlanAddWX.setExecuted("1");//已执行
-      useWaterPlanAddWXService.update(useWaterPlanAddWX,user);
+      useWaterPlanAddWXService.update(useWaterPlanAddWX, user);
     }
     /**向用水单位发起通知*/
     String messageContent =
@@ -580,13 +590,14 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
             .getFirstQuarter() + "方,二季度"
             + useWaterPlan.getSecondQuarter() + "方,三季度" + useWaterPlan.getThirdQuarter() + "方,四季度"
             + useWaterPlan.getFourthQuarter() + "方。";
-    messageService.messageToUnit(useWaterPlan.getUnitCode(),messageContent,AuditConstants.END_PAPER_TODO_TITLE);
+    messageService.messageToUnit(useWaterPlan.getUnitCode(), messageContent,
+        AuditConstants.END_PAPER_TODO_TITLE);
     /**向用水单位发送短信*/
-    smsService.sendMsgToUnit(user,useWaterPlan.getUnitCode(),messageContent,"计划通知");
+    smsService.sendMsgToUnit(user, useWaterPlan.getUnitCode(), messageContent, "计划通知");
     // webSocket向公共服务平台推送消息
-    webSocketUtil.pushPublicNews(useWaterPlan.getNodeCode(),useWaterPlan.getUnitCode());
+    webSocketUtil.pushPublicNews(useWaterPlan.getNodeCode(), useWaterPlan.getUnitCode());
     /**日志*/
-    systemLogService.logInsert(user,"办结单管理","执行",null);
+    systemLogService.logInsert(user, "办结单管理", "执行", null);
     return response;
 
   }
@@ -594,7 +605,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   @Override
   public boolean updateFromWeChat(EndPaper endPaper) {
     /**微信端确认后更新数据*/
-    if (null != endPaper.getCurYearPlan()){//如果微信端传入的参数有年计划则表示是“增加计划”
+    if (null != endPaper.getCurYearPlan()) {//如果微信端传入的参数有年计划则表示是“增加计划”
       endPaper.setAddNumber(endPaper.getCurYearPlan());
     }
     return this.baseMapper.updateFromWeChat(endPaper);
@@ -602,10 +613,10 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Override
   public List<Map<String, Object>> nextAuditRole(String id, String nodeCode, String auditBtn) {
-    QueryWrapper wrapper=new QueryWrapper();
-    wrapper.eq("id",id);
-    EndPaper endPaper= getOne(wrapper);
-    return flowNodeInfoService.nextAuditRole(endPaper.getNextNodeId(),id, nodeCode, auditBtn);
+    QueryWrapper wrapper = new QueryWrapper();
+    wrapper.eq("id", id);
+    EndPaper endPaper = getOne(wrapper);
+    return flowNodeInfoService.nextAuditRole(endPaper.getNextNodeId(), id, nodeCode, auditBtn);
   }
 
   @Override
@@ -619,30 +630,30 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     Map<String, Object> map = new HashMap();
     if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
       map.put("nodeCode", jsonObject.getString("nodeCode"));
-    }else{
+    } else {
       map.put("nodeCode", user.getNodeCode());
     }
-    map.put("userId",userId);
+    map.put("userId", userId);
     if (StringUtils.isNotBlank(unitCode)) {
       map.put("unitCode", unitCode);
     }
     String messageTypecode = SmsConstants.SEND_NOTIFICATION_ADJUST_RESULT;
-    JSONObject json =new JSONObject();
-    json.put("messageTypecode",messageTypecode);
+    JSONObject json = new JSONObject();
+    json.put("messageTypecode", messageTypecode);
     if (StringUtils.isNotBlank(status)) {
       json.put("status", status);
     }
     Map<String, Object> result = new LinkedHashMap<>();
-    List<Map<String,Object>> records =new ArrayList<>();
+    List<Map<String, Object>> records = new ArrayList<>();
     /**查询单位信息*/
     List<SendListVO> list = this.baseMapper.queryAfterAdjustUnit(map);
-    if (list.isEmpty()){
-      result.put("total",0);//满足条件的总条数
+    if (list.isEmpty()) {
+      result.put("total", 0);//满足条件的总条数
       result.put("size", size);//每页条数
       result.put("pages", 0);//一共有多少页
       result.put("current", current);//当前页
       result.put("records", records);
-    }else {
+    } else {
       /**查出满足条件的共有多少条*/
       int num = smsSendService.sendResultNum(list, json);
       result.put("total", num);//满足条件的总条数
@@ -652,7 +663,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       /**查出满足条件的数据*/
       json.put("current", current);
       json.put("pageSize", size);
-      records = smsSendService.sendResultPage(list,json);
+      records = smsSendService.sendResultPage(list, json);
       result.put("records", records);
     }
     return result;
@@ -660,31 +671,58 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Override
   public void adjustResultNotification(User user, List<SendListVO> sendList) throws Exception {
-    smsService.sendNotification(user,sendList,SmsConstants.SEND_NOTIFICATION_ADJUST_RESULT,null);
+    smsService.sendNotification(user, sendList, SmsConstants.SEND_NOTIFICATION_ADJUST_RESULT, null);
   }
 
 
   /**
    * 查询附件
    */
-  private EndPaperVO  getFiles(EndPaperVO paperVO, String path) {
+  private EndPaperVO getFiles(EndPaperVO paperVO, String path) {
     try {
       String auditFileId = paperVO.getAuditFileId();
       String otherFileId = paperVO.getOtherFileId();
       String waterProofFileId = paperVO.getWaterProofFileId();
       if (StringUtils.isNotBlank(auditFileId)) {
-        paperVO.setAuditFiles(fileService.findByBusinessIds(Arrays.asList(auditFileId.split(",")), path));
+        paperVO.setAuditFiles(
+            fileService.findByBusinessIds(Arrays.asList(auditFileId.split(",")), path));
       }
       if (StringUtils.isNotBlank(otherFileId)) {
-        paperVO.setOtherFiles(fileService.findByBusinessIds(Arrays.asList(otherFileId.split(",")), path));
+        paperVO.setOtherFiles(
+            fileService.findByBusinessIds(Arrays.asList(otherFileId.split(",")), path));
       }
       if (StringUtils.isNotBlank(waterProofFileId)) {
-        paperVO.setWaterProofFiles(fileService.findByBusinessIds(Arrays.asList(waterProofFileId.split(",")), path));
+        paperVO.setWaterProofFiles(
+            fileService.findByBusinessIds(Arrays.asList(waterProofFileId.split(",")), path));
       }
     } catch (Exception e) {
       e.printStackTrace();
-      log.error("查询附件信息异常======={}"+e.getMessage());
+      log.error("查询附件信息异常======={}" + e.getMessage());
     }
     return paperVO;
+  }
+
+  private EndPaper getFiles(EndPaper paper, String path) {
+    try {
+      String auditFileId = paper.getAuditFileId();
+      String otherFileId = paper.getOtherFileId();
+      String waterProofFileId = paper.getWaterProofFileId();
+      if (StringUtils.isNotBlank(auditFileId)) {
+        paper.setAuditFiles(
+            fileService.findByBusinessIds(Arrays.asList(auditFileId.split(",")), path));
+      }
+      if (StringUtils.isNotBlank(otherFileId)) {
+        paper.setOtherFiles(
+            fileService.findByBusinessIds(Arrays.asList(otherFileId.split(",")), path));
+      }
+      if (StringUtils.isNotBlank(waterProofFileId)) {
+        paper.setWaterProofFiles(
+            fileService.findByBusinessIds(Arrays.asList(waterProofFileId.split(",")), path));
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error("查询附件信息异常======={}" + e.getMessage());
+    }
+    return paper;
   }
 }

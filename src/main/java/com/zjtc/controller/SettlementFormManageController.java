@@ -69,6 +69,7 @@ public class SettlementFormManageController {
         result = endPaperService.queryPage(user, jsonObject);
         response.setData(result);
       } catch (Exception e) {
+        e.printStackTrace();
         log.error("分页查询失败,errMsg==={}" + e.getMessage());
         response.recordError(500);
       }

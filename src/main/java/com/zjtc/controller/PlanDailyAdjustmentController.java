@@ -188,6 +188,7 @@ public class PlanDailyAdjustmentController {
         User user = jwtUtil.getUserByToken(token);
         response = planDailyAdjustmentService.adjustPlan(user,jsonObject);
       } catch (Exception e) {
+        e.printStackTrace();
         log.error("计划调整失败,errMsg==={}" + e.getMessage());
         response.recordError(500);
       }
