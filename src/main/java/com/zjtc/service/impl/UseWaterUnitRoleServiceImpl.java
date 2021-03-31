@@ -86,7 +86,7 @@ public class UseWaterUnitRoleServiceImpl extends
   public ApiResponse add(String personId, String nodeCode, List<String> unitTypeCodes) {
     ApiResponse response = new ApiResponse();
     List<UseWaterUnitRole> unitRoles = new ArrayList<>();
-    if (StringUtils.isBlank(personId) || StringUtils.isBlank(nodeCode) || unitTypeCodes.isEmpty()) {
+    if (StringUtils.isBlank(personId) || StringUtils.isBlank(nodeCode)) {
       response.recordError("系统异常");
       return response;
     }
@@ -97,15 +97,26 @@ public class UseWaterUnitRoleServiceImpl extends
       TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
       return response;
     }
+//    如果单位批次号传为空,那么说明这个人没有批次号权限
+    if (unitTypeCodes.isEmpty()) {
+        UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
+        useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
+        useWaterUnitRole.setPersonId(personId);
+        useWaterUnitRole.setUnitTypeCode(null);
+        useWaterUnitRole.setNodeCode(nodeCode);
+        useWaterUnitRole.setCreateTime(new Date());
+        unitRoles.add(useWaterUnitRole);
+    } else {
 //    批量新增
-    for (String unitTypeCode : unitTypeCodes) {
-      UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
-      useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
-      useWaterUnitRole.setPersonId(personId);
-      useWaterUnitRole.setUnitTypeCode(unitTypeCode);
-      useWaterUnitRole.setNodeCode(nodeCode);
-      useWaterUnitRole.setCreateTime(new Date());
-      unitRoles.add(useWaterUnitRole);
+      for (String unitTypeCode : unitTypeCodes) {
+        UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
+        useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
+        useWaterUnitRole.setPersonId(personId);
+        useWaterUnitRole.setUnitTypeCode(unitTypeCode);
+        useWaterUnitRole.setNodeCode(nodeCode);
+        useWaterUnitRole.setCreateTime(new Date());
+        unitRoles.add(useWaterUnitRole);
+      }
     }
     boolean b = this.saveBatch(unitRoles);
     if (b) {
