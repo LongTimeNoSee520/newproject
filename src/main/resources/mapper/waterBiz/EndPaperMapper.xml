@@ -171,7 +171,7 @@
 		row_number () OVER ( ORDER BY [unit_code] ASC, [id] ) AS rownumber,*
 		FROM
 		t_w_end_paper t1
-		inner join (SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{userId} UNION ALL SELECT 'NO_THIS_CODE' AS unit_type_code) t2
+		inner join (SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{userId} GROUP  BY unit_type_code) t2
 		on SUBSTRING ( t1.unit_code, 5, 2 ) = t2.unit_type_code
 		where
 		t1.node_code = #{nodeCode}
