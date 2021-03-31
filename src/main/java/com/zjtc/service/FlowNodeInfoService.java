@@ -24,11 +24,12 @@ public interface FlowNodeInfoService extends IService<FlowNodeInfo> {
 
   /**
    * @param nextNodeId 下一环节id
-   * @param nodeCode 节点编码
+   * @param bussiesId 业务id
+   * @param nodeCode 节点编码\
    * @param auditBtn 审核是否通过 1通过 2不通过
    * @return
    */
-  List<Map<String,Object>> nextAuditRole(String nextNodeId,String nodeCode,String auditBtn);
+  List<Map<String,Object>> nextAuditRole(String nextNodeId,String bussiesId,String nodeCode,String auditBtn);
 
   /**
    * 查询第二个审核流程

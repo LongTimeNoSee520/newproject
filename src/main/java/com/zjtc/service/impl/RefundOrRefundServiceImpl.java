@@ -187,7 +187,7 @@ public class RefundOrRefundServiceImpl extends
     String detailConfig = jsonObject.getString("detailConfig");
     //查询下一环节
     List<Map<String, Object>> hasNext = flowNodeInfoService
-        .nextAuditRole(entity.getNextNodeId(), user.getNodeCode(), auditBtn);
+        .nextAuditRole(entity.getNextNodeId(),id, user.getNodeCode(), auditBtn);
     //获取当前环节的审核操作记录
     FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), entity.getId());
     //查询流程的发起人
@@ -329,7 +329,7 @@ public class RefundOrRefundServiceImpl extends
   @Override
   public List<Map<String, Object>> nextAuditRole(String id, String nodeCode, String auditBtn) {
     RefundOrRefund refundOrRefund = this.getById(id);
-    return flowNodeInfoService.nextAuditRole(refundOrRefund.getNextNodeId(), nodeCode, auditBtn);
+    return flowNodeInfoService.nextAuditRole(refundOrRefund.getNextNodeId(), id,nodeCode, auditBtn);
   }
 
 }
