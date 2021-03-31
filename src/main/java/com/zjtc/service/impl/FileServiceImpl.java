@@ -136,7 +136,15 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
   public List<FileVO> findByBusinessIds(List<String> businessIds, String fileContext) {
     if(null != businessIds && businessIds.size()>0){
 
-      this.baseMapper.findByBusinessIds(businessIds,fileContext);
+      return this.baseMapper.findByBusinessIds(businessIds,fileContext);
+    }
+    return null;
+  }
+
+  @Override
+  public List<FileVO> findByIds(List<String> ids, String path) {
+    if(null != ids && ids.size()>0){
+      return  this.baseMapper.findByIds(ids,path);
     }
     return null;
   }

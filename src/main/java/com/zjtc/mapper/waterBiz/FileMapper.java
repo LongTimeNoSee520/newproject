@@ -22,4 +22,6 @@ public interface FileMapper extends BaseMapper<File> {
    * @return
    */
   List<FileVO> findByBusinessIds(@Param("businessId") List<String> businessIds,@Param("path")String fileContext);
+
+  List<FileVO> findByIds(List<String> ids, String path);
 }

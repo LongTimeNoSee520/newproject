@@ -67,4 +67,11 @@ public interface FileService extends IService<File> {
    * @return
    */
   List<FileVO> findByBusinessIds(List<String> businessIds,String fileContext);
+  /**
+   * 根据Id集合查询（完成全路径的拼接）
+   * @param ids
+   * @param path 附件地址上下文
+   * @return
+   */
+  List<FileVO> findByIds(List<String> ids, String path);
 }

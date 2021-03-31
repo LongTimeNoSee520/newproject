@@ -14,5 +14,15 @@
 			#{item}
 		</foreach>
 	</select>
-	
+
+	<select id="findByIds" resultType="com.zjtc.model.vo.FileVO">
+		SELECT
+		id, file_name,#{path} + file_path AS file_path,deleted
+		FROM
+		t_file
+		WHERE id in
+		<foreach collection="businessId" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
 </mapper>

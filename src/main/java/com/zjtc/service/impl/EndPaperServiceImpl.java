@@ -685,15 +685,15 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       String waterProofFileId = paperVO.getWaterProofFileId();
       if (StringUtils.isNotBlank(auditFileId)) {
         paperVO.setAuditFiles(
-            fileService.findByBusinessIds(Arrays.asList(auditFileId.split(",")), path));
+            fileService.findByIds(Arrays.asList(auditFileId.split(",")), path));
       }
       if (StringUtils.isNotBlank(otherFileId)) {
         paperVO.setOtherFiles(
-            fileService.findByBusinessIds(Arrays.asList(otherFileId.split(",")), path));
+            fileService.findByIds(Arrays.asList(otherFileId.split(",")), path));
       }
       if (StringUtils.isNotBlank(waterProofFileId)) {
         paperVO.setWaterProofFiles(
-            fileService.findByBusinessIds(Arrays.asList(waterProofFileId.split(",")), path));
+            fileService.findByIds(Arrays.asList(waterProofFileId.split(",")), path));
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -709,15 +709,15 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       String waterProofFileId = paper.getWaterProofFileId();
       if (StringUtils.isNotBlank(auditFileId)) {
         paper.setAuditFiles(
-            fileService.findByBusinessIds(Arrays.asList(auditFileId.split(",")), path));
+            fileService.findByIds(Arrays.asList(auditFileId.split(",")), path));
       }
       if (StringUtils.isNotBlank(otherFileId)) {
         paper.setOtherFiles(
-            fileService.findByBusinessIds(Arrays.asList(otherFileId.split(",")), path));
+            fileService.findByIds(Arrays.asList(otherFileId.split(",")), path));
       }
       if (StringUtils.isNotBlank(waterProofFileId)) {
         paper.setWaterProofFiles(
-            fileService.findByBusinessIds(Arrays.asList(waterProofFileId.split(",")), path));
+            fileService.findByIds(Arrays.asList(waterProofFileId.split(",")), path));
       }
     } catch (Exception e) {
       e.printStackTrace();
