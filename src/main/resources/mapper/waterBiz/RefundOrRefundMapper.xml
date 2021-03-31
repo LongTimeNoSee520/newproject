@@ -120,7 +120,7 @@
     </if>
     <!--已审核-->
     <if test="json.keyWrod==2">
-      and id not in(
+      and id in(
       select busIness_id as id
       from
       <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
@@ -130,7 +130,7 @@
         #{item.auditStatus} as audit_status
       </foreach>
       t2
-      where audit_status='1' and operator_id=#{json.userId})
+      where (audit_status='2' or audit_status='3') and operator_id=#{json.userId})
     </if>
     <if test="null !=json.unitCode and json.unitCode !=''">
       and unit_code like '%${json.unitCode}%'

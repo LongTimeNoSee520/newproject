@@ -328,7 +328,9 @@ public class RefundOrRefundServiceImpl extends
 
   @Override
   public List<Map<String, Object>> nextAuditRole(String id, String nodeCode, String auditBtn) {
-    RefundOrRefund refundOrRefund = this.getById(id);
+    QueryWrapper wrapper=new QueryWrapper();
+    wrapper.eq("id",id);
+    RefundOrRefund refundOrRefund = this.getOne(wrapper);
     return flowNodeInfoService.nextAuditRole(refundOrRefund.getNextNodeId(), id,nodeCode, auditBtn);
   }
 
