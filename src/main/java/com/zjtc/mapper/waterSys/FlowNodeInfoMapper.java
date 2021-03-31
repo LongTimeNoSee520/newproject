@@ -22,7 +22,8 @@ public interface FlowNodeInfoMapper extends BaseMapper<FlowNodeInfo> {
       @Param("nodeCode") String nodeCode);
 
   List<Map<String, Object>> nextAuditRole(@Param("nextNodeId") String nextNodeId,
-      @Param("nodeCode") String nodeCode,
+      @Param("id") String id,
+       @Param("nodeCode") String nodeCode,
       @Param("auditBtn") String auditBtn
   );
 }
