@@ -46,7 +46,7 @@ public class WaterUsePayInfoController {
   private WaterUsePayInfoService waterUsePayInfoService;
 
   @RequestMapping(value = "queryPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation(value = "分页查询xxx内容")
+  @ApiOperation(value = "分页查询缴费管理内容")
   public ApiResponse queryPage(@RequestBody JSONObject jsonObject,
       @ApiParam("{\n"
           + "  \"nodeCode\":\"节点编码\",\n"

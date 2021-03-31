@@ -49,7 +49,7 @@ mybatis-plus:
     logic-delete-value: 1
     logic-not-delete-value: 0
   mapper-locations: classpath:/mapper/*.xml
-  type-aliases-package: com.zjtc
+  type-aliases-package: com.zjtc.mapper
   configuration:
     call-setters-on-nulls: true
 swagger:
