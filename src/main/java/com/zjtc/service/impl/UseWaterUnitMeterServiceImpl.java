@@ -50,6 +50,7 @@ public class UseWaterUnitMeterServiceImpl extends
 //      单位id
       useWaterUnitMeter1.setUseWaterUnitId(useWaterUnitId);
       useWaterUnitMeter1.setNodeCode(nodeCode);
+      useWaterUnitMeter1.setId("");
 //      水表档案号
       String waterMeterCode = useWaterUnitMeter1.getWaterMeterCode();
       if (StringUtils.isBlank(waterMeterCode)) {

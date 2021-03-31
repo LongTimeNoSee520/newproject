@@ -255,7 +255,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     endPaper.setAddNumber(addNumber);
     //查询审核流程下一环节信息
     List<Map<String, Object>> hasNext = flowNodeInfoService
-        .nextAuditRole(id, AuditConstants.END_PAPER_TABLE, user.getNodeCode(), auditStatus);
+        .nextAuditRole(endPaper.getNextNodeId(), user.getNodeCode(), auditStatus);
     //获取当前环节的审核操作记录
     FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), endPaper.getId());
     if (hasNext.isEmpty()) { //审核流程结束(没有下一环节)
@@ -602,7 +602,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Override
   public List<Map<String, Object>> nextAuditRole(String id, String nodeCode, String auditBtn) {
-    return flowNodeInfoService.nextAuditRole(id, AuditConstants.END_PAPER_TABLE, nodeCode, auditBtn);
+    EndPaper endPaper= this.getById(id);
+    return flowNodeInfoService.nextAuditRole(endPaper.getNextNodeId(), nodeCode, auditBtn);
   }
 
   @Override

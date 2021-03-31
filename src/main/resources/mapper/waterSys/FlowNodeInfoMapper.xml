@@ -49,9 +49,7 @@
               from
               t_flow_node_line_info
                 where operate_type=#{auditBtn}
-				        and flow_node_id=(
-								 SELECT next_node_id AS id  FROM  ${tableName} where id =#{id}
-								)
+				        and flow_node_id=#{nextNodeId}
 		   )
 		   and business_id =#{id}
           ) t1
