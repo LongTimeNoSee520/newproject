@@ -85,13 +85,13 @@ public class RefundOrRefundServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public boolean updateModel(User user,JSONObject jsonObject) {
+  public boolean updateModel(User user, JSONObject jsonObject) {
     RefundOrRefund entity = jsonObject.toJavaObject(RefundOrRefund.class);
     boolean flag = true;
     if (!entity.getSysFiles().isEmpty()) {
       flag = fileService.updateBusinessId(entity.getId(), entity.getSysFiles());
     }
-    systemLogService.logInsert(user,"退减免单管理","修改",null);
+    systemLogService.logInsert(user, "退减免单管理", "修改", null);
     return this.updateById(entity) && flag;
   }
 
@@ -122,7 +122,7 @@ public class RefundOrRefundServiceImpl extends
   @Override
   public Map<String, Object> queryPage(JSONObject jsonObject) {
     Map<String, Object> page = new LinkedHashMap<>();
-    String nodeCode=jsonObject.getString("nodeCode");
+    String nodeCode = jsonObject.getString("nodeCode");
     String startTime = jsonObject.getString("startTime");
     String endTime = jsonObject.getString("endTime");
     jsonObject.put("flowCode", AuditConstants.PAY_FLOW_CODE);
@@ -134,7 +134,7 @@ public class RefundOrRefundServiceImpl extends
     }
     //查询所有操作记录
     List<FlowProcess> flowProcesses = flowProcessService.queryAll(nodeCode);
-    jsonObject.put("pageSize",jsonObject.getString("size"));
+    jsonObject.put("pageSize", jsonObject.getString("size"));
     List<RefundOrRefund> list = baseMapper.queryPage(jsonObject, flowProcesses);
     if (!list.isEmpty()) {
       for (RefundOrRefund refundOrRefund : list) {
@@ -147,12 +147,12 @@ public class RefundOrRefundServiceImpl extends
             file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());
           }
           //当前退减免单是否可修改
-         long flag= processService
+          long flag = processService
               .isFirstFlowNode(jsonObject.getString("userId"), nodeCode,
                   jsonObject.getString("flowCode"));
-          if(flag>0 && "0".equals(refundOrRefund.getStatus())){
+          if (flag > 0 && "0".equals(refundOrRefund.getStatus())) {
             refundOrRefund.setEditBtn("1");
-          }else{
+          } else {
             refundOrRefund.setEditBtn("0");
           }
         }
@@ -187,7 +187,7 @@ public class RefundOrRefundServiceImpl extends
     String detailConfig = jsonObject.getString("detailConfig");
     //查询下一环节
     List<Map<String, Object>> hasNext = flowNodeInfoService
-        .nextAuditRole(id, AuditConstants.PAY_TABLE, user.getNodeCode(), auditBtn);
+        .nextAuditRole(entity.getNextNodeId(), user.getNodeCode(), auditBtn);
     //获取当前环节的审核操作记录
     FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), entity.getId());
     //查询流程的发起人
@@ -303,7 +303,7 @@ public class RefundOrRefundServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public boolean revoke(JSONObject jsonObject,User user) {
+  public boolean revoke(JSONObject jsonObject, User user) {
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
     QueryWrapper wrapper = new QueryWrapper();
     wrapper.in("id", ids);
@@ -312,7 +312,7 @@ public class RefundOrRefundServiceImpl extends
     boolean result = this.update(refundOrRefund, wrapper);
     /**更新撤销状态*/
     /**删除待办数据*/
-    systemLogService.logInsert(user,"退减免单管理","撤销",null);
+    systemLogService.logInsert(user, "退减免单管理", "撤销", null);
     return result && todoService.removeByIds(ids);
   }
 
@@ -322,13 +322,14 @@ public class RefundOrRefundServiceImpl extends
     entityQueryWrapper.eq("pay_id", payId);
     entityQueryWrapper.eq("node_code", nodeCode);
     entityQueryWrapper.eq("status", AuditConstants.AWAIT_APPROVED);
-    entityQueryWrapper.eq("is_revoke","0");
+    entityQueryWrapper.eq("is_revoke", "0");
     return this.count(entityQueryWrapper) > 0 ? true : false;
   }
 
   @Override
   public List<Map<String, Object>> nextAuditRole(String id, String nodeCode, String auditBtn) {
-    return flowNodeInfoService.nextAuditRole(id, AuditConstants.PAY_TABLE, nodeCode, auditBtn);
+    RefundOrRefund refundOrRefund = this.getById(id);
+    return flowNodeInfoService.nextAuditRole(refundOrRefund.getNextNodeId(), nodeCode, auditBtn);
   }
 
 }
