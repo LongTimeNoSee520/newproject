@@ -46,7 +46,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     FlowProcess commitAudit = new FlowProcess();
     commitAudit.setAuditContent(opinions);
     commitAudit.setAuditStatus("2");//审核状态(0:短信/办结单/退减免单创建1:待审核,2:审核通过,3:审核不通过)
-    commitAudit.setCreateTime(new Date(start+50));//时间增加50毫秒，用于查询流程信息时排序
+    commitAudit.setCreateTime(new Date(start + 50));//时间增加50毫秒，用于查询流程信息时排序
     commitAudit.setOperatorId(user.getId());
     commitAudit.setOperator(user.getUsername());
     commitAudit.setNodeCode(user.getNodeCode());
@@ -55,7 +55,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     /**提交后的下一环节数据*/
     FlowProcess next = new FlowProcess();
     next.setAuditStatus("1");
-    next.setCreateTime(new Date(start+100));
+    next.setCreateTime(new Date(start + 100));
     next.setOperator(auditorName);
     next.setOperatorId(auditorId);
     next.setBusinessId(businessId);
@@ -72,7 +72,11 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     QueryWrapper auditQueryWrapper = new QueryWrapper();
     auditQueryWrapper.eq("business_id", businessId);
     auditQueryWrapper.orderByDesc("create_time");
-    FlowProcess flowProcess = this.getOne(auditQueryWrapper);
+    FlowProcess flowProcess = new FlowProcess();
+    List<FlowProcess> list = this.list(auditQueryWrapper);
+    if (!list.isEmpty()) {
+      return list.get(0);
+    }
     return flowProcess;
   }
 
@@ -99,12 +103,12 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
 
   @Override
   public List<Map<String, Object>> queryAuditList(String businessId, String nodeCode) {
-    return this.baseMapper.queryAuditList(businessId,nodeCode);
+    return this.baseMapper.queryAuditList(businessId, nodeCode);
   }
 
   @Override
   public int ifNeedAudit(String businessId, String userId) {
-    return this.baseMapper.ifNeedAudit(businessId,userId);
+    return this.baseMapper.ifNeedAudit(businessId, userId);
   }
 
   @Override
@@ -114,19 +118,19 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
 
   @Override
   public List<FlowProcess> queryAll(String nodeCode) {
-    QueryWrapper wrapper=new QueryWrapper();
-    wrapper.eq("node_code",nodeCode);
+    QueryWrapper wrapper = new QueryWrapper();
+    wrapper.eq("node_code", nodeCode);
     return this.list(wrapper);
   }
 
   @Override
-  public List<FlowNodeInfo> selectNodes(String nodeCode,String flowCode) {
-    return this.baseMapper.selectNodes(nodeCode,flowCode);
+  public List<FlowNodeInfo> selectNodes(String nodeCode, String flowCode) {
+    return this.baseMapper.selectNodes(nodeCode, flowCode);
   }
 
 
   @Override
   public long isFirstFlowNode(String userId, String nodeCode, String flowCode) {
-    return baseMapper.isFirstFlowNode( userId,  nodeCode,  flowCode);
+    return baseMapper.isFirstFlowNode(userId, nodeCode, flowCode);
   }
 }
