@@ -119,19 +119,10 @@
   </resultMap>
   <select id="queryNum" resultType="int">
     SELECT COUNT (id)
-    FROM t_w_use_water_plan
-    WHERE id IN
-    (SELECT id
-    FROM t_w_use_water_plan
-    WHERE node_code = #{nodeCode}
-    AND SUBSTRING(unit_code,5,2)<!--类型-->
-    IN (
-    SELECT unit_type_code
-    FROM t_w_use_water_unit_role
-    WHERE person_id = #{userId}
-    UNION  ALL
-    SELECT 'NO_THIS_CODE' AS unit_type_code
-    )
+    FROM
+    t_w_use_water_plan  ta
+    inner join (SELECT  unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{userId} GROUP BY unit_type_code) tb
+    on SUBSTRING ( ta.unit_code, 5, 2 ) = tb.unit_type_code
     <if test="unitCode != null and unitCode != ''">
       and unit_code like '%${unitCode}%'
     </if>
@@ -147,9 +138,6 @@
     <if test="yearEnd != null">
       and plan_year &lt;= #{yearEnd}
     </if>
-    UNION  ALL
-    SELECT 'NO_THIS_ID' AS id
-    )
   </select>
 
   <select id="queryPage" resultMap="PageResultMap">
@@ -165,19 +153,9 @@
     third_quarter,fourth_quarter,
     COALESCE (update_time,create_time) AS update_time,remarks,printed
     FROM
-    t_w_use_water_plan
-    WHERE id IN
-    (SELECT id
-    FROM t_w_use_water_plan
-    WHERE  node_code = #{nodeCode}
-    AND SUBSTRING(unit_code,5,2) <!--类型-->
-    IN (
-    SELECT unit_type_code
-    FROM t_w_use_water_unit_role
-    WHERE person_id = #{userId}
-    UNION  ALL
-    SELECT 'NO_THIS_CODE' AS unit_type_code
-    )
+    t_w_use_water_plan  ta
+    inner join (SELECT  unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{userId} GROUP BY unit_type_code) tb
+    on SUBSTRING ( ta.unit_code, 5, 2 ) = tb.unit_type_code
     <if test="unitCode != null and unitCode != ''">
       and unit_code like '%${unitCode}%'
     </if>
@@ -193,8 +171,6 @@
     <if test="yearEnd != null">
       and plan_year &lt;= #{yearEnd}
     </if>
-    UNION  ALL
-    SELECT 'NO_THIS_ID' AS id)
     )t1
     WHERE  rownumber > (#{current}-1)* #{size}
   </select>
