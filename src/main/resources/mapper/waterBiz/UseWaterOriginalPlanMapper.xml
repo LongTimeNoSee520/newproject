@@ -365,7 +365,7 @@
     t1.id AS useWaterUnitId ,
     t1.unit_code as unitCode,
     t1.unit_name as unitName,
-    t2.baseWaterAmount,
+    isnull(t2.baseWaterAmount,0) as baseWaterAmount,
     algorithmType=0,
     minusPayStatus=0,
     balanceTest=0,
