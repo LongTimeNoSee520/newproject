@@ -151,19 +151,24 @@
     fourth_quarter_quota,
     CASE
     t1.audit_status
-    WHEN '0' THEN '未执行'
-    WHEN '1' THEN '已执行' ELSE '已执行'
+    WHEN '0' THEN '未审核'
+    WHEN '1' THEN '已审核'
+    WHEN '2' THEN '已审核'
+    WHEN '3' THEN '未审核'
+    WHEN '4' THEN '已审核'
+    ELSE '未审核'
     END audit_status,
     CASE
     t1.executed
-    WHEN '0' THEN '未审核'
-    WHEN '1' THEN '已审核'
-    WHEN '2' THEN '已审核' ELSE '已审核'
+    WHEN '0' THEN '未执行'
+    WHEN '1' THEN '已执行'
+    ELSE '未执行'
     END executed,
     CASE
     t1.printed
     WHEN '0' THEN '未打印'
-    WHEN '1' THEN '已打印' ELSE '已打印'
+    WHEN '1' THEN '已打印'
+    ELSE '已打印'
     END printed, --是否打印
     #{path} AS preViewRealPath
     FROM
