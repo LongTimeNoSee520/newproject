@@ -97,6 +97,12 @@ public class UseWaterUnitRoleServiceImpl extends
       TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
       return response;
     }
+    this.baseMapper.deletedByPersonId(personId);
+//    if (i == 0) {
+//      response.recordError("系统异常");
+//      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//      return response;
+//    }
 //    如果单位批次号传为空,那么说明这个人没有批次号权限
     if (unitTypeCodes.isEmpty()) {
         UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
