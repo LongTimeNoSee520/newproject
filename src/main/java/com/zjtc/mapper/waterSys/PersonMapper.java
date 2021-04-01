@@ -63,4 +63,6 @@ public interface PersonMapper extends BaseMapper<Person> {
    * @param personId 人员id
    */
   List<Person> selectPersonAll(@Param("personId") String personId);
+
+  String selectByUserId(@Param("operatorId") String operatorId);
 }

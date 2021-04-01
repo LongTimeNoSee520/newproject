@@ -186,7 +186,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         paperVO.setNeedAudit(true);
       }
       /**查询字典项名称*/
-      if (!paperVO.getPaperType().isEmpty()) {
+      if (StringUtils.isNotBlank(paperVO.getPaperType())) {
         paperVO.setPaperTypeName(
             dictUtils.getDictItemName("changeType", paperVO.getPaperType(), paperVO.getNodeCode()));
       }
@@ -236,7 +236,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     String quarter = jsonObject.getString("quarter");
     Boolean year = jsonObject.getBoolean("year"); //是否在年计划上增加
     Double addNumber = jsonObject.getDouble("addNumber");
-    String auditStatus = jsonObject.getString("auditStatus");
+    String auditBtn = jsonObject.getString("auditBtn");
     String opinions = jsonObject.getString("opinions");//意见
     String auditorName = jsonObject.getString("auditorName");//审核人员名称
     String auditorId = jsonObject.getString("auditorId");//审核人员id
@@ -258,13 +258,13 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     endPaper.setAddNumber(addNumber);
     //查询审核流程下一环节信息
     List<Map<String, Object>> hasNext = flowNodeInfoService
-        .nextAuditRole(endPaper.getNextNodeId(), id, user.getNodeCode(), auditStatus);
+        .nextAuditRole(endPaper.getNextNodeId(), id, user.getNodeCode(), auditBtn);
     //获取当前环节的审核操作记录
     FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), endPaper.getId());
     if (hasNext.isEmpty()) { //审核流程结束(没有下一环节)
       //设置办结单审核下一环节id为""
       endPaper.setNextNodeId("");
-      if ("1".equals(auditStatus)) {//本次审核通过
+      if ("1".equals(auditBtn)) {//本次审核通过
         //审核操作记录审核状态更新
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
         //设置办结单审核状态
@@ -327,7 +327,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
           webSocketUtil.pushWaterNews(firstProcess.getNodeCode(), firstProcess.getOperatorId());
         }
       }
-      if ("0".equals(auditStatus)) {//本次审核不通过(没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知)
+      if ("0".equals(auditBtn)) {//本次审核不通过(没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知)
         flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
         endPaper.setAuditStatus("0");//0发起办结节点状态(已有审核记录的只要不是最终环节通过都为审核中状态)
         // 没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知和发短信给提交人
@@ -364,10 +364,10 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       //修改办结单状态为2处于审核中
       endPaper.setAuditStatus("2");
       //当前操作记录修改状态
-      if ("0".equals(auditStatus)) {
+      if ("0".equals(auditBtn)) {
         flowProcess.setAuditStatus(AuditConstants.NOT_APPROVED);
       }
-      if ("1".equals(auditStatus)) {
+      if ("1".equals(auditBtn)) {
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
       }
       //新增审核流程下一环节记录

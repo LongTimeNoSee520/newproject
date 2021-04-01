@@ -11,6 +11,7 @@ import com.zjtc.model.Person;
 import com.zjtc.service.PersonService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -55,5 +56,14 @@ public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> impleme
     System.out.println(doPost);
     JSONObject json = JSON.parseObject(doPost);
     return json.getJSONArray("data").toJavaList(Person.class);
+  }
+
+  @Override
+  public String selectByUserId(String operatorId) {
+    if (StringUtils.isNotBlank(operatorId)){
+      return this.baseMapper.selectByUserId(operatorId);
+    }else {
+      return null;
+    }
   }
 }

@@ -29,7 +29,6 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
 
   Contacts selectByUnitCode(@Param("unitCode") String unitCode);
 
-  String selectByUserId(@Param("operatorId") String operatorId);
 
   int selectMaxCount(@Param("useWaterUnitIds") List<String> useWaterUnitIds);
 }

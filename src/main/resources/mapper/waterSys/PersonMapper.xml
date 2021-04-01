@@ -66,4 +66,10 @@
     unit_type_code = ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{personId} ))
     and deleted = '0'
   </select>
+
+  <select id="selectByUserId" resultType="string">
+    SELECT mobile_phone
+    FROM t_user
+    WHERE id=#{operatorId}
+  </select>
 </mapper>

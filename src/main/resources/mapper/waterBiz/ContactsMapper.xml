@@ -38,11 +38,6 @@
     WHERE unit_code = #{unitCode}
     AND main ='1'
   </select>
-  <select id="selectByUserId" resultType="string">
-    SELECT mobile_phone
-    FROM t_user
-    WHERE id=#{operatorId}
-  </select>
   <select id="selectMaxCount" resultType="java.lang.Integer">
   SELECT
 	max( t.num ) AS num
