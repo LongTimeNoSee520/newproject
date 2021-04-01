@@ -2,7 +2,7 @@ package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.util.TimeUtil;
-import com.zjtc.mapper.waterBiz.SystemLogMapper;
+import com.zjtc.mapper.waterSys.SystemLogMapper;
 import com.zjtc.model.SystemLog;
 import com.zjtc.model.User;
 import com.zjtc.service.SystemLogService;

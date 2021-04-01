@@ -554,10 +554,10 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     planDailyAdjustmentService.updateById(useWaterPlan);
     /**重算加价*/
     JSONObject jsonObject1 = new JSONObject();
-    jsonObject.put("countYear", useWaterPlanAdd.getPlanYear());
+    jsonObject1.put("countYear", useWaterPlanAdd.getPlanYear());
     List<String> unitIds = new ArrayList<>();
     unitIds.add(useWaterPlanAdd.getUseWaterUnitId());
-    jsonObject.put("unitIds", unitIds);
+    jsonObject1.put("unitIds", unitIds);
     waterUsePayInfoService.initPayInfo(jsonObject1);
     /**调整表新增*/
     useWaterPlanAddService.save(useWaterPlanAdd);
