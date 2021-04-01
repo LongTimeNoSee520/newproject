@@ -71,5 +71,6 @@
     SELECT mobile_phone
     FROM t_user
     WHERE id=#{operatorId}
+    AND deleted ='0'
   </select>
 </mapper>
