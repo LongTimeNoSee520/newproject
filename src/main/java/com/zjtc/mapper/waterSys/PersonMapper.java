@@ -64,5 +64,8 @@ public interface PersonMapper extends BaseMapper<Person> {
    */
   List<Person> selectPersonAll(@Param("personId") String personId);
 
+  /**
+   * 通过发起人id查询其电话号码
+   * */
   String selectByUserId(@Param("operatorId") String operatorId);
 }
