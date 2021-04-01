@@ -54,4 +54,18 @@ public interface PersonMapper extends BaseMapper<Person> {
   List<Person> queryList(@Param("currPage") Integer currPage,
       @Param("pageSize") Integer pageSize, @Param("parameter") String parameter,
       @Param("orgId") String orgId);
+
+
+  List<Person> queryAll();
+
+  /**
+   * 根据id查询人员信息
+   * @param personId 人员id
+   */
+  List<Person> selectPersonAll(@Param("personId") String personId);
+
+  /**
+   * 通过发起人id查询其电话号码
+   * */
+  String selectByUserId(@Param("operatorId") String operatorId);
 }

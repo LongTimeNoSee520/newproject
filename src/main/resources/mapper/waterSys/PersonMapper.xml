@@ -28,4 +28,48 @@
     <result column="need_edited" property="needEdited" jdbcType="VARCHAR"/>
   </resultMap>
 
+  <select id="queryAll" resultMap="personModel">
+    SELECT id,user_name from t_user;
+  </select>
+
+  <select id="selectPersonAll" resultMap="personModel">
+    SELECT
+    id,
+    node_code,
+    org_id,
+    user_name,
+    mobile_phone,
+    user_rank,
+    login_id,
+    password,
+    unpassword,
+    office_tel,
+    office_address,
+    fax,
+    email,
+    create_time,
+    edit_time,
+    open_id,
+    locked,
+    wrong_times,
+    need_edited
+
+    FROM
+    t_user
+    WHERE
+    id IN (
+    SELECT
+    person_id
+    FROM
+    t_w_use_water_unit_role
+    WHERE
+    unit_type_code = ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{personId} ))
+    and deleted = '0'
+  </select>
+
+  <select id="selectByUserId" resultType="string">
+    SELECT mobile_phone
+    FROM t_user
+    WHERE id=#{operatorId}
+  </select>
 </mapper>

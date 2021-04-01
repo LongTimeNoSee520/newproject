@@ -145,7 +145,7 @@ public class SettlementFormManageController {
           + " \"quarter\":\"调整季度(增加计划时才填)\",\n"
           + " \"year\":\"是否勾选年计划 0否，1是(增加计划时才填)\",\n"
           + " \"addNumber\":\"增加水量，数字(增加计划时才填)\",\n"
-          + " \"auditStatus\":\"审核是否通过0否1是\",\n"
+          + " \"auditBtn\":\"审核是否通过0否1是\",\n"
           + " \"opinions\":\"审核意见\",\n"
           + "\"auditorName\":\"下一环节审核人员名称\",\n"
           + "\"auditorId\":\"下一环节审核人员id\",\n"

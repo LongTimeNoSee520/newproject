@@ -18,4 +18,10 @@ public interface PersonService extends IService<Person> {
    * @return
    */
   List<Person> selectPersonByResCode(String resCode,String nodeCode) throws Exception;
+
+
+  /**
+   * 通过发起人id查询其电话号码
+   * */
+  String selectByUserId(String operatorId);
 }

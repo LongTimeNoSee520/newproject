@@ -83,15 +83,6 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   }
 
   @Override
-  public String selectByUserId(String operatorId) {
-    if (StringUtils.isNotBlank(operatorId)){
-      return this.baseMapper.selectByUserId(operatorId);
-    }else {
-      return null;
-    }
-  }
-
-  @Override
   public int selectMaxCount(List<String> useWaterUnitIds) {
     return baseMapper.selectMaxCount(useWaterUnitIds);
   }

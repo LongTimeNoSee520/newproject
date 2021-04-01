@@ -10,6 +10,7 @@ import com.zjtc.model.Contacts;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.SendListVO;
 import com.zjtc.service.ContactsService;
+import com.zjtc.service.PersonService;
 import com.zjtc.service.SmsService;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,9 @@ public class SmsServiceImpl implements SmsService {
   @Autowired
   private ContactsService contactsService;
 
+  @Autowired
+  private PersonService personService;
+
   @Override
   public void sendMsgToUnit(User user, String unitCode, String messageContent, String messageType)
       throws Exception {
@@ -55,7 +59,7 @@ public class SmsServiceImpl implements SmsService {
   public void sendMsgToPromoter(User user, String operatorId, String operator,
       String messageContent, String messageType) throws Exception {
     /**通过发起人id查询其电话号码*/
-    String phoneNumber = contactsService.selectByUserId(operatorId);
+    String phoneNumber = personService.selectByUserId(operatorId);
     this.sendMessages(user, messageContent, phoneNumber, operatorId, operator, "审核通知");
   }
 
