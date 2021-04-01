@@ -37,6 +37,7 @@
     FROM t_w_use_water_unit_contacts
     WHERE unit_code = #{unitCode}
     AND main ='1'
+    AND  deleted = '0'
   </select>
   <select id="selectMaxCount" resultType="java.lang.Integer">
   SELECT
