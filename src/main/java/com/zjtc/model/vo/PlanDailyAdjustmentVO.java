@@ -61,8 +61,11 @@ public class PlanDailyAdjustmentVO extends Model<PlanDailyAdjustmentVO>{
     @ApiModelProperty("第四季度计划（基础）")
     private Double fourthQuarter;
 
-    @ApiModelProperty("计划类型")
-    private String planType;
+//    @ApiModelProperty("计划类型")
+//    private String planType;
+
+    @ApiModelProperty("计划类型名称")
+    private String planTypeName;
 
     @ApiModelProperty("调整时间")
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
