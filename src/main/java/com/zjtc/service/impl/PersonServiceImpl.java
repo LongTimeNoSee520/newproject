@@ -28,20 +28,8 @@ public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> impleme
   @Value("${file.preViewRealPath}")
   private String ipPort;
 
-  @Override
-  public ApiResponse selectPersonAll() {
-    ApiResponse response = new ApiResponse();
-    QueryWrapper<Person> wrapper = new QueryWrapper<>();
-    wrapper.eq("deleted", "0");
-    List<Person> personList = this.baseMapper.queryAll();
-      response.setData(personList);
-      return response;
-  }
 
-  @Override
-  public List<Person> selectPersonAll(String personId) {
-    return this.baseMapper.selectPersonAll(personId);
-  }
+
 
 
   @Override

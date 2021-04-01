@@ -13,18 +13,6 @@ import java.util.List;
 public interface PersonService extends IService<Person> {
 
   /**
-   * 查询全部人员
-   * @return 查询结果
-   */
-  ApiResponse selectPersonAll();
-
-  /**
-   * 查询全部人员
-   * @return 查询结果
-   */
-  List<Person> selectPersonAll(String personId);
-
-  /**
    * 根据资源code查询,资源下所有角色的所有人
    * @param resCode
    * @return
