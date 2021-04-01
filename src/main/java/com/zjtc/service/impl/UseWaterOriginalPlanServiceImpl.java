@@ -385,19 +385,14 @@ public class UseWaterOriginalPlanServiceImpl extends
           }
           /**2.下年初计划(基础)进10*/
           nextYearBaseStartPlan = ceil(nextYearBaseStartPlan);
-          /**下年初计划(定额)进10*/
-          nextYearQuotaStartPlan = ceil(nextYearQuotaStartPlan);
           /**3.如果下年初始计划(基础)大于下年初计划(定额)，基础计划默认等于定额计划*/
           if (nextYearBaseStartPlan > nextYearQuotaStartPlan) {
             nextYearBaseStartPlan = nextYearQuotaStartPlan;
             //标识
             sign = "1";
-            sign = "1";
           }
           /**4.下年终计划(基础) 默认等于下年初计划(基础)*/
           nextYearBaseEndPlan = nextYearBaseStartPlan;
-          /**下年终计划(定额) 默认等于下年初计划(定额)*/
-          nextYearQuotaEndPlan = nextYearQuotaStartPlan;
           /**5.各季度水量*/
           /**特殊类型*/
           if (unitType.equals("33")) {
@@ -432,6 +427,10 @@ public class UseWaterOriginalPlanServiceImpl extends
           map.put("thirdQuarterBase", 0);
           map.put("fourthQuarterBase", 0);
         }
+        /**下年初计划(定额)进10*/
+        nextYearQuotaStartPlan = ceil(nextYearQuotaStartPlan);
+        /**下年终计划(定额) 默认等于下年初计划(定额)*/
+        nextYearQuotaEndPlan = nextYearQuotaStartPlan;
         /**计算各季度水量(定额)*/
         if (unitType.equals("33")) {
           firstQuarterQuota = 0;
