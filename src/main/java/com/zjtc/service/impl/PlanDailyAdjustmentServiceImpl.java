@@ -524,6 +524,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     String detailConfig = jsonObject.getString("detailConfig");
     String nextNodeId = jsonObject.getString("nextNodeId");
     String dataSources = jsonObject.getString("dataSources");
+    String waterPlanWXId = jsonObject.getString("waterPlanWXId");
 
     /**待办内容*/
     String todoContent ="";
@@ -559,6 +560,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     endPaper.setRescinded("0");//未撤销
     endPaper.setFirstWater(firstWater);
     endPaper.setSecondWater(secondWater);
+    endPaper.setWaterPlanWXId(waterPlanWXId);
     /**相关附件信息*/
     if (!auditFiles.isEmpty()){
       List<String> auditFileIds =this.handleFiles(auditFiles);

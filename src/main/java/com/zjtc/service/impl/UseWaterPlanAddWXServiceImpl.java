@@ -211,6 +211,8 @@ public class UseWaterPlanAddWXServiceImpl extends
 
       JSONObject jsonObject = new JSONObject();
 //      单位编号
+      jsonObject.put("waterPlanWXId", useWaterPlanAddWX.getId());
+//      单位编号
       jsonObject.put("unitCode", useWaterPlanAddWX.getUnitCode());
 //      单位名称
       jsonObject.put("unitName", useWaterPlanAddWX.getUnitName());
