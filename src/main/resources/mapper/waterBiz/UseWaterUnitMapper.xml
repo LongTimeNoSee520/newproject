@@ -19,6 +19,7 @@
     <result column="department" property="department" jdbcType="VARCHAR"/>
     <result column="area_country" property="areaCountry" jdbcType="VARCHAR"/>
     <result column="areaCountryName" property="areaCountryName" jdbcType="VARCHAR"/>
+    <result column="remark" property="remark" jdbcType="VARCHAR"/>
     <result column="abnormal" property="abnormal" jdbcType="VARCHAR"/>
     <result column="abnormal_cause" property="abnormalCause" jdbcType="VARCHAR"/>
     <result column="responsibility_code" property="responsibilityCode" jdbcType="VARCHAR"/>
@@ -228,6 +229,7 @@
     imain,
     abnormal ,
     abnormal_cause,
+    remark,
     case signed
     when '1' then '1'
     when '0' then '0'
