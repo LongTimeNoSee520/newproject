@@ -379,6 +379,7 @@ public class UseWaterUnitServiceImpl extends
             this.updateById(updateParam);
             for (File items : file) {
               items.setId("");
+              items.setNodeCode(user.getNodeCode());
               items.setBusinessId(id);
             }
           }
