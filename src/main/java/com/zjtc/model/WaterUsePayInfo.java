@@ -236,7 +236,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
      */
     @ApiModelProperty("加价费")
     @TableField(value = "increase_money", exist = true)
-    private String increaseMoney;
+    private Double increaseMoney;
     /**
     * 
     */

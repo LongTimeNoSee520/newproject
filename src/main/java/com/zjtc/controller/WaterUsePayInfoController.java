@@ -401,6 +401,7 @@ public class WaterUsePayInfoController {
         waterUsePayInfoService.exportUser(user,jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出用户信息失败,errMsg==={}", e.getMessage());
+        e.printStackTrace();
         apiResponse.recordError(500);
       }
     } else {
