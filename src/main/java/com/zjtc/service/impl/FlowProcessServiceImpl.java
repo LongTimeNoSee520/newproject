@@ -130,7 +130,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
 
 
   @Override
-  public long isFirstFlowNode(String userId, String nodeCode, String flowCode) {
-    return baseMapper.isFirstFlowNode(userId, nodeCode, flowCode);
+  public boolean isFirstFlowNode(String userId, String nodeCode, String flowCode) {
+    return baseMapper.isFirstFlowNode(userId, nodeCode, flowCode)>0;
   }
 }

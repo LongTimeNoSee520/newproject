@@ -184,7 +184,12 @@ public class RefundOrRefund extends Model<RefundOrRefund> {
   @ApiModelProperty("修改按钮标识")
   @TableField(exist = false)
   private String editBtn;
-
+  /**
+   *
+   */
+  @ApiModelProperty("撤销按钮标识")
+  @TableField(exist = false)
+  private String revokeBtn;
   /**
    * 实例化
    */

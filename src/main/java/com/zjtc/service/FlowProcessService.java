@@ -55,5 +55,12 @@ public interface FlowProcessService extends IService<FlowProcess> {
 
   List<FlowNodeInfo> selectNodes(String nodeCode,String flowCode);
 
-  long isFirstFlowNode(String userId, String nodeCode, String flowCode);
+  /**
+   * 查询当前用户是否属于第一环节
+   * @param userId
+   * @param nodeCode
+   * @param flowCode
+   * @return
+   */
+  boolean isFirstFlowNode(String userId, String nodeCode, String flowCode);
 }

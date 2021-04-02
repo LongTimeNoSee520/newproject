@@ -98,6 +98,7 @@
     reason,
     treatment_advice,
     actual_amount,
+    status,
     case
     t1.type
     when'1' then '退款单'

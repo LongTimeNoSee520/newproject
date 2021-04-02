@@ -49,7 +49,7 @@ public interface RefundOrRefundService extends IService<RefundOrRefund> {
 	 * @param jsonObject
 	 * @return
 	 */
-	boolean	revoke(JSONObject jsonObject,User user);
+	boolean revoke(JSONObject jsonObject,User user);
 
 	/**
 	 * 判断当前数据是否有退缴费记录

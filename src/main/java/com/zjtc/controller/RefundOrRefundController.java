@@ -67,7 +67,7 @@ public class RefundOrRefundController {
           jsonObject.put("nodeCode", user.getNodeCode());
         }
         jsonObject.put("userId", user.getId());
-        Map<String,Object> result = refundOrRefundService.queryPage(jsonObject);
+        Map<String, Object> result = refundOrRefundService.queryPage(jsonObject);
         apiResponse.setData(result);
         apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
       } catch (Exception e) {
@@ -100,7 +100,7 @@ public class RefundOrRefundController {
     User user = jwtUtil.getUserByToken(token);
     if (null != jsonObject) {
       try {
-        boolean result = refundOrRefundService.updateModel(user,jsonObject);
+        boolean result = refundOrRefundService.updateModel(user, jsonObject);
         if (result) {
           apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
         } else {
@@ -189,7 +189,7 @@ public class RefundOrRefundController {
   @ApiOperation(value = "撤销")
   @RequestMapping(value = "revoke", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse revoke(@ApiParam("{\n"
-      + "  \"ids\":[\"退减免单id数组\"]\n"
+      + "  \"id\":\"退减免单id\"\n"
       + "}") @RequestHeader("token") String token,
       @RequestBody JSONObject jsonObject) {
     log.info("撤销 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
@@ -198,13 +198,10 @@ public class RefundOrRefundController {
     if (null != jsonObject) {
       try {
         boolean result = refundOrRefundService
-            .revoke(jsonObject,user);
-        if (result) {
-          apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
-        } else {
+            .revoke(jsonObject, user);
+        if(!result){
           apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
         }
-        apiResponse.setData(result);
       } catch (Exception e) {
         log.error("查询错误,errMsg==={}", e.getMessage());
         e.printStackTrace();

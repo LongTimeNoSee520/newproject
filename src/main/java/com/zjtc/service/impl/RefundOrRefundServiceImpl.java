@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
+import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.RefundOrRefundMapper;
 import com.zjtc.mapper.waterSys.FlowProcessMapper;
@@ -146,15 +147,17 @@ public class RefundOrRefundServiceImpl extends
           for (File file : refundOrRefund.getSysFiles()) {
             file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());
           }
-          //当前退减免单是否可修改
-          long flag = processService
-              .isFirstFlowNode(jsonObject.getString("userId"), nodeCode,
-                  jsonObject.getString("flowCode"));
-          if (flag > 0 && "0".equals(refundOrRefund.getStatus())) {
-            refundOrRefund.setEditBtn("1");
-          } else {
-            refundOrRefund.setEditBtn("0");
-          }
+        }
+        //当前退减免单是否可修改
+        boolean flag = processService
+            .isFirstFlowNode(jsonObject.getString("userId"), nodeCode,
+                jsonObject.getString("flowCode"));
+        if (flag   && "0".equals(refundOrRefund.getStatus())) {
+          refundOrRefund.setEditBtn("1");
+          refundOrRefund.setRevokeBtn("1");
+        } else {
+          refundOrRefund.setEditBtn("0");
+          refundOrRefund.setRevokeBtn("0");
         }
       }
     }
@@ -187,7 +190,7 @@ public class RefundOrRefundServiceImpl extends
     String detailConfig = jsonObject.getString("detailConfig");
     //查询下一环节
     List<Map<String, Object>> hasNext = flowNodeInfoService
-        .nextAuditRole(entity.getNextNodeId(),id, user.getNodeCode(), auditBtn);
+        .nextAuditRole(entity.getNextNodeId(), id, user.getNodeCode(), auditBtn);
     //获取当前环节的审核操作记录
     FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), entity.getId());
     //查询流程的发起人
@@ -304,16 +307,17 @@ public class RefundOrRefundServiceImpl extends
   @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean revoke(JSONObject jsonObject, User user) {
-    List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
-    QueryWrapper wrapper = new QueryWrapper();
-    wrapper.in("id", ids);
+    ApiResponse apiResponse = new ApiResponse();
+    String id = jsonObject.getString("id");
     RefundOrRefund refundOrRefund = new RefundOrRefund();
     refundOrRefund.setIsRevoke("1");
-    boolean result = this.update(refundOrRefund, wrapper);
+    refundOrRefund.setId(id);
     /**更新撤销状态*/
+    boolean result = this.updateById(refundOrRefund);
     /**删除待办数据*/
     systemLogService.logInsert(user, "退减免单管理", "撤销", null);
-    return result && todoService.removeByIds(ids);
+    todoService.deleteByBusinessId(id);
+    return result;
   }
 
   @Override
@@ -328,10 +332,11 @@ public class RefundOrRefundServiceImpl extends
 
   @Override
   public List<Map<String, Object>> nextAuditRole(String id, String nodeCode, String auditBtn) {
-    QueryWrapper wrapper=new QueryWrapper();
-    wrapper.eq("id",id);
+    QueryWrapper wrapper = new QueryWrapper();
+    wrapper.eq("id", id);
     RefundOrRefund refundOrRefund = this.getOne(wrapper);
-    return flowNodeInfoService.nextAuditRole(refundOrRefund.getNextNodeId(), id,nodeCode, auditBtn);
+    return flowNodeInfoService
+        .nextAuditRole(refundOrRefund.getNextNodeId(), id, nodeCode, auditBtn);
   }
 
 }
