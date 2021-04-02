@@ -35,7 +35,7 @@ public class ImportLog extends Model<ImportLog>{
     @TableField(value = "import_file_name",exist = true)
     private String importFileName;
 
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @ApiModelProperty("导入时间")
     @TableField(value = "import_time",exist = true)
     private Date importTime;

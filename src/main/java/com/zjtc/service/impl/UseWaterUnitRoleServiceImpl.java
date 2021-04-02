@@ -91,12 +91,16 @@ public class UseWaterUnitRoleServiceImpl extends
       return response;
     }
 //    先删除该人员id对应的批次号
-    int i = this.baseMapper.deletedByPersonId(personId);
-    if (i == 0) {
-      response.recordError("系统异常");
-      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-      return response;
+    try {
+      this.baseMapper.deletedByPersonId(personId);
+    } catch (Exception e) {
+      log.error("该用户信息异常:"+e.getMessage());
     }
+//    if (i == 0) {
+//      response.recordError("系统异常");
+//      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//      return response;
+//    }
 //    如果单位批次号传为空,那么说明这个人没有批次号权限
     if (unitTypeCodes.isEmpty()) {
         UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
