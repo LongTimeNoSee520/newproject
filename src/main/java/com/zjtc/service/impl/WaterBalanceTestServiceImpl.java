@@ -180,9 +180,11 @@ public class WaterBalanceTestServiceImpl extends
     balanceTest.setNodeCode(user.getNodeCode());
     /**根据单位编号查询单位地址*/
     Map<String,Object>  useWaterUnit= useWaterUnitService.selectByUnitCode(balanceTest.getUnitCode(),user);
-    String unitAddress = null ==useWaterUnit ? null:useWaterUnit.get("unitAddress").toString();
-    if (StringUtils.isNotBlank(unitAddress)){
-      balanceTest.setUnitAddress(unitAddress);
+    if(null != useWaterUnit) {
+      String unitAddress = useWaterUnit.get("unitAddress").toString();
+      if (StringUtils.isNotBlank(unitAddress)) {
+        balanceTest.setUnitAddress(unitAddress);
+      }
     }
     this.save(balanceTest);
     /**水平衡测试产品相关信息新增*/
