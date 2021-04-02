@@ -13,7 +13,7 @@
     <result column="quota_value" property="quotaValue" jdbcType="FLOAT"/>
     <result column="common_value" property="commonValue" jdbcType="FLOAT"/>
     <result column="quota_rate" property="quotaRate" jdbcType="FLOAT"/>
-    <result column="time_param" property="timeParam" jdbcType="INTEGER"/>
+    <!--<result column="time_param" property="timeParam" jdbcType="INTEGER"/>-->
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
     <result column="remark" property="remark" jdbcType="VARCHAR"/>
@@ -72,7 +72,8 @@
   </select>
   <update id="update">
     UPDATE t_w_quota_info
-    SET deleted = '0'
+    <set>
+     deleted = '0'
     <if test="quotaInfo.nodeCode != null and quotaInfo.nodeCode != ''">,node_code = #{quotaInfo.nodeCode} </if>
     <if test="quotaInfo.parentId != null and quotaInfo.parentId != ''">,parent_id = #{quotaInfo.parentId} </if>
     <if test="quotaInfo.industryName != null and quotaInfo.industryName != ''">,industry_name = #{quotaInfo.industryName} </if>
@@ -83,7 +84,7 @@
     <if test="quotaInfo.advanceValue != null">,advance_value = #{quotaInfo.advanceValue}</if>
     <if test="quotaInfo.commonValue != null">,common_value = #{quotaInfo.commonValue}</if>
     <if test="quotaInfo.quotaRate != null">,quota_rate = #{quotaInfo.quotaRate}</if>
-    <if test="quotaInfo.timeParam != null">,time_param = #{quotaInfo.timeParam}</if>
+    </set>
     WHERE id = #{quotaInfo.id}
   </update>
   <update id="delete">

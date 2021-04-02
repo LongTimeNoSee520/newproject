@@ -90,8 +90,11 @@
 		<result column="result" property="result" jdbcType="VARCHAR"/>
 		<result column="next_node_id" property="nextNodeId" jdbcType="VARCHAR"/>
 		<result column="can_execute" property="canExecute" jdbcType="BOOLEAN"/>
+		<result column="audit_file_id" property="auditFileId" jdbcType="VARCHAR"/>
+		<result column="water_proof_file_id" property="waterProofFileId" jdbcType="VARCHAR"/>
+		<result column="other_file_id" property="otherFileId" jdbcType="VARCHAR"/>
 		<!--<result column="need_audit" property="needAudit" jdbcType="BOOLEAN"/>-->
-		<result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
+		<!--<result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>-->
 		<!--<collection property="auditFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"-->
 		<!--select="queryAuditFiles">-->
 		<!--</collection>-->
@@ -152,7 +155,7 @@
 	</select>
 
 	<select id="queryPage" resultMap="PageResultMap">
-		SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_code,t1.unit_name,#{preViewRealPath} AS preViewRealPath,
+		SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_code,t1.unit_name,
 		t1.water_meter_code,t1.paper_type,<!--申报(调整)类型code-->
 		CASE t1.data_sources WHEN '1' THEN '网上申报' WHEN '2' THEN '现场申报' END AS data_sources,
 		t1.create_time,t1.creater_id,t1.creater_name,t1.plan_year,t1.change_quarter,t1.cur_year_plan,
@@ -162,9 +165,7 @@
 		CASE t1.audit_status WHEN '0' THEN '发起审核' WHEN '1' THEN '审核通过' WHEN '2' THEN '审核中' END AS audit_status,
 		CASE t1.executed WHEN '0' THEN '否' WHEN '1' THEN '是' END AS executed,
 		t1.execute_time,t1.executor,t1.executor_id,t1.algorithm_rules,t1.result,t1.next_node_id,
-    <!--CASE &lt;!&ndash;如果在审核流程信息表中找到满足条件的数据，则前端显示审核按钮&ndash;&gt;-->
-    <!--WHEN ((SELECT COUNT(id) FROM t_flow_process WHERE business_id =t1.id AND operator_id = #{userId} AND audit_status='1')>0)-->
-    <!--THEN 1  ELSE 0 END AS need_audit,-->
+    t1.audit_file_id,t1.water_proof_file_id,t1.other_file_id,
     CASE WHEN (t1.confirmed ='1'AND t1.audit_status ='1' AND (executed IS NULL OR executed ='0' OR executed ='')) THEN 1 ELSE 0 END AS can_execute
 		FROM(
 		SELECT

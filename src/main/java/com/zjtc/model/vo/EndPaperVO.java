@@ -138,8 +138,8 @@ public class EndPaperVO extends Model<EndPaperVO>{
     @ApiModelProperty("其他证明材料信息列表")
     List<FileVO> otherFiles;
 
-    @ApiModelProperty("预览路径")
-    private String preViewRealPath;
+//    @ApiModelProperty("预览路径")
+//    private String preViewRealPath;
 
 //    @ApiModelProperty("未缴费情况")
 //    List<Map<String,Object>> unpaidList;
