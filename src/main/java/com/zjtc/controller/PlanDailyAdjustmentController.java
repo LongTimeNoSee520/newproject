@@ -169,7 +169,7 @@ public class PlanDailyAdjustmentController {
       @ApiParam("{\"useWaterUnitId\": \"用水单位id 必填\",\n"
           + "\"unitCode\":  \"单位编号 必填\",\n"
           + "\"planYear\": 年份 数字 必填,\n"
-          + "\"planType\":  \"调整类型：0调整计划1增加计划 必填\",\n"
+          + "\"paperType\":  \"调整类型：0调整计划1增加计划 必填\",\n"
           + "\"firstQuarter\":  第一季度水量 数字 调整计划必填,\n"
           + "\"secondQuarter\": 第二季度水量 数字 调整计划必填,\n"
           + "\"thirdQuarter\": 第三季度水量 数字 调整计划必填,\n"

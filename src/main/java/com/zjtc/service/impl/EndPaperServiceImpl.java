@@ -177,7 +177,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       paperVO.setAuditMessages(
           flowProcessService.queryAuditList(paperVO.getId(), paperVO.getNodeCode()));
       /** 查询附件 **/
-      paperVO = this.getFiles(paperVO, preViewRealPath);
+      paperVO = this.getFiles(paperVO, preViewRealPath + contextPath + "/");
       /**查询是否需要当前登录人员审核*/
       int i = flowProcessService.ifNeedAudit(paperVO.getId(), userId);
       if (i == 0) {

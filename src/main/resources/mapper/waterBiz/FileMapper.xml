@@ -21,7 +21,7 @@
 		FROM
 		t_file
 		WHERE id in
-		<foreach collection="businessId" item="item" open="(" separator="," close=")">
+		<foreach collection="ids" item="item" open="(" separator="," close=")">
 			#{item}
 		</foreach>
 	</select>

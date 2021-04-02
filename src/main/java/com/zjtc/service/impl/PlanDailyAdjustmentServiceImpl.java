@@ -251,7 +251,7 @@ public class PlanDailyAdjustmentServiceImpl extends
 
     String useWaterUnitId = jsonObject.getString("useWaterUnitId");
     String unitCode = jsonObject.getString("unitCode");
-    String planType = jsonObject.getString("planType");
+    String paperType = jsonObject.getString("paperType");
     Integer planYear = jsonObject.getInteger("planYear");
     Double firstQuarter =jsonObject.getDouble("firstQuarter");
     Double secondQuarter = jsonObject.getDouble("secondQuarter");
@@ -275,7 +275,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       response.recordError("该计划存在未完成的办结单");
       return response;
     }
-    if (SystemConstants.PLAN_CHANGE_TYPE_AJUST.equals(planType)) {
+    if (SystemConstants.PLAN_CHANGE_TYPE_AJUST.equals(paperType)) {
       /**计算每个季度与原数据的差值*/
       Double firstQuarterDiff = firstQuarter - useWaterPlan.getFirstQuarter();//填写的与原数据作差
       Double secondQuarterDiff = secondQuarter - useWaterPlan.getSecondQuarter();
@@ -317,7 +317,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       response.recordError("没有作任何修改");
       return response;
     }
-    }else if (SystemConstants.PLAN_CHANGE_TYPE_ADD.equals(planType)) {//增加计划
+    }else if (SystemConstants.PLAN_CHANGE_TYPE_ADD.equals(paperType)) {//增加计划
       /**判断有没有增加水量*/
       if(addNumber != 0 && null != addNumber){
         /**有，新增一条“增加计划”信息*/
