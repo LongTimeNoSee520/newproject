@@ -188,10 +188,10 @@ public class RefundOrRefundController {
   @ResponseBody
   @ApiOperation(value = "撤销")
   @RequestMapping(value = "revoke", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse revoke(@ApiParam("{\n"
+  public ApiResponse revoke(@RequestHeader("token") String token, @ApiParam("{\n"
       + "  \"id\":\"退减免单id\"\n"
-      + "}") @RequestHeader("token") String token,
-      @RequestBody JSONObject jsonObject) {
+      + "}")
+  @RequestBody JSONObject jsonObject) {
     log.info("撤销 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse apiResponse = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -199,7 +199,7 @@ public class RefundOrRefundController {
       try {
         boolean result = refundOrRefundService
             .revoke(jsonObject, user);
-        if(!result){
+        if (!result) {
           apiResponse.recordError(ResponseMsgConstants.OPERATE_FAIL);
         }
       } catch (Exception e) {

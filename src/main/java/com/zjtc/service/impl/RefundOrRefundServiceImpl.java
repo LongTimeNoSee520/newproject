@@ -152,7 +152,7 @@ public class RefundOrRefundServiceImpl extends
         boolean flag = processService
             .isFirstFlowNode(jsonObject.getString("userId"), nodeCode,
                 jsonObject.getString("flowCode"));
-        if (flag   && "0".equals(refundOrRefund.getStatus())) {
+        if (flag && "0".equals(refundOrRefund.getStatus())) {
           refundOrRefund.setEditBtn("1");
           refundOrRefund.setRevokeBtn("1");
         } else {
@@ -322,12 +322,7 @@ public class RefundOrRefundServiceImpl extends
 
   @Override
   public boolean auditCount(String payId, String nodeCode) {
-    QueryWrapper entityQueryWrapper = new QueryWrapper();
-    entityQueryWrapper.eq("pay_id", payId);
-    entityQueryWrapper.eq("node_code", nodeCode);
-    entityQueryWrapper.eq("status", AuditConstants.AWAIT_APPROVED);
-    entityQueryWrapper.eq("is_revoke", "0");
-    return this.count(entityQueryWrapper) > 0 ? true : false;
+    return baseMapper.auditCount(payId, nodeCode) > 0 ? true : false;
   }
 
   @Override

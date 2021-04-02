@@ -215,4 +215,13 @@
     ;
 
   </select>
+
+  <select id="auditCount" resultType="java.lang.Long">
+    select count(1)
+    from t_w_refund_or_refund
+    where pay_id=#{payId}
+    and node_code=#{nodeCode}
+    and (status=1 or status=2)
+    and is_revoke='0'
+  </select>
 </mapper>
