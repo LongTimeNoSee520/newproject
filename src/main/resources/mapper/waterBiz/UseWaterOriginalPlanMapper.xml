@@ -781,7 +781,8 @@
     three_year_avg as threeYearAvg,
     now_price as nowPrice,
     n8 as n8,
-    sign ,
+    case isnull(next_year_base_start_plan,0)>isnull(next_year_quota_start_plan,0)
+     then '1' else '0' end as sign ,
     minus_pay_status As minusPayStatus,
     balance_test as balanceTest,
     create_type as createType,

@@ -385,12 +385,12 @@ public class UseWaterOriginalPlanServiceImpl extends
           }
           /**2.下年初计划(基础)进10*/
           nextYearBaseStartPlan = ceil(nextYearBaseStartPlan);
-          /**3.如果下年初始计划(基础)大于下年初计划(定额)，基础计划默认等于定额计划*/
-          if (nextYearBaseStartPlan > nextYearQuotaStartPlan) {
-            nextYearBaseStartPlan = nextYearQuotaStartPlan;
-            //标识
-            sign = "1";
-          }
+//          /**3.如果下年初始计划(基础)大于下年初计划(定额)，基础计划默认等于定额计划*/
+//          if (nextYearBaseStartPlan > nextYearQuotaStartPlan) {
+//            nextYearBaseStartPlan = nextYearQuotaStartPlan;
+//            //标识
+//            sign = "1";
+//          }
           /**4.下年终计划(基础) 默认等于下年初计划(基础)*/
           nextYearBaseEndPlan = nextYearBaseStartPlan;
           /**5.各季度水量*/
