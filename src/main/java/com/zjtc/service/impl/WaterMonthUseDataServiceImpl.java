@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 public class WaterMonthUseDataServiceImpl extends
     ServiceImpl<WaterMonthUseDataMapper, WaterMonthUseData> implements
     WaterMonthUseDataService {
+
   @Autowired
   private CommonService commonService;
   @Autowired
@@ -42,10 +43,10 @@ public class WaterMonthUseDataServiceImpl extends
   public boolean deletedUnit(String id) {
     List<WaterMonthUseData> dataList = this.baseMapper.selectWaterMonthUseDataId(id);
     List<String> ids = new ArrayList<>();
-    for (WaterMonthUseData waterMonthUseData : dataList){
+    for (WaterMonthUseData waterMonthUseData : dataList) {
       ids.add(waterMonthUseData.getId());
     }
-    if (ids.isEmpty()){
+    if (ids.isEmpty()) {
       return false;
     }
     return this.baseMapper.updateWaterMonthUseData(ids);
@@ -53,10 +54,10 @@ public class WaterMonthUseDataServiceImpl extends
 
   @Override
   public boolean deletedUnit(List<String> ids) {
-    if (ids.isEmpty()){
+    if (ids.isEmpty()) {
       return false;
     }
-    for (String id : ids){
+    for (String id : ids) {
       this.deletedUnit(id);
     }
     return true;
@@ -88,14 +89,17 @@ public class WaterMonthUseDataServiceImpl extends
   }
 
   @Override
-  public List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCode) {
-    QueryWrapper<WaterMonthUseData> wrapper = new QueryWrapper<>();
-    wrapper.in("water_meter_code",waterMeterCode);
-    return this.list(wrapper);
+  public List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCodes) {
+    List<WaterMonthUseData> list = new ArrayList<>();
+    for (String waterMeterCode : waterMeterCodes) {
+      WaterMonthUseData waterMonthUseData = this.baseMapper.selectWaterUseData(waterMeterCode);
+      list.add(waterMonthUseData);
+    }
+    return list;
   }
 
   @Override
-  public void export(User user,JSONObject jsonObject, HttpServletRequest request,
+  public void export(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     List<WaterMonthUseData> list = baseMapper.export(jsonObject);
     Map<String, Object> data = new HashMap<>();
@@ -106,7 +110,7 @@ public class WaterMonthUseDataServiceImpl extends
     String fileName = "用水户水量查询结果.xlsx";
     String templateName = "template/waterMonthUseData.xlsx";
     commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user,"用水单位水量查询","导出",null);
+    systemLogService.logInsert(user, "用水单位水量查询", "导出", null);
   }
 
   @Override

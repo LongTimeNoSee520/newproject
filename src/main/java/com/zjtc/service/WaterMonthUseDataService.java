@@ -50,10 +50,10 @@ public interface WaterMonthUseDataService extends IService<WaterMonthUseData> {
 
   /**
    * 根据水表档案号回填水表信息
-   * @param waterMeterCode 水表档案号集
+   * @param waterMeterCodes 水表档案号集
    * @return 水表使用量信息
    */
-  List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCode);
+  List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCodes);
 
   /**
    * 导出

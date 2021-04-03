@@ -27,7 +27,7 @@
     <result column="water_use_kinds" property="waterUseKinds" jdbcType="VARCHAR"/>
     <result column="unit_names" property="unitNames" jdbcType="VARCHAR"/>
     <result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
-    <result column="waterNumber" property="waterNumber" jdbcType="VARCHAR"/>
+    <result column="waterNumber" property="waterNumber" jdbcType="DOUBLE"/>
     <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
   </resultMap>
 
@@ -331,4 +331,44 @@
       WHERE id=#{item.id}
     </foreach>
   </update>
+
+  <select id="selectWaterUseData" resultMap="WaterMonthUseDataModel">
+    SELECT
+    id,
+    use_water_unit_id,
+    use_year,
+    water_meter_code,
+    january_count,
+    february_count,
+    march_count,
+    april_count,
+    may_count,
+    june_count,
+    july_count,
+    august_count,
+    september_count,
+    october_count,
+    november_count,
+    december_count,
+    now_price,
+    node_code,
+    is_warning,
+    caliber,
+    sector,
+    water_use_kinds,
+    unit_names,
+    unit_address,
+    (
+    SELECT SUM
+    ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + november_count + december_count )
+    FROM
+    t_w_water_month_use_data
+    WHERE
+    water_meter_code = #{waterMeterCode}
+    ) AS waterNumber
+    FROM
+    t_w_water_month_use_data
+    WHERE
+    water_meter_code = #{waterMeterCode}
+  </select>
 </mapper>

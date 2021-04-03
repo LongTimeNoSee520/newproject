@@ -123,7 +123,7 @@ public class WaterMonthUseData extends Model<WaterMonthUseData> {
 
   @ApiModelProperty(value = "水量")
   @TableField(exist = false)
-  private String waterNumber;
+  private Double waterNumber;
 
   @ApiModelProperty(value = "单位编号")
   @TableField( exist = false)

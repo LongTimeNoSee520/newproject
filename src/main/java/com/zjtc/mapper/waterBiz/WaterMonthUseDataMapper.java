@@ -57,4 +57,6 @@ public interface WaterMonthUseDataMapper extends BaseMapper<WaterMonthUseData> {
   List<WaterMonthUseData> export(JSONObject jsonObject);
 
   boolean updateUnitBatch(@Param("list") List<WaterMonthUseData> list);
+
+  WaterMonthUseData selectWaterUseData(@Param("waterMeterCode") String waterMeterCode);
 }

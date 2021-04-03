@@ -126,5 +126,7 @@
     GROUP BY money
   </select>
 
-
+  <select id="selectInvoiceState" resultType="String">
+    select invoice_state as invoiceState  from t_w_finance WHERE id = #{id}
+  </select>
 </mapper>

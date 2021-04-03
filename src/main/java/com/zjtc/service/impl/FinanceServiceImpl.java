@@ -62,7 +62,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
       return response;
     }
     for (Finance finance: finances) {
-      String invoiceState = finance.getInvoiceState();
+      String invoiceState = this.baseMapper.selectInvoiceState(finance.getId());
       if ("1".equals(invoiceState)) {
         response.recordError("用水单位:" +finance.getUnitCode()+"("+ finance.getUnitName() +")"+ "的数据已开票不能修改");
         return response;

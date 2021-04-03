@@ -77,4 +77,11 @@ public interface FinanceMapper extends BaseMapper<Finance> {
 
 
   boolean updateFinance(List<Finance> finances);
+
+  /**
+   * 查询是否开票
+   * @param id
+   * @return
+   */
+  String selectInvoiceState(@Param("id") String id);
 }

@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -93,25 +94,16 @@ public class WaterUseDataController {
       List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
           .selectWaterUseData(waterMeterCode);
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList){
-        waterMonthUseData.setWaterNumber(String.valueOf(
-            waterMonthUseData.getJanuaryCount()
-                +waterMonthUseData.getFebruaryCount()
-                +waterMonthUseData.getMarchCount()
-                +waterMonthUseData.getAprilCount()
-                +waterMonthUseData.getMayCount()
-                +waterMonthUseData.getJuneCount()
-                +waterMonthUseData.getJulyCount()
-                +waterMonthUseData.getAugustCount()
-                +waterMonthUseData.getSeptemberCount()
-                +waterMonthUseData.getOctoberCount()
-                +waterMonthUseData.getNovemberCount()
-                +waterMonthUseData.getDecemberCount()));
+        if (!StringUtils.isBlank(waterMonthUseData.getUseWaterUnitId())){
+          response.recordError("该水表档案号已被使用");
+          return response;
+        }
       }
+      response.setCode(200);
       response.setData(waterMonthUseDataList);
       return response;
     } catch (Exception e) {
-      response.setCode(500);
-      response.setMessage("根据水表档案号回填水表信息异常");
+      response.recordError("根据水表档案号回填水表信息异常");
       log.error("根据水表档案号回填水表信息错误,errMsg==={}", e.getMessage());
       e.printStackTrace();
     }
