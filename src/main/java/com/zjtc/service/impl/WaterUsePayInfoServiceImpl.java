@@ -138,7 +138,7 @@ public class WaterUsePayInfoServiceImpl extends
         apiResponse.recordError(500);
       }
     }
-    systemLogService.logInsert(user,"缴费管理","保存",null);
+    systemLogService.logInsert(user, "缴费管理", "保存", null);
     return apiResponse;
   }
 
@@ -230,7 +230,7 @@ public class WaterUsePayInfoServiceImpl extends
     webSocketUtil.pushWaterTodo(user.getNodeCode(), nextPersonId);
     /**新增流程实例表数据*/
     flowExampleService.add(user, entity.getId(), AuditConstants.PAY_TODO_TYPE);
-    systemLogService.logInsert(user,"缴费管理","发起退款单",null);
+    systemLogService.logInsert(user, "缴费管理", "发起退款单", null);
     return apiResponse;
   }
 
@@ -287,7 +287,7 @@ public class WaterUsePayInfoServiceImpl extends
     webSocketUtil.pushWaterTodo(user.getNodeCode(), nextPersonId);
     /**新增流程实例表数据*/
     flowExampleService.add(user, entity.getId(), AuditConstants.PAY_TODO_TYPE);
-    systemLogService.logInsert(user,"缴费管理","发起减免单",null);
+    systemLogService.logInsert(user, "缴费管理", "发起减免单", null);
     return apiResponse;
   }
 
@@ -365,12 +365,12 @@ public class WaterUsePayInfoServiceImpl extends
   public boolean send(JSONObject jsonObject, User user) throws Exception {
     List<SendListVO> list = jsonObject.getJSONArray("data").toJavaList(SendListVO.class);
     smsService.sendNotification(user, list, SmsConstants.SEND_NOTIFICATION_PAY, null);
-    systemLogService.logInsert(user,"缴费管理","催缴通知短信发送",null);
+    systemLogService.logInsert(user, "缴费管理", "催缴通知短信发送", null);
     return true;
   }
 
   @Override
-  public void exportQueryData(User user,JSONObject jsonObject, HttpServletRequest request,
+  public void exportQueryData(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     List<Map<String, Object>> list = baseMapper.exportQueryData(jsonObject);
     Map<String, Object> data = new HashMap<>();
@@ -381,11 +381,11 @@ public class WaterUsePayInfoServiceImpl extends
     String fileName = "缴费管理查询结果.xlsx";
     String templateName = "template/waterUsePayInfoData.xlsx";
     commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user,"缴费管理","导出查询结果",null);
+    systemLogService.logInsert(user, "缴费管理", "导出查询结果", null);
   }
 
   @Override
-  public void exportUser(User user,JSONObject jsonObject, HttpServletRequest request,
+  public void exportUser(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) throws IOException {
     String nodeCode = jsonObject.getString("nodeCode");
     String year = jsonObject.getString("year");
@@ -396,9 +396,11 @@ public class WaterUsePayInfoServiceImpl extends
 //    List<Map<String, Object>> map = useWaterUnitMapper.selectByIds(unitCodeList);
     if (!list.isEmpty()) {
       for (Map item : list) {
+        String dictItemCode = item.get("areaCountry").toString();
         //所属区域
         item.put("areaCountryName", dictUtils
-            .getDictItemName("area_country_code", item.get("areaCountry").toString(), nodeCode));
+            .getDictItemName("area_country_code",
+                StringUtils.isNotBlank(dictItemCode) ? dictItemCode : "", nodeCode));
         //查询相关编号
         List<String> idList = useWaterUnitRefService
             .findIdList(item.get("id").toString(), nodeCode);
@@ -443,11 +445,11 @@ public class WaterUsePayInfoServiceImpl extends
     }
     String templateName = "template/waterUsePayInfoUserData.xlsx";
     commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user,"缴费管理","导出用户信息",null);
+    systemLogService.logInsert(user, "缴费管理", "导出用户信息", null);
   }
 
   @Override
-  public void exportPayInfo(User user,JSONObject jsonObject, HttpServletRequest request,
+  public void exportPayInfo(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     String year = jsonObject.getString("year");
     String quarter = jsonObject.getString("quarter");
@@ -466,11 +468,11 @@ public class WaterUsePayInfoServiceImpl extends
     }
     String templateName = "template/payInfo.xlsx";
     commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user,"缴费管理","导出计划用水户超计划情况汇总",null);
+    systemLogService.logInsert(user, "缴费管理", "导出计划用水户超计划情况汇总", null);
   }
 
   @Override
-  public ApiResponse exportBankInfo(User user,JSONObject jsonObject, HttpServletRequest request,
+  public ApiResponse exportBankInfo(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) throws IOException {
     ApiResponse apiResponse = new ApiResponse();
     String year = jsonObject.getString("year");
@@ -520,12 +522,13 @@ public class WaterUsePayInfoServiceImpl extends
       //删除文件
       file.delete();
     }
-    systemLogService.logInsert(user,"缴费管理","导出本行数据",null);
+    systemLogService.logInsert(user, "缴费管理", "导出本行数据", null);
     return apiResponse;
   }
 
   @Override
-  public ApiResponse exportOtherBankInfo(User user,JSONObject jsonObject, HttpServletRequest request,
+  public ApiResponse exportOtherBankInfo(User user, JSONObject jsonObject,
+      HttpServletRequest request,
       HttpServletResponse response) throws IOException {
     ApiResponse apiResponse = new ApiResponse();
     String year = jsonObject.getString("year");
@@ -580,7 +583,7 @@ public class WaterUsePayInfoServiceImpl extends
       //删除文件
       file.delete();
     }
-    systemLogService.logInsert(user,"缴费管理","导出他行数据",null);
+    systemLogService.logInsert(user, "缴费管理", "导出他行数据", null);
     return apiResponse;
   }
 }
