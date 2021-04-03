@@ -44,8 +44,8 @@
   <select id="initPlanOld" resultType="java.util.LinkedHashMap">
     SELECT
     id=null,
-     waterMeterCode =STUFF (
-    ( SELECT ',' + water_meter_code  FROM t_w_use_water_unit_meter WHERE use_water_unit_id =
+    waterMeterCode =STUFF (
+    ( SELECT ',' + water_meter_code FROM t_w_use_water_unit_meter WHERE use_water_unit_id =
     t1.id FOR XML PATH ( '' ) ),
     1,
     1,
@@ -71,14 +71,14 @@
     isNull(t5.cur_year_plan,0) as curYearPlan,
     isNull(t5.curYearBasePlan,0) as curYearBasePlan ,
     CASE
-    WHEN t1.unit_code_group = t6.third_batch_num  THEN
+    WHEN t1.unit_code_group = t6.third_batch_num THEN
     CEILING( ISNULL(t2.baseWaterAmount,0) )
     WHEN t1.unit_code_group=t6.second_batch_num THEN
     CEILING(
     ISNULL( t2.baseWaterAmount, 0 ) *ISNULL(t6.first_year_pro,0)
     + ISNULL( t3.beforeLastYearWaterAmount, 0 )*ISNULL(t6.second_year_pro+t6.third_year_pro,0)
     )
-    WHEN t1.unit_code_group &lt;=t6.first_batch_num or t1.unit_code_group>t6.third_batch_num  THEN
+    WHEN t1.unit_code_group &lt;=t6.first_batch_num or t1.unit_code_group>t6.third_batch_num THEN
     CEILING(
     ISNULL( t2.baseWaterAmount, 0 ) *ISNULL(t6.first_year_pro,0)
     + ISNULL( t3.beforeLastYearWaterAmount, 0 )*ISNULL(t6.second_year_pro,0)
@@ -194,12 +194,12 @@
     inner join (select use_water_unit_id from t_w_use_water_original_plan where
     node_code=#{nodeCode} and plan_year=#{year}-1 ) t8 on t1.id =t8.use_water_unit_id
     left join(
-        select
-        a.use_water_unit_id,
-        sum(b.common_value * a.amount * b.quota_rate) as nextYearQuotaStartPlan
-        from t_w_use_water_quota as a
-        inner join t_w_quota_info as b on a.product=b.id
-        group by a.use_water_unit_id
+    select
+    a.use_water_unit_id,
+    sum(b.common_value * a.amount * b.quota_rate) as nextYearQuotaStartPlan
+    from t_w_use_water_quota as a
+    inner join t_w_quota_info as b on a.product=b.id
+    group by a.use_water_unit_id
     ) t9 on t9.use_water_unit_id=t1.id
     ,
     (select * from t_w_algorithm where
@@ -416,8 +416,10 @@
     three,
     four
     FROM
-    ( SELECT now_price, use_water_unit_id, water_meter_code, three = ${threeWaterMonth} FROM t_w_water_month_use_data WHERE use_year =#{ParamOne} ) n1
-    INNER JOIN ( SELECT use_water_unit_id, water_meter_code, four = ${fourWaterMonth} FROM t_w_water_month_use_data WHERE use_year = #{ParamTwo} )n2 ON
+    ( SELECT now_price, use_water_unit_id, water_meter_code, three = ${threeWaterMonth} FROM
+    t_w_water_month_use_data WHERE use_year =#{ParamOne} ) n1
+    INNER JOIN ( SELECT use_water_unit_id, water_meter_code, four = ${fourWaterMonth} FROM
+    t_w_water_month_use_data WHERE use_year = #{ParamTwo} )n2 ON
     n1.water_meter_code = n2.water_meter_code
     ) nn
     GROUP BY
@@ -430,18 +432,18 @@
     p.cur_year_plan ,
     ISNULL( bp.cur_year_plan, 0 ) AS curYearBasePlan
     FROM
-    ( SELECT use_water_unit_id, cur_year_plan FROM  t_w_use_water_plan WHERE plan_type = 0
+    ( SELECT use_water_unit_id, cur_year_plan FROM t_w_use_water_plan WHERE plan_type = 0
     AND plan_year= #{year}-1 ) p
     LEFT JOIN ( SELECT cur_year_plan, use_water_unit_id FROM t_w_use_water_base_plan WHERE plan_year
     = #{year}-1 ) bp ON p.use_water_unit_id = bp.use_water_unit_id
     ) t3 ON t1.id = t3.use_water_unit_id
     left join(
     select
-     a.use_water_unit_id,
-     sum(b.common_value * a.amount * b.quota_rate) as nextYearQuotaStartPlan
-     from t_w_use_water_quota as a
-     inner join t_w_quota_info as b on a.product=b.id
-      group by a.use_water_unit_id
+    a.use_water_unit_id,
+    sum(b.common_value * a.amount * b.quota_rate) as nextYearQuotaStartPlan
+    from t_w_use_water_quota as a
+    inner join t_w_quota_info as b on a.product=b.id
+    group by a.use_water_unit_id
     ) t4 on t4.use_water_unit_id=t1.id
     order by t1.unit_code
   </select>
@@ -460,7 +462,7 @@
     ) AS rownumber,
     id=null,
     waterMeterCode =STUFF (
-    ( SELECT ',' + water_meter_code  FROM t_w_use_water_unit_meter WHERE use_water_unit_id =
+    ( SELECT ',' + water_meter_code FROM t_w_use_water_unit_meter WHERE use_water_unit_id =
     t1.id FOR XML PATH ( '' ) ),
     1,
     1,
@@ -486,14 +488,14 @@
     isNull(t5.cur_year_plan,0) as curYearPlan,
     isNull(t5.curYearBasePlan,0) as curYearBasePlan ,
     CASE
-    WHEN t1.unit_code_group = t6.third_batch_num  THEN
+    WHEN t1.unit_code_group = t6.third_batch_num THEN
     CEILING( ISNULL(t2.baseWaterAmount,0) )
     WHEN t1.unit_code_group=t6.second_batch_num THEN
     CEILING(
     ISNULL( t2.baseWaterAmount, 0 ) *ISNULL(t6.first_year_pro,0)
     + ISNULL( t3.beforeLastYearWaterAmount, 0 )*ISNULL(t6.second_year_pro+t6.third_year_pro,0)
     )
-    WHEN t1.unit_code_group &lt;=t6.first_batch_num or t1.unit_code_group>t6.third_batch_num  THEN
+    WHEN t1.unit_code_group &lt;=t6.first_batch_num or t1.unit_code_group>t6.third_batch_num THEN
     CEILING(
     ISNULL( t2.baseWaterAmount, 0 ) *ISNULL(t6.first_year_pro,0)
     + ISNULL( t3.beforeLastYearWaterAmount, 0 )*ISNULL(t6.second_year_pro,0)
@@ -781,8 +783,8 @@
     three_year_avg as threeYearAvg,
     now_price as nowPrice,
     n8 as n8,
-    case isnull(next_year_base_start_plan,0)>isnull(next_year_quota_start_plan,0)
-     then '1' else '0' end as sign ,
+    case when isnull(next_year_base_start_plan,0) &gt; isnull(next_year_quota_start_plan,0)
+    then '1' else '0' end as sign ,
     minus_pay_status As minusPayStatus,
     balance_test as balanceTest,
     create_type as createType,
