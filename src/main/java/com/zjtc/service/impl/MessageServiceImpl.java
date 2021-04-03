@@ -7,6 +7,7 @@ import com.zjtc.mapper.waterBiz.MessageMapper;
 import com.zjtc.model.Message;
 import com.zjtc.service.MessageService;
 import java.util.Date;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 
@@ -54,8 +55,18 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
   }
 
   @Override
-  public void updateStatus(String id) {
+  public boolean updateStatus(String id) {
     Date operationTime = new Date();
-    this.baseMapper.updateStatus(id, operationTime);
+   return baseMapper.updateStatus(id, operationTime);
+  }
+
+  @Override
+  public boolean updateMsgStatusAll(String mobileNumber) {
+    return baseMapper.updateMsgStatusAll(mobileNumber,new Date());
+  }
+
+  @Override
+  public List<Message> messageInfo(String userId) {
+    return baseMapper.messageInfo(userId);
   }
 }

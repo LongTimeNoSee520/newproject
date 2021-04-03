@@ -16,12 +16,33 @@
 		<result column="unit_code" property="unitCode" />
 	</resultMap>
 
-	<update id="updateMessageById">
-		update t_w_message set
+	<update id="updateStatus">
+		update t_w_message
 		<set>
 			msg_status = '1',<!--更新为已读-->
-			operation_time = #{operationTime} , 
+			operation_time = #{operationTime}
 		</set>
 		where id = #{id}
 	</update>
+
+	<update id="updateMsgStatusAll">
+		update t_w_message
+		<set>
+			msg_status = '1',<!--更新为已读-->
+			operation_time = #{operationTime}
+		</set>
+		where msg_person_id=#{userId}
+	</update>
+
+
+	<select id="messageInfo" resultMap="result_Message_Map">
+    select
+    id,
+    msg_title,
+    create_time,
+    msg_content
+    from t_w_message
+    where msg_status='0'
+    and msg_person_id=#{userId}
+  </select>
 </mapper>

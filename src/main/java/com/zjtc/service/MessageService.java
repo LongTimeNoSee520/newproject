@@ -2,6 +2,7 @@ package com.zjtc.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.Message;
+import java.util.List;
 
 /**
  * @author lianghao
@@ -18,14 +19,31 @@ public interface MessageService extends IService<Message> {
    * @param businessId 业务id
    */
   void add(String nodeCode, String operatorId, String operator, String messageType,
-      String messageContent,String businessId);
+      String messageContent, String businessId);
 
   /**
    * @param unitCode 单位编号
    * @param messageContent 消息内容
    * @param msgTitle 消息标题
    */
-  void messageToUnit(String unitCode, String messageContent,String msgTitle);
+  void messageToUnit(String unitCode, String messageContent, String msgTitle);
 
-  void updateStatus(String id);
+  /**
+   * 修改待办状态
+   */
+  boolean updateStatus(String id);
+
+  /**
+   * 批量修改
+   * @param userId 用户id
+   * @return
+   */
+  boolean updateMsgStatusAll(String userId);
+
+  /**
+   * 通知信息
+   *
+   * @param userId 用户id
+   */
+  List<Message> messageInfo(String userId);
 }

@@ -10,6 +10,8 @@ import com.zjtc.service.AlgorithmService;
 import com.zjtc.service.MessageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -61,4 +63,72 @@ public class MessageController {
     }
     return apiResponse;
   }
+
+  @RequestMapping(value = "messageInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation("通知查询")
+  public ApiResponse messageInfo(@RequestHeader("token") String token) {
+    log.info("查询,参数param==={" + token + "}");
+    User user = jwtUtil.getUserByToken(token);
+    ApiResponse response = new ApiResponse();
+    try {
+      List<Message> result = messageService.messageInfo(user.getId());
+      response.setData(result);
+    } catch (Exception e) {
+      response.setCode(500);
+      response.setMessage("用水量分页查询异常");
+      log.error("查询错误,errMsg==={}", e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
+
+  @RequestMapping(value = "updateMsgStatus", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation("修改通知状态为已读")
+  public ApiResponse updateMsgStatus(@ApiParam("{\n"
+      + "  \"id\":\"通知id\"\n"
+      + "}") @RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
+    log.info("修改,参数param==={" + jsonObject + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        boolean result = messageService.updateStatus(jsonObject.getString("id"));
+        if (!result) {
+          response.recordError(500);
+        }
+      } catch (Exception e) {
+        response.recordError(500);
+        log.error("修改错误,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+      }
+    } else {
+      response.recordError(500);
+    }
+    return response;
+  }
+
+  @RequestMapping(value = "updateMsgStatusAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation("一键已读")
+  public ApiResponse updateMsgStatusAll(
+      @RequestHeader("token") String token) {
+    log.info("修改,参数param==={" + token + "}");
+    User user = jwtUtil.getUserByToken(token);
+    ApiResponse response = new ApiResponse();
+    if (null != token) {
+      try {
+        boolean result = messageService.updateMsgStatusAll(user.getId());
+        if (!result) {
+          response.recordError(500);
+        }
+      } catch (Exception e) {
+        response.recordError(500);
+        log.error("修改错误,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+      }
+    } else {
+      response.recordError(500);
+    }
+    return response;
+  }
+
 }

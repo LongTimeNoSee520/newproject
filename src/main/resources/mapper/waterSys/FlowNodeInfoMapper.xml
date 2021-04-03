@@ -54,8 +54,8 @@
 		   and business_id =#{id}
           ) t1
          left join (select user_id ,user_name,role_id,rank from  t_user_role_ref ) t4 on t4.role_id=t1.flow_node_role_id
-         left JOIN ( SELECT id, org_id FROM t_user  where node_code='510100') t2 ON t4.user_id = t2.id
-         left JOIN ( SELECT id, org_name FROM t_org  where node_code='510100') t3 ON t2.org_id = t3.id
+         left JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t4.user_id = t2.id
+         left JOIN ( SELECT id, org_name FROM t_org  where node_code=#{nodeCode}) t3 ON t2.org_id = t3.id
         ORDER BY
           t4.rank ASC
   </select>
