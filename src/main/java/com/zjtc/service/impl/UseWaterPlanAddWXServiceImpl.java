@@ -393,17 +393,16 @@ public class UseWaterPlanAddWXServiceImpl extends
     String waterProofFileId = waterPlanAddWXVO.getWaterProofFileId();
     if (StringUtils.isNotBlank(auditFileId)) {
       waterPlanAddWXVO.setAuditFileIds(
-          fileService.findByBusinessIds(Arrays.asList(auditFileId.split(",")), path));
+          fileService.findByIds(Arrays.asList(auditFileId.split(",")), path));
     }
     if (StringUtils.isNotBlank(otherFileId)) {
       waterPlanAddWXVO.setOtherFileIds(
-          fileService.findByBusinessIds(Arrays.asList(otherFileId.split(",")), path));
+          fileService.findByIds(Arrays.asList(otherFileId.split(",")), path));
     }
     if (StringUtils.isNotBlank(waterProofFileId)) {
       waterPlanAddWXVO.setWaterProofFileIds(
-          fileService.findByBusinessIds(Arrays.asList(waterProofFileId.split(",")), path));
+          fileService.findByIds(Arrays.asList(waterProofFileId.split(",")), path));
     }
     return waterPlanAddWXVO;
   }
-
 }

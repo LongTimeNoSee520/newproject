@@ -138,7 +138,7 @@ public class UseWaterUnitMeterServiceImpl extends
 
   @Override
   public ApiResponse selectUseWaterUnitMeterAll(List<String> waterMeterCodes,
-      String nodeCode) {
+      String nodeCode,String useWaterUnitId) {
     ApiResponse response = new ApiResponse();
     String unitName = null;
     if (waterMeterCodes.isEmpty()) {
@@ -153,7 +153,7 @@ public class UseWaterUnitMeterServiceImpl extends
       }
     }
     List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
-        .selectWaterUseData(waterMeterCodes);
+        .selectWaterUseData(waterMeterCodes,useWaterUnitId);
     response.setData(waterMonthUseDataList);
     return response;
   }

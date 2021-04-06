@@ -58,5 +58,11 @@ public interface WaterMonthUseDataMapper extends BaseMapper<WaterMonthUseData> {
 
   boolean updateUnitBatch(@Param("list") List<WaterMonthUseData> list);
 
-  WaterMonthUseData selectWaterUseData(@Param("waterMeterCode") String waterMeterCode);
+  /**
+   * 查询出未被使用的水表档案号
+   * @param waterMeterCode
+   * @param useWaterUnitId
+   * @return
+   */
+  WaterMonthUseData selectWaterUseData(@Param("waterMeterCode") String waterMeterCode,@Param("useWaterUnitId")String useWaterUnitId);
 }

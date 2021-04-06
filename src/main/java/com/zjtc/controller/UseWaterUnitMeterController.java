@@ -68,8 +68,8 @@ public class UseWaterUnitMeterController {
   @RequestMapping(value = "backFillData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("新增时回填水表信息")
   public ApiResponse selectUseWaterUnitMeterAll(
-      @ApiParam("{\"id\":\n"
-          + "\"当前单位id\"\n"
+      @ApiParam("{\"useWaterUnitId\":\n"
+          + "\"当前用水单位id\"\n"
           + "\n"
           + "}")
       @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
@@ -81,12 +81,13 @@ public class UseWaterUnitMeterController {
       return response;
     }
     List<String> list = jsonObject.getJSONArray("waterMeterCodes").toJavaList(String.class);
+    String useWaterUnitId = jsonObject.getString("useWaterUnitId");
     if (list.isEmpty()){
       response.recordError("系统异常");
       return response;
     }
     try {
-      response = unitMeterService.selectUseWaterUnitMeterAll(list, user.getNodeCode());
+      response = unitMeterService.selectUseWaterUnitMeterAll(list, user.getNodeCode(),useWaterUnitId);
       response.setCode(200);
       return response;
     } catch (Exception e) {

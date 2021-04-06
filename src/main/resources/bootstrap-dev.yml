@@ -80,7 +80,7 @@ file:
   fileUploadRootPath: D:/
   #附件上传目录
   #    fileUploadPath : Desktop/file
-  fileUploadPath : /upload/
+  fileUploadPath : upload/
 #  #导入错误日志文件目录
 #  importErrorFilePath : importError
   #文件上下文

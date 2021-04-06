@@ -89,10 +89,10 @@ public class WaterMonthUseDataServiceImpl extends
   }
 
   @Override
-  public List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCodes) {
+  public List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCodes,String useWaterUnitId) {
     List<WaterMonthUseData> list = new ArrayList<>();
     for (String waterMeterCode : waterMeterCodes) {
-      WaterMonthUseData waterMonthUseData = this.baseMapper.selectWaterUseData(waterMeterCode);
+      WaterMonthUseData waterMonthUseData = this.baseMapper.selectWaterUseData(waterMeterCode,useWaterUnitId);
       list.add(waterMonthUseData);
     }
     return list;

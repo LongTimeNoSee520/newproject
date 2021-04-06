@@ -127,6 +127,10 @@ public class FinanceController {
     try {
 //      finance = jsonObject.toJavaObject(Finance.class);
        finances = jsonObject.getJSONArray("Finance").toJavaList(Finance.class);
+       if (finances.isEmpty()){
+         response.recordError("没有要修改的数据");
+         return response;
+       }
       response = financeService.updateFinance(finances,user);
       return response;
     } catch (Exception e) {

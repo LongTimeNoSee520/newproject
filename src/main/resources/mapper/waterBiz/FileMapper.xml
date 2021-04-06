@@ -9,8 +9,8 @@
 			id, file_name,#{path} + file_path AS file_path,deleted
 		FROM
 		  t_file
-		WHERE business_id in
-		<foreach collection="businessId" item="item" open="(" separator="," close=")">
+		WHERE id in
+		<foreach collection="ids" item="item" open="(" separator="," close=")">
 			#{item}
 		</foreach>
 	</select>

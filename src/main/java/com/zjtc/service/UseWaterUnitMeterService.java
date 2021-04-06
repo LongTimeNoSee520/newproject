@@ -48,7 +48,7 @@ public interface UseWaterUnitMeterService extends IService<UseWaterUnitMeter> {
    * @param nodeCode 区域编码
    * @return 水表信息集
    */
-  ApiResponse selectUseWaterUnitMeterAll(List<String> waterMeterCodes,String nodeCode);
+  ApiResponse selectUseWaterUnitMeterAll(List<String> waterMeterCodes,String nodeCode,String useWaterUnitId);
 
  /**
   * 查询所有档案号对应的单位id

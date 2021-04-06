@@ -144,7 +144,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
   @Override
   public List<FileVO> findByIds(List<String> ids, String path) {
     if(null != ids && ids.size()>0){
-      return  this.baseMapper.findByIds(ids,path);
+      return this.baseMapper.findByIds(ids,path);
     }
     return null;
   }

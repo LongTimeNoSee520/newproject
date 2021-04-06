@@ -369,6 +369,6 @@
     FROM
     t_w_water_month_use_data
     WHERE
-    water_meter_code = #{waterMeterCode}
+    water_meter_code = #{waterMeterCode} and use_water_unit_id != #{useWaterUnitId}
   </select>
 </mapper>

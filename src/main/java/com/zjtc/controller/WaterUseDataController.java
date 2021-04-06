@@ -75,6 +75,7 @@ public class WaterUseDataController {
   @ApiOperation("根据水表档案号回填水表信息")
   public ApiResponse selectWaterUseData(@ApiParam("   {\n"
       + "     \"waterMeterCode\":[\"水表档案号集\"]\n"
+      + "     \"useWaterUnitId\":\"用水单位id\n"
       + "   }") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("根据水表档案号回填水表信息,参数param==={" + jsonObject.toJSONString() + "}");
@@ -90,9 +91,10 @@ public class WaterUseDataController {
     }
     List<String> waterMeterCode = jsonObject.getJSONArray("waterMeterCode")
         .toJavaList(String.class);
+    String useWaterUnitId = jsonObject.getString("useWaterUnitId");
     try {
       List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
-          .selectWaterUseData(waterMeterCode);
+          .selectWaterUseData(waterMeterCode,useWaterUnitId);
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList){
         if (!StringUtils.isBlank(waterMonthUseData.getUseWaterUnitId())){
           response.recordError("该水表档案号已被使用");
