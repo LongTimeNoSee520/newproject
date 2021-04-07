@@ -104,3 +104,14 @@ webSocket:
   waterExportUrl: /water/system/websocket/waterExport
   #公共服务平台消息webSocket地址
   publicNewsUrl: /water/system/websocket/publicNews
+
+#ftp相关配置
+Ftp:
+  #服务ip
+  ip: 178.16.22.26
+  #端口
+  port: 21
+  #用户名
+  username: fileSer
+  #密码
+  password: zjtc321!

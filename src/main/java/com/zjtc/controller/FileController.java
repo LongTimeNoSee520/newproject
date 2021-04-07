@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
@@ -79,14 +80,14 @@ public class FileController {
           apiResponse.recordError(500);
         }
         //获取文件保存路径
-        String path = fileUploadRootPath + File.separator + fileUploadPath + File.separator;
+       // String path = fileUploadRootPath + File.separator + fileUploadPath + File.separator;
         /**调用上传接口*/
-        String fileName = fileService.uploadFile(file, path);
+        String fileName = fileService.uploadFile(file);
         if (StringUtils.isNotBlank(fileName)) {
           com.zjtc.model.File sysAttrFile = new com.zjtc.model.File();
           sysAttrFile.setId(UUID.randomUUID().toString().replace("-", ""));
           sysAttrFile.setFileName(file.getOriginalFilename());
-          sysAttrFile.setFilePath(fileUploadPath + File.separator + fileName);//非全路径（排除跟目录）
+          sysAttrFile.setFilePath(fileUploadPath + fileName);//非全路径（排除跟目录）
           sysAttrFile.setCreateTime(new Date());
           sysAttrFile.setCreaterId(user.getId());
           sysAttrFile.setDeleted("0");
@@ -134,7 +135,7 @@ public class FileController {
             log.error("");
             continue;
           }
-            String fileName = fileService.uploadFile(item, path);
+            String fileName = fileService.uploadFile(item);
         if (StringUtils.isNotBlank(fileName)) {
           com.zjtc.model.File sysAttrFile = new com.zjtc.model.File();
           sysAttrFile.setId(UUID.randomUUID().toString().replace("-", ""));
@@ -181,6 +182,22 @@ public class FileController {
       @RequestHeader("token") String token) {
     ApiResponse apiResponse = new ApiResponse();
     apiResponse.setData( preViewRealPath + contextPath + "/"+jsonObject.getString("filePath"));
+    return apiResponse;
+  }
+
+  @RequestMapping(value = "download", method = RequestMethod.POST)
+  @ResponseBody
+  @ApiOperation("附件下载")
+  public ApiResponse download(@ApiParam("{\"filePath\":\"文件保存地址\"}") @RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token, HttpServletResponse resp) {
+    ApiResponse apiResponse = new ApiResponse();
+    try{
+      fileService.download(jsonObject.getString("filePath"), resp);
+    }catch (Exception e){
+      log.error("文件下载失败");
+      apiResponse.recordError(500);
+    }
+
     return apiResponse;
   }
 
