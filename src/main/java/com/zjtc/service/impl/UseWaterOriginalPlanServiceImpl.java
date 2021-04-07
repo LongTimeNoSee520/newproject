@@ -55,7 +55,7 @@ public class UseWaterOriginalPlanServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public ApiResponse save(User user,JSONObject jsonObject) {
+  public ApiResponse save(User user, JSONObject jsonObject) {
     ApiResponse apiResponse = new ApiResponse();
     List<UseWaterOriginalPlan> entity = jsonObject.getJSONArray("data")
         .toJavaList(UseWaterOriginalPlan.class);
@@ -81,7 +81,7 @@ public class UseWaterOriginalPlanServiceImpl extends
       return apiResponse;
     }
     this.saveOrUpdateBatch(entity);
-    systemLogService.logInsert(user,"用水计划编制","新增",null);
+    systemLogService.logInsert(user, "用水计划编制", "新增", null);
     return apiResponse;
   }
 
@@ -202,7 +202,7 @@ public class UseWaterOriginalPlanServiceImpl extends
       }
     }
     //todo:微信
-    systemLogService.logInsert(user,"用水计划编制","编制",null);
+    systemLogService.logInsert(user, "用水计划编制", "编制", null);
     return apiResponse;
   }
 
@@ -470,10 +470,13 @@ public class UseWaterOriginalPlanServiceImpl extends
   @Override
   public Map<String, Object> getOldByNextYearBase(JSONObject jsonObject, User user) {
     Map<String, Object> map = new HashMap<>();
+    //下年终计划
+    Double nextYearBaseEndPlan = jsonObject.getDouble("nextYearBaseEndPlan");
+    if (null == nextYearBaseEndPlan) {
+      nextYearBaseEndPlan = 0.0d;
+    }
     /**初始化算法*/
     Algorithm algorithm = algorithmService.queryAlgorithm(user.getNodeCode(), "1");
-    //下年终计划
-    double nextYearBaseEndPlan = jsonObject.getDouble("nextYearBaseEndPlan");
     String unitCode = jsonObject.getString("unitCode");
     String unitType = unitCode.substring(2, 4);
     double firstQuarterBase;
@@ -517,7 +520,10 @@ public class UseWaterOriginalPlanServiceImpl extends
     //单位编号
     String unitCode = jsonObject.getString("unitCode");
     //下年终计划
-    double nextYearBaseEndPlan = jsonObject.getDouble("nextYearBaseEndPlan");
+    Double nextYearBaseEndPlan = jsonObject.getDouble("nextYearBaseEndPlan");
+    if (null == nextYearBaseEndPlan) {
+      nextYearBaseEndPlan = 0.0d;
+    }
     //单位类型
     String unitType = unitCode.substring(2, 4);
     double firstQuarterBase;
@@ -544,11 +550,11 @@ public class UseWaterOriginalPlanServiceImpl extends
         secondQuarterBase = nextYearPlan2;
         thirdQuarterBase = nextYearPlan2;
         fourthQuarterBase = nextYearPlan1;
-        map.put("firstQuarterBase", firstQuarterBase);
-        map.put("secondQuarterBase", secondQuarterBase);
-        map.put("thirdQuarterBase", thirdQuarterBase);
-        map.put("fourthQuarterBase", fourthQuarterBase);
       }
+      map.put("firstQuarterBase", firstQuarterBase);
+      map.put("secondQuarterBase", secondQuarterBase);
+      map.put("thirdQuarterBase", thirdQuarterBase);
+      map.put("fourthQuarterBase", fourthQuarterBase);
     }
     return map;
   }
@@ -556,9 +562,12 @@ public class UseWaterOriginalPlanServiceImpl extends
   @Override
   public Map<String, Object> getOldResultByThreeYearAvg(JSONObject jsonObject, User user) {
     Map<String, Object> map = new HashMap<>();
+    Double threeYearAvg = jsonObject.getDouble("threeYearAvg");
+    if (null == threeYearAvg) {
+      threeYearAvg = 0.0d;
+    }
     /**初始化算法*/
     Algorithm algorithm = algorithmService.queryAlgorithm(user.getNodeCode(), "1");
-    double threeYearAvg = jsonObject.getDouble("threeYearAvg");
     double n8 = jsonObject.getDouble("n8");
     double curYearPlan = jsonObject.getDouble("curYearPlan");
     double nowPrice = jsonObject.getDouble("nowPrice");
@@ -692,9 +701,15 @@ public class UseWaterOriginalPlanServiceImpl extends
   public Map<String, Object> getNewResultByThreeYearAvg(JSONObject jsonObject, User user) {
     Map<String, Object> map = new HashMap<>();
     //水价
-    double nowPrice = jsonObject.getDouble("nowPrice");
+    Double nowPrice = jsonObject.getDouble("nowPrice");
+    if (null == nowPrice) {
+      nowPrice = 0.0d;
+    }
     //三年平均水量
-    double threeYearAvg = jsonObject.getDouble("threeYearAvg");
+    Double threeYearAvg = jsonObject.getDouble("threeYearAvg");
+    if (null == threeYearAvg) {
+      threeYearAvg = 0.0d;
+    }
     /**初始化基础算法*/
     Algorithm algorithm = algorithmService.queryAlgorithm(user.getNodeCode(), "1");
     //下年初计划初始值
@@ -738,7 +753,7 @@ public class UseWaterOriginalPlanServiceImpl extends
   }
 
   @Override
-  public void exportOldData(User user,JSONObject jsonObject, HttpServletRequest request,
+  public void exportOldData(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     List<UseWaterOriginalPlan> list = jsonObject.getJSONArray("data")
         .toJavaList(UseWaterOriginalPlan.class);
@@ -752,11 +767,11 @@ public class UseWaterOriginalPlanServiceImpl extends
     String fileName = nowYear + "年度计划编制汇总.xlsx";
     String templateName = "template/useWaterOriginalPlanOld.xlsx";
     commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user,"用水计划编制","导出老户",null);
+    systemLogService.logInsert(user, "用水计划编制", "导出老户", null);
   }
 
   @Override
-  public void exportNewData(User user,JSONObject jsonObject, HttpServletRequest request,
+  public void exportNewData(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     List<UseWaterOriginalPlan> list = jsonObject.getJSONArray("data")
         .toJavaList(UseWaterOriginalPlan.class);
@@ -768,7 +783,7 @@ public class UseWaterOriginalPlanServiceImpl extends
     String fileName = "新增户计划编制汇总.xlsx";
     String templateName = "template/useWaterOriginalPlanOld.xlsx";
     commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user,"用水计划编制","导出新户",null);
+    systemLogService.logInsert(user, "用水计划编制", "导出新户", null);
   }
 
   private List<Map<String, Object>> initPlanOld(int year, String userType, String unitCodeStart,
