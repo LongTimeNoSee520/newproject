@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.FileUtil;
+import com.zjtc.base.util.JxlsUtils;
 import com.zjtc.base.util.RedisUtil;
 import com.zjtc.base.util.TimeUtil;
 import com.zjtc.base.util.WebSocketUtil;
@@ -248,6 +249,8 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     return result;
   }
 
+  private  String[] keys = new String[] {"sort", "sector", "date","waterMeterCode","userName","address","caliber","waterBegin","waterEnd","waterNumber","waterUseKinds","price" };
+
   @Override
   @Transactional(rollbackFor = Exception.class)
   public ApiResponse checkAndInsertData(User user,String fileProcessId,String fileName) throws Exception {
@@ -281,8 +284,9 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     List<com.zjtc.model.File> files = new ArrayList<>();
     files.add(file1);
     /**excel数据解析写入bean*/
-    result = commonService.importExcel(beans, xmlConfig, fileRealPath,true);
-    infos = (List<WaterUseDataVO>) result.get("infos");
+//    result = commonService.importExcel(beans, xmlConfig, fileRealPath,true);
+//    infos = (List<WaterUseDataVO>) result.get("infos");
+    infos = JxlsUtils.importExcel(fileRealPath,"waterUseData",keys,WaterUseDataVO.class,true);
     /**计算发送webSocket消息的时机(按比例一共推10次给前端)*/
     int size = (int) Math.ceil((double) infos.size() / 10);
     List<Integer> sendSocketIndex = new LinkedList<>();

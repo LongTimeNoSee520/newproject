@@ -1,7 +1,6 @@
 package com.zjtc.service.impl;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.util.WebSocketUtil;
@@ -58,7 +57,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     if (AuditConstants.PAY_TODO_TYPE.equals(todoType)){
       todo.setTodoTitle(AuditConstants.PAY_TODO_TITLE);
       todo.setTableName(AuditConstants.PAY_TABLE);
-    }else if(AuditConstants.END_PAPER_TODO_TYPE.equals(todoType)){
+    } else if (AuditConstants.END_PAPER_TODO_TYPE_AJUST.equals(todoType)
+        || AuditConstants.END_PAPER_TODO_TYPE_ADD.equals(todoType)) {
       todo.setTodoTitle(AuditConstants.END_PAPER_TODO_TITLE);
       todo.setTableName(AuditConstants.END_PAPER_TABLE);
     }

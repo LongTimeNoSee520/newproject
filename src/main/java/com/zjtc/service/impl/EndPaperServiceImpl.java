@@ -376,18 +376,21 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
       //新增一条待办
       String todoContent = "";
+      String todoType ="";
       if ("0".equals(endPaper.getPaperType())) {//调整计划
         todoContent = "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")"
             + "申请调整计划，调整后4个季度水量：第一季度" + firstQuarter + "方,第二季度" + secondQuarter + "方，第三季度"
             + thirdQuarter + "方,第四季度" + fourthQuarter + "方。";
+        todoType=AuditConstants.END_PAPER_TODO_TYPE_AJUST;
       } else if ("1".equals(endPaper.getPaperType())) {//增加计划
         todoContent =
             "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
                 + addNumber + "方(第一水量" + firstWater + "方，第二水量" + secondWater + "方)。";
+        todoType=AuditConstants.END_PAPER_TODO_TYPE_ADD;
       }
       todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent,
           JSONObject.toJSONString(endPaper),
-          detailConfig, AuditConstants.END_PAPER_TODO_TYPE);
+          detailConfig, todoType);
       //webSocket 推送消息给下一审核人员
       webSocketUtil.pushWaterTodo(user.getNodeCode(), auditorId);
     }

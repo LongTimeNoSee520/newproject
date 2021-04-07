@@ -245,6 +245,10 @@ public class UseWaterBasePlanServiceImpl extends
   public ApiResponse checkExisted(User user,String unitCode, Integer planYear) {
     ApiResponse response = new ApiResponse();
     /**查询当前登录人员是否有操作该类型的权限*/
+    if(unitCode.length()<= 5){
+      response.recordError("没有查询到相关单位编号的单位信息");
+      return response;
+    }
     boolean result = useWaterUnitRoleService
         .checkUserRight(user.getId(),unitCode, user.getNodeCode());
     if (!result) {

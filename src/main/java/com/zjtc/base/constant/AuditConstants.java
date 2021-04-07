@@ -44,19 +44,34 @@ public class AuditConstants {
  * ****************************待办类型**************************************
  * *************************************************************************
  */
-  /**
-   * 退、减免类型
-   */
-  public static final String PAY_TODO_TYPE = "1";
-  /**
-   * 办结单类型
-   */
-  public static final String END_PAPER_TODO_TYPE = "2";
 
   /**
    * 用水计划超额
    */
-  public static final String PLAN_EXCESS_TYPE = "4";
+  public static final String PLAN_EXCESS_TYPE = "3";
+  /**
+   * 办结单类型-调整
+   */
+  public static final String END_PAPER_TODO_TYPE_AJUST = "4";
+
+  /**
+   * 办结单类型-增加
+   */
+  public static final String END_PAPER_TODO_TYPE_ADD = "5";
+  /**
+  /**
+   * 退、减免类型
+   */
+  public static final String PAY_TODO_TYPE = "6";
+  /**
+   *
+   */
+  public static final String END_PAPER_TODO_TYPE = "2";
+
+
+
+
+
 
 /***************************************************************************
  * ****************************待办状态**************************************

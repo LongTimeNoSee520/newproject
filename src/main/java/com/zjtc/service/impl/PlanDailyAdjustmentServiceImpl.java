@@ -528,6 +528,8 @@ public class PlanDailyAdjustmentServiceImpl extends
 
     /**待办内容*/
     String todoContent ="";
+    /**待办类型*/
+    String todoType ="";
     /**查询该用水单位是否存在没有走完办结流程的办结单*/
     QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("node_code", user.getNodeCode());
@@ -595,6 +597,7 @@ public class PlanDailyAdjustmentServiceImpl extends
               + "申请调整计划，调整后各季度水量：第一季度水量"
               + firstQuarter + "方，第二季度水量" + secondQuarter + "方，第三季度水量" + thirdQuarter + "方，第四季度水量"
               + fourthQuarter + "方。";
+      todoType=AuditConstants.END_PAPER_TODO_TYPE_AJUST;
     }
     if (SystemConstants.PLAN_CHANGE_TYPE_ADD.equals(paperType)) {
       /**审核流程信息新增*/
@@ -606,6 +609,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       todoContent =
           "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划：第一水量"
               + firstWater + "方，第二水量" + secondWater+"方。";
+      todoType=AuditConstants.END_PAPER_TODO_TYPE_ADD;
     }
     if("2".equals(dataSources)){
       endPaper.setConfirmed("1");//现场申报的都是已确认的
@@ -620,7 +624,6 @@ public class PlanDailyAdjustmentServiceImpl extends
     flowProcessService.create(user,endPaper.getId(),opinions,auditorName,auditorId);
     /**待办表加数据*/
     if(StringUtils.isNotBlank(todoContent)) {
-      String todoType = AuditConstants.END_PAPER_TODO_TYPE;
       todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, JSONObject.toJSONString(endPaper),
           detailConfig, todoType);
       /**webSocket推送*/
