@@ -144,6 +144,26 @@ public class UseWaterBasePlanController {
     return response;
   }
 
+  @ApiOperation(value = "查询该单位该年份是否已有基建计划")
+  @RequestMapping(value = "checkExisted", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse checkExisted(@RequestHeader("token") String token,
+      @ApiParam("{ \n"
+      + "  \"planYear\":\"计划年度 数字类型\",\n"
+      + "  \"unitCode\": \"单位编号\",\n"
+      + "}")@RequestBody JSONObject jsonObject) {
+    ApiResponse response = new ApiResponse();
+    try {
+      User user = jwtUtil.getUserByToken(token);//通过token取节点编码
+      Integer planYear = jsonObject.getInteger("planYear");
+      String unitCode = jsonObject.getString("unitCode");
+      response = useWaterBasePlanService.checkExisted(user,unitCode,planYear);
+    } catch (Exception e) {
+      log.error("查询可选年份列表失败,errMsg==={}" + e.getMessage());
+      response.recordError(500);
+    }
+    return response;
+  }
+
   @ApiOperation(value = "查询可选年份列表")
   @RequestMapping(value = "queryYear", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse queryYear(@RequestHeader("token") String token) {

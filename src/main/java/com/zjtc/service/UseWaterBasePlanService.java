@@ -40,4 +40,7 @@ public interface UseWaterBasePlanService extends IService<UseWaterBasePlan> {
    */
   ApiResponse export(User user, JSONObject jsonObject,HttpServletRequest request,
       HttpServletResponse response);
+
+  /**查询当前单位编码在当前nodeCode下、当前年份下是否已经有基建计划*/
+  ApiResponse checkExisted(User user,String unitCode, Integer planYear);
 }
