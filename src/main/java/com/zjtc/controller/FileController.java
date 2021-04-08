@@ -152,7 +152,7 @@ public class FileController {
         }
       } catch (Exception e) {
         log.error("附件上传失败,errMsg==={" + e.getMessage() + "}");
-
+        apiResponse.recordError(500);
       }
     } else {
       apiResponse.recordError(500);
