@@ -183,6 +183,19 @@
 		</dependency>
 		<!--jxls excel导入导出支持结束 -->
 
+		<!--ftp文件上传-->
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>3.3</version>
+		</dependency>
+		<!--自定义连接池-->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>2.4.2</version>
+		</dependency>
+
 		<!-- OkHttpClient -->
 		<dependency>
 			<groupId>com.github.lianjiatech</groupId>
