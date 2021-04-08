@@ -3,9 +3,7 @@ package com.zjtc.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.File;
 import com.zjtc.model.vo.FileVO;
-import java.io.IOException;
 import java.util.List;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -21,13 +19,6 @@ public interface FileService extends IService<File> {
    * @param
    */
   String uploadFile(MultipartFile file);
-
-  /**
-   * 附件上传
-   *
-   * @param
-   */
-  void download(String fileName, HttpServletResponse resp) throws IOException;
 
   /**
    * 删除附件

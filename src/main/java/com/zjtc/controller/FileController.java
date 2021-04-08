@@ -1,13 +1,11 @@
 package com.zjtc.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
 import com.zjtc.service.FileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,13 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -175,30 +171,5 @@ public class FileController {
     return apiResponse;
   }
 
-  @RequestMapping(value = "preView", method = RequestMethod.POST)
-  @ResponseBody
-  @ApiOperation("文件预览路径")
-  public ApiResponse preView(@ApiParam("{\"filePath\":\"文件保存地址\"}") @RequestBody JSONObject jsonObject,
-      @RequestHeader("token") String token) {
-    ApiResponse apiResponse = new ApiResponse();
-    apiResponse.setData( preViewRealPath + contextPath + "/"+jsonObject.getString("filePath"));
-    return apiResponse;
-  }
-
-  @RequestMapping(value = "download", method = RequestMethod.POST)
-  @ResponseBody
-  @ApiOperation("附件下载")
-  public ApiResponse download(@ApiParam("{\"filePath\":\"文件保存地址\"}") @RequestBody JSONObject jsonObject,
-      @RequestHeader("token") String token, HttpServletResponse resp) {
-    ApiResponse apiResponse = new ApiResponse();
-    try{
-      fileService.download(jsonObject.getString("filePath"), resp);
-    }catch (Exception e){
-      log.error("文件下载失败");
-      apiResponse.recordError(500);
-    }
-
-    return apiResponse;
-  }
 
 }
