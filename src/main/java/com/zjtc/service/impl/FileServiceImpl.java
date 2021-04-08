@@ -7,11 +7,9 @@ import com.zjtc.mapper.waterBiz.FileMapper;
 import com.zjtc.model.File;
 import com.zjtc.model.vo.FileVO;
 import com.zjtc.service.FileService;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +39,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     return result;
   }
 
-  @Override
-  public void download(String fileName, HttpServletResponse resp) throws IOException {
-    ftpUtil.download(fileName,resp);
-  }
 
   /**
    * 更新附件表的业务ID
