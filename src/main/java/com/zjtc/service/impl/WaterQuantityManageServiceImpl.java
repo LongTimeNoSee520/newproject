@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.FileUtil;
+import com.zjtc.base.util.FtpUtil;
 import com.zjtc.base.util.JxlsUtils;
 import com.zjtc.base.util.RedisUtil;
 import com.zjtc.base.util.TimeUtil;
@@ -92,6 +93,9 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 
   @Autowired
   private CommonService commonService;
+
+  @Autowired
+  private FtpUtil ftpUtil;
 
   @Autowired
   private SystemLogService systemLogService;
@@ -222,7 +226,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
   }
 
   @Override
-  public boolean merge(String fileProcessId) {
+  public boolean merge(String fileProcessId) throws Exception {
     boolean result = false;
     java.io.File dir = new java.io.File(
         fileUploadRootPath + fileUploadPath + java.io.File.separator
@@ -242,6 +246,8 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
           fileProcessId + "." + "xlsx");
       //删除临时文件夹
       FileUtil.deleteDir(dir.getPath());
+      ftpUtil.uploadFile(new File(fileUploadRootPath + fileUploadPath+
+          fileProcessId + "." + "xlsx"));
       result = true;
     } catch (IOException e) {
       log.error("合并文件失败,errMsg======{}", e.getMessage());
@@ -262,8 +268,6 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     String xmlConfig = "template/xml/WaterQuantityManage.xml";
     Map result = new HashMap();
     String fileRealPath =  fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx";
-    //"C:\\Users\\LH\\Desktop\\导入测试.xlsx";
-    //"C:\\Users\\LH\\Desktop\\WaterQuantityManageTemplate.xlsx";
     errorMsgs = new StringBuffer();//错误信息
     String nodeCode = user.getNodeCode();
     /**日志*/
@@ -376,6 +380,8 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
       String filePath =fileUploadRootPath + fileUploadPath + java.io.File.separator + TimeUtil
           .formatTimeyyyyMMddHHmmss(new Date()) + ".txt";
       fileUtil.saveAsFileWriter(errorMsgs.toString(), filePath);
+      ftpUtil.uploadFile(new File(filePath));
+//      FileUtil.deleteDir(filePath);
       /**记录日志*/
       importLog.setImportStatus("0");
 //      importLog.setImportDetail(filePath);
@@ -421,6 +427,8 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     this.baseMapper.insertOrUpdateToMonthData(year);
     /**重算加价*/
     waterUsePayInfoService.initPayInfo(jsonObject);
+//    /**删除应用服务器上的excel文件*/
+//    FileUtil.deleteDir(fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx");
     /**删除缓存*/
     redisUtil.del(fileProcessId);
     /**日志*/

@@ -112,8 +112,6 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
 
-  @Value("${server.servlet-path}")
-  private String contextPath;
 
   @Value("${waterReport.reportUrl}")
   private String reportUrl;
@@ -142,7 +140,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       map.put("nodeCode", user.getNodeCode());
     }
     map.put("userId", userId);
-    map.put("preViewRealPath", preViewRealPath + contextPath + "/");
+    map.put("preViewRealPath", preViewRealPath  + "/");
     if (StringUtils.isNotBlank(unitCode)) {
       map.put("unitCode", unitCode);
     }
@@ -177,7 +175,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       paperVO.setAuditMessages(
           flowProcessService.queryAuditList(paperVO.getId(), paperVO.getNodeCode()));
       /** 查询附件 **/
-      paperVO = this.getFiles(paperVO, preViewRealPath + contextPath + "/");
+      paperVO = this.getFiles(paperVO, preViewRealPath + "/");
       /**查询是否需要当前登录人员审核*/
       int i = flowProcessService.ifNeedAudit(paperVO.getId(), userId);
       if (i == 0) {

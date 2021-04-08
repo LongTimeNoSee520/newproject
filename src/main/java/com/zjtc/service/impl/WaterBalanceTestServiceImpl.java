@@ -49,8 +49,6 @@ public class WaterBalanceTestServiceImpl extends
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
 
-  @Value("${server.servlet-path}")
-  private String contextPath;
 
   @Value("${file.fileUploadPath}")
   private String fileUploadPath;
@@ -121,7 +119,7 @@ public class WaterBalanceTestServiceImpl extends
     }else{
       map.put("nodeCode", user.getNodeCode());
     }
-    map.put("preViewRealPath", preViewRealPath + contextPath + "/");
+    map.put("preViewRealPath", preViewRealPath  + "/");
     //	map.put("userId", userId);
     if (StringUtils.isNotBlank(unitName)) {
       map.put("unitName", unitName);

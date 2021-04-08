@@ -1,6 +1,8 @@
 package com.zjtc.base.util;
 
 import com.zjtc.base.ftp.FtpPool;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,6 +15,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -96,6 +99,33 @@ public class FtpUtil {
     return fileName;
   }
 
+  @Async("asyncExecutor")
+  public void uploadFile(File file) throws Exception {
+    FTPClient ftpClient = pool.getFTPClient();
+    InputStream input = new FileInputStream(file);
+    //开始进行文件上传
+    String uploadFileName = file.getName();//上传附件名
+    try {
+      //判断文件目录是否存在
+      //切换至存储目录
+      boolean flag = ftpClient.changeWorkingDirectory(fileUploadPath);
+      if (!flag) {
+        ftpClient.makeDirectory(fileUploadPath);
+        ftpClient.changeWorkingDirectory(fileUploadPath);
+      }
+      boolean result = ftpClient.storeFile(uploadFileName, input);//执行文件传输
+      // System.out.println( ftpClient.getReplyCode());
+      if (!result) {//上传失败
+        log.error("附件上传失败："+uploadFileName);
+        throw new RuntimeException("上传失败");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {//关闭资源
+      input.close();
+      pool.returnFTPClient(ftpClient);//归还资源
+    }
+  }
   /**
    * Description: 从FTP服务器下载文件
    *

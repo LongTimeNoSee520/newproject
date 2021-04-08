@@ -41,7 +41,7 @@ public interface WaterQuantityManageService extends IService<WaterUseData> {
 	 * @param fileProcessId
 	 * @return
 	 */
-	boolean merge(String fileProcessId);
+	boolean merge(String fileProcessId) throws Exception;
 
 	/**
 	 * 数据检查
