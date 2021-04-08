@@ -86,7 +86,7 @@ public class UseWaterUnitRoleServiceImpl extends
   public ApiResponse add(String personId, String nodeCode, List<String> unitTypeCodes) {
     ApiResponse response = new ApiResponse();
     List<UseWaterUnitRole> unitRoles = new ArrayList<>();
-    if (StringUtils.isBlank(personId) || StringUtils.isBlank(nodeCode)) {
+    if (StringUtils.isBlank(personId)) {
       response.recordError("系统异常");
       return response;
     }
@@ -94,7 +94,7 @@ public class UseWaterUnitRoleServiceImpl extends
     try {
       this.baseMapper.deletedByPersonId(personId);
     } catch (Exception e) {
-      log.error("该用户信息异常:"+e.getMessage());
+      log.error("该用户信息异常:" + e.getMessage());
     }
 //    if (i == 0) {
 //      response.recordError("系统异常");
@@ -103,13 +103,13 @@ public class UseWaterUnitRoleServiceImpl extends
 //    }
 //    如果单位批次号传为空,那么说明这个人没有批次号权限
     if (unitTypeCodes.isEmpty()) {
-        UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
-        useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
-        useWaterUnitRole.setPersonId(personId);
-        useWaterUnitRole.setUnitTypeCode(null);
-        useWaterUnitRole.setNodeCode(nodeCode);
-        useWaterUnitRole.setCreateTime(new Date());
-        unitRoles.add(useWaterUnitRole);
+      UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
+      useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
+      useWaterUnitRole.setPersonId(personId);
+      useWaterUnitRole.setUnitTypeCode(null);
+      useWaterUnitRole.setNodeCode(StringUtils.isBlank(nodeCode) ? null : nodeCode);
+      useWaterUnitRole.setCreateTime(new Date());
+      unitRoles.add(useWaterUnitRole);
     } else {
 //    批量新增
       for (String unitTypeCode : unitTypeCodes) {
@@ -117,7 +117,7 @@ public class UseWaterUnitRoleServiceImpl extends
         useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
         useWaterUnitRole.setPersonId(personId);
         useWaterUnitRole.setUnitTypeCode(unitTypeCode);
-        useWaterUnitRole.setNodeCode(nodeCode);
+        useWaterUnitRole.setNodeCode(StringUtils.isBlank(nodeCode) ? null : nodeCode);
         useWaterUnitRole.setCreateTime(new Date());
         unitRoles.add(useWaterUnitRole);
       }
@@ -129,6 +129,7 @@ public class UseWaterUnitRoleServiceImpl extends
       return response;
     }
     response.recordError("授权失败");
+    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     return response;
   }
 
@@ -139,19 +140,33 @@ public class UseWaterUnitRoleServiceImpl extends
 
     ApiResponse response = new ApiResponse();
     List<UseWaterUnitRole> unitRoles = new ArrayList<>();
-    if (StringUtils.isBlank(personId) || StringUtils.isBlank(nodeCode) || unitTypeCodes.isEmpty()) {
+    if (StringUtils.isBlank(personId)) {
       response.recordError("系统异常");
       return response;
     }
-    //    批量新增
-    for (String unitTypeCode : unitTypeCodes) {
+    if (unitTypeCodes.isEmpty()) {
+
+    }
+//    如果该没有权限编码的话就单个添加
+    if (unitTypeCodes.isEmpty()) {
       UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
       useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
       useWaterUnitRole.setPersonId(personId);
-      useWaterUnitRole.setUnitTypeCode(unitTypeCode);
-      useWaterUnitRole.setNodeCode(nodeCode);
+      useWaterUnitRole.setUnitTypeCode(null);
+      useWaterUnitRole.setNodeCode(StringUtils.isBlank(nodeCode) ? null : nodeCode);
       useWaterUnitRole.setCreateTime(new Date());
       unitRoles.add(useWaterUnitRole);
+    } else {
+      //    批量新增
+      for (String unitTypeCode : unitTypeCodes) {
+        UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
+        useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
+        useWaterUnitRole.setPersonId(personId);
+        useWaterUnitRole.setUnitTypeCode(unitTypeCode);
+        useWaterUnitRole.setNodeCode(StringUtils.isBlank(nodeCode) ? null : nodeCode);
+        useWaterUnitRole.setCreateTime(new Date());
+        unitRoles.add(useWaterUnitRole);
+      }
     }
     boolean b = this.saveBatch(unitRoles);
     if (b) {
@@ -159,6 +174,7 @@ public class UseWaterUnitRoleServiceImpl extends
       return response;
     }
     response.recordError("授权失败");
+    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     return response;
   }
 }
