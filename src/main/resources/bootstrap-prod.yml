@@ -80,11 +80,11 @@ file:
   fileUploadRootPath: D:/
   #附件上传目录
   #    fileUploadPath : Desktop/file
-  fileUploadPath : /upload/
+  fileUploadPath : /ftp/upload/
 #  #导入错误日志文件目录
 #  importErrorFilePath : importError
   #文件上下文
-  preViewRealPath: http://125.70.9.203:8081
+  preViewRealPath: http://125.70.9.203:8081/water/file
 waterSms:
   sendUrl: /water/sms/smsManage/sendMessages
 
