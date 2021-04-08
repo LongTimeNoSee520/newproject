@@ -253,7 +253,7 @@
     assess_quarter as assessQuarter,
     planed as planed,
     added,
-    plan_year
+    plan_year as planYear
     FROM
     t_w_use_water_original_plan
     WHERE
@@ -324,7 +324,7 @@
     create_time as createTime,
     assess_quarter as assessQuarter,
     planed as planed,
-    plan_year
+    plan_year as planYear
     FROM
     t_w_use_water_original_plan
     WHERE
