@@ -252,7 +252,8 @@
     create_time as createTime,
     assess_quarter as assessQuarter,
     planed as planed,
-    added
+    added,
+    plan_year
     FROM
     t_w_use_water_original_plan
     WHERE
@@ -281,7 +282,7 @@
     ) as u on u.id=p.useWaterUnitId
     ORDER BY u.unitCode
   </select>
-  <select id="nowYearPlanNew">
+  <select id="nowYearPlanNew" resultType="java.util.LinkedHashMap">
     SELECT
     p.*,
     u.unitCode,
@@ -322,7 +323,8 @@
     printed as printed,
     create_time as createTime,
     assess_quarter as assessQuarter,
-    planed as planed
+    planed as planed,
+    plan_year
     FROM
     t_w_use_water_original_plan
     WHERE
