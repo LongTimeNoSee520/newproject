@@ -36,8 +36,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileController {
 
 
-  @Value("${server.servlet-path}")
-  private String contextPath;
 
   /**
    * 附件上传盘符
@@ -92,7 +90,7 @@ public class FileController {
           /**附件表新增数据*/
           fileService.save(sysAttrFile);
           Map<String, Object> result = new HashMap<>();
-          String uploadPath =preViewRealPath + contextPath +fileUploadPath + fileName;
+          String uploadPath =preViewRealPath  +fileUploadPath + fileName;
           sysAttrFile.setUrl(uploadPath);
           result.put("file", sysAttrFile);
           result.put("uploadPath", uploadPath);
@@ -144,7 +142,7 @@ public class FileController {
           sysAttrFile.setNodeCode(user.getNodeCode());
           /**附件表新增数据*/
           fileService.save(sysAttrFile);
-          String uploadPath = preViewRealPath + contextPath + fileUploadPath + fileName;
+          String uploadPath = preViewRealPath  + fileName;
           sysAttrFile.setUrl(uploadPath);
           result.add(sysAttrFile);
         }
@@ -167,7 +165,7 @@ public class FileController {
   public ApiResponse getUploadPath() {
     ApiResponse apiResponse = new ApiResponse();
     apiResponse.setCode(200);
-    apiResponse.setData(preViewRealPath + contextPath + "/");
+    apiResponse.setData(preViewRealPath);
     return apiResponse;
   }
 

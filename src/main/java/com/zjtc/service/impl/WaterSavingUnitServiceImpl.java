@@ -144,7 +144,7 @@ public class WaterSavingUnitServiceImpl extends
       for (WaterSavingUnit waterSavingUnit : result) {
         if (!waterSavingUnit.getSysFiles().isEmpty()) {
           for (com.zjtc.model.File file : waterSavingUnit.getSysFiles()) {
-            file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());
+            file.setUrl(preViewRealPath + file.getFilePath());
           }
         }
       }

@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -116,7 +115,8 @@ public class WaterQuantityManageController {
   @ApiOperation("合并")
   @RequestMapping(value = "merge", method = RequestMethod.POST)
   public ApiResponse merge(@RequestHeader("token") String token,
-      @ApiParam("{ \"fileProcessId\":\"文件上传的UUID\"}")@RequestBody JSONObject jsonObject) {
+      @ApiParam("{ \"fileProcessId\":\"文件上传的UUID\"}")@RequestBody JSONObject jsonObject)
+      throws Exception {
     ApiResponse apiResponse = new ApiResponse();
     String fileProcessId = jsonObject.getString("fileProcessId");
   //  String fileName = jsonObject.getString("fileName");

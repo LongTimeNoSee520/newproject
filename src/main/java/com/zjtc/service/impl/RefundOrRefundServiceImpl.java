@@ -71,11 +71,6 @@ public class RefundOrRefundServiceImpl extends
 
   @Autowired
   private FlowProcessService processService;
-  /**
-   * 附件存储目录
-   */
-  @Value("${server.servlet-path}")
-  private String contextPath;
 
   /**
    * 上下文
@@ -112,7 +107,7 @@ public class RefundOrRefundServiceImpl extends
       for (RefundOrRefund refundOrRefund : list) {
         if (!refundOrRefund.getSysFiles().isEmpty()) {
           for (File file : refundOrRefund.getSysFiles()) {
-            file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());
+            file.setUrl(preViewRealPath  + "/" + file.getFilePath());
           }
         }
       }
@@ -145,7 +140,7 @@ public class RefundOrRefundServiceImpl extends
         //附件
         if (!refundOrRefund.getSysFiles().isEmpty()) {
           for (File file : refundOrRefund.getSysFiles()) {
-            file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());
+            file.setUrl(preViewRealPath+ file.getFilePath());
           }
         }
         //当前退减免单是否可修改

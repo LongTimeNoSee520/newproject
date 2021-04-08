@@ -107,12 +107,6 @@ public class UseWaterUnitServiceImpl extends
   private final static String AREA_COUNTRY_CODE = "area_country_code";
 
   /**
-   * 附件存储目录
-   */
-  @Value("${server.servlet-path}")
-  private String contextPath;
-
-  /**
    * 上下文
    */
   @Value("${file.preViewRealPath}")
@@ -494,7 +488,7 @@ public class UseWaterUnitServiceImpl extends
         //附件
         if (!item.getSysFile().isEmpty()) {
           for (File file : item.getSysFile()) {
-            file.setUrl(preViewRealPath + contextPath + "/" + file.getFilePath());
+            file.setUrl(preViewRealPath + file.getFilePath());
           }
         }
       }
