@@ -30,6 +30,11 @@ spring:
       url: jdbc:sqlserver://172.23.34.8:1433;databaseName=water_sys
       username: sa
       password: zjtc321!
+    waterCounty:
+      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://172.23.34.6:1433;databaseName=water_service
+      username: sa
+      password: zjtc321!
   redis:
     host: 172.23.34.14
     password: 123456
@@ -115,3 +120,7 @@ Ftp:
   username: fileSer
   #密码
   password: zjtc321!
+
+#节水中心nodeCode
+city:
+  nodeCode: 510100

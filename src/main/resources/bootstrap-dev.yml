@@ -30,6 +30,11 @@ spring:
       url: jdbc:sqlserver://120.79.162.253:1433;databaseName=water_sys
       username: sa
       password: harmony123!
+    waterCounty:
+      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://172.23.34.6:1433;databaseName=water_service
+      username: sa
+      password: zjtc321!
   redis:
     host: 120.79.162.253
     password: 123456
@@ -104,3 +109,19 @@ webSocket:
   waterExportUrl: /water/system/websocket/waterExport
   #公共服务平台消息webSocket地址
   publicNewsUrl: /water/system/websocket/publicNews
+
+
+#ftp相关配置
+Ftp:
+  #服务ip
+  ip: 10.11.18.8
+  #端口
+  port: 21
+  #用户名
+  username: yu
+  #密码
+  password: 123456
+
+#节水中心nodeCode
+city:
+  nodeCode: 510100
