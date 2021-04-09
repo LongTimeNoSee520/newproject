@@ -58,12 +58,6 @@ public class UseWaterSelfDefinePlanServiceImpl extends
   @Autowired
   private SmsService smsService;
 
-
-  /**
-   * 附件存储目录
-   */
-  @Value("${server.servlet-path}")
-  private String contextPath;
   /**
    * 上下文
    */
@@ -141,7 +135,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
 //    附件展示路径
-    String path = preViewRealPath + contextPath + "/";
+    String path = preViewRealPath;
     // TODO: 2021/2/18 因为没有附件id,需要根据业务id在附件表里去查对应的业务id,现在的做法是默认有附件id的情况,错误
     List<UseWaterSelfDefinePlanVO> waterSelfDefinePlans = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType, planYear, executed, unitCode, nodeCode,
@@ -228,9 +222,12 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //    审核结果
     waterSelfDefinePlan.setAuditResult(auditResult);
     int integer = this.baseMapper.updateById(waterSelfDefinePlan);
+
     if (integer > 0) {
       response.setCode(200);
       response.setMessage("审核成功");
+//      取消待办
+      todoService.edit(id, user.getNodeCode(), user.getId());
       systemLogService.logInsert(user, "用水计划自平", "用水计划自平审核通过", "");
 //      List<Person> personList1 = null;
 //      try {
@@ -265,6 +262,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 ////        webSocket消息推送
 //        webSocketUtil.pushWaterNews(user.getNodeCode(),user.getId());
 //      }
+
       return response;
     } else {
       response.recordError("审核失败");

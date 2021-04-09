@@ -62,9 +62,6 @@ public class UseWaterPlanAddWXServiceImpl extends
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
 
-  @Value("${server.servlet-path}")
-  private String contextPath;
-
   @Autowired
   private SystemLogService systemLogService;
 
@@ -98,7 +95,7 @@ public class UseWaterPlanAddWXServiceImpl extends
       executed = jsonObject.getString("executed");
     }
 //    附件展示路径
-    String path = preViewRealPath + contextPath + "/";
+    String path = preViewRealPath;
 //    总条数
     Integer total = this.baseMapper
         .selectCount(unitName, userType, executed, nodeCode, auditStatus, userId);
