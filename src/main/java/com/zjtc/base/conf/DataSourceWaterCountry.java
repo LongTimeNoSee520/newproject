@@ -20,39 +20,38 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
  * @date 2021/3/4
  */
 @Configuration
-@MapperScan(basePackages = "com.zjtc.mapper.waterCounty", sqlSessionTemplateRef = "waterBizSqlSessionTemplate")
-public class DataSourceWaterCounty {
+@MapperScan(basePackages = "com.zjtc.mapper.waterCountry", sqlSessionTemplateRef = "waterBizSqlSessionTemplate")
+public class DataSourceWaterCountry {
 
-  @Value("${spring.datasource.waterCounty.url}")
+  @Value("${spring.datasource.waterCountry.url}")
   private String url;
 
-  @Value("${spring.datasource.waterCounty.driverClassName}")
+  @Value("${spring.datasource.waterCountry.driverClassName}")
   private String driverClassName;
 
-  @Value("${spring.datasource.waterCounty.username}")
+  @Value("${spring.datasource.waterCountry.username}")
   private String username;
 
-  @Value("${spring.datasource.waterCounty.password}")
+  @Value("${spring.datasource.waterCountry.password}")
   private String password;
 
   /**
    * 数据源扫描的mapper路径
    */
-  private static final String MAPPER_LOCATION = "classpath*:mapper/waterCounty/*.xml";
+  private static final String MAPPER_LOCATION = "classpath*:mapper/waterCountry/*.xml";
 
 
-  @Bean(name = "waterCountyDataSource")
-  @ConfigurationProperties(prefix = "spring.datasource.waterCounty")
-  @Primary
+  @Bean(name = "waterCountryDataSource")
+  @ConfigurationProperties(prefix = "spring.datasource.waterCountry")
   public DataSource getDataSourceWaterBiz() {
     return DataSourceBuilder.create().driverClassName(driverClassName).url(url).username(username)
         .password(password).build();
   }
 
-  @Bean(name = "waterCountySqlSessionFactory")
+  @Bean(name = "waterCountrySqlSessionFactory")
   @Primary
   public SqlSessionFactory waterBizSqlSessionFactory(
-      @Qualifier("waterCountyDataSource") DataSource dataSource) throws Exception {
+      @Qualifier("waterCountryDataSource") DataSource dataSource) throws Exception {
     MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
 //    SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
     mybatisSqlSessionFactoryBean.setDataSource(dataSource);
@@ -61,17 +60,17 @@ public class DataSourceWaterCounty {
     return mybatisSqlSessionFactoryBean.getObject();
   }
 
-  @Bean(name = "waterCountyTransactionManager")
+  @Bean(name = "waterCountryTransactionManager")
   @Primary
   public DataSourceTransactionManager waterBizTransactionManager(
-      @Qualifier("waterCountyDataSource") DataSource dataSource) {
+      @Qualifier("waterCountryDataSource") DataSource dataSource) {
     return new DataSourceTransactionManager(dataSource);
   }
 
-  @Bean(name="waterCountySqlSessionTemplate")
+  @Bean(name="waterCountrySqlSessionTemplate")
   @Primary
   public SqlSessionTemplate waterBizSqlSessionTemplate(
-      @Qualifier("waterCountySqlSessionFactory") SqlSessionFactory sqlSessionFactory)
+      @Qualifier("waterCountrySqlSessionFactory") SqlSessionFactory sqlSessionFactory)
       throws Exception {
     return new SqlSessionTemplate(sqlSessionFactory);
   }

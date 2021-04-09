@@ -1,4 +1,4 @@
-package com.zjtc.mapper.waterCounty;
+package com.zjtc.mapper.waterCountry;
 
 import org.apache.ibatis.annotations.Mapper;
 

@@ -30,7 +30,7 @@ spring:
       url: jdbc:sqlserver://172.23.34.8:1433;databaseName=water_sys
       username: sa
       password: zjtc321!
-    waterCounty:
+    waterCountry:
       driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
       url: jdbc:sqlserver://172.23.34.7:1433;databaseName=water_country
       username: sa
