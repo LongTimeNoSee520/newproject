@@ -132,4 +132,18 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @return
    */
   List<String> selectAllType(String nodeCode);
+
+
+
+  /**数字大屏
+   * 查询节水中心：中间地图区域标点
+   * @param jsonObject
+   * @return
+   */
+  List<Map<String,Object>>  selectUnitMap(JSONObject jsonObject);
+
+  /**数字大屏
+   *根据用水单位id查询用水户信息
+   */
+  List<Map<String, Object>> selectUnitById(JSONObject jsonObject);
 }

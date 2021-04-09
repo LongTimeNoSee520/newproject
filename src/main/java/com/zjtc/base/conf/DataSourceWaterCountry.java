@@ -57,6 +57,7 @@ public class DataSourceWaterCountry {
     mybatisSqlSessionFactoryBean.setDataSource(dataSource);
     mybatisSqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
         .getResources(MAPPER_LOCATION));
+    mybatisSqlSessionFactoryBean.getObject().getConfiguration().setCallSettersOnNulls(true);
     return mybatisSqlSessionFactoryBean.getObject();
   }
 

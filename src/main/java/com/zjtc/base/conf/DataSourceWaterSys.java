@@ -55,6 +55,7 @@ public class DataSourceWaterSys {
     mybatisSqlSessionFactoryBean.setDataSource(dataSource);
     mybatisSqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
         .getResources(MAPPER_LOCATION));
+    mybatisSqlSessionFactoryBean.getObject().getConfiguration().setCallSettersOnNulls(true);
     return mybatisSqlSessionFactoryBean.getObject();
   }
 
@@ -64,7 +65,7 @@ public class DataSourceWaterSys {
     return new DataSourceTransactionManager(dataSource);
   }
 
-  @Bean(name="waterSysSqlSessionTemplate")
+  @Bean(name = "waterSysSqlSessionTemplate")
   public SqlSessionTemplate waterSysSqlSessionTemplate(
       @Qualifier("waterSysSqlSessionFactory") SqlSessionFactory sqlSessionFactory)
       throws Exception {

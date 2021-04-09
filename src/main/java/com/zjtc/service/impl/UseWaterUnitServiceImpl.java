@@ -759,6 +759,16 @@ public class UseWaterUnitServiceImpl extends
     return baseMapper.selectAllType(nodeCode);
   }
 
+  @Override
+  public List<Map<String, Object>> selectUnitMap(JSONObject jsonObject) {
+    return baseMapper.selectUnitMap(jsonObject);
+  }
+
+  @Override
+  public List<Map<String, Object>> selectUnitById(JSONObject jsonObject) {
+    return baseMapper.selectUnitById(jsonObject);
+  }
+
   /**
    * 验证单位编号是否重复
    */

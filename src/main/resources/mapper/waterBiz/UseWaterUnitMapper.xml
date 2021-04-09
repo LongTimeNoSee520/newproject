@@ -840,11 +840,114 @@
 
   </select>
 
+
+
+  <!--数字大屏-->
+  <resultMap id="ResultMap" type="java.util.LinkedHashMap">
+
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="year" property="year" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
+    <result column="industry_name" property="industryName" jdbcType="VARCHAR"/>
+    <collection property="contactsMap" ofType="java.util.LinkedHashMap" column="{id=id}"
+      select="selectUnitContacts">
+      <result column="contacts" property="contacts" jdbcType="VARCHAR"/>
+      <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
+      <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
+      <result column="main" property="main" jdbcType="VARCHAR"/>
+    </collection>
+    <collection property="waterDataMap" ofType="java.util.LinkedHashMap"
+      column="{id=id ,year=year}"
+      select="selectWaterData">
+      <result column="yearAndMonth" property="yearAndMonth" jdbcType="VARCHAR"/>
+      <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+      <result column="price" property="price" jdbcType="VARCHAR"/>
+      <result column="sector" property="sector" jdbcType="VARCHAR"/>
+      <result column="water_number" property="waterNumber" jdbcType="VARCHAR"/>
+      <result column="water_use_kinds" property="waterUseKinds" jdbcType="VARCHAR"/>
+    </collection>
+  </resultMap>
+
   <select id="selectAllType" resultType="java.lang.String">
    SELECT
     unit_code_type
     from t_w_use_water_unit
     where node_code=#{nodeCode}
     GROUP BY unit_code_type
+  </select>
+
+  <select id="selectUnitMap" resultType="java.util.LinkedHashMap">
+    select
+    id ,
+    unit_name as unitName,
+    gisX,
+    gisY
+    from t_w_use_water_unit
+    where deleted='0'
+    <if test="null !=nodeCode">
+      and  node_code=#{nodeCode}
+    </if>
+    <if test="null !=unitName">
+     and  unit_name like '%${unitName}%'
+    </if>
+  </select>
+
+  <select id="selectUnitById" resultMap="ResultMap">
+    select
+    t1.id,
+    year=#{year},
+    unit_code ,
+    unit_name ,
+    unit_address,
+    industry_name
+    from (
+     select
+    id,
+    unit_code ,
+    unit_name ,
+    unit_address,
+    industry
+     from t_w_use_water_unit
+     where id=#{id}
+    ) as t1
+    left join (
+     select
+     id,
+     industry_name
+     from t_w_quota_info
+    ) as t2 on t2.id=t1.industry
+  </select>
+
+  <select id="selectUnitContacts" resultType="java.util.LinkedHashMap">
+    select
+    contacts,
+    mobile_number,
+    phone_number,
+    main
+    from
+    t_w_use_water_unit_contacts
+    where deleted='0'
+    and use_water_unit_id=#{id}
+    order by main desc
+  </select>
+  <select id="selectWaterData" resultType="java.util.LinkedHashMap">
+    select
+    yearAndMonth=cast (use_year as varchar(10))+'年'+cast (use_month as varchar(10))+'月',
+    t1.water_meter_code,
+    price,
+    sector,
+    water_number,
+    water_use_kinds
+    from
+    t_w_water_use_data t1
+    inner join (
+    select
+    water_meter_code
+    from t_w_use_water_unit_meter
+    where use_water_unit_id=#{id}
+    ) t2 on t1.water_meter_code=t2.water_meter_code
+    where use_year=#{year}
   </select>
 </mapper>

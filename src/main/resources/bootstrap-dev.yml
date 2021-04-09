@@ -34,7 +34,7 @@ spring:
       driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
       url: jdbc:sqlserver://120.79.162.253:1433;databaseName=water_country
       username: sa
-      password: zjtc321!
+      password: harmony123!
   redis:
     host: 120.79.162.253
     password: 123456
