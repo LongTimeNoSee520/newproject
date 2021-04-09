@@ -20,7 +20,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
  * @date 2021/3/4
  */
 @Configuration
-@MapperScan(basePackages = "com.zjtc.mapper.waterCountry", sqlSessionTemplateRef = "waterBizSqlSessionTemplate")
+@MapperScan(basePackages = "com.zjtc.mapper.waterCountry", sqlSessionTemplateRef = "waterCountrySqlSessionTemplate")
 public class DataSourceWaterCountry {
 
   @Value("${spring.datasource.waterCountry.url}")
