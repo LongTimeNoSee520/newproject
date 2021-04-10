@@ -41,6 +41,7 @@
     <result column="FrontFourthQuarter" property="FrontFourthQuarter" jdbcType="DOUBLE"/>
     <result column="FrontCurYearPlan" property="FrontCurYearPlan" jdbcType="DOUBLE"/>
     <result column="FrontPlanYear" property="FrontPlanYear" jdbcType="INTEGER"/>
+    <result column="source" property="source" jdbcType="VARCHAR"/>
 
   </resultMap>
 

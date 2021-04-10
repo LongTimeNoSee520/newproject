@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterCountry.WaterConditionAnalyseMapper">
+
+
+  <select id="realityWater" resultType="java.lang.Double">
+    SELECT
+    SUM(COALESCE(january_count+february_count+march_count,0)) as firstQuarter
+    FROM t_w_water_month_use_data WHERE 1 = 1
+    <if test="nodeCode != null and nodeCode != ''">
+      AND node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      AND use_year = #{planYear}
+    </if>
+    UNION ALL
+    SELECT
+    SUM(COALESCE(april_count+may_count+june_count,0)) as secondQuarter
+    FROM t_w_water_month_use_data WHERE 1 = 1
+    <if test="nodeCode != null and nodeCode != ''">
+      AND node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      AND use_year = #{planYear}
+    </if>
+    UNION ALL
+    SELECT
+    SUM(COALESCE(july_count+august_count+september_count,0)) as thirdQuarter
+    FROM t_w_water_month_use_data WHERE 1 = 1
+    <if test="nodeCode != null and nodeCode != ''">
+      AND node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      AND use_year = #{planYear}
+    </if>
+    UNION ALL
+    SELECT
+    SUM(COALESCE(october_count+november_count+december_count,0)) as fourthQuarter
+    FROM t_w_water_month_use_data WHERE 1 = 1
+    <if test="nodeCode != null and nodeCode != ''">
+      AND node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      AND use_year = #{planYear}
+    </if>
+  </select>
+
+  <select id="planWater" resultType="java.lang.Double">
+    SELECT
+    SUM(COALESCE(first_quarter,0)) as firstQuarter
+    FROM t_w_use_water_plan WHERE 1 = 1
+    <if test="nodeCode != null and nodeCode != ''">
+      AND node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      AND plan_year = #{planYear}
+    </if>
+    UNION ALL
+    SELECT
+    SUM(COALESCE(second_quarter,0)) as secondQuarter
+    FROM t_w_use_water_plan WHERE 1 = 1
+    <if test="nodeCode != null and nodeCode != ''">
+      AND node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      AND plan_year = #{planYear}
+    </if>
+    UNION ALL
+    SELECT
+    SUM(COALESCE(third_quarter,0)) as thirdQuarter
+    FROM t_w_use_water_plan WHERE 1 = 1
+    <if test="nodeCode != null and nodeCode != ''">
+      AND node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      AND plan_year = #{planYear}
+    </if>
+    UNION ALL
+    SELECT
+    SUM(COALESCE(fourth_quarter,0)) as fourthQuarter
+    FROM t_w_use_water_plan WHERE 1 = 1
+    <if test="nodeCode != null and nodeCode != ''">
+      AND node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      AND plan_year = #{planYear}
+    </if>
+
+  </select>
+</mapper>

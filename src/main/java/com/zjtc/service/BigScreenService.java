@@ -1,6 +1,7 @@
 package com.zjtc.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zjtc.base.response.ApiResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -31,4 +32,37 @@ public interface BigScreenService  {
   Map<String,Object> queryRankData(JSONObject jsonObject);
   /**重点用水单位监控数据*/
   Map<String,Object> importantMonitorData(JSONObject jsonObject);
+
+  /**
+   * 用水情况分析
+   * @param nodeCode 编码
+   * @param planYear  年份
+   * @return 结果集
+   */
+  ApiResponse selectWaterUseAnalyse(String nodeCode,Integer planYear);
+
+
+  /**
+   * 业务申请
+   * @param nodeCode
+   * @param planYear
+   * @return
+   */
+  ApiResponse businessApply(String nodeCode,Integer planYear);
+
+  /**
+   * 业务办理
+   * @param nodeCode
+   * @param planYear
+   * @return
+   */
+  ApiResponse businessTransaction(String nodeCode,Integer planYear);
+
+  /**
+   * 数据来源
+   * @param nodeCode
+   * @param planYear
+   * @return
+   */
+  ApiResponse dataSources(String nodeCode,Integer planYear);
 }

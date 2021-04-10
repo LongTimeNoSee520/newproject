@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterCountry.BusinessWorkAnalyseMapper">
+
+  <select id="businessApply" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_w_end_paper
+    WHERE 1 = 1
+    <if test="nodeCode != null and nodeCode != ''">
+      and node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      and plan_year = #{planYear}
+    </if>
+  </select>
+
+  <select id="businessTransaction" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_w_end_paper WHERE executed = '1'
+    <if test="nodeCode != null and nodeCode != ''">
+      and node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      and plan_year = #{planYear}
+    </if>
+  </select>
+
+  <select id="businessSceneApply" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_w_end_paper WHERE data_sources = '1'
+    <if test="nodeCode != null and nodeCode != ''">
+      and node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      and plan_year = #{planYear}
+    </if>
+  </select>
+
+  <select id="businessPublicApply" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_w_end_paper WHERE data_sources = '2'
+    <if test="nodeCode != null and nodeCode != ''">
+      and node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      and plan_year = #{planYear}
+    </if>
+  </select>
+
+  <select id="businessWXApply" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_w_end_paper WHERE data_sources = '3'
+    <if test="nodeCode != null and nodeCode != ''">
+      and node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      and plan_year = #{planYear}
+    </if>
+  </select>
+
+  <select id="businessSceneSolve" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_w_end_paper WHERE data_sources = '1' and executed = '1'
+    <if test="nodeCode != null and nodeCode != ''">
+      and node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      and plan_year = #{planYear}
+    </if>
+  </select>
+
+  <select id="businessPublicSolve" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_w_end_paper WHERE data_sources = '2'  and executed = '1'
+    <if test="nodeCode != null and nodeCode != ''">
+      and node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      and plan_year = #{planYear}
+    </if>
+  </select>
+
+  <select id="businessWXSolve" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_w_end_paper WHERE data_sources = '3'  and executed = '1'
+    <if test="nodeCode != null and nodeCode != ''">
+      and node_code = #{nodeCode}
+    </if>
+    <if test="planYear != null and planYear > 0">
+      and plan_year = #{planYear}
+    </if>
+  </select>
+
+
+
+</mapper>

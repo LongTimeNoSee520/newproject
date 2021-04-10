@@ -214,7 +214,7 @@ public class UseWaterPlanAddWXServiceImpl extends
 //      单位名称
       jsonObject.put("unitName", useWaterPlanAddWX.getUnitName());
 //      数据来源
-      jsonObject.put("dataSources", "1");
+      jsonObject.put("dataSources", useWaterPlanAddWX.getSource());
 //      水表档案号
       jsonObject.put("waterMeterCode", useWaterPlanAddWX.getWaterMeterCode());
 //      编制年度

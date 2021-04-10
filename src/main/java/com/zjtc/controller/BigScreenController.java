@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -159,6 +160,119 @@ public class BigScreenController {
       }
     } else {
       response.recordError("重点用水单位监控数据查询参数不能为空");
+    }
+    return response;
+  }
+
+
+  @ResponseBody
+  @ApiOperation(value = "用水情况分析")
+  @RequestMapping(value = "selectWaterUseAnalyse", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse selectWaterUseAnalyse(
+      @ApiParam("{\n"
+          + "\"nodeCode\":\"节点编码\"\n"
+          + "\"planYear\":\"年度\"\n"
+          + "}")
+      @RequestBody JSONObject jsonObject) {
+    ApiResponse response = new ApiResponse();
+    String nodeCode = null;
+    if (null != jsonObject.getString("nodeCode")){
+      nodeCode = jsonObject.getString("nodeCode");
+    }
+    Integer planYear = null;
+    if (null != jsonObject.getInteger("planYear")){
+      planYear = jsonObject.getInteger("planYear");
+    }
+    try {
+      response  = bigScreenService.selectWaterUseAnalyse(nodeCode, planYear);
+      return response;
+    } catch (Exception e) {
+      log.error("查询用水情况分析异常==" + e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "业务申请")
+  @RequestMapping(value = "businessApply", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse businessApply(
+      @ApiParam("{\n"
+          + "\"nodeCode\":\"节点编码\"\n"
+          + "\"planYear\":\"年度\"\n"
+          + "}")
+      @RequestBody JSONObject jsonObject) {
+    ApiResponse response = new ApiResponse();
+    String nodeCode = null;
+    if (null != jsonObject.getString("nodeCode")){
+      nodeCode = jsonObject.getString("nodeCode");
+    }
+    Integer planYear = null;
+    if (null != jsonObject.getInteger("planYear")){
+      planYear = jsonObject.getInteger("planYear");
+    }
+    try {
+      response  = bigScreenService.businessApply(nodeCode, planYear);
+      return response;
+    } catch (Exception e) {
+      log.error("查询业务申请异常==" + e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "业务办理")
+  @RequestMapping(value = "businessTransaction", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse businessTransaction(
+      @ApiParam("{\n"
+          + "\"nodeCode\":\"节点编码\"\n"
+          + "\"planYear\":\"年度\"\n"
+          + "}")
+      @RequestBody JSONObject jsonObject) {
+    ApiResponse response = new ApiResponse();
+    String nodeCode = null;
+    if (null != jsonObject.getString("nodeCode")){
+      nodeCode = jsonObject.getString("nodeCode");
+    }
+    Integer planYear = null;
+    if (null != jsonObject.getInteger("planYear")){
+      planYear = jsonObject.getInteger("planYear");
+    }
+    try {
+      response  = bigScreenService.businessTransaction(nodeCode, planYear);
+      return response;
+    } catch (Exception e) {
+      log.error("查询业务办理异常==" + e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "数据来源")
+  @RequestMapping(value = "dataSources", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse dataSources(
+      @ApiParam("{\n"
+          + "\"nodeCode\":\"节点编码\"\n"
+          + "\"planYear\":\"年度\"\n"
+          + "}")
+      @RequestBody JSONObject jsonObject) {
+    ApiResponse response = new ApiResponse();
+    String nodeCode = null;
+    if (null != jsonObject.getString("nodeCode")){
+      nodeCode = jsonObject.getString("nodeCode");
+    }
+    Integer planYear = null;
+    if (null != jsonObject.getInteger("planYear")){
+      planYear = jsonObject.getInteger("planYear");
+    }
+    try {
+      response  = bigScreenService.dataSources(nodeCode, planYear);
+      return response;
+    } catch (Exception e) {
+      log.error("查询数据来源异常==" + e.getMessage());
+      e.printStackTrace();
     }
     return response;
   }

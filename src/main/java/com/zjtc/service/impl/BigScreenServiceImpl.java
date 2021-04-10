@@ -1,16 +1,20 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.IndustryUseWaterMapper;
 import com.zjtc.mapper.waterBiz.UseWaterUnitMonitorMapper;
+import com.zjtc.mapper.waterCountry.BusinessWorkAnalyseMapper;
 import com.zjtc.mapper.waterCountry.CountyIndustryUseWaterMapper;
 import com.zjtc.mapper.waterCountry.CountyUseWaterUnitMapper;
 import com.zjtc.mapper.waterCountry.ImportantMonitorMapper;
+import com.zjtc.mapper.waterCountry.WaterConditionAnalyseMapper;
 import com.zjtc.service.BigScreenService;
 import com.zjtc.service.UseWaterUnitService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +50,13 @@ public class BigScreenServiceImpl implements BigScreenService {
   private IndustryUseWaterMapper industryUseWaterMapper;
   @Autowired
   private UseWaterUnitMonitorMapper useWaterUnitMonitorMapper;
+
+  @Autowired
+  private WaterConditionAnalyseMapper waterConditionAnalyseMapper;
+
+  @Autowired
+  private BusinessWorkAnalyseMapper businessWorkAnalyseMapper;
+
   @Override
   public List<Map<String, Object>> selectUnitMap(JSONObject jsonObject) {
     List<Map<String, Object>> list = new ArrayList<>();
@@ -158,5 +169,89 @@ public class BigScreenServiceImpl implements BigScreenService {
     int upNumber;
     upNumber= (int) Math.ceil(num / 100);
     return upNumber*100;
+  }
+
+  @Override
+  public ApiResponse selectWaterUseAnalyse(String nodeCode, Integer planYear) {
+    ApiResponse response = new ApiResponse();
+    List<Map<String, Object>> list = new ArrayList<>();
+    Map<String, Object> realityMap = new HashMap<>();
+    Map<String, Object> planMap = new HashMap<>();
+    //    实际用水
+    List<Double>  aDouble1 = waterConditionAnalyseMapper.realityWater(nodeCode, planYear);
+    realityMap.put("name","实际用水");
+    realityMap.put("data",aDouble1);
+
+    //    计划用水
+    List<Double>  aDouble = waterConditionAnalyseMapper.planWater(nodeCode, planYear);
+    planMap.put("name","计划用水");
+    planMap.put("data",aDouble);
+
+    list.add(realityMap);
+    list.add(planMap);
+    response.setData(list);
+    return response;
+  }
+
+
+  @Override
+  public ApiResponse businessApply(String nodeCode, Integer planYear) {
+    ApiResponse response = new ApiResponse();
+//    业务申请
+    Integer aDouble = businessWorkAnalyseMapper.businessApply(nodeCode, planYear);
+    response.setData(aDouble);
+    return response;
+  }
+
+  @Override
+  public ApiResponse businessTransaction(String nodeCode, Integer planYear) {
+    ApiResponse response = new ApiResponse();
+    List<Integer> list = new LinkedList<>();
+    Map<String, Object> map = new LinkedHashMap<>();
+    Integer businessTransaction = businessWorkAnalyseMapper.businessTransaction(nodeCode, planYear);
+    Integer businessSceneSolve = businessWorkAnalyseMapper.businessSceneSolve(nodeCode, planYear);
+    Integer businessPublicSolve =businessWorkAnalyseMapper.businessPublicSolve(nodeCode, planYear);
+    Integer businessWXSolve =businessWorkAnalyseMapper.businessWXSolve(nodeCode, planYear);
+    list.add(businessSceneSolve);
+    list.add(businessPublicSolve);
+    list.add(businessWXSolve);
+    map.put("data",list);
+    response.setData(businessTransaction);
+    response.setData(map);
+    return response;
+  }
+
+  @Override
+  public ApiResponse dataSources(String nodeCode, Integer planYear) {
+    ApiResponse response = new ApiResponse();
+    List<Integer> scene = new LinkedList<>();
+    List<Integer> publics = new LinkedList<>();
+    List<Integer> wx = new LinkedList<>();
+    Map<String, Object> map = new LinkedHashMap<>();
+
+//    申请
+    Integer businessSceneApply = businessWorkAnalyseMapper.businessSceneApply(nodeCode, planYear);
+    Integer businessPublicApply =businessWorkAnalyseMapper.businessPublicApply(nodeCode, planYear);
+    Integer businessWXApply =businessWorkAnalyseMapper.businessWXApply(nodeCode, planYear);
+
+//    解决
+    Integer businessSceneSolve = businessWorkAnalyseMapper.businessSceneSolve(nodeCode, planYear);
+    Integer businessPublicSolve =businessWorkAnalyseMapper.businessPublicSolve(nodeCode, planYear);
+    Integer businessWXSolve =businessWorkAnalyseMapper.businessWXSolve(nodeCode, planYear);
+
+    scene.add(businessSceneApply);
+    scene.add(businessSceneSolve);
+
+    publics.add(businessPublicApply);
+    publics.add(businessPublicSolve);
+
+    wx.add(businessWXApply);
+    wx.add(businessWXSolve);
+
+    map.put("scene",scene);
+    map.put("publics",publics);
+    map.put("wx",wx);
+    response.setData(map);
+    return response;
   }
 }

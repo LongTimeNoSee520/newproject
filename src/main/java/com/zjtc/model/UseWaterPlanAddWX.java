@@ -263,6 +263,10 @@ public class UseWaterPlanAddWX extends Model<UseWaterPlanAddWX> {
   @TableField(value = "add_number")
   private Double addNumber;
 
+  @ApiModelProperty("数据来源：2：public 3：微信")
+  @TableField(value = "source", exist = true)
+  private String source;
+
   /**
    * 实例化
    */
