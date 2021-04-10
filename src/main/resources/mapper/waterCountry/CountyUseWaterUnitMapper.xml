@@ -14,21 +14,27 @@
     <result column="industry_name" property="industryName" jdbcType="VARCHAR"/>
     <collection property="contactsMap" ofType="java.util.LinkedHashMap" column="{id=id}"
       select="selectUnitContacts">
-      <result column="contacts" property="contacts" jdbcType="VARCHAR"/>
-      <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
-      <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
-      <result column="main" property="main" jdbcType="VARCHAR"/>
     </collection>
     <collection property="waterDataMap" ofType="java.util.LinkedHashMap"
       column="{id=id ,year=year}"
       select="selectWaterData">
-      <result column="yearAndMonth" property="yearAndMonth" jdbcType="VARCHAR"/>
-      <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
-      <result column="price" property="price" jdbcType="VARCHAR"/>
-      <result column="sector" property="sector" jdbcType="VARCHAR"/>
-      <result column="water_number" property="waterNumber" jdbcType="VARCHAR"/>
-      <result column="water_use_kinds" property="waterUseKinds" jdbcType="VARCHAR"/>
     </collection>
+  </resultMap>
+
+  <resultMap id="contactsMap" type="java.util.LinkedHashMap">
+    <result column="contacts" property="contacts" jdbcType="VARCHAR"/>
+    <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
+    <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
+    <result column="main" property="main" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <resultMap id="WaterDataMap" type="java.util.LinkedHashMap">
+    <result column="yearAndMonth" property="yearAndMonth" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="price" property="price" jdbcType="VARCHAR"/>
+    <result column="sector" property="sector" jdbcType="VARCHAR"/>
+    <result column="water_number" property="waterNumber" jdbcType="VARCHAR"/>
+    <result column="water_use_kinds" property="waterUseKinds" jdbcType="VARCHAR"/>
   </resultMap>
 
 
@@ -75,7 +81,7 @@
     ) as t2 on t2.id=t1.industry
   </select>
 
-  <select id="selectUnitContacts" resultType="java.util.LinkedHashMap">
+  <select id="selectUnitContacts" resultMap="contactsMap">
     select
     contacts,
     mobile_number,
@@ -87,11 +93,11 @@
     and use_water_unit_id=#{id}
     order by main desc
   </select>
-  <select id="selectWaterData" resultType="java.util.LinkedHashMap">
+  <select id="selectWaterData" resultMap="WaterDataMap">
     select
     yearAndMonth=cast (use_year as varchar(10))+'年'+cast (use_month as varchar(10))+'月',
     t1.water_meter_code,
-    price,
+    ROUND(price,2) as price,
     sector,
     water_number,
     water_use_kinds
