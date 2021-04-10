@@ -25,4 +25,10 @@ public interface BigScreenService  {
    */
   List<Map<String,Object>> selectUnitById(JSONObject jsonObject);
 
+  /**统计各行业节约用水情况*/
+  List<Map<String,Object>> queryList(JSONObject jsonObject);
+  /**各行业用水排名数据*/
+  Map<String,Object> queryRankData(JSONObject jsonObject);
+  /**重点用水单位监控数据*/
+  Map<String,Object> importantMonitorData(JSONObject jsonObject);
 }

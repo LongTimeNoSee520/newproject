@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterCountry.CountyIndustryUseWaterMapper">
+<select id="queryList" resultType="java.util.LinkedHashMap">
+  SELECT t2.industry_name AS name,SUM(COALESCE(t3.number,0)) AS value
+  FROM
+    (SELECT id,industry
+     FROM  t_w_use_water_unit
+     WHERE node_code = #{nodeCode}
+     AND deleted='0'
+     )t1
+     INNER JOIN
+     (SELECT id,industry_name
+      FROM t_w_quota_info
+      WHERE deleted='0'
+      )t2
+      ON t1.industry=t2.id
+      LEFT JOIN
+      ( SELECT sum(COALESCE (water_number,0)) AS number,use_water_unit_id,use_year
+        WHERE use_year =#{year}
+        FROM t_w_water_use_data
+        GROUP BY use_water_unit_id,use_year
+      )t3
+      ON t1.id=t3.use_water_unit_id
+  GROUP BY t2.industry_name
+</select>
+  <select id="queryRankData" resultType="java.util.LinkedHashMap">
+    SELECT top 10 t1.unit_name AS unitName,t2.number AS useWaterNumber
+    FROM
+    (SELECT id,industry,unit_name
+    FROM  t_w_use_water_unit
+    WHERE node_code = #{nodeCode}
+    AND deleted='0'
+    AND industry = #{id}
+    )t1
+    LEFT JOIN
+    ( SELECT sum(COALESCE (water_number,0)) AS number,use_water_unit_id,use_year
+     FROM t_w_water_use_data
+    WHERE use_year =#{year}
+    GROUP BY use_water_unit_id,use_year
+    )t2
+    ON t1.id=t2.use_water_unit_id
+  </select>
+</mapper>

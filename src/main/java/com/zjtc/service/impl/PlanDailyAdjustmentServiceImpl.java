@@ -37,6 +37,7 @@ import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.WaterUsePayInfoService;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -48,6 +49,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +63,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlanDailyAdjustmentServiceImpl extends
     ServiceImpl<PlanDailyAdjustmentMapper, UseWaterPlan> implements
     PlanDailyAdjustmentService {
+
+  @Value("${file.preViewRealPath}")
+  private String preViewRealPath;
 
   @Autowired
   private UseWaterPlanAddService useWaterPlanAddService;
@@ -624,6 +629,8 @@ public class PlanDailyAdjustmentServiceImpl extends
     flowProcessService.create(user,endPaper.getId(),opinions,auditorName,auditorId);
     /**待办表加数据*/
     if(StringUtils.isNotBlank(todoContent)) {
+      /**查询附件的信息(预览)*/
+      endPaper = this.getFiles(endPaper, preViewRealPath);
       todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, JSONObject.toJSONString(endPaper),
           detailConfig, todoType);
       /**webSocket推送*/
@@ -839,6 +846,30 @@ public class PlanDailyAdjustmentServiceImpl extends
   fileService.updateBusinessId(null,deletedFiles);
   return fileIds;
 }
+
+  private EndPaper getFiles(EndPaper paper, String path) {
+    try {
+      String auditFileId = paper.getAuditFileId();
+      String otherFileId = paper.getOtherFileId();
+      String waterProofFileId = paper.getWaterProofFileId();
+      if (StringUtils.isNotBlank(auditFileId)) {
+        paper.setAuditFiles(
+            fileService.findByIds(Arrays.asList(auditFileId.split(",")), path));
+      }
+      if (StringUtils.isNotBlank(otherFileId)) {
+        paper.setOtherFiles(
+            fileService.findByIds(Arrays.asList(otherFileId.split(",")), path));
+      }
+      if (StringUtils.isNotBlank(waterProofFileId)) {
+        paper.setWaterProofFiles(
+            fileService.findByIds(Arrays.asList(waterProofFileId.split(",")), path));
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error("查询附件信息异常======={}" + e.getMessage());
+    }
+    return paper;
+  }
   /**
    * 向上十位取整
    * 34512 返回34520。

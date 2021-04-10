@@ -260,7 +260,7 @@
 	   first_quarter,second_quarter,third_quarter,fourth_quarter-->
 	 FROM t_w_end_paper
 	 )t1
-	 INNER JOIN (SELECT id, MAX(create_time) AScreate_time FROM  t_w_end_paper
+	 INNER JOIN (SELECT id, MAX(create_time) AS create_time FROM  t_w_end_paper
 								 WHERE node_code = #{nodeCode}
 								 <!-- 	AND  plan_year =#{year}-->
 	               AND audit_status ='1' <!--审核通过，没有确认的、没有撤销的-->

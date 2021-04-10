@@ -94,4 +94,72 @@ public class BigScreenController {
     }
     return response;
   }
+
+  @RequestMapping(value = "industryUseWater", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "各行业节约用水情况")
+  public ApiResponse industryUseWater(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "    \"nodeCode\":\"节点编码\",\n"
+          + "    \"year\":\"年份 数字\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("各行业节约用水情况查询 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        // User user = jwtUtil.getUserByToken(token);
+        response.setData(bigScreenService.queryList(jsonObject));
+      } catch (Exception e) {
+        log.error("各行业节约用水情况查询失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("各行业节约用水情况查询参数不能为空");
+    }
+    return response;
+  }
+  @RequestMapping(value = "industryRank", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "各行业用水排名")
+  public ApiResponse industryRank(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "    \"nodeCode\":\"节点编码\",\n"
+          + "    \"year\":\"年份 数字\",\n"
+          + "    \"id\":\"行业id\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("各行业用水排名数据查询 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        // User user = jwtUtil.getUserByToken(token);
+        response.setData(bigScreenService.queryRankData(jsonObject));
+      } catch (Exception e) {
+        log.error("各行业用水排名数据查询失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("各行业用水排名数据查询参数不能为空");
+    }
+    return response;
+  }
+  @RequestMapping(value = "importantMonitorData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "重点用水单位监控数据")
+  public ApiResponse importantMonitorData(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "    \"nodeCode\":\"节点编码\",\n"
+          + "    \"year\":\"年份 数字\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("重点用水单位监控数据查询 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        // User user = jwtUtil.getUserByToken(token);
+        response.setData(bigScreenService.importantMonitorData(jsonObject));
+      } catch (Exception e) {
+        log.error("重点用水单位监控数据查询失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("重点用水单位监控数据查询参数不能为空");
+    }
+    return response;
+  }
 }
