@@ -11,7 +11,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
@@ -49,11 +48,9 @@ public class DataSourceWaterCountry {
   }
 
   @Bean(name = "waterCountrySqlSessionFactory")
-  @Primary
   public SqlSessionFactory waterBizSqlSessionFactory(
       @Qualifier("waterCountryDataSource") DataSource dataSource) throws Exception {
     MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
-//    SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
     mybatisSqlSessionFactoryBean.setDataSource(dataSource);
     mybatisSqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
         .getResources(MAPPER_LOCATION));
@@ -62,14 +59,12 @@ public class DataSourceWaterCountry {
   }
 
   @Bean(name = "waterCountryTransactionManager")
-  @Primary
   public DataSourceTransactionManager waterBizTransactionManager(
       @Qualifier("waterCountryDataSource") DataSource dataSource) {
     return new DataSourceTransactionManager(dataSource);
   }
 
   @Bean(name="waterCountrySqlSessionTemplate")
-  @Primary
   public SqlSessionTemplate waterBizSqlSessionTemplate(
       @Qualifier("waterCountrySqlSessionFactory") SqlSessionFactory sqlSessionFactory)
       throws Exception {
