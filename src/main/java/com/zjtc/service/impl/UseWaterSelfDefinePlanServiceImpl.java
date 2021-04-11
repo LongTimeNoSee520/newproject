@@ -135,11 +135,11 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
 //    附件展示路径
-    String path = preViewRealPath;
     // TODO: 2021/2/18 因为没有附件id,需要根据业务id在附件表里去查对应的业务id,现在的做法是默认有附件id的情况,错误
     List<UseWaterSelfDefinePlanVO> waterSelfDefinePlans = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType, planYear, executed, unitCode, nodeCode,
-            auditStatus, userId, path);
+            auditStatus, userId, preViewRealPath);
+
     for (UseWaterSelfDefinePlanVO useWaterSelfDefinePlanVO : waterSelfDefinePlans) {
 //     未被审核和未被执行
       if ("0".equals(useWaterSelfDefinePlanVO.getAuditStatus()) && "0"
