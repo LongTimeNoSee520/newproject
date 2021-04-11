@@ -149,7 +149,7 @@
     WHEN 0 THEN '未执行'
     WHEN 1 THEN '已执行'
     END as executedName,
-    preViewRealPath
+    #{preViewRealPath} AS  preViewRealPath
     FROM
     t_w_use_water_self_define_plan t1
     WHERE t1.node_code = #{nodeCode}

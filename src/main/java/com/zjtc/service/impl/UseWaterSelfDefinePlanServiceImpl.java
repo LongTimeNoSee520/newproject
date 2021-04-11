@@ -8,6 +8,7 @@ import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.UseWaterSelfDefinePlanMapper;
+import com.zjtc.model.File;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;
@@ -141,6 +142,10 @@ public class UseWaterSelfDefinePlanServiceImpl extends
             auditStatus, userId, preViewRealPath);
 
     for (UseWaterSelfDefinePlanVO useWaterSelfDefinePlanVO : waterSelfDefinePlans) {
+      List<File> selfDefineFiles = useWaterSelfDefinePlanVO.getSelfDefineFiles();
+      for (File file : selfDefineFiles){
+        file.setFilePath(preViewRealPath+file.getFilePath());
+      }
 //     未被审核和未被执行
       if ("0".equals(useWaterSelfDefinePlanVO.getAuditStatus()) && "0"
           .equals(useWaterSelfDefinePlanVO.getExecuted())) {
