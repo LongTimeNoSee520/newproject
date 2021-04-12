@@ -45,24 +45,24 @@ public interface BigScreenService  {
   /**
    * 业务申请
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  ApiResponse businessApply(String nodeCode,Integer planYear);
+  ApiResponse businessApply(String nodeCode,Integer year);
 
   /**
    * 业务办理
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  ApiResponse businessTransaction(String nodeCode,Integer planYear);
+  ApiResponse businessTransaction(String nodeCode,Integer year);
 
   /**
    * 数据来源
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  ApiResponse dataSources(String nodeCode,Integer planYear);
+  ApiResponse dataSources(String nodeCode,Integer year);
 }

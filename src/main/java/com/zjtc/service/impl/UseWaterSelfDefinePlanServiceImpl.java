@@ -13,6 +13,7 @@ import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.FileVO;
 import com.zjtc.model.vo.UseWaterSelfDefinePlanVO;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.PersonService;
@@ -142,8 +143,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
             auditStatus, userId, preViewRealPath);
 
     for (UseWaterSelfDefinePlanVO useWaterSelfDefinePlanVO : waterSelfDefinePlans) {
-      List<File> selfDefineFiles = useWaterSelfDefinePlanVO.getSelfDefineFiles();
-      for (File file : selfDefineFiles){
+      List<FileVO> selfDefineFiles = useWaterSelfDefinePlanVO.getSelfDefineFiles();
+      for (FileVO file : selfDefineFiles){
         file.setFilePath(preViewRealPath+file.getFilePath());
       }
 //     未被审核和未被执行

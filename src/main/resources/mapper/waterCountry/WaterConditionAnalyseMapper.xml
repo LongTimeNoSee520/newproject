@@ -6,85 +6,85 @@
 
   <select id="realityWater" resultType="java.lang.Double">
     SELECT
-    SUM(COALESCE(january_count+february_count+march_count,0)) as firstQuarter
+    COALESCE(SUM(january_count+february_count+march_count),0) as firstQuarter
     FROM t_w_water_month_use_data WHERE 1 = 1
     <if test="nodeCode != null and nodeCode != ''">
       AND node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      AND use_year = #{planYear}
+    <if test="year != null and year > 0">
+      AND use_year = #{year}
     </if>
     UNION ALL
     SELECT
-    SUM(COALESCE(april_count+may_count+june_count,0)) as secondQuarter
+    COALESCE(SUM(april_count+may_count+june_count),0)  as secondQuarter
     FROM t_w_water_month_use_data WHERE 1 = 1
     <if test="nodeCode != null and nodeCode != ''">
       AND node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      AND use_year = #{planYear}
+    <if test="year != null and year > 0">
+      AND use_year = #{year}
     </if>
     UNION ALL
     SELECT
-    SUM(COALESCE(july_count+august_count+september_count,0)) as thirdQuarter
+    COALESCE(SUM(july_count+august_count+september_count),0)  as thirdQuarter
     FROM t_w_water_month_use_data WHERE 1 = 1
     <if test="nodeCode != null and nodeCode != ''">
       AND node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      AND use_year = #{planYear}
+    <if test="year != null and year > 0">
+      AND use_year = #{year}
     </if>
     UNION ALL
     SELECT
-    SUM(COALESCE(october_count+november_count+december_count,0)) as fourthQuarter
+    COALESCE(SUM(october_count+november_count+december_count),0)  as fourthQuarter
     FROM t_w_water_month_use_data WHERE 1 = 1
     <if test="nodeCode != null and nodeCode != ''">
       AND node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      AND use_year = #{planYear}
+    <if test="year != null and year > 0">
+      AND use_year = #{year}
     </if>
   </select>
 
   <select id="planWater" resultType="java.lang.Double">
     SELECT
-    SUM(COALESCE(first_quarter,0)) as firstQuarter
+    COALESCE(SUM(first_quarter),0) as firstQuarter
     FROM t_w_use_water_plan WHERE 1 = 1
     <if test="nodeCode != null and nodeCode != ''">
       AND node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      AND plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      AND plan_year = #{year}
     </if>
     UNION ALL
     SELECT
-    SUM(COALESCE(second_quarter,0)) as secondQuarter
+    COALESCE(SUM(second_quarter),0) as secondQuarter
     FROM t_w_use_water_plan WHERE 1 = 1
     <if test="nodeCode != null and nodeCode != ''">
       AND node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      AND plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      AND plan_year = #{year}
     </if>
     UNION ALL
     SELECT
-    SUM(COALESCE(third_quarter,0)) as thirdQuarter
+    COALESCE(SUM(third_quarter),0) as thirdQuarter
     FROM t_w_use_water_plan WHERE 1 = 1
     <if test="nodeCode != null and nodeCode != ''">
       AND node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      AND plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      AND plan_year = #{year}
     </if>
     UNION ALL
     SELECT
-    SUM(COALESCE(fourth_quarter,0)) as fourthQuarter
+    COALESCE(SUM(fourth_quarter),0) as fourthQuarter
     FROM t_w_use_water_plan WHERE 1 = 1
     <if test="nodeCode != null and nodeCode != ''">
       AND node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      AND plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      AND plan_year = #{year}
     </if>
 
   </select>

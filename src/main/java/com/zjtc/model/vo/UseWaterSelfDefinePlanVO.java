@@ -183,7 +183,7 @@ public class UseWaterSelfDefinePlanVO extends Model<UseWaterSelfDefinePlanVO> {
 
   @ApiModelProperty("自平材料附件id")
   @TableField(value = "SelfDefineFiles", exist = false)
-  private List<File> selfDefineFiles;
+  private List<FileVO> selfDefineFiles;
 
   @ApiModelProperty("预览路径")
   private String preViewRealPath;

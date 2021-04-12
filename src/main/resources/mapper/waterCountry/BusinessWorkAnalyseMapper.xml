@@ -9,8 +9,8 @@
     <if test="nodeCode != null and nodeCode != ''">
       and node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      and plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      and plan_year = #{year}
     </if>
   </select>
 
@@ -19,8 +19,8 @@
     <if test="nodeCode != null and nodeCode != ''">
       and node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      and plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      and plan_year = #{year}
     </if>
   </select>
 
@@ -29,8 +29,8 @@
     <if test="nodeCode != null and nodeCode != ''">
       and node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      and plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      and plan_year = #{year}
     </if>
   </select>
 
@@ -39,8 +39,8 @@
     <if test="nodeCode != null and nodeCode != ''">
       and node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      and plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      and plan_year = #{year}
     </if>
   </select>
 
@@ -49,8 +49,8 @@
     <if test="nodeCode != null and nodeCode != ''">
       and node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      and plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      and plan_year = #{year}
     </if>
   </select>
 
@@ -59,8 +59,8 @@
     <if test="nodeCode != null and nodeCode != ''">
       and node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      and plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      and plan_year = #{year}
     </if>
   </select>
 
@@ -69,8 +69,8 @@
     <if test="nodeCode != null and nodeCode != ''">
       and node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      and plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      and plan_year = #{year}
     </if>
   </select>
 
@@ -79,8 +79,8 @@
     <if test="nodeCode != null and nodeCode != ''">
       and node_code = #{nodeCode}
     </if>
-    <if test="planYear != null and planYear > 0">
-      and plan_year = #{planYear}
+    <if test="year != null and year > 0">
+      and plan_year = #{year}
     </if>
   </select>
 

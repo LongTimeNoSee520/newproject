@@ -13,67 +13,67 @@ public interface BusinessWorkAnalyseMapper {
   /**
    * 业务申请
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  Integer businessApply(@Param("nodeCode") String nodeCode ,@Param("planYear")Integer planYear);
+  Integer businessApply(@Param("nodeCode") String nodeCode ,@Param("year")Integer year);
 
   /**
    * 业务办理
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  Integer businessTransaction(@Param("nodeCode") String nodeCode ,@Param("planYear")Integer planYear);
+  Integer businessTransaction(@Param("nodeCode") String nodeCode ,@Param("year")Integer year);
 
   /**
    * 现场申报
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  Integer businessSceneApply(@Param("nodeCode") String nodeCode ,@Param("planYear")Integer planYear);
+  Integer businessSceneApply(@Param("nodeCode") String nodeCode ,@Param("year")Integer year);
 
   /**
    * 公共服务平台申报
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  Integer businessPublicApply(@Param("nodeCode") String nodeCode ,@Param("planYear")Integer planYear);
+  Integer businessPublicApply(@Param("nodeCode") String nodeCode ,@Param("year")Integer year);
 
   /**
    * 微信申报
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  Integer businessWXApply(@Param("nodeCode") String nodeCode ,@Param("planYear")Integer planYear);
+  Integer businessWXApply(@Param("nodeCode") String nodeCode ,@Param("year")Integer year);
 
 
   /**
    * 现场解决
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  Integer businessSceneSolve(@Param("nodeCode") String nodeCode ,@Param("planYear")Integer planYear);
+  Integer businessSceneSolve(@Param("nodeCode") String nodeCode ,@Param("year")Integer year);
 
   /**
    * 公共服务平台解决
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  Integer businessPublicSolve(@Param("nodeCode") String nodeCode ,@Param("planYear")Integer planYear);
+  Integer businessPublicSolve(@Param("nodeCode") String nodeCode ,@Param("year")Integer year);
 
   /**
    * 微信解决
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  Integer businessWXSolve(@Param("nodeCode") String nodeCode ,@Param("planYear")Integer planYear);
+  Integer businessWXSolve(@Param("nodeCode") String nodeCode ,@Param("year")Integer year);
 
 
 

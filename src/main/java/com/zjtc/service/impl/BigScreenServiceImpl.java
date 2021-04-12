@@ -179,11 +179,21 @@ public class BigScreenServiceImpl implements BigScreenService {
     Map<String, Object> planMap = new HashMap<>();
     //    实际用水
     List<Double>  aDouble1 = waterConditionAnalyseMapper.realityWater(nodeCode, planYear);
+    for (Double result : aDouble1){
+      if (null == result){
+        result = 0D;
+      }
+    }
     realityMap.put("name","实际用水");
     realityMap.put("data",aDouble1);
 
     //    计划用水
     List<Double>  aDouble = waterConditionAnalyseMapper.planWater(nodeCode, planYear);
+    for (Double result : aDouble){
+      if ( null == result){
+        result = 0D;
+      }
+    }
     planMap.put("name","计划用水");
     planMap.put("data",aDouble);
 
@@ -195,23 +205,23 @@ public class BigScreenServiceImpl implements BigScreenService {
 
 
   @Override
-  public ApiResponse businessApply(String nodeCode, Integer planYear) {
+  public ApiResponse businessApply(String nodeCode, Integer year) {
     ApiResponse response = new ApiResponse();
 //    业务申请
-    Integer aDouble = businessWorkAnalyseMapper.businessApply(nodeCode, planYear);
+    Integer aDouble = businessWorkAnalyseMapper.businessApply(nodeCode, year);
     response.setData(aDouble);
     return response;
   }
 
   @Override
-  public ApiResponse businessTransaction(String nodeCode, Integer planYear) {
+  public ApiResponse businessTransaction(String nodeCode, Integer year) {
     ApiResponse response = new ApiResponse();
     List<Integer> list = new LinkedList<>();
     Map<String, Object> map = new LinkedHashMap<>();
-    Integer businessTransaction = businessWorkAnalyseMapper.businessTransaction(nodeCode, planYear);
-    Integer businessSceneSolve = businessWorkAnalyseMapper.businessSceneSolve(nodeCode, planYear);
-    Integer businessPublicSolve =businessWorkAnalyseMapper.businessPublicSolve(nodeCode, planYear);
-    Integer businessWXSolve =businessWorkAnalyseMapper.businessWXSolve(nodeCode, planYear);
+    Integer businessTransaction = businessWorkAnalyseMapper.businessTransaction(nodeCode, year);
+    Integer businessSceneSolve = businessWorkAnalyseMapper.businessSceneSolve(nodeCode, year);
+    Integer businessPublicSolve =businessWorkAnalyseMapper.businessPublicSolve(nodeCode, year);
+    Integer businessWXSolve =businessWorkAnalyseMapper.businessWXSolve(nodeCode, year);
     list.add(businessSceneSolve);
     list.add(businessPublicSolve);
     list.add(businessWXSolve);
@@ -222,7 +232,7 @@ public class BigScreenServiceImpl implements BigScreenService {
   }
 
   @Override
-  public ApiResponse dataSources(String nodeCode, Integer planYear) {
+  public ApiResponse dataSources(String nodeCode, Integer year) {
     ApiResponse response = new ApiResponse();
     List<Integer> scene = new LinkedList<>();
     List<Integer> publics = new LinkedList<>();
@@ -230,14 +240,14 @@ public class BigScreenServiceImpl implements BigScreenService {
     Map<String, Object> map = new LinkedHashMap<>();
 
 //    申请
-    Integer businessSceneApply = businessWorkAnalyseMapper.businessSceneApply(nodeCode, planYear);
-    Integer businessPublicApply =businessWorkAnalyseMapper.businessPublicApply(nodeCode, planYear);
-    Integer businessWXApply =businessWorkAnalyseMapper.businessWXApply(nodeCode, planYear);
+    Integer businessSceneApply = businessWorkAnalyseMapper.businessSceneApply(nodeCode, year);
+    Integer businessPublicApply =businessWorkAnalyseMapper.businessPublicApply(nodeCode, year);
+    Integer businessWXApply =businessWorkAnalyseMapper.businessWXApply(nodeCode, year);
 
 //    解决
-    Integer businessSceneSolve = businessWorkAnalyseMapper.businessSceneSolve(nodeCode, planYear);
-    Integer businessPublicSolve =businessWorkAnalyseMapper.businessPublicSolve(nodeCode, planYear);
-    Integer businessWXSolve =businessWorkAnalyseMapper.businessWXSolve(nodeCode, planYear);
+    Integer businessSceneSolve = businessWorkAnalyseMapper.businessSceneSolve(nodeCode, year);
+    Integer businessPublicSolve =businessWorkAnalyseMapper.businessPublicSolve(nodeCode, year);
+    Integer businessWXSolve =businessWorkAnalyseMapper.businessWXSolve(nodeCode, year);
 
     scene.add(businessSceneApply);
     scene.add(businessSceneSolve);

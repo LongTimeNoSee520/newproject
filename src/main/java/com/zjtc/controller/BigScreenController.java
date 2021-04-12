@@ -171,7 +171,7 @@ public class BigScreenController {
   public ApiResponse selectWaterUseAnalyse(
       @ApiParam("{\n"
           + "\"nodeCode\":\"节点编码\"\n"
-          + "\"planYear\":\"年度\"\n"
+          + "\"year\":\"年度\"\n"
           + "}")
       @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
@@ -179,12 +179,12 @@ public class BigScreenController {
     if (null != jsonObject.getString("nodeCode")){
       nodeCode = jsonObject.getString("nodeCode");
     }
-    Integer planYear = null;
-    if (null != jsonObject.getInteger("planYear")){
-      planYear = jsonObject.getInteger("planYear");
+    Integer year = null;
+    if (null != jsonObject.getInteger("year")){
+      year = jsonObject.getInteger("year");
     }
     try {
-      response  = bigScreenService.selectWaterUseAnalyse(nodeCode, planYear);
+      response  = bigScreenService.selectWaterUseAnalyse(nodeCode, year);
       return response;
     } catch (Exception e) {
       log.error("查询用水情况分析异常==" + e.getMessage());
@@ -199,7 +199,7 @@ public class BigScreenController {
   public ApiResponse businessApply(
       @ApiParam("{\n"
           + "\"nodeCode\":\"节点编码\"\n"
-          + "\"planYear\":\"年度\"\n"
+          + "\"year\":\"年度\"\n"
           + "}")
       @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
@@ -207,12 +207,12 @@ public class BigScreenController {
     if (null != jsonObject.getString("nodeCode")){
       nodeCode = jsonObject.getString("nodeCode");
     }
-    Integer planYear = null;
-    if (null != jsonObject.getInteger("planYear")){
-      planYear = jsonObject.getInteger("planYear");
+    Integer year = null;
+    if (null != jsonObject.getInteger("year")){
+      year = jsonObject.getInteger("year");
     }
     try {
-      response  = bigScreenService.businessApply(nodeCode, planYear);
+      response  = bigScreenService.businessApply(nodeCode, year);
       return response;
     } catch (Exception e) {
       log.error("查询业务申请异常==" + e.getMessage());
@@ -227,7 +227,7 @@ public class BigScreenController {
   public ApiResponse businessTransaction(
       @ApiParam("{\n"
           + "\"nodeCode\":\"节点编码\"\n"
-          + "\"planYear\":\"年度\"\n"
+          + "\"year\":\"年度\"\n"
           + "}")
       @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
@@ -235,12 +235,12 @@ public class BigScreenController {
     if (null != jsonObject.getString("nodeCode")){
       nodeCode = jsonObject.getString("nodeCode");
     }
-    Integer planYear = null;
-    if (null != jsonObject.getInteger("planYear")){
-      planYear = jsonObject.getInteger("planYear");
+    Integer year = null;
+    if (null != jsonObject.getInteger("year")){
+      year = jsonObject.getInteger("year");
     }
     try {
-      response  = bigScreenService.businessTransaction(nodeCode, planYear);
+      response  = bigScreenService.businessTransaction(nodeCode, year);
       return response;
     } catch (Exception e) {
       log.error("查询业务办理异常==" + e.getMessage());
@@ -255,7 +255,7 @@ public class BigScreenController {
   public ApiResponse dataSources(
       @ApiParam("{\n"
           + "\"nodeCode\":\"节点编码\"\n"
-          + "\"planYear\":\"年度\"\n"
+          + "\"year\":\"年度\"\n"
           + "}")
       @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
@@ -263,12 +263,12 @@ public class BigScreenController {
     if (null != jsonObject.getString("nodeCode")){
       nodeCode = jsonObject.getString("nodeCode");
     }
-    Integer planYear = null;
-    if (null != jsonObject.getInteger("planYear")){
-      planYear = jsonObject.getInteger("planYear");
+    Integer year = null;
+    if (null != jsonObject.getInteger("year")){
+      year = jsonObject.getInteger("year");
     }
     try {
-      response  = bigScreenService.dataSources(nodeCode, planYear);
+      response  = bigScreenService.dataSources(nodeCode, year);
       return response;
     } catch (Exception e) {
       log.error("查询数据来源异常==" + e.getMessage());
