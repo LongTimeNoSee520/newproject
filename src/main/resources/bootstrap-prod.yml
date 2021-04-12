@@ -32,7 +32,7 @@ spring:
       password: zjtc321!
     waterCountry:
       driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-      url: jdbc:sqlserver://172.23.34.7:1433;databaseName=water_country
+      url: jdbc:sqlserver://172.23.34.7:1433;databaseName=water_service
       username: sa
       password: zjtc321!
   redis:
