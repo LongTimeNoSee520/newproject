@@ -340,6 +340,8 @@
    ON t1.use_water_unit_id =t2.use_water_unit_id
 	</select>
   <select id="queryReal" resultType="double">
+  SELECT COALESCE(ta.num,0)  AS num
+   FROM(
     SELECT sum(COALESCE(t2.num,0)) AS num
     FROM
     (SELECT use_water_unit_id
@@ -412,6 +414,7 @@
     GROUP BY use_water_unit_id
     )t2
     ON t1.use_water_unit_id =t2.use_water_unit_id
+  ) ta
   </select>
 	<update id="updateDeleted">
 		UPDATE t_w_use_water_unit_monitor
