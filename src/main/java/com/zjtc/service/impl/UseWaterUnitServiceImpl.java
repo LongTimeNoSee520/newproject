@@ -596,7 +596,9 @@ public class UseWaterUnitServiceImpl extends
     wrapper.eq("node_code", user.getNodeCode());
     List<String> param = useWaterUnitRoleService
         .selectUseWaterUnitRole(user.getId(), user.getNodeCode());
-    wrapper.in("unit_code_type", param);
+    if (null != param && param.size() > 0) {
+      wrapper.in("unit_code_type", param);
+    }
     return this.list(wrapper);
   }
 
