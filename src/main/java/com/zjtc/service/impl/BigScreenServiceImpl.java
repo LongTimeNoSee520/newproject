@@ -218,6 +218,7 @@ public class BigScreenServiceImpl implements BigScreenService {
     ApiResponse response = new ApiResponse();
     List<Integer> list = new LinkedList<>();
     Map<String, Object> map = new LinkedHashMap<>();
+    Integer aDouble = businessWorkAnalyseMapper.businessApply(nodeCode, year);
     Integer businessTransaction = businessWorkAnalyseMapper.businessTransaction(nodeCode, year);
     Integer businessSceneSolve = businessWorkAnalyseMapper.businessSceneSolve(nodeCode, year);
     Integer businessPublicSolve =businessWorkAnalyseMapper.businessPublicSolve(nodeCode, year);
@@ -225,8 +226,13 @@ public class BigScreenServiceImpl implements BigScreenService {
     list.add(businessSceneSolve);
     list.add(businessPublicSolve);
     list.add(businessWXSolve);
-    map.put("data",list);
-    response.setData(businessTransaction);
+
+//    业务申请
+    map.put("apply",aDouble);
+//    业务办理
+    map.put("solve",businessTransaction);
+//    业务办理各数据来源
+    map.put("source",list);
     response.setData(map);
     return response;
   }
