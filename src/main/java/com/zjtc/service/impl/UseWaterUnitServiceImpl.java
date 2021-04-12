@@ -732,7 +732,7 @@ public class UseWaterUnitServiceImpl extends
       HttpServletResponse response) {
     ApiResponse apiResponse=new ApiResponse();
     List<Map<String, Object>> list = baseMapper
-        .exportMoreAndLess(jsonObject.getString("nodeCode"));
+        .exportMoreAndLess(jsonObject.getString("nodeCode"),user.getId());
     if (list.isEmpty()) {
       apiResponse.recordError("无导出数据！");
       return apiResponse;

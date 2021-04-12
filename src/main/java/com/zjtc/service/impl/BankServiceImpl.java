@@ -7,6 +7,7 @@ import com.zjtc.model.Bank;
 import com.zjtc.service.BankService;
 import com.zjtc.service.SystemLogService;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,9 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
       int i = this.baseMapper.selectBankAccount("null", bankAccount, useWaterUnitId);
       if (i > 0) {
         return false;
+      }
+      if("3".equals(bank1.getMain())){
+        bank1.setRevocationDate(new Date());
       }
       bank1.setId("");
       bank1.setUseWaterUnitId(useWaterUnitId);

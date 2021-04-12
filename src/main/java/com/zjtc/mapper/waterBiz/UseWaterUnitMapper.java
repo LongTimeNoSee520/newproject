@@ -99,7 +99,7 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
    * @param nodeCode 节点编码
    * @return
    */
-  List<Map<String,Object>> exportMoreAndLess(String nodeCode);
+  List<Map<String,Object>> exportMoreAndLess(@Param("nodeCode") String nodeCode,@Param("userId") String userId);
 
   List<Map<String,Object>> exportQueryData(JSONObject jsonObject);
   /**
