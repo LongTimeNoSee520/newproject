@@ -27,7 +27,7 @@
 
 </select>
 <select id="queryRankData" resultType="java.util.LinkedHashMap">
-  SELECT top 10 t1.unit_name AS unitName,t2.number AS useWaterNumber
+  SELECT top 10 t1.unit_name AS unitName,COALESCE (t2.number,0) AS useWaterNumber
   FROM
     (SELECT id,industry,unit_name
      FROM  t_w_use_water_unit

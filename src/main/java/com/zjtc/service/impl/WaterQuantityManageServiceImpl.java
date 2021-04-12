@@ -191,11 +191,11 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
   @Override
   public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) {
 
-    final String fileName = "自来水公司原始资料导入模板.xlsx";
+    final String fileName = "自来水公司原始资料导入模板.xls";
     String saveFilePath =
         fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName;
 //    模板下载路径
-    String templatePath = "template/WaterQuantityManageTemplate.xlsx";
+    String templatePath = "template/WaterQuantityManageTemplate.xls";
 //    输入流
     InputStream inputStream = getClass().getClassLoader()
         .getResourceAsStream(templatePath);
@@ -243,11 +243,11 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     try {
       //合并文件
       FileUtil.combineFiles(files, fileUploadRootPath + fileUploadPath,
-          fileProcessId + "." + "xlsx");
+          fileProcessId + "." + "xls");
       //删除临时文件夹
       FileUtil.deleteDir(dir.getPath());
       ftpUtil.uploadFile(new File(fileUploadRootPath + fileUploadPath+
-          fileProcessId + "." + "xlsx"));
+          fileProcessId + "." + "xls"));
       result = true;
     } catch (IOException e) {
       log.error("合并文件失败,errMsg======{}", e.getMessage());
@@ -267,7 +267,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 
     String xmlConfig = "template/xml/WaterQuantityManage.xml";
     Map result = new HashMap();
-    String fileRealPath =  fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx";
+    String fileRealPath =  fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xls";
     errorMsgs = new StringBuffer();//错误信息
     String nodeCode = user.getNodeCode();
     /**日志*/
@@ -284,7 +284,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     file1.setCreateTime(new Date());
     file1.setFileName(fileName);
     file1.setNodeCode(user.getNodeCode());
-    file1.setFilePath(fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx");
+    file1.setFilePath(fileUploadPath +java.io.File.separator+ fileProcessId + ".xls");
     List<com.zjtc.model.File> files = new ArrayList<>();
     files.add(file1);
     /**excel数据解析写入bean*/
@@ -428,7 +428,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     /**重算加价*/
     waterUsePayInfoService.initPayInfo(jsonObject);
 //    /**删除应用服务器上的excel文件*/
-//    FileUtil.deleteDir(fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx");
+//    FileUtil.deleteDir(fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xls");
     /**删除缓存*/
     redisUtil.del(fileProcessId);
     /**日志*/

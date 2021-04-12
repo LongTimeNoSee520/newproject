@@ -107,8 +107,8 @@ public class WaterMonthUseDataServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = "用水户水量查询结果.xlsx";
-    String templateName = "template/waterMonthUseData.xlsx";
+    String fileName = "用水户水量查询结果.xls";
+    String templateName = "template/waterMonthUseData.xls";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "用水单位水量查询", "导出", null);
   }

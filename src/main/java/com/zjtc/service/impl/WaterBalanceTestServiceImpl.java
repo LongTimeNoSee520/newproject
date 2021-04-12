@@ -194,11 +194,11 @@ public class WaterBalanceTestServiceImpl extends
   @Override
   public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) {
 
-    final String fileName = "水平衡测试单位管理导入模板.xlsx";
+    final String fileName = "水平衡测试单位管理导入模板.xls";
     String saveFilePath =
         fileUploadRootPath + java.io.File.separator + fileUploadPath + java.io.File.separator + fileName;
 //    模板下载路径
-    String templatePath = "template/水平衡测试单位管理导入模板.xlsx";
+    String templatePath = "template/水平衡测试单位管理导入模板.xls";
 //    输入流
     InputStream inputStream = getClass().getClassLoader()
         .getResourceAsStream(templatePath);
