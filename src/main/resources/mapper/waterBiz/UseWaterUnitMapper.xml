@@ -310,8 +310,9 @@
     <if test=" null !=responsibilityCode">
     and a.responsibility_code like '%${responsibilityCode}%'
     </if>
-    <if test="null !=industryName">
-      and industryName like '%${industryName}%'
+    <!--筛选-->
+    <if test="null !=industryId">
+      and industry =#{industryId}
     </if>
     ) temp_row
     WHERE
@@ -391,8 +392,9 @@
     <if test=" null !=responsibilityCode">
       and a.responsibility_code like '%${responsibilityCode}%'
     </if>
-    <if test="null !=industryName">
-      and industryName like '%${industryName}%'
+    <!--筛选-->
+    <if test="null !=industryId">
+      and industry =#{industryId}
     </if>
   </select>
 
@@ -788,8 +790,9 @@
     <if test=" null !=responsibilityCode">
       and a.responsibility_code like '%${responsibilityCode}%'
     </if>
-    <if test="null !=industryName">
-      and industryName like '%${industryName}%'
+    <!--筛选-->
+    <if test="null !=industryId">
+      and industry =#{industryId}
     </if>
 
   </select>
