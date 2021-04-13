@@ -1,4 +1,4 @@
-package com.zjtc.mapper.waterCountry;
+package com.zjtc.mapper.waterBiz;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

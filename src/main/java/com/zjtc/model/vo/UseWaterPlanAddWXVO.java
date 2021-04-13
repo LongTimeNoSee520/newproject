@@ -271,6 +271,10 @@ public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
   @ApiModelProperty("预览路径")
   private String preViewRealPath;
 
+  @ApiModelProperty("是否可以修改")
+  @TableField(value = "audit", exist = false)
+  private boolean audit = false;
+
   @Override
   protected Serializable pkVal() {
     return null;

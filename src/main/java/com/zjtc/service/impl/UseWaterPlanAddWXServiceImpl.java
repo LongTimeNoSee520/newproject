@@ -43,7 +43,6 @@ public class UseWaterPlanAddWXServiceImpl extends
     ServiceImpl<UseWaterPlanAddWXMapper, UseWaterPlanAddWX> implements
     UseWaterPlanAddWXService {
 
-
   @Autowired
   private FileService fileService;
 
@@ -85,9 +84,17 @@ public class UseWaterPlanAddWXServiceImpl extends
       userType = jsonObject.getString("userType");
     }
     //    是否审核(0:未审核,1:已审核)
-    String auditStatus = "";
-    if (null != jsonObject.getString("auditStatus")) {
-      auditStatus = jsonObject.getString("auditStatus");
+    List<String> status = new ArrayList<>();
+    String auditStatus = jsonObject.getString("auditStatus");
+    if (null != auditStatus) {
+      if ("0".equals(auditStatus)) {
+        status.add("0");
+      } else if ("2".equals(auditStatus)) {
+        status.add("1");
+        status.add("2");
+        status.add("3");
+        status.add("4");
+      }
     }
     //    是否执行(0:未执行,1:已执行)
     String executed = "";
@@ -98,13 +105,13 @@ public class UseWaterPlanAddWXServiceImpl extends
     String path = preViewRealPath;
 //    总条数
     Integer total = this.baseMapper
-        .selectCount(unitName, userType, executed, nodeCode, auditStatus, userId);
+        .selectCount(unitName, userType, executed, nodeCode, status, userId);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<UseWaterPlanAddWXVO> useWaterPlanAdds = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType,
-            executed, nodeCode, auditStatus, userId, path);
+            executed, nodeCode, status, userId, path);
     UseWaterPlan useWaterPlan = null;
     for (UseWaterPlanAddWXVO useWaterPlanAddWXVO : useWaterPlanAdds) {
       try {
@@ -124,6 +131,12 @@ public class UseWaterPlanAddWXServiceImpl extends
         useWaterPlanAddWXVO.setFrontFourthQuarter(useWaterPlan.getFourthQuarter());
       } catch (Exception e) {
         log.error("查询用水计划原始数据为空,数据id为:" + useWaterPlanAddWXVO.getUseWaterUnitId());
+      }
+
+      String auditStatus1 = useWaterPlanAddWXVO.getAuditStatus();
+//      "0"为未审核
+      if ("0".equals(auditStatus1)) {
+        useWaterPlanAddWXVO.setAudit(true);
       }
     }
     map.put("total", total);
@@ -266,7 +279,7 @@ public class UseWaterPlanAddWXServiceImpl extends
       try {
         otherFileIds = useWaterPlanAddWX.getOtherFileId().split(",");
       } catch (Exception e) {
-       log.error("其他附件往办结单中存储异常:"+e.getMessage());
+        log.error("其他附件往办结单中存储异常:" + e.getMessage());
       }
       Map<String, Object> map2 = new HashMap<>(16);
       List<Map<String, Object>> otherFiles = new ArrayList<>();

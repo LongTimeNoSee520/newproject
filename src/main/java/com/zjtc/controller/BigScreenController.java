@@ -193,36 +193,36 @@ public class BigScreenController {
     return response;
   }
 
-  @ResponseBody
-  @ApiOperation(value = "业务申请")
-  @RequestMapping(value = "businessApply", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse businessApply(
-      @ApiParam("{\n"
-          + "\"nodeCode\":\"节点编码\"\n"
-          + "\"year\":\"年度\"\n"
-          + "}")
-      @RequestBody JSONObject jsonObject) {
-    ApiResponse response = new ApiResponse();
-    String nodeCode = null;
-    if (null != jsonObject.getString("nodeCode")){
-      nodeCode = jsonObject.getString("nodeCode");
-    }
-    Integer year = null;
-    if (null != jsonObject.getInteger("year")){
-      year = jsonObject.getInteger("year");
-    }
-    try {
-      response  = bigScreenService.businessApply(nodeCode, year);
-      return response;
-    } catch (Exception e) {
-      log.error("查询业务申请异常==" + e.getMessage());
-      e.printStackTrace();
-    }
-    return response;
-  }
+//  @ResponseBody
+//  @ApiOperation(value = "业务申请")
+//  @RequestMapping(value = "businessApply", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//  public ApiResponse businessApply(
+//      @ApiParam("{\n"
+//          + "\"nodeCode\":\"节点编码\"\n"
+//          + "\"year\":\"年度\"\n"
+//          + "}")
+//      @RequestBody JSONObject jsonObject) {
+//    ApiResponse response = new ApiResponse();
+//    String nodeCode = null;
+//    if (null != jsonObject.getString("nodeCode")){
+//      nodeCode = jsonObject.getString("nodeCode");
+//    }
+//    Integer year = null;
+//    if (null != jsonObject.getInteger("year")){
+//      year = jsonObject.getInteger("year");
+//    }
+//    try {
+//      response  = bigScreenService.businessApply(nodeCode, year);
+//      return response;
+//    } catch (Exception e) {
+//      log.error("查询业务申请异常==" + e.getMessage());
+//      e.printStackTrace();
+//    }
+//    return response;
+//  }
 
   @ResponseBody
-  @ApiOperation(value = "业务办理")
+  @ApiOperation(value = "查询业务申请+业务办理")
   @RequestMapping(value = "businessTransaction", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse businessTransaction(
       @ApiParam("{\n"

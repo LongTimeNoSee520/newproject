@@ -57,6 +57,9 @@ mybatis-plus:
   type-aliases-package: com.zjtc.mapper
   configuration:
     call-setters-on-nulls: true
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
 swagger:
   enable: true
 #短信

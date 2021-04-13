@@ -38,7 +38,7 @@
   <logger name="org.apache.http" level="ERROR" />
   <logger name="dao" level="info" />
 
-  <springProfile name="dev">
+  <springProfile name="prod">
     <root level="debug">
       <appender-ref ref="stdout" />
       <appender-ref ref="fileLog" />

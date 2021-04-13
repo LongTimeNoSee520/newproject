@@ -36,10 +36,10 @@ public interface BigScreenService  {
   /**
    * 用水情况分析
    * @param nodeCode 编码
-   * @param planYear  年份
+   * @param year  年份
    * @return 结果集
    */
-  ApiResponse selectWaterUseAnalyse(String nodeCode,Integer planYear);
+  ApiResponse selectWaterUseAnalyse(String nodeCode,Integer year);
 
 
   /**

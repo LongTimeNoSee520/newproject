@@ -1,4 +1,4 @@
-package com.zjtc.mapper.waterCountry;
+package com.zjtc.mapper.waterBiz;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,16 +16,16 @@ public interface WaterConditionAnalyseMapper {
   /**
    * 实际用水
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  List<Double> realityWater(@Param("nodeCode")String nodeCode,@Param("planYear") Integer planYear);
+  List<Double> realityWater(@Param("nodeCode")String nodeCode,@Param("year") Integer year);
 
   /**
    * 计划用水
    * @param nodeCode
-   * @param planYear
+   * @param year
    * @return
    */
-  List<Double>   planWater(@Param("nodeCode")String nodeCode,@Param("planYear") Integer planYear);
+  List<Double>   planWater(@Param("nodeCode")String nodeCode,@Param("year") Integer year);
 }

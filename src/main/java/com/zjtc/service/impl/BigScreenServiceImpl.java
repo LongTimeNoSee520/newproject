@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.IndustryUseWaterMapper;
 import com.zjtc.mapper.waterBiz.UseWaterUnitMonitorMapper;
-import com.zjtc.mapper.waterCountry.BusinessWorkAnalyseMapper;
+import com.zjtc.mapper.waterBiz.BusinessWorkAnalyseMapper;
 import com.zjtc.mapper.waterCountry.CountyIndustryUseWaterMapper;
 import com.zjtc.mapper.waterCountry.CountyUseWaterUnitMapper;
 import com.zjtc.mapper.waterCountry.ImportantMonitorMapper;
-import com.zjtc.mapper.waterCountry.WaterConditionAnalyseMapper;
+import com.zjtc.mapper.waterBiz.WaterConditionAnalyseMapper;
 import com.zjtc.service.BigScreenService;
 import com.zjtc.service.UseWaterUnitService;
 import java.util.ArrayList;
@@ -172,13 +172,13 @@ public class BigScreenServiceImpl implements BigScreenService {
   }
 
   @Override
-  public ApiResponse selectWaterUseAnalyse(String nodeCode, Integer planYear) {
+  public ApiResponse selectWaterUseAnalyse(String nodeCode, Integer year) {
     ApiResponse response = new ApiResponse();
     List<Map<String, Object>> list = new ArrayList<>();
     Map<String, Object> realityMap = new HashMap<>();
     Map<String, Object> planMap = new HashMap<>();
     //    实际用水
-    List<Double>  aDouble1 = waterConditionAnalyseMapper.realityWater(nodeCode, planYear);
+    List<Double>  aDouble1 = waterConditionAnalyseMapper.realityWater(nodeCode, year);
     for (Double result : aDouble1){
       if (null == result){
         result = 0D;
@@ -188,7 +188,7 @@ public class BigScreenServiceImpl implements BigScreenService {
     realityMap.put("data",aDouble1);
 
     //    计划用水
-    List<Double>  aDouble = waterConditionAnalyseMapper.planWater(nodeCode, planYear);
+    List<Double>  aDouble = waterConditionAnalyseMapper.planWater(nodeCode, year);
     for (Double result : aDouble){
       if ( null == result){
         result = 0D;
