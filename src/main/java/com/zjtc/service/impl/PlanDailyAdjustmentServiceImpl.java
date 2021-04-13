@@ -449,6 +449,7 @@ public class PlanDailyAdjustmentServiceImpl extends
       List<String> unitIds = new ArrayList<>();
       unitIds.add(useWaterPlanAdd.getUseWaterUnitId());
       jsonObject.put("unitIds",unitIds);
+      jsonObject.put("nodeCode", user.getNodeCode());
       waterUsePayInfoService.initPayInfo(jsonObject);
     }else {
       log.error("更新调整表累加状态失败");

@@ -125,7 +125,7 @@ public class UseWaterBasePlanController {
     if (null != ids && ids.size() > 0) {
       try {
         User user = jwtUtil.getUserByToken(token);
-        boolean result = useWaterBasePlanService.delete(ids);
+        boolean result = useWaterBasePlanService.delete(ids,user);
         if (result) {
           response.setCode(200);
           /**日志*/

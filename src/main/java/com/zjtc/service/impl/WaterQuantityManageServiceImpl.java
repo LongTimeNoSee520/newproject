@@ -412,6 +412,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     JSONObject jsonObject = new JSONObject();
     jsonObject.put("countYear",waterUseDataList.get(0).getUseYear());
     jsonObject.put("unitIds",unitIds);
+    jsonObject.put("nodeCode", user.getNodeCode());
     redisUtil.set(fileProcessId,jsonObject,60*60*24*3);//保存3天
     return response;
   }

@@ -28,7 +28,7 @@ public interface UseWaterBasePlanService extends IService<UseWaterBasePlan> {
   List<Integer> queryYear(User user);
 
   /**删除*/
-  boolean delete(List<String> ids);
+  boolean delete(List<String> ids, User user);
 
   /**分页查询*/
   Map<String,Object> queryPage(User user, JSONObject jsonObject);

@@ -559,6 +559,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     List<String> unitIds = new ArrayList<>();
     unitIds.add(useWaterPlanAdd.getUseWaterUnitId());
     jsonObject1.put("unitIds", unitIds);
+    jsonObject.put("nodeCode", user.getNodeCode());
     waterUsePayInfoService.initPayInfo(jsonObject1);
     /**调整表新增*/
     useWaterPlanAddService.save(useWaterPlanAdd);
