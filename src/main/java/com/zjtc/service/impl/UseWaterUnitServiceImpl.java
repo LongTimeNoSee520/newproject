@@ -716,6 +716,27 @@ public class UseWaterUnitServiceImpl extends
             item.put("phoneNumber" + (i + 1), contactsList.get(i).getPhoneNumber());
           }
         }
+        //查询相关编号
+        List<String> idList = useWaterUnitRefService
+            .findIdList(item.get("id").toString(), user.getNodeCode());
+        if (!idList.isEmpty()) {
+          //相关编号集合
+          List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
+              .queryUnitRef(idList, user.getNodeCode(), user.getId(),
+                  item.get("id").toString());
+          //相关编号，用逗号隔开
+          String useWaterUnitIdRef = "";
+          if (!useWaterUnitRefList.isEmpty()) {
+            for (UseWaterUnitRefVo useWaterUnitRefVo : useWaterUnitRefList) {
+              useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
+            }
+          }
+          if (useWaterUnitIdRef.length() > 0) {
+            useWaterUnitIdRef= useWaterUnitIdRef.substring(0, useWaterUnitIdRef.length() - 1);
+          }
+          item.put("useWaterUnitIdRef",useWaterUnitIdRef);
+        }
+
       }
     Map<String, Object> data = new HashMap<>();
     data.put("excelData", map);

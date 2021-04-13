@@ -679,48 +679,47 @@
 
     select
     a.id,
-    a.node_code,
-    a.unit_code,
-    a.unit_code_type,
-    a.unit_code_group,
+    a.unit_code as unitCode,
+    a.unit_code_type as unitCodeType,
+    a.unit_code_group as unitCodeGroup,
     STUFF((
     SELECT ',' + water_meter_code
     FROM t_w_use_water_unit_meter
     WHERE use_water_unit_id=a.id
     and node_code=#{nodeCode}
     FOR XML PATH('')), 1, 1, ''
-    ) as water_meter_code,
-    a.responsibility_code,
-    a.unit_name,
+    ) as waterMeterCode,
+    a.responsibility_code as responsibilityCode,
+    a.unit_name as unitName,
     d.id as industry,
     d.industryName,
     b.contacts,
-    b.mobile_number,
-    b.phone_number,
-    save_unit_type,
-    unit_address,
-    zip_name,
-    zip_address,
+    b.mobile_number as mobileNumber,
+    b.phone_number as phoneNumber,
+    save_unit_type as saveUnitType,
+    unit_address as unitAddress,
+    zip_name as zipName,
+    zip_address as zipAddress,
     department,
-    invoice_unit_name,
-    area_country,
+    invoice_unit_name as invoiceUnitName,
+    area_country as areaCountry,
     gisX ,
     gisY ,
     imain,
     abnormal ,
-    abnormal_cause,
+    abnormal_cause as abnormalCause,
     case signed
     when '1' then '1'
     when '0' then '0'
     else '0'end as signed,
-    bank_of_deposit,
-    bank_account,
+    bank_of_deposit as bankOfDeposit,
+    bank_account as bankAccount,
     responsibility_code as responsibilityCode,
     people_bank_pay_sys_number as peopleBankPaySysNumber,
     agreement_number as agreementNumber,
     entrust_unit_name as entrustUnitName,
-    focus_user_remark,
-    other_bank
+    focus_user_remark as focusUserRemark,
+    other_bank as otherBank
     FROM
     t_w_use_water_unit as a
     <!--关联用水单位联系人联系人-->
