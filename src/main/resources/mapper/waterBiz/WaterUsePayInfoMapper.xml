@@ -478,7 +478,7 @@
 
 		FROM
 		( SELECT * FROM t_w_use_water_plan WHERE plan_type = '0' ) p
-		LEFT JOIN t_w_use_water_base_plan bp ON bp.use_water_unit_id = p.use_water_unit_id
+		LEFT JOIN (SELECT * FROM t_w_use_water_base_plan where deleted='0') bp ON bp.use_water_unit_id = p.use_water_unit_id
 		AND bp.plan_year = p.plan_year
 		)AS aa UNPIVOT ( [quarterPlan ] FOR [countQuarter] IN ( [oneQuarter],[twoQuarter],[threeQuarter ],[fourQuarter ] ) ) AS t1
 		INNER join
