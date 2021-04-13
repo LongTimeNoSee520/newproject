@@ -27,6 +27,8 @@
 
 </select>
 <select id="queryRankData" resultType="java.util.LinkedHashMap">
+ SELECT ta.unitName,ta.useWaterNumber
+ FROM (
   SELECT top 10 t1.unit_name AS unitName,COALESCE (t2.number,0) AS useWaterNumber
   FROM
     (SELECT id,industry,unit_name
@@ -42,5 +44,8 @@
         GROUP BY use_water_unit_id,use_year
       )t2
   ON t1.id=t2.use_water_unit_id
+  )ta
+  WHERE ta.useWaterNumber  &lt;&gt;0
+  ORDER BY ta.useWaterNumber DESC
 </select>
 </mapper>
