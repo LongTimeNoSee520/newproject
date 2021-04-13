@@ -148,6 +148,10 @@ public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
   @ApiModelProperty("审核状态")
   @TableField(value = "audit_status", exist = true)
   private String auditStatus;
+
+  @ApiModelProperty("审核状态Code")
+  @TableField(value = "auditStatusCode", exist = false)
+  private  String auditStatusCode;
   /**
    *
    */

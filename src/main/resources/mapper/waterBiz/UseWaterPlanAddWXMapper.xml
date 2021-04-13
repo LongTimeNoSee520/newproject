@@ -68,6 +68,7 @@
     <result column="confirmed" property="confirmed" jdbcType="VARCHAR"/>
     <result column="confirm_time" property="confirmTime" jdbcType="TIMESTAMP"/>
     <result column="audit_status" property="auditStatus" jdbcType="VARCHAR"/>
+    <result column="auditStatusCode" property="auditStatusCode" jdbcType="VARCHAR"/>
     <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP"/>
     <result column="audit_person" property="auditPerson" jdbcType="VARCHAR"/>
     <result column="audit_person_id" property="auditPersonId" jdbcType="VARCHAR"/>
@@ -159,6 +160,7 @@
     WHEN '4' THEN '已审核'
     ELSE '未审核'
     END audit_status,
+    audit_status as auditStatusCode,
     CASE
     t1.executed
     WHEN '0' THEN '未执行'

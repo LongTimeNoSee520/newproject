@@ -133,9 +133,8 @@ public class UseWaterPlanAddWXServiceImpl extends
         log.error("查询用水计划原始数据为空,数据id为:" + useWaterPlanAddWXVO.getUseWaterUnitId());
       }
 
-      String auditStatus1 = useWaterPlanAddWXVO.getAuditStatus();
 //      "0"为未审核
-      if ("0".equals(auditStatus1)) {
+      if ("0".equals(useWaterPlanAddWXVO.getAuditStatusCode())) {
         useWaterPlanAddWXVO.setAudit(true);
       }
     }
