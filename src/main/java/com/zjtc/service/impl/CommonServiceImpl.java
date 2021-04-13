@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jxls.reader.ReaderBuilder;
+import org.jxls.reader.ReaderConfig;
 import org.jxls.reader.XLSReadStatus;
 import org.jxls.reader.XLSReader;
 import org.springframework.beans.factory.annotation.Value;
@@ -123,6 +124,8 @@ public class CommonServiceImpl implements CommonService{
       inputXML = getClass().getClassLoader()
           .getResourceAsStream(xmlConfig);//非静态方法可以用此方法获取xml配置文件流
       // 执行解析
+      //注册转换器
+      ReaderConfig.getInstance().setUseDefaultValuesForPrimitiveTypes( true );
       XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
       //按照xml中的配置将数据从文件中读入beens中对应key的value中
       XLSReadStatus readStatus = mainReader.read(inputXLS, beans);

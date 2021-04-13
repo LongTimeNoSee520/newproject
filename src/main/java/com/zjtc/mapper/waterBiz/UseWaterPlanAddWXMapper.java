@@ -25,7 +25,7 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
    * @param userType    用户类型
    * @param executed    是否执行
    * @param nodeCode    节点编码
-   * @param auditStatus 是否审核
+   * @param status 是否审核
    * @return 匹配的条数
    */
   Integer selectCount(
@@ -33,7 +33,7 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
       @Param("userType") String userType,
       @Param("executed") String executed,
       @Param("nodeCode") String nodeCode,
-      @Param("auditStatus") String auditStatus,
+      @Param("status") List<String> status,
       @Param("userId") String userId);
 
   /**
@@ -45,7 +45,7 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
    * @param userType    用户类型
    * @param executed    是否执行
    * @param nodeCode    节点编码
-   * @param auditStatus 是否审核
+   * @param status 是否审核
    * @return 数据集
    */
   List<UseWaterPlanAddWXVO> queryList(
@@ -55,7 +55,7 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
       @Param("userType") String userType,
       @Param("executed") String executed,
       @Param("nodeCode") String nodeCode,
-      @Param("auditStatus") String auditStatus,
+      @Param("status") List<String> status,
       @Param("userId") String userId,
       @Param("path") String path);
 

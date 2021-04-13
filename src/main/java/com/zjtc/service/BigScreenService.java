@@ -25,6 +25,12 @@ public interface BigScreenService  {
    * @return
    */
   List<Map<String,Object>> selectUnitById(JSONObject jsonObject);
+  /**
+   *查询左侧管理户数、计划用水量、实际用水量
+   * @param jsonObject
+   * @return
+   */
+  List<Map<String,Object>> selectLeftData(JSONObject jsonObject);
 
   /**统计各行业节约用水情况*/
   List<Map<String,Object>> queryList(JSONObject jsonObject);
@@ -36,10 +42,10 @@ public interface BigScreenService  {
   /**
    * 用水情况分析
    * @param nodeCode 编码
-   * @param planYear  年份
+   * @param year  年份
    * @return 结果集
    */
-  ApiResponse selectWaterUseAnalyse(String nodeCode,Integer planYear);
+  ApiResponse selectWaterUseAnalyse(String nodeCode,Integer year);
 
 
   /**

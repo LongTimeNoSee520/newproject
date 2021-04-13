@@ -40,6 +40,7 @@ public class BigScreenController {
   @ApiOperation("查看中间地图区域标点")
   public ApiResponse selectUnitMap(
       @ApiParam("{"
+          + "\"year\":\n\"年份必填\",\n"
           + "\"nodeCode\":\n\"选择区县,必填\",\n"
           + "\"unitName\":\n\"取水单位名称，支持关键字查询\"\n"
           + "\n"
@@ -60,6 +61,36 @@ public class BigScreenController {
     } catch (Exception e) {
       response.recordError("查看中间地图区域标点错误");
       log.error("查看中间地图区域标点错误,errMsg==={}" + e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
+
+  //查询左侧管理户数、计划用水量、实际用水量
+  @RequestMapping(value = "selectLeftData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation("查询左侧管理户数、计划用水量、实际用水量")
+  public ApiResponse selectLeftData(
+      @ApiParam("{"
+          + "\"nodeCode\":\n\"选择区县,必填，默认成都市\",\n"
+          + "\"year\":\n\"年份，默认当前年\"\n"
+          + "\n"
+          + "}")
+      @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
+    ApiResponse response = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    log.info("查询左侧管理户数、计划用水量、实际用水量,参数param==={" + jsonObject.toJSONString() + "}");
+    if (user == null) {
+      response.recordError("系统异常");
+      return response;
+    }
+    try {
+      List<Map<String ,Object>> banks = bigScreenService
+          .selectLeftData(jsonObject);
+      response.setData(banks);
+      return response;
+    } catch (Exception e) {
+      response.recordError("查询左侧管理户数、计划用水量、实际用水量错误");
+      log.error("查询左侧管理户数、计划用水量、实际用水量错误,errMsg==={}" + e.getMessage());
       e.printStackTrace();
     }
     return response;
@@ -193,36 +224,36 @@ public class BigScreenController {
     return response;
   }
 
-  @ResponseBody
-  @ApiOperation(value = "业务申请")
-  @RequestMapping(value = "businessApply", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse businessApply(
-      @ApiParam("{\n"
-          + "\"nodeCode\":\"节点编码\"\n"
-          + "\"year\":\"年度\"\n"
-          + "}")
-      @RequestBody JSONObject jsonObject) {
-    ApiResponse response = new ApiResponse();
-    String nodeCode = null;
-    if (null != jsonObject.getString("nodeCode")){
-      nodeCode = jsonObject.getString("nodeCode");
-    }
-    Integer year = null;
-    if (null != jsonObject.getInteger("year")){
-      year = jsonObject.getInteger("year");
-    }
-    try {
-      response  = bigScreenService.businessApply(nodeCode, year);
-      return response;
-    } catch (Exception e) {
-      log.error("查询业务申请异常==" + e.getMessage());
-      e.printStackTrace();
-    }
-    return response;
-  }
+//  @ResponseBody
+//  @ApiOperation(value = "业务申请")
+//  @RequestMapping(value = "businessApply", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//  public ApiResponse businessApply(
+//      @ApiParam("{\n"
+//          + "\"nodeCode\":\"节点编码\"\n"
+//          + "\"year\":\"年度\"\n"
+//          + "}")
+//      @RequestBody JSONObject jsonObject) {
+//    ApiResponse response = new ApiResponse();
+//    String nodeCode = null;
+//    if (null != jsonObject.getString("nodeCode")){
+//      nodeCode = jsonObject.getString("nodeCode");
+//    }
+//    Integer year = null;
+//    if (null != jsonObject.getInteger("year")){
+//      year = jsonObject.getInteger("year");
+//    }
+//    try {
+//      response  = bigScreenService.businessApply(nodeCode, year);
+//      return response;
+//    } catch (Exception e) {
+//      log.error("查询业务申请异常==" + e.getMessage());
+//      e.printStackTrace();
+//    }
+//    return response;
+//  }
 
   @ResponseBody
-  @ApiOperation(value = "业务办理")
+  @ApiOperation(value = "查询业务申请+业务办理")
   @RequestMapping(value = "businessTransaction", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse businessTransaction(
       @ApiParam("{\n"

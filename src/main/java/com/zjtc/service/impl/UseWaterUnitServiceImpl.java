@@ -771,6 +771,11 @@ public class UseWaterUnitServiceImpl extends
     return baseMapper.selectUnitById(jsonObject);
   }
 
+  @Override
+  public List<Map<String, Object>> selectLeftData(JSONObject jsonObject) {
+    return baseMapper.selectLeftData(jsonObject);
+  }
+
   /**
    * 验证单位编号是否重复
    */

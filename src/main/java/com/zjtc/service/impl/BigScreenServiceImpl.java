@@ -2,13 +2,13 @@ package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
+import com.zjtc.mapper.waterBiz.BusinessWorkAnalyseMapper;
 import com.zjtc.mapper.waterBiz.IndustryUseWaterMapper;
 import com.zjtc.mapper.waterBiz.UseWaterUnitMonitorMapper;
-import com.zjtc.mapper.waterCountry.BusinessWorkAnalyseMapper;
+import com.zjtc.mapper.waterBiz.WaterConditionAnalyseMapper;
 import com.zjtc.mapper.waterCountry.CountyIndustryUseWaterMapper;
 import com.zjtc.mapper.waterCountry.CountyUseWaterUnitMapper;
 import com.zjtc.mapper.waterCountry.ImportantMonitorMapper;
-import com.zjtc.mapper.waterCountry.WaterConditionAnalyseMapper;
 import com.zjtc.service.BigScreenService;
 import com.zjtc.service.UseWaterUnitService;
 import java.util.ArrayList;
@@ -66,6 +66,12 @@ public class BigScreenServiceImpl implements BigScreenService {
       nodeCode = cityNodeCode;
       jsonObject.put("nodeCode",nodeCode);
     }
+    //截止到当前年
+    Integer year=jsonObject.getInteger("year");
+    if(null !=year){
+      year+=1;
+      jsonObject.put("year",year+"-01-01 00:00:00");
+    }
     //节水中心
     if (cityNodeCode.equals(nodeCode)) {
       list = useWaterUnitService.selectUnitMap(jsonObject);
@@ -94,6 +100,32 @@ public class BigScreenServiceImpl implements BigScreenService {
     }
     return list;
   }
+
+  @Override
+  public List<Map<String, Object>> selectLeftData(JSONObject jsonObject) {
+    List<Map<String, Object>> list = new ArrayList<>();
+    String nodeCode = jsonObject.getString("nodeCode");
+    if (StringUtils.isBlank(nodeCode)) {
+      //默认nodeCode
+      nodeCode = cityNodeCode;
+      jsonObject.put("nodeCode",nodeCode);
+    }
+    //截止到当前年
+    Integer year=jsonObject.getInteger("year");
+    if(null !=year){
+      year+=1;
+      jsonObject.put("createTime",year+"-01-01 00:00:00");
+    }
+    //节水中心
+    if (cityNodeCode.equals(nodeCode)) {
+      list = useWaterUnitService.selectLeftData(jsonObject);
+    } else {
+      //区县
+      list = countyUseWaterUnitMapper.selectLeftData(jsonObject);
+    }
+    return list;
+  }
+
   @Override
   public List<Map<String, Object>> queryList(JSONObject jsonObject) {
     String  nodeCode =  jsonObject.getString("nodeCode");
@@ -172,13 +204,13 @@ public class BigScreenServiceImpl implements BigScreenService {
   }
 
   @Override
-  public ApiResponse selectWaterUseAnalyse(String nodeCode, Integer planYear) {
+  public ApiResponse selectWaterUseAnalyse(String nodeCode, Integer year) {
     ApiResponse response = new ApiResponse();
     List<Map<String, Object>> list = new ArrayList<>();
     Map<String, Object> realityMap = new HashMap<>();
     Map<String, Object> planMap = new HashMap<>();
     //    实际用水
-    List<Double>  aDouble1 = waterConditionAnalyseMapper.realityWater(nodeCode, planYear);
+    List<Double>  aDouble1 = waterConditionAnalyseMapper.realityWater(nodeCode, year);
     for (Double result : aDouble1){
       if (null == result){
         result = 0D;
@@ -188,7 +220,7 @@ public class BigScreenServiceImpl implements BigScreenService {
     realityMap.put("data",aDouble1);
 
     //    计划用水
-    List<Double>  aDouble = waterConditionAnalyseMapper.planWater(nodeCode, planYear);
+    List<Double>  aDouble = waterConditionAnalyseMapper.planWater(nodeCode, year);
     for (Double result : aDouble){
       if ( null == result){
         result = 0D;
