@@ -70,7 +70,7 @@ public class BigScreenServiceImpl implements BigScreenService {
     Integer year=jsonObject.getInteger("year");
     if(null !=year){
       year+=1;
-      jsonObject.put("createTime",year+"-01-01 00:00:00");
+      jsonObject.put("year",year+"-01-01 00:00:00");
     }
     //节水中心
     if (cityNodeCode.equals(nodeCode)) {
