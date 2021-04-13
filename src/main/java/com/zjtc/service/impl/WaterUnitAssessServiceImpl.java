@@ -127,11 +127,11 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
     try {
-      String fileName = "计划户用水单位考核表.xlsx";
+      String fileName = "计划户用水单位考核表.xls";
       String saveFilePath =
           fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName;
       InputStream inputStream = getClass().getClassLoader()
-          .getResourceAsStream("template/PlanUserExamInfo.xlsx");
+          .getResourceAsStream("template/PlanUserExamInfo.xls");
       OutputStream os = new FileOutputStream(saveFilePath);
       JxlsUtils.exportExcel(inputStream, os, data);
       os.close();

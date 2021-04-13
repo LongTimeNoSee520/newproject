@@ -23,6 +23,7 @@ import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
 import com.zjtc.service.UseWaterPlanService;
 import com.zjtc.service.UseWaterSelfDefinePlanService;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -110,6 +111,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     if (null != jsonObject.getString("unitCode")) {
       unitCode = jsonObject.getString("unitCode");
     }
+
+
 ////    排序
 //    String rank = "";
 //    if (null != jsonObject.getString("rank")) {
@@ -119,20 +122,35 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       response.recordError("系统异常");
       return response;
     }
-    //    是否审核(0:未审核,1:已审核)
-    String auditStatus = "";
-    if (null != jsonObject.getString("auditStatus")) {
-      auditStatus = jsonObject.getString("auditStatus");
+    //    是否审核(0:未审核,1,2:已审核)
+    String auditStatus = jsonObject.getString("auditStatus");
+    List<String> audit = new ArrayList<>();
+    if ("0".equals(auditStatus)) {
+      audit.add("0");
+    }else if ("2".equals(auditStatus)){
+      audit.add("1");
+      audit.add("2");
     }
+
     //    是否执行(0:未执行,1:已执行)
     String executed = "";
     if (null != jsonObject.getString("executed")) {
       executed = jsonObject.getString("executed");
     }
+//    用户类型 5-6位
+    String unitCodeType = null;
+    if (null != jsonObject.getString("unitCodeType")){
+      unitCodeType = jsonObject.getString("unitCodeType");
+    }
+//    编号开头
+    String areaCode = "";
+    if (null != jsonObject.getString("areaCode")){
+      areaCode = jsonObject.getString("areaCode");
+    }
 //    总条数
     Integer total = this.baseMapper
-        .selectCount(unitName, userType, planYear, executed, unitCode, nodeCode, auditStatus,
-            userId);
+        .selectCount(unitName, userType, planYear, executed, unitCode, nodeCode, audit,
+            userId,unitCodeType,areaCode);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
@@ -140,7 +158,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     // TODO: 2021/2/18 因为没有附件id,需要根据业务id在附件表里去查对应的业务id,现在的做法是默认有附件id的情况,错误
     List<UseWaterSelfDefinePlanVO> waterSelfDefinePlans = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType, planYear, executed, unitCode, nodeCode,
-            auditStatus, userId, preViewRealPath);
+            audit, userId, preViewRealPath,unitCodeType,areaCode);
 
     for (UseWaterSelfDefinePlanVO useWaterSelfDefinePlanVO : waterSelfDefinePlans) {
       List<FileVO> selfDefineFiles = useWaterSelfDefinePlanVO.getSelfDefineFiles();

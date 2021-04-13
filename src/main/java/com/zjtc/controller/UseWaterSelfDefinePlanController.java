@@ -46,10 +46,12 @@ public class UseWaterSelfDefinePlanController {
       + "    \"size\":\"条数(必填)\",\n"
       + "    \"nodeCode\":\"节点编码(必填)\",\n"
       + "    \"unitName\":\"单位名称\",\n"
-      + "    \"userType\":\"用户类型(截取的是3-4位)\",\n"
+//      + "    \"userType\":\"用户类型(截取的是5-6位)\",\n"
       + "    \"planYear \":\"自平年份\",\n"
       + "    \"auditStatus\":\"是否审核(0:未审核,2:已审核)\",\n"
       + "    \"executed\":\"是否执行(0:未执行,1:已执行)\"\n"
+      + "    \"unitCodeType\":\"用户类型(5-6)\"\n"
+      + "    \"areaCode\":\"编号开头\"\n"
       + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("自平计划管理分页查询,参数param==={" + jsonObject.toJSONString() + "}");

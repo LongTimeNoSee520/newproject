@@ -61,7 +61,9 @@
     <result column="executed" property="executed" jdbcType="VARCHAR"/>
     <result column="executedName" property="executedName" jdbcType="VARCHAR"/>
     <result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
-    <collection property="selfDefineFiles" column="{id=id,preViewRealPath=preViewRealPath,nodeCode=node_code}" ofType="com.zjtc.model.File"
+    <collection property="selfDefineFiles"
+      column="{id=id,preViewRealPath=preViewRealPath,nodeCode=node_code}"
+      ofType="com.zjtc.model.File"
       select="selectSysAttrFileMap"/>
   </resultMap>
 
@@ -149,7 +151,7 @@
     WHEN 0 THEN '未执行'
     WHEN 1 THEN '已执行'
     END as executedName,
-    #{preViewRealPath} AS  preViewRealPath
+    #{preViewRealPath} AS preViewRealPath
     FROM
     t_w_use_water_self_define_plan t1
     WHERE t1.node_code = #{nodeCode}
@@ -166,13 +168,23 @@
     <if test="unitCode != null and unitCode != ''">
       and t1.unit_code like '%${unitCode}%'
     </if>
-    <if test="auditStatus != null and auditStatus != ''">
-      and t1.audit_status = #{auditStatus}
+    <if test="audit != null and audit.size > 0">
+      and t1.audit_status in (
+      <foreach collection="audit" item="audit" separator=",">
+        #{audit}
+      </foreach>
+      )
     </if>
     <if test="executed != null and executed != ''">
       and t1.executed = #{executed}
     </if>
-     and id IN (
+    <if test="unitCodeType != null and unitCodeType != ''">
+      and SUBSTRING(t1.unit_code, 5, 2) = #{unitCodeType}
+    </if>
+    <if test="areaCode != null and areaCode != ''">
+      and SUBSTRING(t1.unit_code, 1, 2) = #{areaCode}
+    </if>
+    and id IN (
     SELECT
     id
     FROM
@@ -208,11 +220,21 @@
     <if test="unitCode != null and unitCode != ''">
       and t1.unit_code like '%${unitCode}%'
     </if>
-    <if test="auditStatus != null and auditStatus != ''">
-      and t1.audit_status = #{auditStatus}
+    <if test="audit != null and audit.size > 0">
+      and t1.audit_status in (
+      <foreach collection="audit" item="audit" separator=",">
+        #{audit}
+      </foreach>
+      )
     </if>
     <if test="executed != null and executed != ''">
       and t1.executed = #{executed}
+    </if>
+    <if test="unitCodeType != null and unitCodeType != ''">
+      and SUBSTRING(t1.unit_code, 5, 2) = #{unitCodeType}
+    </if>
+    <if test="areaCode != null and areaCode != ''">
+      and SUBSTRING(t1.unit_code, 1, 2) = #{areaCode}
     </if>
     and id IN (
     SELECT
@@ -226,7 +248,7 @@
     FROM t_w_use_water_unit_role WHERE person_id = #{userId}))
   </select>
 
-  <select id="selectSysAttrFileMap"  resultMap="sysAttrFileMap">
+  <select id="selectSysAttrFileMap" resultMap="sysAttrFileMap">
     select
     *,#{preViewRealPath}+ file_path AS file_path,deleted
     from t_file
@@ -373,6 +395,6 @@
     executed,
     audit_status,
     fileId
-    FROM t_w_use_water_self_define_plan WHERE executed = '1'  and id = #{id}
+    FROM t_w_use_water_self_define_plan WHERE executed = '1' and id = #{id}
   </select>
 </mapper>

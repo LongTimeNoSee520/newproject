@@ -24,7 +24,7 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
    * @param planYear    自平年份-
    * @param unitCode    单位编号-
    * @param nodeCode    节点编码-
-   * @param auditStatus 是否审核
+   * @param audit 是否审核
    * @param executed    是否执行
    * @return 匹配的条数
    */
@@ -35,8 +35,10 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
       @Param("executed") String executed,
       @Param("unitCode") String unitCode,
       @Param("nodeCode") String nodeCode,
-      @Param("auditStatus") String auditStatus,
-      @Param("userId") String userId);
+      @Param("audit") List<String> audit,
+      @Param("userId") String userId,
+      @Param("unitCodeType") String unitCodeType,
+      @Param("areaCode") String areaCode);
 
   /**
    * 分页查询数据
@@ -45,12 +47,11 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
    * @param pageSize    条数
    * @param unitName    单位名称
    * @param userType    用户类型
-   * @param planYear   自平年份
+   * @param planYear    自平年份
    * @param executed    是否执行
    * @param unitCode    单位编号
    * @param nodeCode    节点编码
-   * @param auditStatus 是否审核
-//     * @param rank        根据单位编号排序
+   * @param audit       是否审核
    * @return 结果集
    */
   List<UseWaterSelfDefinePlanVO> queryList(
@@ -62,9 +63,11 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
       @Param("executed") String executed,
       @Param("unitCode") String unitCode,
       @Param("nodeCode") String nodeCode,
-      @Param("auditStatus") String auditStatus,
+      @Param("audit") List<String> audit,
       @Param("userId") String userId,
-      @Param("preViewRealPath") String preViewRealPath);
+      @Param("preViewRealPath") String preViewRealPath,
+      @Param("unitCodeType") String unitCodeType,
+      @Param("areaCode") String areaCode);
 
   /**
    * 执行时修改执行信息
@@ -129,6 +132,7 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
 
   /**
    * 查询执行的数据是否为未审核和审核不通过
+   *
    * @param id 执行的自平数据id
    * @return 匹配的数据
    */
@@ -136,6 +140,7 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
 
   /**
    * 查询数据是否已经被执行
+   *
    * @param id 执行的自平数据id
    * @return 匹配的数据
    */
