@@ -623,8 +623,8 @@ public class UseWaterUnitServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = "计划用水户账户审核表.xlsx";
-    String templateName = "template/accountAudit.xlsx";
+    String fileName = "计划用水户账户审核表.xls";
+    String templateName = "template/accountAudit.xls";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "用水单位管理", "导出账户审核表", null);
     return apiResponse;
@@ -645,8 +645,8 @@ public class UseWaterUnitServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = "计划用水户开通格式.xlsx";
-    String templateName = "template/form.xlsx";
+    String fileName = "计划用水户开通格式.xls";
+    String templateName = "template/form.xls";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "用水单位管理", "导出开通格式", null);
     return apiResponse;
@@ -690,8 +690,8 @@ public class UseWaterUnitServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = "计划用水户撤销格式.xlsx";
-    String templateName = "template/Revoca.xlsx";
+    String fileName = "计划用水户撤销格式.xls";
+    String templateName = "template/Revoca.xls";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "用水单位管理", "导出撤销格式", null);
     return apiResponse;
@@ -722,8 +722,8 @@ public class UseWaterUnitServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = "用水户界面查询结果.xlsx";
-    String templateName = "template/useWaterUnitData.xlsx";
+    String fileName = "用水户界面查询结果.xls";
+    String templateName = "template/useWaterUnitData.xls";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "用水单位管理", "导出查询结果", null);
     return apiResponse;
@@ -744,8 +744,8 @@ public class UseWaterUnitServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = "用水单位增减情况表.xlsx";
-    String templateName = "template/useWaterUnitMoreAndLess.xlsx";
+    String fileName = "用水单位增减情况表.xls";
+    String templateName = "template/useWaterUnitMoreAndLess.xls";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "用水单位管理", "导出用水单位增减情况", null);
     return apiResponse;

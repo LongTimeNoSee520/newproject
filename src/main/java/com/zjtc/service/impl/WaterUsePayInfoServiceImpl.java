@@ -378,8 +378,8 @@ public class WaterUsePayInfoServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = "缴费管理查询结果.xlsx";
-    String templateName = "template/waterUsePayInfoData.xlsx";
+    String fileName = "缴费管理查询结果.xls";
+    String templateName = "template/waterUsePayInfoData.xls";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "缴费管理", "导出查询结果", null);
   }
@@ -437,13 +437,13 @@ public class WaterUsePayInfoServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = "加价用户信息.xlsx";
+    String fileName = "加价用户信息.xls";
     if (null == quarter || quarter.equals("")) {
       fileName = year + "年" + fileName;
     } else {
       fileName = year + "年" + quarter + "季度" + fileName;
     }
-    String templateName = "template/waterUsePayInfoUserData.xlsx";
+    String templateName = "template/waterUsePayInfoUserData.xls";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "缴费管理", "导出用户信息", null);
   }
@@ -460,13 +460,13 @@ public class WaterUsePayInfoServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = "计划用水户超计划用水情况汇总表.xlsx";
+    String fileName = "计划用水户超计划用水情况汇总表.xls";
     if (null == quarter || quarter.equals("")) {
       fileName = year + "年" + fileName;
     } else {
       fileName = year + "年" + quarter + "季度" + fileName;
     }
-    String templateName = "template/payInfo.xlsx";
+    String templateName = "template/payInfo.xls";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "缴费管理", "导出计划用水户超计划情况汇总", null);
   }

@@ -126,7 +126,7 @@ public class WaterSavingEfficiencyManageServiceImpl extends
 
   @Override
   public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) {
-    final String fileName = "节水效率指标评估模板.xlsx";
+    final String fileName = "节水效率指标评估模板.xls";
     String saveFilePath =
         fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName;
     String templatePath = "template/" + fileName;

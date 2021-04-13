@@ -764,8 +764,8 @@ public class UseWaterOriginalPlanServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = nowYear + "年度计划编制汇总.xlsx";
-    String templateName = "template/useWaterOriginalPlanOld.xlsx";
+    String fileName = nowYear + "年度计划编制汇总.xls";
+    String templateName = "template/useWaterOriginalPlanOld.xls";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "用水计划编制", "导出老户", null);
   }
@@ -780,8 +780,8 @@ public class UseWaterOriginalPlanServiceImpl extends
     data.put("nowDate", new Date());
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
-    String fileName = "新增户计划编制汇总.xlsx";
-    String templateName = "template/useWaterOriginalPlanOld.xlsx";
+    String fileName = "新增户计划编制汇总.xls";
+    String templateName = "template/useWaterOriginalPlanOld.xls";
     commonService.export(fileName, templateName, request, response, data);
     systemLogService.logInsert(user, "用水计划编制", "导出新户", null);
   }
