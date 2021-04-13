@@ -114,15 +114,21 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
 
   List<String> selectAllType(@Param("nodeCode") String nodeCode);
 
-  /**
+  /**数字大屏
    * 查询节水中心：中间地图区域标点
    * @param jsonObject
    * @return
    */
   List<Map<String,Object>>  selectUnitMap(JSONObject jsonObject);
 
-  /**
+  /**数字大屏
    *根据用水单位id查询用水户信息
    */
   List<Map<String, Object>> selectUnitById(JSONObject jsonObject);
+
+
+  /**数字大屏
+   *查询左侧管理户数、计划用水量、实际用水量
+   */
+  List<Map<String, Object>> selectLeftData(JSONObject jsonObject);
 }

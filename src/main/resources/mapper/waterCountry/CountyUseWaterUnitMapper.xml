@@ -50,6 +50,9 @@
     <if test="null !=nodeCode">
       and node_code=#{nodeCode}
     </if>
+    <if test="null !=year">
+      and  create_time &lt; #{year}
+    </if>
     <if test="null !=unitName">
       and unit_name like '%${unitName}%'
     </if>
@@ -110,5 +113,66 @@
     where use_water_unit_id=#{id}
     ) t2 on t1.water_meter_code=t2.water_meter_code
     where use_year=#{year}
+  </select>
+
+  <select id="selectLeftData" resultType="java.util.LinkedHashMap">
+    SELECT
+    useWaterCount,
+    isnull(yearPlan,0) as yearPlan,
+    isnull(actualWater,0) as actualWater
+    FROM
+    <!--管理户数-->
+    (
+    select
+    count(1) as useWaterCount
+    from t_w_use_water_unit
+    where deleted='0'
+    <if test="null !=nodeCode">
+      and node_code=#{nodeCode}
+    </if>
+    <if test="null !=year">
+      and create_time &lt; #{createTime}
+    </if>
+    ) n1,
+    <!--计划用水量  基建加计划-->
+    (
+    select
+    yearPlan=sum(t2.first_quarter)+sum(t2.second_quarter)+sum (t2.third_quarter)+sum(t2.fourth_quarter)
+    +sum (t3.one_quarter)+sum (t3.two_quarter)+sum (t3.three_quarter)+sum (t3.four_quarter)
+    from (
+    select
+    id
+    from  t_w_use_water_unit
+    where deleted='0'
+    <if test="null !=nodeCode">
+      and node_code=#{nodeCode}
+    </if>
+    ) t1
+    <!--基建-->
+    LEFT join ( SELECT * FROM t_w_use_water_plan WHERE plan_type = '0' <if test="null !=year">and plan_year=#{year}</if>) t2 ON t2.use_water_unit_id = t1.id
+    LEFT JOIN (SELECT * FROM t_w_use_water_base_plan where deleted='0' <if test="null !=year">and plan_year=#{year}</if>) t3 ON t3.use_water_unit_id = t2.use_water_unit_id
+    ) n2,
+    <!--实际水量-->
+    (
+    select
+    sum (actualWater) as actualWater
+    from (
+    select
+    id
+    from  t_w_use_water_unit
+    where deleted='0'
+    <if test="null !=nodeCode">
+      and node_code=#{nodeCode}
+    </if>
+    ) t1
+    left join (
+    select
+    use_water_unit_id,
+    actualWater=sum(january_count)+sum(february_count)+sum(march_count)+sum(april_count)+sum(may_count)+sum(june_count)+sum(july_count)+sum(august_count)+sum(september_count)+sum(october_count)+sum(november_count)+sum(december_count)
+    from t_w_water_month_use_data
+    where use_year=#{year}
+    group by use_water_unit_id
+    )as t2 on t2.use_water_unit_id=t1.id
+    ) n3
   </select>
 </mapper>
