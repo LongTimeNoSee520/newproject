@@ -269,8 +269,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         endPaper.setAuditStatus("1");//通过(本次通过且没有下一环节)
         /**超额向市级发待办，并且办结单状态任然设为审核中*/
         endPaper = this.report(user, endPaper);
-        if ("1".equals(endPaper.getDataSources())) {//网上申报的办结单
-          /**网上申报的 需要通知用户到微信端确认(现场的不发通知)*/
+        if ("1".equals(endPaper.getDataSources()) ||"3".equals(endPaper.getDataSources())) {//网上申报或微信申报的办结单
+          /**网上申报或者微信申报的 需要通知用户到微信端确认(现场的不发通知)*/
           String messageContent1 = "";
           if ("0".equals(endPaper.getPaperType())) {//调整计划
             messageContent1 = "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")"
@@ -572,8 +572,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     endPaper.setThirdQuarter(thirdQuarter);
     endPaper.setFourthQuarter(fourthQuarter);
     this.updateById(endPaper);
-    /**如果是来自微信(网上申报)，则更新微信调整表核定数*/
-    if ("1".equals(endPaper.getDataSources())) {
+    /**如果是来自网上申报或微信，则更新微信调整表核定数*/
+    if ("1".equals(endPaper.getDataSources())||"3".equals(endPaper.getDataSources())) {
       UseWaterPlanAddWX useWaterPlanAddWX = new UseWaterPlanAddWX();
       useWaterPlanAddWX.setId(endPaper.getWaterPlanWXId());
       useWaterPlanAddWX.setCheckAdjustWater(curYearPlan);
