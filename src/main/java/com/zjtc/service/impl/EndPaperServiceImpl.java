@@ -112,6 +112,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   @Value("${file.preViewRealPath}")
   private String preViewRealPath;
 
+  @Value("${waterSms.transIp}")
+  private String ipPort;
 
   @Value("${waterReport.reportUrl}")
   private String reportUrl;
@@ -459,7 +461,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         todo.setBusinessJson(businessJson.toJSONString());
         String publicKey = jwtUtil.getPublicKey();
         String token = jwtUtil.creatToken(user, publicKey);
-        HttpUtil.doPost(token, preViewRealPath + reportUrl, JSONObject.toJSONString(todo));
+        HttpUtil.doPost(token, ipPort + reportUrl, JSONObject.toJSONString(todo));
         endPaper.setAuditStatus("2");
       }
     }
