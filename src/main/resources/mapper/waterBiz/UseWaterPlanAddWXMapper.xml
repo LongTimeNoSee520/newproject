@@ -154,10 +154,10 @@
     CASE
     t1.audit_status
     WHEN '0' THEN '未审核'
-    WHEN '1' THEN '已审核'
-    WHEN '2' THEN '已审核'
+    WHEN '1' THEN '审核不通过'
+    WHEN '2' THEN '审核通过'
     WHEN '3' THEN '未审核'
-    WHEN '4' THEN '已审核'
+    WHEN '4' THEN '审核通过'
     ELSE '未审核'
     END audit_status,
     audit_status as auditStatusCode,
