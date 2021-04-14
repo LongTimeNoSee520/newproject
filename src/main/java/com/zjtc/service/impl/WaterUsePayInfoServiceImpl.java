@@ -484,25 +484,36 @@ public class WaterUsePayInfoServiceImpl extends
     String str = "";
     if (!list.isEmpty()) {
       for (Map map : list) {
-        String unitCode = map.get("unitCode").toString();
-        if (StringUtils.isBlank(map.get("agreementNumber").toString())) {
-          apiResponse.recordError(unitCode + " 协议号为空 无法导出");
+        String unitCode = null == map.get("unitCode") ? "" : map.get("unitCode").toString();
+        String agreementNumber =
+            null == map.get("agreementNumber") ? "" : map.get("agreementNumber").toString();
+        if (StringUtils.isBlank(agreementNumber)) {
+          apiResponse.recordError("单位编号:" + unitCode + " 协议号为空 无法导出");
           return apiResponse;
         }
-        if (StringUtils.isBlank(map.get("bankOfDeposit").toString())) {
-          apiResponse.recordError(unitCode + " 开户行为空 无法导出");
+        String bankOfDeposit =
+            null == map.get("bankOfDeposit") ? "" : map.get("bankOfDeposit").toString();
+        if (StringUtils.isBlank(bankOfDeposit)) {
+          apiResponse.recordError("单位编号:" + unitCode + " 开户行为空 无法导出");
           return apiResponse;
         }
-        if (StringUtils.isBlank(map.get("bankAccount").toString())) {
-          apiResponse.recordError(unitCode + " 银行账户为空 无法导出");
+        String bankAccount =
+            null == map.get("bankAccount") ? "" : map.get("bankAccount").toString();
+        if (StringUtils.isBlank(bankAccount)) {
+          apiResponse.recordError("单位编号:" + unitCode + " 银行账户为空 无法导出");
           return apiResponse;
         }
-        str += StringUtils.trim(map.get("agreementNumber").toString()) + "|" + StringUtils
-            .trim(map.get("bankOfDeposit").toString()) + "|"
-            + StringUtils.trim(map.get("bankAccount").toString()) + "|" + StringUtils
-            .trim(map.get("entrustUnitName").toString()) + "|"
-            + StringUtils.trim(map.get("actualAmount").toString()) + "|" + StringUtils
-            .trim(map.get("remark").toString()) + "|\r\n";
+        String entrustUnitName =
+            null == map.get("entrustUnitName") ? "" : map.get("entrustUnitName").toString();
+        String actualAmount =
+            null == map.get("actualAmount") ? "" : map.get("actualAmount").toString();
+        String remark = null == map.get("remark") ? "" : map.get("remark").toString();
+        str += StringUtils.trim(agreementNumber) + "|" + StringUtils
+            .trim(bankOfDeposit) + "|"
+            + StringUtils.trim(bankAccount) + "|" + StringUtils
+            .trim(entrustUnitName) + "|"
+            + StringUtils.trim(actualAmount) + "|" + StringUtils
+            .trim(map.get(remark) + "|\r\n");
       }
     } else {
       apiResponse.recordError("无本行数据 无法导出");
@@ -541,29 +552,42 @@ public class WaterUsePayInfoServiceImpl extends
     String str = "";
     if (!list.isEmpty()) {
       for (Map map : list) {
-        String unitCode = map.get("unitCode").toString();
-        if (StringUtils.isBlank(map.get("agreementNumber").toString())) {
+        String unitCode = null == map.get("unitCode") ? "" : map.get("unitCode").toString();
+        String agreementNumber =
+            null == map.get("agreementNumber") ? "" : map.get("agreementNumber").toString();
+        if (StringUtils.isBlank(agreementNumber)) {
           apiResponse.recordError(unitCode + " 协议号为空 无法导出");
           return apiResponse;
         }
-        if (StringUtils.isBlank(map.get("bankOfDeposit").toString())) {
-          apiResponse.recordError(unitCode + " 开户行为空 无法导出");
+        String bankOfDeposit =
+            null == map.get("bankOfDeposit") ? "" : map.get("bankOfDeposit").toString();
+        if (StringUtils.isBlank(bankOfDeposit)) {
+          apiResponse.recordError("单位编号:" + unitCode + " 开户行为空 无法导出");
           return apiResponse;
         }
-        if (StringUtils.isBlank(map.get("bankAccount").toString())) {
-          apiResponse.recordError(unitCode + " 银行账户为空 无法导出");
+        String bankAccount =
+            null == map.get("bankAccount") ? "" : map.get("bankAccount").toString();
+        if (StringUtils.isBlank(bankAccount)) {
+          apiResponse.recordError("单位编号:" + unitCode + " 银行账户为空 无法导出");
           return apiResponse;
         }
-        if ("0".equals(map.get("signed").toString())) {
-          apiResponse.recordError(unitCode + " 未开通托收 无法导出");
+        String signed =
+            null == map.get("signed") ? "" : map.get("signed").toString();
+        if ("0".equals(signed)) {
+          apiResponse.recordError("单位编号:" + unitCode + " 未开通托收 无法导出");
           return apiResponse;
         }
-        str += StringUtils.trim(map.get("agreementNumber").toString()) + "|" + StringUtils
-            .trim(map.get("bankOfDeposit").toString()) + "|"
-            + StringUtils.trim(map.get("bankAccount").toString()) + "|" + StringUtils
-            .trim(map.get("entrustUnitName").toString()) + "|"
-            + StringUtils.trim(map.get("actualAmount").toString()) + "|" + StringUtils
-            .trim(map.get("remark").toString()) + "|\r\n";
+        String entrustUnitName =
+            null == map.get("entrustUnitName") ? "" : map.get("entrustUnitName").toString();
+        String actualAmount =
+            null == map.get("actualAmount") ? "" : map.get("actualAmount").toString();
+        String remark = null == map.get("remark") ? "" : map.get("remark").toString();
+        str += StringUtils.trim(agreementNumber) + "|" + StringUtils
+            .trim(bankOfDeposit) + "|"
+            + StringUtils.trim(bankAccount) + "|" + StringUtils
+            .trim(entrustUnitName) + "|"
+            + StringUtils.trim(actualAmount) + "|" + StringUtils
+            .trim(remark) + "|\r\n";
       }
     } else {
       apiResponse.recordError("无他行数据 无法导出");
@@ -591,7 +615,8 @@ public class WaterUsePayInfoServiceImpl extends
 
   @Override
   public boolean editInvoiceInfo(String id, String invoiceId, String invoiceNumber) {
-    if(StringUtils.isNotBlank(id) && StringUtils.isNotBlank(invoiceId) && StringUtils.isNotBlank(invoiceNumber)){
+    if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(invoiceId) && StringUtils
+        .isNotBlank(invoiceNumber)) {
       return false;
     }
     WaterUsePayInfo waterUsePayInfo = new WaterUsePayInfo();
