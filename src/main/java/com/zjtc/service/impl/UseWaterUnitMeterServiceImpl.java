@@ -60,7 +60,7 @@ public class UseWaterUnitMeterServiceImpl extends
 //      通过水表档案号查询对应数据的id
         String id = this.baseMapper.selectWaterMeterCodeMyId(waterMeterCode);
         if (StringUtils.isBlank(id)) {
-          return false;
+          continue;
         }
         waterMonthUseData.setId(id);
 ////      同时更新月水使用量月数据数据
@@ -68,7 +68,7 @@ public class UseWaterUnitMeterServiceImpl extends
 ////      单位id
         waterMonthUseData.setUseWaterUnitId(useWaterUnitId);
       } catch (Exception e) {
-        e.printStackTrace();
+        log.error("回填发票号为waterMeterCode异常");
       }
       waterMonthUseDataList.add(waterMonthUseData);
 //      更新月使用量数据
