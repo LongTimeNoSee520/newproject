@@ -180,9 +180,10 @@ public class UseWaterOriginalPlanServiceImpl extends
       selfDefinePlanList.add(useWaterSelfDefinePlan);
       useWaterPlanList.add(useWaterPlan);
       //通知需要的单位编号
-      Map<String, Object> map = new HashMap<>(2);
+      Map<String, Object> map = new HashMap<>(4);
       map.put("unitCode", item.getUnitCode());
       map.put("planYear", item.getPlanYear());
+      map.put("unitName", item.getUnitName());
       unitCodeList.add(map);
     }
     if (200 != apiResponse.getCode()) {
@@ -197,7 +198,9 @@ public class UseWaterOriginalPlanServiceImpl extends
     /**微信公众号：通知用水单位*/
     if (!unitCodeList.isEmpty()) {
       for (Map map : unitCodeList) {
-        String content = "您" + map.get("planYear") + "年年计划已经下达，请前往公共服务管理平台与微信公众号年度自平管理模块进行计划自平。";
+        String content =
+            "您单位" + map.get("unitCode").toString() + "(" + map.get("unitName").toString() + ")"
+                + map.get("planYear") + "年年计划已经下达，请前往公共服务管理平台与微信公众号年度自平管理模块进行计划自平。";
         messageService.messageToUnit(map.get("unitCode").toString(), content, "业务通知");
       }
     }

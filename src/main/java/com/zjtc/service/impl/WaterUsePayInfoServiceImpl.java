@@ -513,7 +513,7 @@ public class WaterUsePayInfoServiceImpl extends
             + StringUtils.trim(bankAccount) + "|" + StringUtils
             .trim(entrustUnitName) + "|"
             + StringUtils.trim(actualAmount) + "|" + StringUtils
-            .trim(map.get(remark) + "|\r\n");
+            .trim(remark + "|\r\n");
       }
     } else {
       apiResponse.recordError("无本行数据 无法导出");
