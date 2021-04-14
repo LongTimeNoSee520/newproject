@@ -834,7 +834,7 @@
 			from
 			t_w_water_use_pay_info as t1
 			where
-			entrusted !='1'
+			entrusted ='1'
 			and count_year=#{year}
 			and count_quarter=#{quarter}
 		) as a
@@ -844,7 +844,7 @@
 			*
 			from t_w_bank
 			where signed='1'
-			and other_bank ='1'
+			and other_bank !='1'
 			and deleted='0'
 		) as b on a.use_water_unit_id=b.use_water_unit_id
 	</select>
