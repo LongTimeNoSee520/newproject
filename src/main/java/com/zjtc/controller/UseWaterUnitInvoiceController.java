@@ -236,7 +236,12 @@ public class UseWaterUnitInvoiceController {
     if (null != jsonObject) {
       String frontId = jsonObject.getString("frontId");
       String rearId = jsonObject.getString("rearId");
-      response = useWaterUnitInvoiceService.exchange(frontId, rearId, user);
+      try {
+        response = useWaterUnitInvoiceService.exchange(frontId, rearId, user);
+      } catch (Exception e) {
+        response.recordError("重置发票异常");
+        log.error("重置发票异常",e.getMessage());
+      }
       return response;
     }
     response.recordError("重置异常");

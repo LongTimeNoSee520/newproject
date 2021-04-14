@@ -57,7 +57,7 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
    * @param rearId 交换id
    * @return 响应结果
    */
-  ApiResponse exchange(String frontId,String rearId,User user);
+  ApiResponse exchange(String frontId,String rearId,User user) throws Exception;
 
   /**
    * 移交票段

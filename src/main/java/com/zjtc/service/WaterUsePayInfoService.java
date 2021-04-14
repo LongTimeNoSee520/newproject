@@ -140,4 +140,13 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    */
   ApiResponse exportOtherBankInfo(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
       throws IOException;
+
+  /**
+   * 修改发票信息
+   * @param id 缴费记录id
+   * @param invoiceId 发票id
+   * @param invoiceNumber 发票号
+   * @return boolean
+   */
+  boolean editInvoiceInfo(String id,String invoiceId,String invoiceNumber);
 }

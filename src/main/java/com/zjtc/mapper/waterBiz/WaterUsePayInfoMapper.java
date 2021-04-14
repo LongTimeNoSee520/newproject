@@ -65,6 +65,11 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
 
   List<Map<String, Object>> exportQueryData(JSONObject jsonObject);
 
-
+  /**
+   * 非空更新
+   * @param waterUsePayInfo
+   * @return
+   */
+  boolean updateNotNull(WaterUsePayInfo waterUsePayInfo);
 
 }

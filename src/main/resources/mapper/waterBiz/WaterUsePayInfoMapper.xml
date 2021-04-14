@@ -1096,4 +1096,54 @@
 
 	</select>
 
+
+
+
+  <!-- 2021.04.14 yuchen -->
+
+  <update id="updateNotNull" parameterType="com.zjtc.model.WaterUsePayInfo">
+    update t_w_water_use_pay_info
+    <set>
+      <if test="nodeCode != null">node_code = #{nodeCode},</if>
+      <if test="useWaterUnitId != null">use_water_unit_id = #{useWaterUnitId},</if>
+      <if test="unitName != null">unit_name = #{unitName},</if>
+      <if test="unitCode != null">unit_code = #{unitCode},</if>
+      <if test="payType != null">pay_type = #{payType},</if>
+      <if test="invoiceNum != null">invoice_num = #{invoiceNum},</if>
+      <if test="invoiceId != null">invoice_id = #{invoiceId},</if>
+      <if test="invoicePrintTime != null">invoice_print_time = #{invoicePrintTime},</if>
+      <if test="countQuarter != null">count_quarter = #{countQuarter},</if>
+      <if test="countYear != null">count_year = #{countYear},</if>
+      <if test="yearPlan != null">year_plan = #{yearPlan},</if>
+      <if test="quarterPlan != null">quarter_plan = #{quarterPlan},</if>
+      <if test="basePlan != null">base_plan = #{basePlan},</if>
+      <if test="waterNum1 != null">water_num1 = #{waterNum1},</if>
+      <if test="waterNum2 != null">water_num2 = #{waterNum2},</if>
+      <if test="waterNum3 != null">water_num3 = #{waterNum3},</if>
+      <if test="waterNumAmount != null">water_num_amount = #{waterNumAmount},</if>
+      <if test="payRatio != null">pay_ratio = #{payRatio},</if>
+      <if test="price != null">price = #{price},</if>
+      <if test="exceedWater != null">exceed_water = #{exceedWater},</if>
+      <if test="multiple != null">multiple = #{multiple},</if>
+      <if test="actualMultiple != null">actual_multiple = #{actualMultiple},</if>
+      <if test="amountReceivable != null">amount_receivable = #{amountReceivable},</if>
+      <if test="actualAmount != null">actual_amount = #{actualAmount},</if>
+      <if test="payStatus != null">pay_status = #{payStatus},</if>
+      <if test="printed != null">printed = #{printed},</if>
+      <if test="warned != null">warned = #{warned},</if>
+      <if test="remarks != null">remarks = #{remarks},</if>
+      <if test="auditStatus != null">audit_status = #{auditStatus},</if>
+      <if test="auditTime != null">audit_time = #{auditTime},</if>
+      <if test="auditPerson != null">audit_person = #{auditPerson},</if>
+      <if test="auditPersonId != null">audit_person_id = #{auditPersonId},</if>
+      <if test="editedActual != null">edited_actual = #{editedActual},</if>
+      <if test="increaseMoney != null">increase_money = #{increaseMoney},</if>
+      <if test="entrusted != null">entrusted = #{entrusted},</if>
+      <if test="cashCheck != null">cash_check = #{cashCheck},</if>
+      <if test="transferCheck != null">transfer_check = #{transferCheck},</if>
+      <if test="createTime != null">create_time = #{createTime},</if>
+    </set>
+    where id = #{id}
+  </update>
+
 </mapper>

@@ -11,6 +11,7 @@ import com.zjtc.model.UseWaterUnitInvoice;
 import com.zjtc.model.User;
 import com.zjtc.service.SystemLogService;
 import com.zjtc.service.UseWaterUnitInvoiceService;
+import com.zjtc.service.WaterUsePayInfoService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -54,6 +55,9 @@ public class UseWaterUnitInvoiceServiceImpl extends
   @Autowired
   private SystemLogService systemLogService;
 
+  @Autowired
+  private WaterUsePayInfoService waterUsePayInfoService;
+
   @Override
   public ApiResponse saveModel(List<String> list, User user) {
     ApiResponse response = new ApiResponse();
@@ -80,7 +84,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
     }
     boolean b = this.saveBatch(unitInvoiceList);
     if (b) {
-      systemLogService.logInsert(user,"发票管理","新增发票管理","");
+      systemLogService.logInsert(user, "发票管理", "新增发票管理", "");
       response.setCode(200);
       return response;
     }
@@ -105,7 +109,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
     boolean b = this.updateById(unitInvoice);
     if (b) {
       response.setCode(200);
-      systemLogService.logInsert(user,"发票管理","开票登记","");
+      systemLogService.logInsert(user, "发票管理", "开票登记", "");
       return response;
     }
     response.setCode(500);
@@ -113,7 +117,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public ApiResponse deleteModel(List<String> ids,User user) {
+  public ApiResponse deleteModel(List<String> ids, User user) {
     ApiResponse response = new ApiResponse();
     UseWaterUnitInvoice unitInvoice;
     List<UseWaterUnitInvoice> list = new ArrayList<>();
@@ -143,7 +147,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
     if (b) {
       response.setMessage("删除发票成功");
       response.setCode(200);
-      systemLogService.logInsert(user,"发票管理","删除发票","");
+      systemLogService.logInsert(user, "发票管理", "删除发票", "");
       return response;
     }
     response.setMessage("删除发票失败");
@@ -152,7 +156,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public ApiResponse abolish(List<String> ids,User user) {
+  public ApiResponse abolish(List<String> ids, User user) {
     ApiResponse response = new ApiResponse();
     UseWaterUnitInvoice unitInvoice;
     List<UseWaterUnitInvoice> list = new ArrayList<>();
@@ -166,7 +170,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
     b = this.updateBatchById(list);
     if (b) {
       response.setCode(200);
-      systemLogService.logInsert(user,"发票管理","发票作废","");
+      systemLogService.logInsert(user, "发票管理", "发票作废", "");
 
       return response;
     }
@@ -176,7 +180,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public ApiResponse cancelAbolish(List<String> ids,User user) {
+  public ApiResponse cancelAbolish(List<String> ids, User user) {
     ApiResponse response = new ApiResponse();
     if (ids.isEmpty()) {
       response.recordError("系统异常");
@@ -203,7 +207,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
     }
     if (b > 0) {
       response.setCode(200);
-      systemLogService.logInsert(user,"发票管理","取消作废发票信息","");
+      systemLogService.logInsert(user, "发票管理", "取消作废发票信息", "");
       return response;
     } else {
       response.recordError("操作失败");
@@ -213,14 +217,16 @@ public class UseWaterUnitInvoiceServiceImpl extends
 
 
   @Override
-  public ApiResponse exchange(String frontId, String rearId,User user) {
+  public ApiResponse exchange(String frontId, String rearId, User user) throws Exception {
     ApiResponse response = new ApiResponse();
     if (StringUtils.isBlank(frontId) && StringUtils.isBlank(rearId)) {
       response.recordError("重置失败");
       return response;
     }
-    UseWaterUnitInvoice unitInvoice1 = this.baseMapper.selectUseWaterUnitInvoice(frontId, user.getNodeCode());
-    UseWaterUnitInvoice unitInvoice2 = this.baseMapper.selectUseWaterUnitInvoice(rearId, user.getNodeCode());
+    UseWaterUnitInvoice unitInvoice1 = this.baseMapper
+        .selectUseWaterUnitInvoice(frontId, user.getNodeCode());
+    UseWaterUnitInvoice unitInvoice2 = this.baseMapper
+        .selectUseWaterUnitInvoice(rearId, user.getNodeCode());
     if (null == unitInvoice1 || null == unitInvoice2) {
       response.recordError("重置失败");
       return response;
@@ -236,9 +242,19 @@ public class UseWaterUnitInvoiceServiceImpl extends
     if (!list.isEmpty()) {
       b = this.updateBatchById(list);
     }
+
+    //更新缴费信息
+    try {
+      waterUsePayInfoService
+          .editInvoiceInfo(unitInvoice2.getPayInfoId(), rearId, unitInvoice2.getInvoiceNumber());
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new Exception("更新缴费信息异常");
+    }
+
     if (b) {
       response.setCode(200);
-      systemLogService.logInsert(user,"发票管理","重置发票","");
+      systemLogService.logInsert(user, "发票管理", "重置发票", "");
       return response;
     }
     response.setCode(500);
@@ -246,18 +262,19 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public ApiResponse shift(String begin, String end, String personId,User user) {
+  public ApiResponse shift(String begin, String end, String personId, User user) {
     ApiResponse response = new ApiResponse();
     if (StringUtils.isBlank(begin) || StringUtils.isBlank(end) || StringUtils.isBlank(personId)) {
       response.recordError("系统异常");
     }
 
     int i = this.baseMapper
-        .updateUid(Integer.parseInt(begin), Integer.parseInt(end), personId, user.getId(), user.getNodeCode());
+        .updateUid(Integer.parseInt(begin), Integer.parseInt(end), personId, user.getId(),
+            user.getNodeCode());
     if (i > 0) {
       response.setCode(200);
       response.setMessage("已移交:" + i + "张发票");
-      systemLogService.logInsert(user,"发票管理","移交发票","");
+      systemLogService.logInsert(user, "发票管理", "移交发票", "");
       return response;
     } else {
       response.recordError("移交发票失败");
@@ -354,8 +371,8 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> selectInvoices(String loginId,String nodeCode) {
-    return this.baseMapper.selectInvoices(loginId,nodeCode);
+  public List<Map<String, Object>> selectInvoices(String loginId, String nodeCode) {
+    return this.baseMapper.selectInvoices(loginId, nodeCode);
   }
 
   @Override
@@ -415,7 +432,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
     }
     List<UseWaterUnitInvoice> export = this.baseMapper
         .export(invoiceNumber, begin, end, enabled, received, user.getNodeCode(), user.getId());
-    for(UseWaterUnitInvoice waterUnitInvoice : export){
+    for (UseWaterUnitInvoice waterUnitInvoice : export) {
       String invoiceTime = TimeUtil.formatTimeStr(waterUnitInvoice.getInvoiceDate());
       waterUnitInvoice.setInvoiceTime(invoiceTime);
     }

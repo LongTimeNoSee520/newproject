@@ -125,8 +125,10 @@ public class WaterUsePayInfoServiceImpl extends
         /**绑定发票号*/
         UseWaterUnitInvoice useWaterUnitInvoice = new UseWaterUnitInvoice();
         useWaterUnitInvoice.setId(entity.getInvoiceId());
-        useWaterUnitInvoice.setInvoiceDate(new Date());
         useWaterUnitInvoice.setPayInfoId(entity.getId());
+        useWaterUnitInvoice.setInvoiceMoney(entity.getActualAmount());//开票时，实收金额为开票金额
+        useWaterUnitInvoice.setInvoiceUnitCode(entity.getUnitCode());
+        useWaterUnitInvoice.setInvoiceUnitName(entity.getUnitName());
         apiResponse = useWaterUnitInvoiceService
             .updateInvoicesUnitMessage(useWaterUnitInvoice, user.getUsername(), user.getNodeCode());
         if (500 == apiResponse.getCode()) {
@@ -585,5 +587,17 @@ public class WaterUsePayInfoServiceImpl extends
     }
     systemLogService.logInsert(user, "缴费管理", "导出他行数据", null);
     return apiResponse;
+  }
+
+  @Override
+  public boolean editInvoiceInfo(String id, String invoiceId, String invoiceNumber) {
+    if(StringUtils.isNotBlank(id) && StringUtils.isNotBlank(invoiceId) && StringUtils.isNotBlank(invoiceNumber)){
+      return false;
+    }
+    WaterUsePayInfo waterUsePayInfo = new WaterUsePayInfo();
+    waterUsePayInfo.setId(id);
+    waterUsePayInfo.setInvoiceNum(invoiceNumber);
+    waterUsePayInfo.setId(invoiceId);
+    return this.baseMapper.updateNotNull(waterUsePayInfo);
   }
 }
