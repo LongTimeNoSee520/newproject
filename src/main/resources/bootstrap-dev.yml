@@ -94,6 +94,8 @@ file:
   #文件上下文
   preViewRealPath: http://120.79.162.253:8073
 waterSms:
+#waterSms转发ip
+  transIp: http://120.79.162.253:8073
   sendUrl: /water/sms/smsManage/sendMessages
 
 waterReport:
