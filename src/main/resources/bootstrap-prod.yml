@@ -90,7 +90,11 @@ file:
 #  importErrorFilePath : importError
   #文件上下文
   preViewRealPath: http://125.70.9.203:8081/water/file
+
+
 waterSms:
+  #waterSms转发ip
+  transIp: http://125.70.9.203:8081
   sendUrl: /water/sms/smsManage/sendMessages
 
 waterReport:

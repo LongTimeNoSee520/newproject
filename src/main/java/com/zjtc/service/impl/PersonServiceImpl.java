@@ -26,7 +26,7 @@ public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> impleme
   @Value("${waterSys.selectPersonByResCode}")
   private String url;
 
-  @Value("${file.preViewRealPath}")
+  @Value("${waterSms.transIp}")
   private String ipPort;
 
 

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class WebSocketUtil {
 
-  @Value("${file.preViewRealPath}")
+  @Value("${waterSms.transIp}")
   private String ipPort;
 
   /**

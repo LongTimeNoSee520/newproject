@@ -33,7 +33,7 @@ public class SmsServiceImpl implements SmsService {
   @Autowired
   private JWTUtil jwtUtil;
 
-  @Value("${file.preViewRealPath}")
+  @Value("${waterSms.transIp}")
   private String ipPort;
 
   @Value("${waterSms.sendUrl}")
