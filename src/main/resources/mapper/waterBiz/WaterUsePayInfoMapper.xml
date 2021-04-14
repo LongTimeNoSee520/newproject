@@ -803,7 +803,7 @@
 			and count_year=#{year}
 			and count_quarter=#{quarter}
 		) as a
-		left join
+		inner join
 		(
 			select
 			*
@@ -838,7 +838,7 @@
 			and count_year=#{year}
 			and count_quarter=#{quarter}
 		) as a
-		left join
+		inner join
 		(
 			select
 			*
