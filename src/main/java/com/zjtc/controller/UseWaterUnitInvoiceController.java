@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -370,8 +371,13 @@ public class UseWaterUnitInvoiceController {
       response.recordError("系统异常");
       return response;
     }
+    String invoiceNumber = jsonObject.getString("invoiceNumber");
+    if (StringUtils.isBlank(invoiceNumber)){
+      response.recordError("获取当前发票号异常");
+      return response;
+    }
     try {
-      List<Map<String, Object>> maps = useWaterUnitInvoiceService.selectInvoices(user.getId(),user.getNodeCode());
+      List<Map<String, Object>> maps = useWaterUnitInvoiceService.selectInvoices(user.getId(),user.getNodeCode(),invoiceNumber);
       response.setData(maps);
       return response;
     } catch (Exception e) {

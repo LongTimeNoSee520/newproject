@@ -114,7 +114,7 @@ public interface UseWaterUnitInvoiceMapper extends BaseMapper<UseWaterUnitInvoic
    * @return 集合
    */
   List<Map<String,Object>> selectInvoices(@Param("loginId") String loginId,
-      @Param("nodeCode") String nodeCode);
+      @Param("nodeCode") String nodeCode,@Param("invoiceNumber") String invoiceNumber);
 
   /**
    * 单位信息关联发票

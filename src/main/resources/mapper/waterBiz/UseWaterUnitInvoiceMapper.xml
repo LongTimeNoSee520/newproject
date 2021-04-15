@@ -104,25 +104,26 @@
     FROM
     t_w_use_water_unit_invoice i
     LEFT JOIN t_w_water_use_pay_info p ON i.pay_info_id = p.id
-    LEFT JOIN (
-    SELECT
-    uu.*
-    FROM
-    t_w_use_water_unit uu,
-    t_w_use_water_unit_role ur
+<!--    LEFT JOIN (-->
+<!--    SELECT-->
+<!--    uu.*-->
+<!--    FROM-->
+<!--    t_w_use_water_unit uu,-->
+<!--    t_w_use_water_unit_role ur-->
+<!--    WHERE-->
+<!--    ur.person_id = #{loginId}-->
+<!--    AND ur.node_code = #{nodeCode}-->
+<!--    AND uu.unit_code_type = ur.unit_type_code-->
+<!--    ) u ON p.use_Water_unit_id = u.id-->
     WHERE
-    ur.person_id = #{loginId}
-    AND ur.node_code = #{nodeCode}
-    AND uu.unit_code_type = ur.unit_type_code
-    ) u ON p.use_Water_unit_id = u.id
-    WHERE
-    i.person= #{loginId}
-    AND i.node_code = #{nodeCode}
+<!--    i.person= #{loginId}-->
+     i.node_code = #{nodeCode}
     AND i.deleted = '0'
     AND ( i.pay_info_id IS NULL OR i.pay_info_id = '' )
     AND i.enabled = '0'
     AND i.received = '0'
     AND i.deleted = '0'
+    AND i.invoice_number != #{invoiceNumber}
     ORDER BY
     i.invoice_number DESC
 
