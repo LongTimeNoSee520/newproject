@@ -247,7 +247,7 @@
     </if>
     GROUP BY  sms_id,unit_code,phone_number,status
     )t3
-    ON t1.id=t3.sms_id
+    ON t2.id=t3.sms_id
     and t3.unit_code=t1.unitCode
     and t3.phone_number=t1.mobileNumber
     where 1=1
@@ -352,7 +352,7 @@
     from t_sms_sendInfo
     GROUP BY  sms_id,unit_code,phone_number,status
     )t3
-    ON t1.id=t3.sms_id
+    ON t2.id=t3.sms_id
     and t3.unit_code=t1.unitCode
     and t3.phone_number=t1.mobileNumber
     where 1=1
