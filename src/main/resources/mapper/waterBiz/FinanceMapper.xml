@@ -53,6 +53,7 @@
     user_type
     FROM
     t_w_finance t1 where deleted = '0'
+    AND (invoice_state = '0' OR invoice_state = '1')
     and t1.node_code = #{nodeCode}
     <if test="unitName != null and unitName != ''">
       and unit_name like '%${unitName}%'
@@ -79,6 +80,7 @@
     count(1)
     FROM
     t_w_finance t1 where deleted = '0'
+    AND (invoice_state = '0' OR invoice_state = '1')
     and t1.node_code = #{nodeCode}
     <if test="unitName != null and unitName != ''">
       and unit_name like '%${unitName}%'

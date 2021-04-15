@@ -47,7 +47,7 @@ public class Finance extends Model<Finance> {
   @TableField(value = "payment_date", exist = true)
   private Date paymentDate;
 
-  @ApiModelProperty(value = "开票状态")
+  @ApiModelProperty(value = "开票状态 0:未开票 1：已开票")
   @TableField(value = "invoice_state", exist = true)
   private String invoiceState;
 
