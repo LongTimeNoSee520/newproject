@@ -191,11 +191,11 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
   @Override
   public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) {
 
-    final String fileName = "自来水公司原始资料导入模板.xls";
+    final String fileName = "自来水公司原始资料导入模板.xlsx";
     String saveFilePath =
         fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName;
 //    模板下载路径
-    String templatePath = "template/WaterQuantityManageTemplate.xls";
+    String templatePath = "template/WaterQuantityManageTemplate.xlsx";
 //    输入流
     InputStream inputStream = getClass().getClassLoader()
         .getResourceAsStream(templatePath);
@@ -243,11 +243,11 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     try {
       //合并文件
       FileUtil.combineFiles(files, fileUploadRootPath + fileUploadPath,
-          fileProcessId + "." + "xls");
+          fileProcessId + "." + "xlsx");
       //删除临时文件夹
       FileUtil.deleteDir(dir.getPath());
       ftpUtil.uploadFile(new File(fileUploadRootPath + fileUploadPath+
-          fileProcessId + "." + "xls"));
+          fileProcessId + "." + "xlsx"));
       result = true;
     } catch (IOException e) {
       log.error("合并文件失败,errMsg======{}", e.getMessage());
@@ -267,7 +267,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 
     String xmlConfig = "template/xml/WaterQuantityManage.xml";
     Map result = new HashMap();
-    String fileRealPath =  fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xls";
+    String fileRealPath =  fileUploadRootPath + fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx";
     errorMsgs = new StringBuffer();//错误信息
     String nodeCode = user.getNodeCode();
     /**日志*/
@@ -284,7 +284,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
     file1.setCreateTime(new Date());
     file1.setFileName(fileName);
     file1.setNodeCode(user.getNodeCode());
-    file1.setFilePath(fileUploadPath +java.io.File.separator+ fileProcessId + ".xls");
+    file1.setFilePath(fileUploadPath +java.io.File.separator+ fileProcessId + ".xlsx");
     List<com.zjtc.model.File> files = new ArrayList<>();
     files.add(file1);
     /**excel数据解析写入bean*/
