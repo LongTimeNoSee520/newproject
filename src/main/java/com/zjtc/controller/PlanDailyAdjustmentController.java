@@ -58,6 +58,7 @@ public class PlanDailyAdjustmentController {
           + " \"waterMeterCode\":\"水表档案号\",\n"
           + " \"planYearStart\":\"计划年度起始\",\n"
           + " \"planYearEnd\":\"计划年度截止\",\n"
+          + " \"industryId\":\"行业id\",\n"
           + "\"nodeCode\":\"节点编码\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("分页查询 ==== 参数{" + jsonObject.toJSONString() + "}");

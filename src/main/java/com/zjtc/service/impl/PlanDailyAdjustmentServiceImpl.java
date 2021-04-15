@@ -107,6 +107,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     String userId = user.getId();
     String unitCode = jsonObject.getString("unitCode");//单位编号
     String unitName = jsonObject.getString("unitName");//单位名称
+    String industry = jsonObject.getString("industryId");//单位名称
     String waterMeterCode = jsonObject.getString("waterMeterCode");//水表档案号
     Integer yearStart = jsonObject.getInteger("planYearStart");//计划年度起始
     Integer yearEnd = jsonObject.getInteger("planYearEnd");//计划年度截止
@@ -126,6 +127,9 @@ public class PlanDailyAdjustmentServiceImpl extends
     }
     if (StringUtils.isNotBlank(unitName)) {
       map.put("unitName", unitName);
+    }
+    if (StringUtils.isNotBlank(industry)) {
+      map.put("industry", industry);
     }
     if (StringUtils.isNotBlank(waterMeterCode)) {
       map.put("waterMeterCode", waterMeterCode);
