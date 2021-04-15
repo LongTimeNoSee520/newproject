@@ -42,43 +42,55 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
 //      Date paymentDate = finance.getPaymentDate();
 //      Date date = TimeUtil.formatTimeToDate(dateFormat.format(paymentDate));
 //      finance.setPaymentDate(date);
+//      如果创建时传入为空的话就默认为0：未开票
+      if (StringUtils.isBlank(finance.getInvoiceState())) {
+        finance.setInvoiceState("0");
+      }
       finance.setDeleted("0");
       finance.setNodeCode(nodeCode);
     }
     boolean b = this.saveBatch(finances);
     if (b) {
       response.setCode(200);
-      systemLogService.logInsert(user,"加价费管理","新增加价费管理","");
+      systemLogService.logInsert(user, "加价费管理", "新增加价费管理", "");
       return response;
     }
     return response;
   }
 
   @Override
-  public ApiResponse updateFinance(List<Finance> finances,User user) {
+  public ApiResponse updateFinance(List<Finance> finances, User user) {
     ApiResponse response = new ApiResponse();
     if (finances.isEmpty()) {
       response.recordError("系统错误");
       return response;
     }
-    for (Finance finance: finances) {
+
+    for (Finance finance : finances) {
       String invoiceState = this.baseMapper.selectInvoiceState(finance.getId());
       if ("1".equals(invoiceState)) {
-        response.recordError("用水单位:" +finance.getUnitCode()+"("+ finance.getUnitName() +")"+ "的数据已开票不能修改");
+        response.recordError(
+            "用水单位:" + finance.getUnitCode() + "(" + finance.getUnitName() + ")" + "的数据已开票不能修改");
         return response;
       }
+//      此条件必加，现在前端传值错误，如加此条件的话必定会进入此判断，等前端改好后放开此内容
+//      if ("1".equals(finance.getInvoiceState()) && (StringUtils.isBlank(finance.getDrawerId())
+//          || StringUtils.isBlank(finance.getDrawer()))) {
+//        response.recordError("请先选择开票人");
+//        return response;
+//      }
     }
     boolean b = this.updateBatchById(finances);
     if (b) {
       response.setCode(200);
-      systemLogService.logInsert(user,"加价费管理","修改加价费开票记录","");
+      systemLogService.logInsert(user, "加价费管理", "修改加价费开票记录", "");
       return response;
     }
     return response;
   }
 
   @Override
-  public ApiResponse deletedFinance(List<String> ids,User user) {
+  public ApiResponse deletedFinance(List<String> ids, User user) {
     ApiResponse response = new ApiResponse();
     if (ids.size() == 0) {
       response.recordError("系统错误");
@@ -91,7 +103,8 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
     for (Finance finance : finances) {
       String invoiceState = finance.getInvoiceState();
       if ("1".equals(invoiceState)) {
-        response.recordError("用水单位:" +finance.getUnitCode()+"("+ finance.getUnitName() +")"+ "的数据已开票不能删除");
+        response.recordError(
+            "用水单位:" + finance.getUnitCode() + "(" + finance.getUnitName() + ")" + "的数据已开票不能删除");
         return response;
       }
     }
@@ -99,7 +112,7 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
       b = this.baseMapper.updateFinanceDeleted(id);
     }
     if (b > 0) {
-      systemLogService.logInsert(user,"加价费管理","删除加价费开票记录","");
+      systemLogService.logInsert(user, "加价费管理", "删除加价费开票记录", "");
       response.setCode(200);
       return response;
     } else {

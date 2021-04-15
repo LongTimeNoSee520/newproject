@@ -139,6 +139,17 @@ public interface UseWaterUnitInvoiceMapper extends BaseMapper<UseWaterUnitInvoic
   int updateEnabledStatus(@Param("id") String id);
 
 
+  /**
+   * 发票导出
+   * @param invoiceNumber
+   * @param begin
+   * @param end
+   * @param enabled
+   * @param received
+   * @param nodeCode
+   * @param loginId
+   * @return
+   */
   List<UseWaterUnitInvoice> export(
       @Param("invoiceNumber") String invoiceNumber,
       @Param("begin") Integer begin,
