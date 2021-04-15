@@ -28,7 +28,6 @@
     <result column="countQuarter" property="countQuarter" jdbcType="VARCHAR"/>
     <result column="countYear" property="countYear" jdbcType="INTEGER"/>
     <result column="actualAmount" property="actualAmount" jdbcType="DOUBLE"/>
-
   </resultMap>
 
   <select id="selectInvoiceNumber" resultType="int">

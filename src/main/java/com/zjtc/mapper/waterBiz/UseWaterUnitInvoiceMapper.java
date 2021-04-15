@@ -109,6 +109,7 @@ public interface UseWaterUnitInvoiceMapper extends BaseMapper<UseWaterUnitInvoic
       @Param("nodeCode") String nodeCode,
       @Param("loginId") String loginId);
 
+
   /**
    * 查询未被使用的发票编号
    * @return 集合
