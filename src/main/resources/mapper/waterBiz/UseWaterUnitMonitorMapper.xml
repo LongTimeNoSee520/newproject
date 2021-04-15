@@ -433,7 +433,7 @@
     industry_name,(#{currentYear}+1) AS year,monitor_type,deleted,${userId} AS create_person_id,getdate() AS create_time,
     delete_time,unit_code_type,industry
     FROM t_w_use_water_unit_monitor
-    WHERE unit_code NOT  IN ( SELECT unit_code FROM t_w_use_water_unit_monitor WHERE year= #{currentYear}+1 UNION ALL SELECT 'NO_THIS_CODE'AS unit_code)
+    WHERE unit_code NOT  IN ( SELECT unit_code FROM t_w_use_water_unit_monitor WHERE year= #{currentYear}+1 AND  deleted ='0' UNION ALL SELECT 'NO_THIS_CODE'AS unit_code)
     AND  deleted ='0'
     AND  monitor_type = #{monitorType}
     AND node_code = #{nodeCode}
