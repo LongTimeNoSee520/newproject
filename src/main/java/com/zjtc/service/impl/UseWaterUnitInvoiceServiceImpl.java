@@ -442,11 +442,11 @@ public class UseWaterUnitInvoiceServiceImpl extends
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
     try {
-      String fileName = "发票管理.xlsx";
+      String fileName = "发票管理.xls";
       String saveFilePath =
           fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName;
       InputStream inputStream = getClass().getClassLoader()
-          .getResourceAsStream("template/invoiceRecord.xlsx");
+          .getResourceAsStream("template/invoiceRecord.xls");
       OutputStream os = new FileOutputStream(saveFilePath);
       JxlsUtils.exportExcel(inputStream, os, data);
       os.close();
