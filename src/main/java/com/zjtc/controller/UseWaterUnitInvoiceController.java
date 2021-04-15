@@ -363,7 +363,11 @@ public class UseWaterUnitInvoiceController {
 
   @RequestMapping(value = "selectInvoices", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("查询未被使用的发票编号")
-  public ApiResponse selectInvoices( @RequestHeader("token") String token,@RequestBody JSONObject jsonObject) {
+  public ApiResponse selectInvoices( @RequestHeader("token") String token,
+      @ApiParam(""
+      + "{\n"
+      + "    \"invoiceNumber\":\"当前发票号\",\n"
+      + "}") @RequestBody JSONObject jsonObject) {
     log.info("分页查询数据,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
