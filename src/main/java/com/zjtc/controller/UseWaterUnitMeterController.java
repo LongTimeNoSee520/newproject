@@ -57,8 +57,7 @@ public class UseWaterUnitMeterController {
       response.setData(useWaterUnitId);
       return response;
     } catch (Exception e) {
-      response.setCode(500);
-      response.setMessage("查看用水单位水表信息异常");
+      response.recordError("查看用水单位水表信息异常");
       log.error("查看用水单位水表信息失败,errMsg==={}" + e.getMessage());
       e.printStackTrace();
     }
@@ -91,8 +90,7 @@ public class UseWaterUnitMeterController {
       response.setCode(200);
       return response;
     } catch (Exception e) {
-      response.setCode(500);
-      response.setMessage("查看用水单位水表信息异常");
+      response.recordError("查看用水单位水表信息异常");
       log.error("查看用水单位水表信息失败,errMsg==={}" + e.getMessage());
       e.printStackTrace();
     }

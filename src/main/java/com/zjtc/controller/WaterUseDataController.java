@@ -57,7 +57,7 @@ public class WaterUseDataController {
     try {
       List<Integer> list = waterUseDataService.queryYear(jsonObject.getString("nodeCode"));
       if (list.isEmpty()) {
-        response.recordError("查询可使用年份失败");
+        response.setMessage("没有可使用年份");
         return response;
       } else {
         response.setData(list);
@@ -82,7 +82,7 @@ public class WaterUseDataController {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     if (user == null) {
-      response.setMessage("根据水表档案号回填水表信息失败");
+      response.setMessage("获取登录用户信息错误");
       return response;
     }
     if (null == jsonObject) {
@@ -96,8 +96,8 @@ public class WaterUseDataController {
       List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
           .selectWaterUseData(waterMeterCode,useWaterUnitId);
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList){
-        if (!StringUtils.isBlank(waterMonthUseData.getUseWaterUnitId())){
-          response.recordError("该水表档案号已被使用");
+        if (StringUtils.isNoneBlank(waterMonthUseData.getUseWaterUnitId())){
+          response.setMessage("该水表档案号已被其他单位使用");
           return response;
         }
       }
@@ -105,7 +105,7 @@ public class WaterUseDataController {
       response.setData(waterMonthUseDataList);
       return response;
     } catch (Exception e) {
-      response.recordError("根据水表档案号回填水表信息异常");
+      response.setMessage("没有找到该水表信息");
       log.error("根据水表档案号回填水表信息错误,errMsg==={}", e.getMessage());
       e.printStackTrace();
     }
