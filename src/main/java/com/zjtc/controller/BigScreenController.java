@@ -115,7 +115,7 @@ public class BigScreenController {
       return response;
     }
     try {
-      List<Map<String ,Object>> banks = bigScreenService
+      Map<String ,Object> banks = bigScreenService
           .selectUnitById(jsonObject);
       response.setData(banks);
       return response;

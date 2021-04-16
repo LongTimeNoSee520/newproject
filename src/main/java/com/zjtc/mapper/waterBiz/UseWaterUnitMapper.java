@@ -124,7 +124,7 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   /**数字大屏
    *根据用水单位id查询用水户信息
    */
-  List<Map<String, Object>> selectUnitById(JSONObject jsonObject);
+  Map<String, Object> selectUnitById(JSONObject jsonObject);
 
 
   /**数字大屏

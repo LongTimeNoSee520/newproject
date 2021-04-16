@@ -83,8 +83,8 @@ public class BigScreenServiceImpl implements BigScreenService {
   }
 
   @Override
-  public List<Map<String, Object>> selectUnitById(JSONObject jsonObject) {
-    List<Map<String, Object>> list = new ArrayList<>();
+  public Map<String, Object> selectUnitById(JSONObject jsonObject) {
+    Map<String, Object> list = new HashMap<>();
     String nodeCode = jsonObject.getString("nodeCode");
     if (StringUtils.isBlank(nodeCode)) {
       //默认nodeCode

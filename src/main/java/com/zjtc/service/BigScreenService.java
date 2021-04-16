@@ -24,7 +24,7 @@ public interface BigScreenService  {
    * @param jsonObject
    * @return
    */
-  List<Map<String,Object>> selectUnitById(JSONObject jsonObject);
+  Map<String,Object> selectUnitById(JSONObject jsonObject);
   /**
    *查询左侧管理户数、计划用水量、实际用水量
    * @param jsonObject

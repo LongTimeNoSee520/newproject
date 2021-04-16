@@ -145,7 +145,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
   /**数字大屏
    *根据用水单位id查询用水户信息
    */
-  List<Map<String, Object>> selectUnitById(JSONObject jsonObject);
+  Map<String, Object> selectUnitById(JSONObject jsonObject);
 
   /**数字大屏
    * 查询左侧管理户数、计划用水量、实际用水量
