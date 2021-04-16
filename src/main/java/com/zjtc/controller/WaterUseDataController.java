@@ -89,14 +89,18 @@ public class WaterUseDataController {
       response.recordError("系统异常");
       return response;
     }
-    List<String> waterMeterCode = jsonObject.getJSONArray("waterMeterCode")
+    List<String> waterMeterCodes = jsonObject.getJSONArray("waterMeterCode")
         .toJavaList(String.class);
+    if(null == waterMeterCodes || waterMeterCodes.size() == 0){
+      response.setMessage("未查到该水表信息");
+      return response;
+    }
     String useWaterUnitId = jsonObject.getString("useWaterUnitId");
     try {
       List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
-          .selectWaterUseData(waterMeterCode,useWaterUnitId);
+          .selectWaterUseData(waterMeterCodes,useWaterUnitId);
       if (waterMonthUseDataList.size() == 0){
-        response.setMessage("没有查到该水表信息");
+        response.setMessage("未查到该水表信息");
         return response;
       }
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList){
