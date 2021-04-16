@@ -97,17 +97,17 @@ public class WaterUseDataController {
       return response;
     }
     String useWaterUnitId = jsonObject.getString("useWaterUnitId");
-    List<WaterMonthUseData> waterMonthUseDataList = new ArrayList<>();
     try {
-      waterMonthUseDataList = waterMonthUseDataService
+      List<WaterMonthUseData>  waterMonthUseDataList = waterMonthUseDataService
           .selectWaterUseData(waterMeterCodes, useWaterUnitId);
-      if (waterMonthUseDataList.size() == 0) {
+      if (null == waterMonthUseDataList || waterMonthUseDataList.size() == 0) {
         response.setMessage("未查到该水表信息");
         return response;
       }
+
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList) {
-        if (!StringUtils.isBlank(waterMonthUseData.getUseWaterUnitId())) {
-          response.setMessage("该水表档案号已被其他单位使用");
+        if (null != waterMonthUseData && !StringUtils.isBlank(waterMonthUseData.getUseWaterUnitId())) {
+          response.setMessage("该水表档案号:"+waterMonthUseData.getWaterMeterCode()+"已被其他单位使用");
           return response;
         }
       }
