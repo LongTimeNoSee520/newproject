@@ -95,6 +95,10 @@ public class WaterUseDataController {
     try {
       List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
           .selectWaterUseData(waterMeterCode,useWaterUnitId);
+      if (waterMonthUseDataList.size() == 0){
+        response.setMessage("没有查到该水表信息");
+        return response;
+      }
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList){
         if (StringUtils.isNoneBlank(waterMonthUseData.getUseWaterUnitId())){
           response.setMessage("该水表档案号已被其他单位使用");
