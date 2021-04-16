@@ -246,7 +246,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
     //更新缴费信息
     try {
       waterUsePayInfoService
-          .editInvoiceInfo(unitInvoice2.getPayInfoId(), rearId, unitInvoice2.getInvoiceNumber());
+          .editInvoiceInfo(unitInvoice1.getPayInfoId(), rearId, unitInvoice1.getInvoiceNumber());
     } catch (Exception e) {
       e.printStackTrace();
       throw new Exception("更新缴费信息异常");
@@ -372,8 +372,8 @@ public class UseWaterUnitInvoiceServiceImpl extends
 
 
   @Override
-  public List<Map<String, Object>> selectInvoices(String loginId, String nodeCode,String invoiceNumber) {
-    return this.baseMapper.selectInvoices(loginId, nodeCode, invoiceNumber);
+  public List<Map<String, Object>> selectInvoices(String loginId, String nodeCode) {
+    return this.baseMapper.selectInvoices(loginId, nodeCode);
   }
 
   @Override

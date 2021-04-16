@@ -615,14 +615,10 @@ public class WaterUsePayInfoServiceImpl extends
 
   @Override
   public boolean editInvoiceInfo(String id, String invoiceId, String invoiceNumber) {
-    if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(invoiceId) && StringUtils
+    if (StringUtils.isBlank(id) || StringUtils.isBlank(invoiceId) || StringUtils
         .isNotBlank(invoiceNumber)) {
       return false;
     }
-    WaterUsePayInfo waterUsePayInfo = new WaterUsePayInfo();
-    waterUsePayInfo.setId(id);
-    waterUsePayInfo.setInvoiceNum(invoiceNumber);
-    waterUsePayInfo.setId(invoiceId);
-    return this.baseMapper.updateNotNull(waterUsePayInfo);
+    return this.baseMapper.updateInvoiceNum(id,invoiceNumber);
   }
 }

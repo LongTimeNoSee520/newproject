@@ -1110,7 +1110,6 @@
       <if test="unitCode != null">unit_code = #{unitCode},</if>
       <if test="payType != null">pay_type = #{payType},</if>
       <if test="invoiceNum != null">invoice_num = #{invoiceNum},</if>
-      <if test="invoiceId != null">invoice_id = #{invoiceId},</if>
       <if test="invoicePrintTime != null">invoice_print_time = #{invoicePrintTime},</if>
       <if test="countQuarter != null">count_quarter = #{countQuarter},</if>
       <if test="countYear != null">count_year = #{countYear},</if>
@@ -1145,5 +1144,10 @@
     </set>
     where id = #{id}
   </update>
+
+
+	<update id="updateInvoiceNum" >
+		update t_w_water_use_pay_info set invoice_num = #{invoiceNum} where id = #{id}
+	</update>
 
 </mapper>

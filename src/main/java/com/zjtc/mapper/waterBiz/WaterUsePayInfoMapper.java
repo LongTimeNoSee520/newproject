@@ -72,4 +72,12 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
    */
   boolean updateNotNull(WaterUsePayInfo waterUsePayInfo);
 
+  /**
+   * 更新发票号
+   * @param id
+   * @param invoiceNum
+   * @return
+   */
+  boolean updateInvoiceNum(@Param("id")String id,@Param("invoiceNum") String invoiceNum);
+
 }
