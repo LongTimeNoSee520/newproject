@@ -11,6 +11,7 @@ import com.zjtc.service.WaterUseDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -91,20 +92,21 @@ public class WaterUseDataController {
     }
     List<String> waterMeterCodes = jsonObject.getJSONArray("waterMeterCode")
         .toJavaList(String.class);
-    if(null == waterMeterCodes || waterMeterCodes.size() == 0){
+    if (null == waterMeterCodes || waterMeterCodes.size() == 0) {
       response.setMessage("未查到该水表信息");
       return response;
     }
     String useWaterUnitId = jsonObject.getString("useWaterUnitId");
+    List<WaterMonthUseData> waterMonthUseDataList = new ArrayList<>();
     try {
-      List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
-          .selectWaterUseData(waterMeterCodes,useWaterUnitId);
-      if (waterMonthUseDataList.size() == 0){
+      waterMonthUseDataList = waterMonthUseDataService
+          .selectWaterUseData(waterMeterCodes, useWaterUnitId);
+      if (waterMonthUseDataList.size() == 0) {
         response.setMessage("未查到该水表信息");
         return response;
       }
-      for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList){
-        if (StringUtils.isNoneBlank(waterMonthUseData.getUseWaterUnitId())){
+      for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList) {
+        if (!StringUtils.isBlank(waterMonthUseData.getUseWaterUnitId())) {
           response.setMessage("该水表档案号已被其他单位使用");
           return response;
         }
