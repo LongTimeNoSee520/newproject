@@ -238,7 +238,8 @@
   </select>
   <select id="queryMessage" resultMap="MessageResultMap">
     SELECT t1.use_water_unit_id,t1.unit_code,t1.unit_name,COALESCE(t1.water_meter_code,'') AS water_meter_code,t1.plan_year,t1.cur_year_plan,
-    t1.first_quarter,t1.second_quarter,t1.third_quarter,t1.fourth_quarter,minus_pay_status,balance_test,create_type,
+    COALESCE(t1.first_quarter,0) AS first_quarter,COALESCE(t1.second_quarter,0) AS second_quarter,COALESCE(t1.third_quarter,0) AS third_quarter,
+    COALESCE(t1.fourth_quarter,0) AS fourth_quarter,minus_pay_status,balance_test,create_type,
     COALESCE((SELECT sum(COALESCE(water_number,0))
              FROM t_w_water_use_data
              WHERE use_month=#{thisMonth}
