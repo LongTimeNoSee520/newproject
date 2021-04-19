@@ -33,6 +33,7 @@
 		WHERE execute_person_id = #{userId}
 		AND node_code =#{nodeCode}
 		AND status = '0'
+		ORDER BY createTime ASC
 	</select>
 
   <select id="selectTodoModel" resultMap="result_Todo_Map">
