@@ -100,22 +100,22 @@ public class WaterUseDataController {
     try {
       List<WaterMonthUseData>  waterMonthUseDataList = waterMonthUseDataService
           .selectWaterUseData(waterMeterCodes, useWaterUnitId);
-      if (null == waterMonthUseDataList || waterMonthUseDataList.size() == 0) {
-        response.setMessage("未查到该水表信息");
-        return response;
-      }
-
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList) {
         if (null != waterMonthUseData && !StringUtils.isBlank(waterMonthUseData.getUseWaterUnitId())) {
           response.setMessage("该水表档案号:"+waterMonthUseData.getWaterMeterCode()+"已被其他单位使用");
           return response;
         }
       }
-      response.setCode(200);
-      response.setData(waterMonthUseDataList);
-      return response;
+      if (null == waterMonthUseDataList || waterMonthUseDataList.size() == 0) {
+        response.setMessage("未查到该水表信息");
+        return response;
+      }else {
+        response.setCode(200);
+        response.setData(waterMonthUseDataList);
+        return response;
+      }
     } catch (Exception e) {
-      response.setMessage("没有找到该水表信息");
+      response.setMessage("查询水表信息异常");
       log.error("根据水表档案号回填水表信息错误,errMsg==={}", e.getMessage());
       e.printStackTrace();
     }
