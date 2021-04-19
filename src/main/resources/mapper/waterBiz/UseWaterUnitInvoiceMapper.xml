@@ -122,7 +122,9 @@
     AND i.enabled = '0'
     AND i.received = '0'
     AND i.deleted = '0'
-    <!-- AND i.invoice_number != #{invoiceNumber} -->
+    <if test="invoiceNumber != null and invoiceNumber != ''">
+     AND i.invoice_number != #{invoiceNumber}
+    </if>
     ORDER BY
     i.invoice_number DESC
 

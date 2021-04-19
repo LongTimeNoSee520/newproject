@@ -26,6 +26,7 @@ import io.swagger.annotations.ApiOperation;
 
 /**
  * UseWaterUnitInvoice的路由接口服务
+ *
  * @Author: ZhouDaBo
  * @Date: 2020/12/26
  */
@@ -57,7 +58,7 @@ public class UseWaterUnitInvoiceController {
     User user = jwtUtil.getUserByToken(token);
 
     List<String> list = jsonObject.getJSONArray("invoiceNumbers").toJavaList(String.class);
-    if (list.isEmpty()){
+    if (list.isEmpty()) {
       response.recordError("参数错误");
       return response;
     }
@@ -85,22 +86,22 @@ public class UseWaterUnitInvoiceController {
       + "    \"ids\":[\n"
       + "       \"id数据集\"\n"
       + "    ]\n"
-      + "}") @RequestBody JSONObject jsonObject,@RequestHeader("token") String token) {
+      + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     log.info("删除发票信息 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse response = new ApiResponse();
 
     User user = jwtUtil.getUserByToken(token);
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
-   if (null == user){
-     response.recordError("系统异常");
-     return response;
-   }
+    if (null == user) {
+      response.recordError("系统异常");
+      return response;
+    }
     if (ids.isEmpty()) {
       response.recordError("参数错误");
       return response;
     }
     try {
-      response = useWaterUnitInvoiceService.deleteModel(ids,user);
+      response = useWaterUnitInvoiceService.deleteModel(ids, user);
       return response;
     } catch (Exception e) {
       e.printStackTrace();
@@ -123,7 +124,7 @@ public class UseWaterUnitInvoiceController {
       + "    \"ids\":[\n"
       + "       \"id数据集\"\n"
       + "    ]\n"
-      + "}") @RequestBody JSONObject jsonObject,@RequestHeader("token") String token) {
+      + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     log.info("作废发票信息 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse response = new ApiResponse();
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
@@ -133,7 +134,7 @@ public class UseWaterUnitInvoiceController {
       return response;
     }
     try {
-      response = useWaterUnitInvoiceService.abolish(ids,user);
+      response = useWaterUnitInvoiceService.abolish(ids, user);
       return response;
     } catch (Exception e) {
       e.printStackTrace();
@@ -156,7 +157,7 @@ public class UseWaterUnitInvoiceController {
       + "    \"ids\":[\n"
       + "       \"id数据集\"\n"
       + "    ]\n"
-      + "}") @RequestBody JSONObject jsonObject,@RequestHeader("token") String token) {
+      + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     log.info("取消作废发票信息 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
@@ -165,12 +166,12 @@ public class UseWaterUnitInvoiceController {
       response.recordError("参数错误");
       return response;
     }
-    if (null == user){
+    if (null == user) {
       response.recordError("参数错误");
       return response;
     }
     try {
-      response = useWaterUnitInvoiceService.cancelAbolish(ids,user);
+      response = useWaterUnitInvoiceService.cancelAbolish(ids, user);
       return response;
     } catch (Exception e) {
       e.printStackTrace();
@@ -206,7 +207,7 @@ public class UseWaterUnitInvoiceController {
     if (null != jsonObject) {
       entity = jsonObject.toJavaObject(UseWaterUnitInvoice.class);
       if (null != entity) {
-        response = useWaterUnitInvoiceService.updateModel(entity,user);
+        response = useWaterUnitInvoiceService.updateModel(entity, user);
         return response;
       }
       response.recordError("开票登记失败");
@@ -241,7 +242,7 @@ public class UseWaterUnitInvoiceController {
         response = useWaterUnitInvoiceService.exchange(frontId, rearId, user);
       } catch (Exception e) {
         response.recordError("重置发票异常");
-        log.error("重置发票异常",e.getMessage());
+        log.error("重置发票异常", e.getMessage());
       }
       return response;
     }
@@ -339,17 +340,18 @@ public class UseWaterUnitInvoiceController {
       response.setMessage("分页查询失败");
       return response;
     }
-    if (null == jsonObject){
+    if (null == jsonObject) {
       response.recordError("系统异常");
       return response;
     }
     String nodeCode;
     try {
       if (null != jsonObject.getString("nodeCode")) {
-         nodeCode = jsonObject.getString("nodeCode");
+        nodeCode = jsonObject.getString("nodeCode");
         response = useWaterUnitInvoiceService.queryPage(jsonObject, nodeCode, user.getId());
-      }else{
-        response = useWaterUnitInvoiceService.queryPage(jsonObject, user.getNodeCode(), user.getId());
+      } else {
+        response = useWaterUnitInvoiceService
+            .queryPage(jsonObject, user.getNodeCode(), user.getId());
       }
 
       return response;
@@ -363,25 +365,25 @@ public class UseWaterUnitInvoiceController {
 
   @RequestMapping(value = "selectInvoices", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("查询未被使用的发票编号")
-  public ApiResponse selectInvoices( @RequestHeader("token") String token,
+  public ApiResponse selectInvoices(@RequestHeader("token") String token,
       @ApiParam(""
-      + "{\n"
-      + "    \"invoiceNumber\":\"当前发票号\",\n"
-      + "}") @RequestBody JSONObject jsonObject) {
+          + "{\n"
+          + "    \"invoiceNumber\":\"当前发票号\",\n"
+          + "}") @RequestBody JSONObject jsonObject) {
     log.info("分页查询数据,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
-    if (null == jsonObject){
+    if (null == jsonObject) {
       response.recordError("系统异常");
       return response;
     }
-    String invoiceNumber = jsonObject.getString("invoiceNumber");
-    if (StringUtils.isBlank(invoiceNumber)){
-      response.recordError("获取当前发票号异常");
-      return response;
+    String invoiceNumber = null;
+    if (null != jsonObject.getString("invoiceNumber")) {
+      invoiceNumber = jsonObject.getString("invoiceNumber");
     }
     try {
-      List<Map<String, Object>> maps = useWaterUnitInvoiceService.selectInvoices(user.getId(),user.getNodeCode(),invoiceNumber);
+      List<Map<String, Object>> maps = useWaterUnitInvoiceService
+          .selectInvoices(user.getId(), user.getNodeCode(), invoiceNumber);
       response.setData(maps);
       return response;
     } catch (Exception e) {
@@ -394,28 +396,29 @@ public class UseWaterUnitInvoiceController {
 
   @RequestMapping(value = "updateInvoicesUnitMessage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("更新发票的单位信息")
-  public ApiResponse updateInvoicesUnitMessage( @ApiParam("{\n"
+  public ApiResponse updateInvoicesUnitMessage(@ApiParam("{\n"
       + "\"id\":\"主键\",\n"
       + "\"payInfoId\":\"缴费记录id\",\n"
       + "\"invoiceMoney\":\"发票金额\",\n"
       + "\"invoiceUnitName\":\"发票单位名称\",\n"
       + "\"invoiceType\":\"0有效1作废\",\n"
       + "\"invoiceUnitCode\":\"发票单位编号\"\n"
-      + "}")@RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
+      + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     log.info("分页查询数据,参数param==={" + jsonObject.toJSONString() + "}");
     ApiResponse response = new ApiResponse();
-    if (null == jsonObject){
+    if (null == jsonObject) {
       response.recordError("系统异常");
       return response;
     }
     User user = jwtUtil.getUserByToken(token);
-    if (null == user){
+    if (null == user) {
       response.recordError("系统异常");
       return response;
     }
     UseWaterUnitInvoice unitInvoice = jsonObject.toJavaObject(UseWaterUnitInvoice.class);
     try {
-      response = useWaterUnitInvoiceService.updateInvoicesUnitMessage(unitInvoice,user.getUsername(),user.getNodeCode());
+      response = useWaterUnitInvoiceService
+          .updateInvoicesUnitMessage(unitInvoice, user.getUsername(), user.getNodeCode());
       return response;
     } catch (Exception e) {
       response.recordError("更新发票的单位信息异常");
