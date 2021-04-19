@@ -107,7 +107,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     String  passContent =
         "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
             + endPaper.getAddNumber()+ "方(第一水量"
-            + endPaper.getFirstWater() + "方，第二水量" +endPaper.getSecondWater() + "方)]审核已通过,请到微信端确认。";
+            + endPaper.getFirstWater() + "方，第二水量" +endPaper.getSecondWater() + "方)]审核已通过,请到公共服务平台或微信端确认。";
     String  passContent1 =
         "您发起的[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
             + endPaper.getAddNumber()+ "方(第一水量"

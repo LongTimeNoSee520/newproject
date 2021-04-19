@@ -277,12 +277,12 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
           if ("0".equals(endPaper.getPaperType())) {//调整计划
             messageContent1 = "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")"
                 + "申请调整计划，调整后4个季度水量：第一季度" + firstQuarter + "方,第二季度" + secondQuarter + "方，第三季度"
-                + thirdQuarter + "方,第四季度" + fourthQuarter + "方]审核已通过,请到微信端确认。";
+                + thirdQuarter + "方,第四季度" + fourthQuarter + "方]审核已通过,请到公共服务平台或微信端确认。";
           } else if ("1".equals(endPaper.getPaperType())) {//增加计划
             messageContent1 =
                 "[用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划"
                     + addNumber + "方(第一水量"
-                    + firstWater + "方，第二水量" + secondWater + "方)]审核已通过,请到微信端确认。";
+                    + firstWater + "方，第二水量" + secondWater + "方)]审核已通过,请到公共服务平台或微信端确认。";
           }
           if (!"2".equals(endPaper.getAuditStatus())) {//没有超额
             UseWaterPlanAddWX waterPlanAddWX = new UseWaterPlanAddWX();
