@@ -166,6 +166,10 @@ public class EndPaperVO extends Model<EndPaperVO>{
     @ApiModelProperty("其他证明材料")
     private String otherFileId;
 
+    @ApiModelProperty("打印时的当季计划")
+    private Double quarterNum;
+
+
 
 	@Override
 	protected Serializable pkVal() {

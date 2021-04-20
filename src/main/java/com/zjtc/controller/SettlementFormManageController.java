@@ -283,4 +283,45 @@ public class SettlementFormManageController {
     return response;
   }
 
+  @RequestMapping(value = "printData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "查询打印数据(办结单打印)")
+  public ApiResponse printData(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "    \"useWaterUnitIds\":[//用水单位id集合(调整审核页面打印时必传)\n"
+          + "        \"useWaterUnitId1\",\n"
+          + "        \"useWaterUnitId2\"\n"
+          + "    ],\n"
+          + "    \"ids\":[//办结单id集合(办结单页面打印时必传)\n"
+          + "        \"id1\",\n"
+          + "        \"id2\"\n"
+          + "    ],\n"
+          + "\"quarter\":\"当前季度 数字\"\n"
+          + "\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("查询打印数据 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        //  User user = jwtUtil.getUserByToken(token);
+        Map<String, Object> result = new HashMap<>();
+        List<String> useWaterUnitIds= jsonObject.getJSONArray("useWaterUnitIds").toJavaList(String.class);
+        List<String> ids= jsonObject.getJSONArray("ids").toJavaList(String.class);
+        Integer quarter = jsonObject.getInteger("quarter");
+        if(!useWaterUnitIds.isEmpty() || !ids.isEmpty() ){
+          result = endPaperService.printData(useWaterUnitIds,ids,quarter);
+          response.setData(result);
+        }else {
+          response.recordError("请选择要打印的单位");
+          return  response;
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+        log.error("打印数据查询失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("分页查询参数不能为空");
+    }
+    return response;
+  }
 }

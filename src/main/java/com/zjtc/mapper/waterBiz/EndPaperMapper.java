@@ -42,4 +42,9 @@ public interface EndPaperMapper extends BaseMapper<EndPaper> {
    * 查询办结单信息
    */
   List<SendListVO> queryAfterAdjustUnit(Map<String, Object> map);
+  /**
+   * 查询办结单打印数据
+   */
+  List<EndPaperVO> printData(@Param("useWaterUnitIds") List<String> useWaterUnitIds,
+      @Param("ids") List<String> ids, @Param("quarter") Integer quarter);
 }

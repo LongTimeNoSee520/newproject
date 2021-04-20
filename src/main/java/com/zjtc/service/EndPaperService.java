@@ -64,4 +64,13 @@ public interface EndPaperService extends IService<EndPaper> {
    * @param sendList
    */
   void adjustResultNotification(User user, List<SendListVO> sendList) throws Exception;
+
+  /**
+   * 查询打印信息
+   * @param useWaterUnitIds
+   * @param ids
+   * @param quarter
+   * @return
+   */
+  Map<String,Object> printData(List<String> useWaterUnitIds,List<String> ids,Integer quarter);
 }

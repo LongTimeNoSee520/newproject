@@ -678,6 +678,24 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     smsService.sendNotification(user, sendList, SmsConstants.SEND_NOTIFICATION_ADJUST_RESULT, null);
   }
 
+  @Override
+  public Map<String, Object> printData(List<String> useWaterUnitIds,List<String> ids,Integer quarter) {
+    Map<String, Object> result = new LinkedHashMap<>();
+    List<EndPaperVO> records = this.baseMapper.printData(useWaterUnitIds,ids,quarter);
+    for (EndPaperVO paperVO : records) {
+      /**查询流程信息*/
+      paperVO.setAuditMessages(
+          flowProcessService.queryAuditList(paperVO.getId(), paperVO.getNodeCode()));
+      /**查询字典项名称*/
+      if (StringUtils.isNotBlank(paperVO.getPaperType())) {
+        paperVO.setPaperTypeName(
+            dictUtils.getDictItemName("changeType", paperVO.getPaperType(), paperVO.getNodeCode()));
+      }
+    }
+    result.put("records", records);
+    return result;
+  }
+
 
   /**
    * 查询附件
