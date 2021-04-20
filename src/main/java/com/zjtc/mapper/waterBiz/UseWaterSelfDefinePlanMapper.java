@@ -145,4 +145,12 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
    * @return 匹配的数据
    */
   UseWaterSelfDefinePlan selectExecuted(@Param("id") String id);
+
+
+  /**
+   * 通过单位编号查询单位信息
+   * @param unitCode 单位编号
+   * @return
+   */
+  UseWaterSelfDefinePlan selectByUnitCode(@Param("unitCode") String unitCode);
 }

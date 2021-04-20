@@ -112,7 +112,6 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       unitCode = jsonObject.getString("unitCode");
     }
 
-
 ////    排序
 //    String rank = "";
 //    if (null != jsonObject.getString("rank")) {
@@ -127,7 +126,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     List<String> audit = new ArrayList<>();
     if ("0".equals(auditStatus)) {
       audit.add("0");
-    }else if ("2".equals(auditStatus)){
+    } else if ("2".equals(auditStatus)) {
       audit.add("1");
       audit.add("2");
     }
@@ -139,18 +138,18 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     }
 //    用户类型 5-6位
     String unitCodeType = null;
-    if (null != jsonObject.getString("unitCodeType")){
+    if (null != jsonObject.getString("unitCodeType")) {
       unitCodeType = jsonObject.getString("unitCodeType");
     }
 //    编号开头
     String areaCode = "";
-    if (null != jsonObject.getString("areaCode")){
+    if (null != jsonObject.getString("areaCode")) {
       areaCode = jsonObject.getString("areaCode");
     }
 //    总条数
     Integer total = this.baseMapper
         .selectCount(unitName, userType, planYear, executed, unitCode, nodeCode, audit,
-            userId,unitCodeType,areaCode);
+            userId, unitCodeType, areaCode);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
@@ -158,12 +157,12 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     // TODO: 2021/2/18 因为没有附件id,需要根据业务id在附件表里去查对应的业务id,现在的做法是默认有附件id的情况,错误
     List<UseWaterSelfDefinePlanVO> waterSelfDefinePlans = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType, planYear, executed, unitCode, nodeCode,
-            audit, userId, preViewRealPath,unitCodeType,areaCode);
+            audit, userId, preViewRealPath, unitCodeType, areaCode);
 
     for (UseWaterSelfDefinePlanVO useWaterSelfDefinePlanVO : waterSelfDefinePlans) {
       List<FileVO> selfDefineFiles = useWaterSelfDefinePlanVO.getSelfDefineFiles();
-      for (FileVO file : selfDefineFiles){
-        file.setFilePath(preViewRealPath+file.getFilePath());
+      for (FileVO file : selfDefineFiles) {
+        file.setFilePath(preViewRealPath + file.getFilePath());
       }
 //     未被审核和未被执行
       if ("0".equals(useWaterSelfDefinePlanVO.getAuditStatus()) && "0"
@@ -351,8 +350,10 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //      wrapper1.eq("unit_code", useWaterSelfDefinePlan.getUnitCode());
 //      wrapper1.eq("plan_year", useWaterSelfDefinePlan.getPlanYear());
 //      UseWaterPlan useWaterPlanModel = useWaterPlanService.getOne(wrapper1);//实际上只有一条数据
-      UseWaterPlan useWaterPlanModel = useWaterPlanService.selectUseWaterPlan(useWaterSelfDefinePlan.getNodeCode(),useWaterSelfDefinePlan.getUnitCode(),useWaterSelfDefinePlan.getPlanYear());
-     log.info("匹配到的用水计划表数据:"+useWaterPlanModel);
+      UseWaterPlan useWaterPlanModel = useWaterPlanService
+          .selectUseWaterPlan(useWaterSelfDefinePlan.getNodeCode(),
+              useWaterSelfDefinePlan.getUnitCode(), useWaterSelfDefinePlan.getPlanYear());
+      log.info("匹配到的用水计划表数据:" + useWaterPlanModel);
       if (null == useWaterPlanModel) {
         response.recordError("系统异常,操作失败");
         return response;
@@ -450,6 +451,24 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     } else {
       response.recordError("操作失败");
       TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+      return response;
+    }
+  }
+
+  @Override
+  public ApiResponse selectByUnitCode(List<String> unitCodes) {
+    ApiResponse response = new ApiResponse();
+    List<UseWaterSelfDefinePlan> list = new ArrayList<>();
+    for (String unitCode : unitCodes) {
+      UseWaterSelfDefinePlan useWaterSelfDefinePlan = this.baseMapper.selectByUnitCode(unitCode);
+      list.add(useWaterSelfDefinePlan);
+    }
+    if (list.size() > 0) {
+      response.setCode(200);
+      response.setData(unitCodes);
+      return response;
+    } else {
+      response.setMessage("未查到单位自平水量信息");
       return response;
     }
   }

@@ -397,4 +397,11 @@
     fileId
     FROM t_w_use_water_self_define_plan WHERE executed = '1' and id = #{id}
   </select>
+
+  <select id="selectByUnitCode" resultMap="UseWaterSelfDefinePlanVOModel">
+    select
+    *
+    from
+    t_w_use_water_self_define_plan where unit_code = #{unitCode}
+  </select>
 </mapper>

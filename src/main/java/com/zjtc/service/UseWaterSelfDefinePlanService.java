@@ -46,4 +46,11 @@ public interface UseWaterSelfDefinePlanService extends IService<UseWaterSelfDefi
    * @return 响应结果
    */
   ApiResponse execute(User user,List<String> ids, String executor, String executorId, String codeNode);
+
+  /**
+   * 通过单位编号查询单位信息
+   * @param unitCodes
+   * @return
+   */
+  ApiResponse selectByUnitCode(List<String> unitCodes);
 }

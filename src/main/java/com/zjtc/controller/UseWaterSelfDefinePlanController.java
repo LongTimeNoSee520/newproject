@@ -162,4 +162,30 @@ public class UseWaterSelfDefinePlanController {
     }
     return response;
   }
+
+  @ResponseBody
+  @ApiOperation(value = "通过单位编号查询单位信息")
+  @RequestMapping(value = "selectByUnitCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse selectByUnitCode(@RequestHeader("token") String token,
+      @ApiParam("   {\n"
+          + "     \"unitCodes\":[\"单位编号\"]\n"
+          + "   }")
+      @RequestBody JSONObject jsonObject) {
+    ApiResponse response = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null == user) {
+      response.recordError("系统异常");
+      return response;
+    }
+//  执行的数据id
+    List<String> unitCodes = jsonObject.getJSONArray("unitCodes").toJavaList(String.class);
+    try {
+      response = tWUseWaterSelfDefinePlanService.selectByUnitCode(unitCodes);
+      return response;
+    } catch (Exception e) {
+      log.error("通过单位编号查询单位信息异常==" + e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
 }
