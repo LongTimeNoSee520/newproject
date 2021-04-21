@@ -313,8 +313,6 @@
 	FROM t_w_use_water_plan WHERE  use_water_unit_id =t1.use_water_unit_id) AS quarter_num
 	FROM t_w_end_paper t1
   <if test="wxIds.size()>0">
-	INNER JOIN (SELECT use_water_unit_id,MAX(create_time) AS  create_time FROM t_w_end_paper GROUP BY use_water_unit_id)t2
-	 on t1.use_water_unit_id=t2.use_water_unit_id
 	WHERE t1.rescinded ='0'
   AND t1.water_plan_WX_id IN
 	<foreach collection="wxIds" item="id" separator="," open="(" close=")">
