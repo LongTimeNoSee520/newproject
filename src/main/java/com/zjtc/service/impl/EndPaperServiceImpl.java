@@ -11,6 +11,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.HttpUtil;
 import com.zjtc.base.util.JWTUtil;
+import com.zjtc.base.util.TimeUtil;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.EndPaperMapper;
 import com.zjtc.model.EndPaper;
@@ -681,6 +682,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   @Override
   public Map<String, Object> printData(List<String> wxIds,List<String> ids,Integer quarter) {
     Map<String, Object> result = new LinkedHashMap<>();
+    if(null==quarter ){
+      quarter= TimeUtil.toQuarter(new Date());
+    }
     List<EndPaperVO> records = this.baseMapper.printData(wxIds,ids,quarter);
     for (EndPaperVO paperVO : records) {
       /**查询流程信息*/
