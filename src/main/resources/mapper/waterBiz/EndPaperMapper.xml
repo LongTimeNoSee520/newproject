@@ -287,7 +287,7 @@
 	 ON t1.use_water_unit_id =t2.use_water_unit_id
  </select>
 <select id="printData" resultMap="PageResultMap">
-	SELECT  t1.id,t1.use_water_unit_id,t1.unit_code,t1.unit_name,
+	SELECT  t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_code,t1.unit_name,
 	t1.water_meter_code,t1.paper_type,<!--申报(调整)类型code-->
 	t1.plan_year,t1.change_quarter,t1.cur_year_plan,t1.first_water,
 	t1.second_water,t1.add_number,t1.first_quarter,t1.second_quarter,
