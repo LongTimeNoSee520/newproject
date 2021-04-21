@@ -67,10 +67,10 @@ public interface EndPaperService extends IService<EndPaper> {
 
   /**
    * 查询打印信息
-   * @param useWaterUnitIds
+   * @param wxIds
    * @param ids
    * @param quarter
    * @return
    */
-  Map<String,Object> printData(List<String> useWaterUnitIds,List<String> ids,Integer quarter);
+  Map<String,Object> printData(List<String> wxIds,List<String> ids,Integer quarter);
 }

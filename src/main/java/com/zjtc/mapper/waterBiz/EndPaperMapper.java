@@ -45,6 +45,6 @@ public interface EndPaperMapper extends BaseMapper<EndPaper> {
   /**
    * 查询办结单打印数据
    */
-  List<EndPaperVO> printData(@Param("useWaterUnitIds") List<String> useWaterUnitIds,
+  List<EndPaperVO> printData(@Param("wxIds") List<String> wxIds,
       @Param("ids") List<String> ids, @Param("quarter") Integer quarter);
 }

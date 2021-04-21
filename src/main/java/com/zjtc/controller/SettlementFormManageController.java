@@ -287,9 +287,9 @@ public class SettlementFormManageController {
   @ApiOperation(value = "查询打印数据(办结单打印)")
   public ApiResponse printData(@RequestHeader("token") String token,
       @ApiParam("{\n"
-          + "    \"useWaterUnitIds\":[//用水单位id集合(调整审核页面打印时必传)\n"
-          + "        \"useWaterUnitId1\",\n"
-          + "        \"useWaterUnitId2\"\n"
+          + "    \"wxIds\":[//调整审核页面数据的id集合(调整审核页面数据的id打印时必传)\n"
+          + "        \"id1\",\n"
+          + "        \"id2\"\n"
           + "    ],\n"
           + "    \"ids\":[//办结单id集合(办结单页面打印时必传)\n"
           + "        \"id1\",\n"
@@ -304,11 +304,11 @@ public class SettlementFormManageController {
       try {
         //  User user = jwtUtil.getUserByToken(token);
         Map<String, Object> result = new HashMap<>();
-        List<String> useWaterUnitIds= jsonObject.getJSONArray("useWaterUnitIds").toJavaList(String.class);
+        List<String> wxIds= jsonObject.getJSONArray("wxIds").toJavaList(String.class);
         List<String> ids= jsonObject.getJSONArray("ids").toJavaList(String.class);
         Integer quarter = jsonObject.getInteger("quarter");
-        if(!useWaterUnitIds.isEmpty() || !ids.isEmpty() ){
-          result = endPaperService.printData(useWaterUnitIds,ids,quarter);
+        if(!wxIds.isEmpty() || !ids.isEmpty() ){
+          result = endPaperService.printData(wxIds,ids,quarter);
           response.setData(result);
         }else {
           response.recordError("请选择要打印的单位");

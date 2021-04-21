@@ -679,9 +679,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   }
 
   @Override
-  public Map<String, Object> printData(List<String> useWaterUnitIds,List<String> ids,Integer quarter) {
+  public Map<String, Object> printData(List<String> wxIds,List<String> ids,Integer quarter) {
     Map<String, Object> result = new LinkedHashMap<>();
-    List<EndPaperVO> records = this.baseMapper.printData(useWaterUnitIds,ids,quarter);
+    List<EndPaperVO> records = this.baseMapper.printData(wxIds,ids,quarter);
     for (EndPaperVO paperVO : records) {
       /**查询流程信息*/
       paperVO.setAuditMessages(
