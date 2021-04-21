@@ -310,7 +310,7 @@
 		0
 	</otherwise>
 </choose>
-	FROM t_w_use_water_plan WHERE  use_water_unit_id =t1.use_water_unit_id) AS quarter_num
+	FROM t_w_use_water_plan WHERE  use_water_unit_id =t1.use_water_unit_id AND plan_year= t1.plan_year) AS quarter_num
 	FROM t_w_end_paper t1
   <if test="wxIds.size()>0">
 	WHERE t1.rescinded ='0'
