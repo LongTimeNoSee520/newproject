@@ -150,7 +150,8 @@
     t1.water_meter_code,t1.plan_year,t1.minus_pay_status,t1.balance_test,
     t1.create_type,t1.cur_year_plan,t1.first_quarter,t1.second_quarter,
     t1.third_quarter,t1.fourth_quarter,
-    '当前计划' AS plan_type_name,t1.update_time,t1.remarks,t1.printed
+    '当前计划' AS plan_type_name,t1.update_time,t1.remarks,
+    CASE t1.printed WHEN '1' THEN '是' ELSE '否' END AS  printed
     FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,
     id,node_code,use_water_unit_id,unit_name,unit_code,
     water_meter_code,plan_year,minus_pay_status,balance_test,

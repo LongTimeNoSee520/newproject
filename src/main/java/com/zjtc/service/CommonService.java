@@ -39,4 +39,12 @@ public interface CommonService  {
 
   Map<String, List> importExcel(Map<String, List> beans,MultipartFile file,
       String xmlConfig,boolean isThrowException) throws Exception;
+
+  /**
+   * 修改打印状态
+    * @param ids
+   * @param module
+   * @return
+   */
+  boolean updatePrintStatus(List<String> ids, String module);
 }

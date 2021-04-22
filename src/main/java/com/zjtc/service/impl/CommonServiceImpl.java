@@ -1,7 +1,9 @@
 package com.zjtc.service.impl;
 
+import com.zjtc.base.constant.SystemConstants;
 import com.zjtc.base.util.CommonUtil;
 import com.zjtc.base.util.JxlsUtils;
+import com.zjtc.mapper.waterBiz.CommonMapper;
 import com.zjtc.service.CommonService;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +20,7 @@ import org.jxls.reader.ReaderBuilder;
 import org.jxls.reader.ReaderConfig;
 import org.jxls.reader.XLSReadStatus;
 import org.jxls.reader.XLSReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -45,6 +48,9 @@ public class CommonServiceImpl implements CommonService{
    */
   @Value("${file.fileUploadPath}")
   private String fileUploadPath;
+
+  @Autowired
+  private CommonMapper commonMapper;
 
   @Override
   public boolean export(String fileName, String template, HttpServletRequest request,
@@ -147,6 +153,21 @@ public class CommonServiceImpl implements CommonService{
       }
     }
     return beans;
+  }
+
+  @Override
+  public boolean updatePrintStatus(List<String> ids, String module) {
+    boolean result = false;
+    if (SystemConstants.DAILY_ADJUST_PRINT.equals(module)) {
+      result = commonMapper.updatePrintStatus(ids, SystemConstants.DAILY_ADJUST_PRINT_TABLE);
+    } else if (SystemConstants.PAY_PRINT.equals(module)) {
+      result = commonMapper.updatePrintStatus(ids, SystemConstants.PAY_PRINT_TABLE);
+    } else if (SystemConstants.ADJUST_AUDIT_PRINT.equals(module)) {
+      result = commonMapper.updatePrintStatus(ids, SystemConstants.ADJUST_AUDIT_PRINT_TABLE);
+    } else {
+      result = false;
+    }
+    return result;
   }
 
   /**
