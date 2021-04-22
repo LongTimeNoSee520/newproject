@@ -3,6 +3,7 @@ package com.zjtc.mapper.waterBiz;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.WaterUsePayInfo;
+import com.zjtc.model.vo.PayPrintVo;
 import com.zjtc.model.vo.SendListVO;
 import com.zjtc.model.vo.WaterUsePayInfoVo;
 import java.util.List;
@@ -79,5 +80,26 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
    * @return
    */
   boolean updateInvoiceNum(@Param("id")String id,@Param("invoiceNum") String invoiceNum);
+
+  /**
+   * 打印汇总表1
+   * @param jsonObject
+   * @return
+   */
+  List<PayPrintVo> printExPlan1(JSONObject jsonObject);
+  /**
+   * 打印汇总表2
+   * @param jsonObject
+   * @return
+   */
+  List<PayPrintVo> printExPlan2(JSONObject jsonObject);
+
+  /**
+   * 查询当前用户的所有类型
+   * @param userId
+   * @param nodeCode
+   * @return
+   */
+  List<String> queryCodeTypeByPersonId(@Param("userId") String userId,@Param("nodeCode") String nodeCode);
 
 }

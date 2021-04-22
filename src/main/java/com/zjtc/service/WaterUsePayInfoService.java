@@ -149,4 +149,19 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
    * @return boolean
    */
   boolean editInvoiceInfo(String id,String invoiceId,String invoiceNumber);
+
+  /**
+   * 打印汇总表1
+   * @param jsonObject
+   * @param user
+   * @return
+   */
+  Map<String,Object> printExPlan1(JSONObject jsonObject,User user);
+  /**
+   * 打印汇总表2
+   * @param jsonObject
+   * @param user
+   * @return
+   */
+  Map<String,Object> printExPlan2(JSONObject jsonObject,User user);
 }

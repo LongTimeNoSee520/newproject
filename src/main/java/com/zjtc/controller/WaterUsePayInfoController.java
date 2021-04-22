@@ -114,7 +114,7 @@ public class WaterUsePayInfoController {
     if (null != jsonObject && null != user) {
       try {
         apiResponse = waterUsePayInfoService.updateModel(jsonObject, user);
-        if(apiResponse.getCode()==500){
+        if (apiResponse.getCode() == 500) {
           return apiResponse;
         }
       } catch (Exception e) {
@@ -370,7 +370,7 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        waterUsePayInfoService.exportQueryData(user,jsonObject, request, response);
+        waterUsePayInfoService.exportQueryData(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出查询结果失败,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -398,7 +398,7 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        waterUsePayInfoService.exportUser(user,jsonObject, request, response);
+        waterUsePayInfoService.exportUser(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出用户信息失败,errMsg==={}", e.getMessage());
         e.printStackTrace();
@@ -427,7 +427,7 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        waterUsePayInfoService.exportPayInfo(user,jsonObject, request, response);
+        waterUsePayInfoService.exportPayInfo(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出计划用水户超计划情况汇总表失败,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -455,7 +455,8 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        ApiResponse result = waterUsePayInfoService.exportBankInfo(user,jsonObject, request, response);
+        ApiResponse result = waterUsePayInfoService
+            .exportBankInfo(user, jsonObject, request, response);
         if (result.getCode() == 500) {
           return result;
         }
@@ -487,7 +488,7 @@ public class WaterUsePayInfoController {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
         ApiResponse result = waterUsePayInfoService
-            .exportOtherBankInfo(user,jsonObject, request, response);
+            .exportOtherBankInfo(user, jsonObject, request, response);
         if (500 == result.getCode()) {
           return result;
         }
@@ -536,6 +537,80 @@ public class WaterUsePayInfoController {
         }
       } catch (Exception e) {
         log.error("短信发送,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "打印汇总表1")
+  @RequestMapping(value = "printExPlan1", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse printExPlan1(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "    \"unitName\":\"单位名称\",\n"
+          + "    \"unitCode\":\"单位编号\",\n"
+          + "    \"countYear\":\"年，必填\",\n"
+          + "    \"countQuarter\":\"季度\",\n"
+          + "    \"payStatus\":\"缴费状态：0：未缴费，1已缴费\",\n"
+          + "    \"actualAmount\":\"金额\",\n"
+          + "    \"userType\":\"用户类型\",\n"
+          + "    \"waterMeterCode\":\"水表档案号\",\n"
+          + "    \"editedActual\":\"是否调整,0否，1是\",\n"
+          + "    \"payType\":\"付款方式：2现金,3转账\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("打印汇总表1， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user && null != jsonObject) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        Map<String, Object> result = waterUsePayInfoService
+            .printExPlan1(jsonObject, user);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("打印汇总表1失败,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "打印汇总表2")
+  @RequestMapping(value = "printExPlan2", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse printExPlan2(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "    \"unitName\":\"单位名称\",\n"
+          + "    \"unitCode\":\"单位编号\",\n"
+          + "    \"countYear\":\"年，必填\",\n"
+          + "    \"countQuarter\":\"季度\",\n"
+          + "    \"payStatus\":\"缴费状态：0：未缴费，1已缴费\",\n"
+          + "    \"actualAmount\":\"金额\",\n"
+          + "    \"userType\":\"用户类型\",\n"
+          + "    \"waterMeterCode\":\"水表档案号\",\n"
+          + "    \"editedActual\":\"是否调整,0否，1是\",\n"
+          + "    \"payType\":\"付款方式：2现金,3转账\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("打印汇总表2， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user && null != jsonObject) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        Map<String,Object> result = waterUsePayInfoService
+            .printExPlan2(jsonObject, user);
+      apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("打印汇总表2失败,errMsg==={}", e.getMessage());
         e.printStackTrace();
         apiResponse.recordError(500);
       }

@@ -237,7 +237,7 @@
 		when '3' then t5.three_quarter
 		when '4' then t5.four_quarter
 		else '0' end as  baseQuarterPlan,
-		<!--是否签约，条件：主户银行账号都没有签约-->
+		<!--是否签约，条件：主户银行账号是否签约-->
 		case
 		when t4.signed ='1' then '是'
 		when t4.signed='0' then '否'
@@ -1150,4 +1150,255 @@
 		update t_w_water_use_pay_info set invoice_num = #{invoiceNum} where id = #{id}
 	</update>
 
+
+  <resultMap id="result_PayPrintVo_Map" type="com.zjtc.model.vo.PayPrintVo">
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+    <result column="price" property="price" jdbcType="FLOAT"/>
+    <result column="year_plan" property="yearPlan" jdbcType="INTEGER"/>
+    <result column="quarter_plan" property="quarterPlan" jdbcType="FLOAT"/>
+    <result column="base_plan" property="basePlan" jdbcType="FLOAT"/>
+    <result column="water_num1" property="waterNum1" jdbcType="FLOAT"/>
+    <result column="water_num2" property="waterNum2" jdbcType="FLOAT"/>
+    <result column="water_num3" property="waterNum3" jdbcType="FLOAT"/>
+    <result column="water_num_amount" property="waterNumAmount" jdbcType="FLOAT"/>
+    <result column="pay_ratio" property="payRatio" jdbcType="FLOAT"/>
+    <result column="exceed_water" property="exceedWater" jdbcType="FLOAT"/>
+    <result column="multiple" property="multiple" jdbcType="FLOAT"/>
+    <result column="amount_receivable" property="amountReceivable" jdbcType="FLOAT"/>
+		<result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+		<result column="is_signing" property="isSigning" jdbcType="VARCHAR"/>
+		<result column="responsibility_code" property="responsibilityCode" jdbcType="VARCHAR"/>
+		<result column="bank_of_deposit" property="bankOfDeposit" jdbcType="VARCHAR"/>
+		<result column="bank_account" property="bankAccount" jdbcType="VARCHAR"/>
+  </resultMap>
+	<select id="printExPlan1" resultMap="result_PayPrintVo_Map">
+		SELECT
+		unit_name,
+		unit_code,
+		price,
+		year_plan,
+		quarter_plan,
+		water_num1,
+		water_num2,
+		water_num3,
+		water_num_amount,
+		pay_ratio,
+		exceed_water,
+		multiple,
+		amount_receivable,
+		remarks,
+		<!--基建季计划-->
+		case #{countQuarter}
+		when '1' then t5.one_quarter
+		when '2' then t5.two_quarter
+		when '3' then t5.three_quarter
+		when '4' then t5.four_quarter
+		else '0' end as  base_plan
+		FROM
+		( SELECT
+		use_water_unit_id,
+		count_year,
+		unit_name,
+		unit_code,
+		price,
+		year_plan,
+		quarter_plan,
+		water_num1,
+		water_num2,
+		water_num3,
+		water_num_amount,
+		pay_ratio,
+		exceed_water,
+		multiple,
+		amount_receivable,
+		remarks
+		FROM t_w_water_use_pay_info WHERE node_code = #{nodeCode}
+		<!--单位名称关键字查询-->
+		<if test="null !=unitName and unitName !=''">
+			and unit_name like '%${unitName}%'
+		</if>
+		<!--单位编号关键字查询-->
+		<if test="null !=unitCode and unitCode !=''">
+			and unit_code like '%${unitCode}%'
+		</if>
+		<!--筛选缴费年度-->
+		<if test="null !=countYear and countYear !=''">
+			and count_year=#{countYear}
+		</if>
+		<!--筛选缴费季度-->
+		<if test="null !=countQuarter and countQuarter !=''">
+			and count_quarter=#{countQuarter}
+		</if>
+		<!--筛选缴费状态-->
+		<if test="null !=payStatus and payStatus !=''">
+			<choose>
+				<when test="payStatus==1">
+					and (pay_status='1' or pay_status= '5' )
+				</when>
+				<when test="payStatus==0">
+					<!--这里需要兼容一期的数据，排除2：待审核，3：已审核-->
+					and pay_status not in ('1','2','3','5')
+				</when>
+			</choose>
+		</if>
+		<!--筛选金额[实收金额]-->
+		<if test="null !=actualAmount and actualAmount !=''">
+			and 	actual_amount =#{actualAmount}
+		</if>
+		<!--是否调整-->
+		<if test="null !=editedActual and editedActual !=''">
+			and	 edited_actual=#{editedActual}
+		</if>
+		<!--付款方式-->
+		<if test="null !=payType and payType !=''">
+			and	 pay_type=#{payType}
+		</if>
+		) t1
+		inner join (
+		select
+		id ,
+		[water_meter_code] = STUFF (
+		( SELECT ',' + [water_meter_code] FROM t_w_use_water_unit_meter t WHERE t.use_water_unit_id = uu.id FOR XML PATH ( '' ) ),1,1,''),
+		responsibility_code,
+		unit_code_group
+		from t_w_use_water_unit uu
+		where deleted='0'
+		<!--查询筛选的用户类型-->
+		<if test="null !=unitCodeType and unitCodeType !=''">
+			and unit_code_type=#{unitCodeType}
+		</if>
+		) t2 on t2.id=t1.use_water_unit_id
+		LEFT JOIN ( SELECT use_water_unit_id,signed,bank_of_deposit,bank_account FROM t_w_bank WHERE deleted = '0' and main='1' ) t4 ON t4.use_water_unit_id = t1.use_water_unit_id
+		LEFT JOIN ( SELECT use_water_unit_id,plan_year,one_quarter,two_quarter,three_quarter,four_quarter FROM t_w_use_water_base_plan WHERE deleted = '0' ) t5 ON t5.use_water_unit_id = t1.use_water_unit_id
+		AND t5.plan_year = t1.count_year
+		<if test="null !=waterMeterCode and waterMeterCode !=''">
+			where  t2.water_meter_code like '%${waterMeterCode}%'
+		</if>
+
+	</select>
+	<select id="printExPlan2" resultMap="result_PayPrintVo_Map">
+		SELECT
+		unit_name,
+		unit_code,
+		price,
+		year_plan,
+		quarter_plan,
+		water_num1,
+		water_num2,
+		water_num3,
+		water_num_amount,
+		pay_ratio,
+		exceed_water,
+		multiple,
+		amount_receivable,
+		remarks,
+		<!--基建季计划-->
+		case #{countQuarter}
+		when '1' then t5.one_quarter
+		when '2' then t5.two_quarter
+		when '3' then t5.three_quarter
+		when '4' then t5.four_quarter
+		else '0' end as  base_plan,
+		<!--是否签约，条件：主户银行账号是否签约-->
+		case
+		when t4.signed ='1' then '是'
+		when t4.signed='0' then '否'
+		else '否'
+		end as is_signing,
+		case when t2.responsibility_code=null or t2.responsibility_code='' then '否'
+		else '是' end as responsibility_code ,
+		bank_of_deposit ,
+		bank_account
+		FROM
+		( SELECT
+		use_water_unit_id,
+		count_year,
+		unit_name,
+		unit_code,
+		price,
+		year_plan,
+		quarter_plan,
+		water_num1,
+		water_num2,
+		water_num3,
+		water_num_amount,
+		pay_ratio,
+		exceed_water,
+		multiple,
+		amount_receivable,
+		remarks
+		FROM t_w_water_use_pay_info WHERE node_code = #{nodeCode}
+		<!--单位名称关键字查询-->
+		<if test="null !=unitName and unitName !=''">
+			and unit_name like '%${unitName}%'
+		</if>
+		<!--单位编号关键字查询-->
+		<if test="null !=unitCode and unitCode !=''">
+			and unit_code like '%${unitCode}%'
+		</if>
+		<!--筛选缴费年度-->
+		<if test="null !=countYear and countYear !=''">
+			and count_year=#{countYear}
+		</if>
+		<!--筛选缴费季度-->
+		<if test="null !=countQuarter and countQuarter !=''">
+			and count_quarter=#{countQuarter}
+		</if>
+		<!--筛选缴费状态-->
+		<if test="null !=payStatus and payStatus !=''">
+			<choose>
+				<when test="payStatus==1">
+					and (pay_status='1' or pay_status= '5' )
+				</when>
+				<when test="payStatus==0">
+					<!--这里需要兼容一期的数据，排除2：待审核，3：已审核-->
+					and pay_status not in ('1','2','3','5')
+				</when>
+			</choose>
+		</if>
+		<!--筛选金额[实收金额]-->
+		<if test="null !=actualAmount and actualAmount !=''">
+			and 	actual_amount =#{actualAmount}
+		</if>
+		<!--是否调整-->
+		<if test="null !=editedActual and editedActual !=''">
+			and	 edited_actual=#{editedActual}
+		</if>
+		<!--付款方式-->
+		<if test="null !=payType and payType !=''">
+			and	 pay_type=#{payType}
+		</if>
+		) t1
+		inner join (
+		select
+		id ,
+		[water_meter_code] = STUFF (
+		( SELECT ',' + [water_meter_code] FROM t_w_use_water_unit_meter t WHERE t.use_water_unit_id = uu.id FOR XML PATH ( '' ) ),1,1,''),
+		responsibility_code,
+		unit_code_group
+		from t_w_use_water_unit uu
+		where deleted='0'
+		<!--查询筛选的用户类型-->
+		<if test="null !=unitCodeType and unitCodeType !=''">
+			and unit_code_type=#{unitCodeType}
+		</if>
+		) t2 on t2.id=t1.use_water_unit_id
+		LEFT JOIN ( SELECT use_water_unit_id,signed,bank_of_deposit,bank_account FROM t_w_bank WHERE deleted = '0' and main='1' ) t4 ON t4.use_water_unit_id = t1.use_water_unit_id
+		LEFT JOIN ( SELECT use_water_unit_id,plan_year,one_quarter,two_quarter,three_quarter,four_quarter FROM t_w_use_water_base_plan WHERE deleted = '0' ) t5 ON t5.use_water_unit_id = t1.use_water_unit_id
+		AND t5.plan_year = t1.count_year
+		<if test="null !=waterMeterCode and waterMeterCode !=''">
+			where  t2.water_meter_code like '%${waterMeterCode}%'
+		</if>
+	</select>
+	<!--查询当前用户拥有的所有用户类型-->
+	<select id="queryCodeTypeByPersonId" resultType="java.lang.String">
+		select
+		unit_type_code as unit_type_code
+		 from t_w_use_water_unit_role
+		 where 1=1
+		<if test="null !=nodeCode"> and node_code=#{nodeCode}</if>
+		<if test="null !=userId"> and person_id=#{userId} </if>
+		 group by unit_type_code
+	</select>
 </mapper>

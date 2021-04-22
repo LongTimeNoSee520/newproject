@@ -16,6 +16,7 @@ import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.UseWaterUnitInvoice;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
+import com.zjtc.model.vo.PayPrintVo;
 import com.zjtc.model.vo.SendListVO;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.model.vo.WaterUsePayInfoVo;
@@ -619,6 +620,43 @@ public class WaterUsePayInfoServiceImpl extends
         .isNotBlank(invoiceNumber)) {
       return false;
     }
-    return this.baseMapper.updateInvoiceNum(id,invoiceNumber);
+    return this.baseMapper.updateInvoiceNum(id, invoiceNumber);
+  }
+
+  @Override
+  public Map<String, Object> printExPlan1(JSONObject jsonObject, User user
+  ) {
+    Map<String, Object> result = new HashMap<>();
+    //查询当前用户的用户类型
+    List<String> typeList = baseMapper.queryCodeTypeByPersonId(user.getId(), user.getNodeCode());
+    if (typeList.isEmpty()) {
+      return result;
+    }
+    for (String type : typeList) {
+      jsonObject.put("unitCodeType",type);
+      List<PayPrintVo> list=  baseMapper.printExPlan1(jsonObject);
+      if(!list.isEmpty()){
+        result.put(type,list);
+      }
+    }
+    return result;
+  }
+
+  @Override
+  public Map<String, Object> printExPlan2(JSONObject jsonObject, User user) {
+    Map<String, Object> result = new HashMap<>();
+    //查询当前用户的用户类型
+    List<String> typeList = baseMapper.queryCodeTypeByPersonId(user.getId(), user.getNodeCode());
+    if (typeList.isEmpty()) {
+      return result;
+    }
+    for (String type : typeList) {
+      jsonObject.put("unitCodeType",type);
+      List<PayPrintVo> list=  baseMapper.printExPlan2(jsonObject);
+      if(!list.isEmpty()){
+        result.put(type,list);
+      }
+    }
+    return result;
   }
 }
