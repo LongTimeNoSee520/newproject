@@ -44,6 +44,7 @@
     payment_date,
     invoice_state,
     drawer,
+    drawer_id,
     type,
     unit_code,
     print_person,
