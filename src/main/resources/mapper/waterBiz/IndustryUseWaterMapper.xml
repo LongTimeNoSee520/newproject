@@ -3,8 +3,9 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zjtc.mapper.waterBiz.IndustryUseWaterMapper">
 <select id="queryList" resultType="java.util.LinkedHashMap">
-  SELECT t2.industry_name AS name,SUM(COALESCE(t3.number,0)) AS value
-  FROM
+  SELECT ta.name,ta.value
+	FROM(SELECT t2.industry_name AS name,SUM(COALESCE(t3.number,0)) AS value
+     FROM
     (SELECT id,industry
      FROM  t_w_use_water_unit
      WHERE node_code = #{nodeCode}
@@ -24,6 +25,8 @@
       )t3
       ON t1.id=t3.use_water_unit_id
   GROUP BY t2.industry_name
+  )ta
+  WHERE ta.value&lt;&gt;0
 
 </select>
 <select id="queryRankData" resultType="java.util.LinkedHashMap">
