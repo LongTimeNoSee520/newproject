@@ -19,34 +19,50 @@
       )t2
       ON t1.industry=t2.id
       LEFT JOIN
-      ( SELECT sum(COALESCE (water_number,0)) AS number,use_water_unit_id,use_year
-        FROM t_w_water_use_data
+      ( SELECT sum(COALESCE (tb.water_number,0)) AS number,tc.use_water_unit_id,tb.use_year
+        FROM
+        (SELECT use_water_unit_id,water_meter_code
+        FROM t_w_use_water_unit_meter
+        )tc
+       INNER JOIN
+       ( SELECT water_number,use_year,water_meter_code
+         FROM t_w_water_use_data
         WHERE use_year =#{year}
-        GROUP BY use_water_unit_id,use_year
+       )tb
+       ON tc.water_meter_code=tb.water_meter_code
+       GROUP BY tc.use_water_unit_id,tb.use_year
       )t3
       ON t1.id=t3.use_water_unit_id
   GROUP BY t2.industry_name )ta
   WHERE ta.value&lt;&gt;0
 </select>
   <select id="queryRankData" resultType="java.util.LinkedHashMap">
- SELECT ta.unitName,ta.useWaterNumber
+  SELECT ta.unitName,ta.useWaterNumber
  FROM (
-    SELECT top 10 t1.unit_name AS unitName,t2.number AS useWaterNumber
-    FROM
+  SELECT top 10 t1.unit_name AS unitName,COALESCE (t2.number,0) AS useWaterNumber
+  FROM
     (SELECT id,industry,unit_name
-    FROM  t_w_use_water_unit
-    WHERE node_code = #{nodeCode}
-    AND deleted='0'
-    AND industry = #{id}
-    )t1
-    LEFT JOIN
-    ( SELECT sum(COALESCE (water_number,0)) AS number,use_water_unit_id,use_year
-     FROM t_w_water_use_data
-    WHERE use_year =#{year}
-    GROUP BY use_water_unit_id,use_year
-    )t2
-    ON t1.id=t2.use_water_unit_id
-    )ta
+     FROM  t_w_use_water_unit
+     WHERE node_code = #{nodeCode}
+     AND deleted='0'
+     AND industry = #{id}
+     )t1
+     LEFT JOIN
+      ( SELECT sum(COALESCE (tb.water_number,0)) AS number,tc.use_water_unit_id,tb.use_year
+       FROM
+        (SELECT use_water_unit_id,water_meter_code
+        FROM t_w_use_water_unit_meter
+        )tc
+       INNER JOIN
+       ( SELECT water_number,use_year,water_meter_code
+         FROM t_w_water_use_data
+        WHERE use_year =#{year}
+       )tb
+       ON tc.water_meter_code=tb.water_meter_code
+        GROUP BY tc.use_water_unit_id,tb.use_year
+      )t2
+  ON t1.id=t2.use_water_unit_id
+  )ta
   WHERE ta.useWaterNumber  &lt;&gt;0
   ORDER BY ta.useWaterNumber DESC
   </select>

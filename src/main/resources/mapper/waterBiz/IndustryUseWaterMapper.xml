@@ -18,10 +18,18 @@
       )t2
       ON t1.industry=t2.id
       LEFT JOIN
-      ( SELECT sum(COALESCE (water_number,0)) AS number,use_water_unit_id,use_year
-        FROM t_w_water_use_data
+      ( SELECT sum(COALESCE (tb.water_number,0)) AS number,tc.use_water_unit_id,tb.use_year
+        FROM
+        (SELECT use_water_unit_id,water_meter_code
+        FROM t_w_use_water_unit_meter
+        )tc
+       INNER JOIN
+       ( SELECT water_number,use_year,water_meter_code
+         FROM t_w_water_use_data
         WHERE use_year =#{year}
-        GROUP BY use_water_unit_id,use_year
+       )tb
+       ON tc.water_meter_code=tb.water_meter_code
+       GROUP BY tc.use_water_unit_id,tb.use_year
       )t3
       ON t1.id=t3.use_water_unit_id
   GROUP BY t2.industry_name
@@ -41,10 +49,18 @@
      AND industry = #{id}
      )t1
      LEFT JOIN
-      ( SELECT sum(COALESCE (water_number,0)) AS number,use_water_unit_id,use_year
-        FROM t_w_water_use_data
+      ( SELECT sum(COALESCE (tb.water_number,0)) AS number,tc.use_water_unit_id,tb.use_year
+       FROM
+        (SELECT use_water_unit_id,water_meter_code
+        FROM t_w_use_water_unit_meter
+        )tc
+       INNER JOIN
+       ( SELECT water_number,use_year,water_meter_code
+         FROM t_w_water_use_data
         WHERE use_year =#{year}
-        GROUP BY use_water_unit_id,use_year
+       )tb
+       ON tc.water_meter_code=tb.water_meter_code
+        GROUP BY tc.use_water_unit_id,tb.use_year
       )t2
   ON t1.id=t2.use_water_unit_id
   )ta

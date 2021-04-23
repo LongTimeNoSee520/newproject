@@ -21,9 +21,9 @@
     ON t1.use_water_unit_id =t2.use_water_unit_id
   </select>
   <select id="queryReal" resultType="double">
-   SELECT COALESCE(ta.num,0)  AS num
-   FROM
-   (SELECT sum(COALESCE(t2.num,0)) AS num
+  SELECT COALESCE(ta.num,0)  AS num
+   FROM(
+    SELECT sum(COALESCE(t2.num,0)) AS num
     FROM
     (SELECT use_water_unit_id
     FROM t_w_use_water_unit_monitor
@@ -32,11 +32,19 @@
     AND deleted='0'
     )t1
     INNER JOIN (
-    SELECT use_water_unit_id,sum(COALESCE (water_number,0)) AS num
-    FROM t_w_water_use_data
-    WHERE use_year = #{year}
-    AND  use_month &lt;= 3
-    GROUP BY use_water_unit_id
+    SELECT tc.use_water_unit_id,sum(COALESCE (tb.water_number,0)) AS num
+    FROM
+     (SELECT use_water_unit_id,water_meter_code
+      FROM t_w_use_water_unit_meter
+      )tc
+    INNER JOIN
+    (SELECT water_number,water_meter_code
+     FROM t_w_water_use_data
+      WHERE use_year = #{year}
+      AND  use_month &lt;= 3
+      )tb
+    ON  tc.water_meter_code=tb.water_meter_code
+    GROUP BY tc.use_water_unit_id
     )t2
     ON t1.use_water_unit_id =t2.use_water_unit_id
 
@@ -50,12 +58,20 @@
     AND deleted='0'
     )t1
     INNER JOIN (
-    SELECT use_water_unit_id,sum(COALESCE (water_number,0)) AS num
-    FROM t_w_water_use_data
-    WHERE use_year = #{year}
+     SELECT tc.use_water_unit_id,sum(COALESCE (tb.water_number,0)) AS num
+    FROM
+     (SELECT use_water_unit_id,water_meter_code
+      FROM t_w_use_water_unit_meter
+      )tc
+    INNER JOIN
+    (SELECT water_number,water_meter_code
+     FROM t_w_water_use_data
+       WHERE use_year = #{year}
     AND  use_month > 3
     AND use_month &lt;= 6
-    GROUP BY use_water_unit_id
+      )tb
+    ON  tc.water_meter_code=tb.water_meter_code
+    GROUP BY tc.use_water_unit_id
     )t2
     ON t1.use_water_unit_id =t2.use_water_unit_id
 
@@ -69,12 +85,20 @@
     AND deleted='0'
     )t1
     INNER JOIN (
-    SELECT use_water_unit_id,sum(COALESCE (water_number,0)) AS num
-    FROM t_w_water_use_data
-    WHERE use_year = #{year}
-    AND  use_month > 6
-    AND use_month &lt;= 9
-    GROUP BY use_water_unit_id
+      SELECT tc.use_water_unit_id,sum(COALESCE (tb.water_number,0)) AS num
+    FROM
+     (SELECT use_water_unit_id,water_meter_code
+      FROM t_w_use_water_unit_meter
+      )tc
+    INNER JOIN
+    (SELECT water_number,water_meter_code
+     FROM t_w_water_use_data
+     WHERE use_year = #{year}
+     AND  use_month > 6
+     AND use_month &lt;= 9
+      )tb
+    ON  tc.water_meter_code=tb.water_meter_code
+    GROUP BY tc.use_water_unit_id
     )t2
     ON t1.use_water_unit_id =t2.use_water_unit_id
     UNION  ALL
@@ -87,14 +111,22 @@
     AND deleted='0'
     )t1
     INNER JOIN (
-    SELECT use_water_unit_id,sum(COALESCE (water_number,0)) AS num
-    FROM t_w_water_use_data
-    WHERE use_year = #{year}
-    AND  use_month > 9
-    AND use_month &lt;= 12
-    GROUP BY use_water_unit_id
+       SELECT tc.use_water_unit_id,sum(COALESCE (tb.water_number,0)) AS num
+    FROM
+     (SELECT use_water_unit_id,water_meter_code
+      FROM t_w_use_water_unit_meter
+      )tc
+    INNER JOIN
+    (SELECT water_number,water_meter_code
+     FROM t_w_water_use_data
+     WHERE use_year = #{year}
+     AND  use_month > 9
+     AND use_month &lt;= 12
+      )tb
+    ON  tc.water_meter_code=tb.water_meter_code
+    GROUP BY tc.use_water_unit_id
     )t2
     ON t1.use_water_unit_id =t2.use_water_unit_id
-   ) ta
+  ) ta
   </select>
 </mapper>
