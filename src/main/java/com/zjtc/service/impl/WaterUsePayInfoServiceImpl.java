@@ -247,7 +247,6 @@ public class WaterUsePayInfoServiceImpl extends
     }
     String nextPersonId = jsonObject.getString("nextPersonId");
     String nextPersonName = jsonObject.getString("nextPersonName");
-    String content = jsonObject.getString("content");
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
     List<com.zjtc.model.File> files = jsonObject.getJSONArray("sysFiles")
@@ -275,7 +274,7 @@ public class WaterUsePayInfoServiceImpl extends
     /**修改业务表数据*/
     refundOrRefundService.updateById(entity);
     /**流程进度（操作记录）表 新增三条数据*/
-    flowProcessService.create(user, entity.getId(), content, nextPersonName, nextPersonId);
+    flowProcessService.create(user, entity.getId(), entity.getTreatmentAdvice(), nextPersonName, nextPersonId);
     /**发起待办*/
     String todoContent =
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请减免" + entity.getMoney()
