@@ -67,6 +67,10 @@ public class FlowProcess extends Model<FlowProcess> {
   @TableField(value = "business_id", exist = true)
   private String businessId;
 
+  @ApiModelProperty("排序")
+  @TableField(value = "sort", exist = true)
+  private Integer sort;
+
   @Override
   protected Serializable pkVal() {
     return null;

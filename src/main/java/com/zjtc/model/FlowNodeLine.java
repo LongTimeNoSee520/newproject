@@ -50,6 +50,9 @@ public class FlowNodeLine extends Model<FlowNodeLine> {
   @TableField(value = "create_time", exist = true)
   private Date createTime;
 
+  @ApiModelProperty("排序")
+  @TableField(value = "sort", exist = true)
+  private String sort;
   /**
    * 实例化
    */
