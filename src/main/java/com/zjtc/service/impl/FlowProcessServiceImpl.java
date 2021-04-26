@@ -136,4 +136,9 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
   public boolean isFirstFlowNode(String userId, String nodeCode, String flowCode) {
     return baseMapper.isFirstFlowNode(userId, nodeCode, flowCode)>0;
   }
+
+  @Override
+  public List<FlowProcess> queryPrintAuditData(String businessId, String nodeCode) {
+    return this.baseMapper.queryPrintAuditData(businessId,nodeCode);
+  }
 }

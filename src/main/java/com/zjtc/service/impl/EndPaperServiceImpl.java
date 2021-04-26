@@ -21,6 +21,7 @@ import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.EndPaperPrintVO;
 import com.zjtc.model.vo.EndPaperVO;
 import com.zjtc.model.vo.SendListVO;
 import com.zjtc.service.DictItemService;
@@ -685,11 +686,11 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     if(null==quarter ){
       quarter= TimeUtil.toQuarter(new Date());
     }
-    List<EndPaperVO> records = this.baseMapper.printData(wxIds,ids,quarter);
-    for (EndPaperVO paperVO : records) {
+    List<EndPaperPrintVO> records = this.baseMapper.printData(wxIds,ids,quarter);
+    for (EndPaperPrintVO paperVO : records) {
       /**查询流程信息*/
       paperVO.setAuditMessages(
-          flowProcessService.queryAuditList(paperVO.getId(), paperVO.getNodeCode()));
+          flowProcessService.queryPrintAuditData(paperVO.getId(), paperVO.getNodeCode()));
       /**查询字典项名称*/
       if (StringUtils.isNotBlank(paperVO.getPaperType())) {
         paperVO.setPaperTypeName(

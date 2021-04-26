@@ -64,4 +64,9 @@ public interface FlowProcessService extends IService<FlowProcess> {
    * @return
    */
   boolean isFirstFlowNode(String userId, String nodeCode, String flowCode);
+  /**
+   * 查询相关业务流程信息(筛选后的打印数据)
+   * @param businessId,nodeCode
+   */
+  List<FlowProcess> queryPrintAuditData(String businessId, String nodeCode);
 }

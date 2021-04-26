@@ -94,23 +94,26 @@
 		<result column="water_proof_file_id" property="waterProofFileId" jdbcType="VARCHAR"/>
 		<result column="other_file_id" property="otherFileId" jdbcType="VARCHAR"/>
 		<result column="quarter_num" property="quarterNum" jdbcType="DOUBLE"/>
-		<!--<result column="need_audit" property="needAudit" jdbcType="BOOLEAN"/>-->
-		<!--<result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>-->
-		<!--<collection property="auditFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"-->
-		<!--select="queryAuditFiles">-->
-		<!--</collection>-->
-		<!--<collection property="waterProofFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"-->
-		<!--select="queryWaterProofFiles">-->
-		<!--</collection>-->
-		<!--<collection property="otherFiles" ofType="com.zjtc.model.vo.FileVO" column="{id=id,preViewRealPath=preViewRealPath}"-->
-		<!--select="queryOtherFiles">-->
-		<!--</collection>-->
-	<!--<collection property="unpaidList" ofType="java.util.LinkedHashMap" column="id"-->
-	<!--select="queryUnpaidList">-->
-	<!--</collection>-->
-		<!--<collection property="auditMessages" ofType="java.util.LinkedHashMap" column="{id=id,nodeCode=node_code}"-->
-			<!--select="queryAuditList">-->
-		<!--</collection>-->
+	</resultMap>
+	<resultMap id="PrintResultMap" type="com.zjtc.model.vo.EndPaperPrintVO">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+		<result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+		<result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+		<result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+		<result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+		<result column="paper_type" property="paperType" jdbcType="VARCHAR"/>
+		<result column="plan_year" property="planYear" jdbcType="INTEGER"/>
+		<result column="change_quarter" property="changeQuarter" jdbcType="VARCHAR"/>
+		<result column="cur_year_plan" property="curYearPlan" jdbcType="DOUBLE"/>
+		<result column="first_water" property="firstWater" jdbcType="DOUBLE"/>
+		<result column="second_water" property="secondWater" jdbcType="DOUBLE"/>
+		<result column="first_quarter" property="firstQuarter" jdbcType="DOUBLE"/>
+		<result column="second_quarter" property="secondQuarter" jdbcType="DOUBLE"/>
+		<result column="third_quarter" property="thirdQuarter" jdbcType="DOUBLE"/>
+		<result column="fourth_quarter" property="fourthQuarter" jdbcType="DOUBLE"/>
+		<result column="execute_time" property="executeTime" jdbcType="TIMESTAMP"/>
+		<result column="quarter_num" property="quarterNum" jdbcType="DOUBLE"/>
 	</resultMap>
 	<resultMap id="FileMap" type="com.zjtc.model.vo.FileVO">
 		<id column="id" property="id" jdbcType="VARCHAR"/>
@@ -286,7 +289,7 @@
 	 )t2
 	 ON t1.use_water_unit_id =t2.use_water_unit_id
  </select>
-<select id="printData" resultMap="PageResultMap">
+<select id="printData" resultMap="PrintResultMap">
 	SELECT  t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_code,t1.unit_name,
 	t1.water_meter_code,t1.paper_type,<!--申报(调整)类型code-->
 	t1.plan_year,t1.change_quarter,t1.cur_year_plan,t1.first_water,

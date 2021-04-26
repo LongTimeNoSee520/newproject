@@ -3,6 +3,7 @@ package com.zjtc.mapper.waterBiz;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.EndPaper;
+import com.zjtc.model.vo.EndPaperPrintVO;
 import com.zjtc.model.vo.EndPaperVO;
 import com.zjtc.model.vo.SendListVO;
 import java.util.List;
@@ -45,6 +46,6 @@ public interface EndPaperMapper extends BaseMapper<EndPaper> {
   /**
    * 查询办结单打印数据
    */
-  List<EndPaperVO> printData(@Param("wxIds") List<String> wxIds,
+  List<EndPaperPrintVO> printData(@Param("wxIds") List<String> wxIds,
       @Param("ids") List<String> ids, @Param("quarter") Integer quarter);
 }
