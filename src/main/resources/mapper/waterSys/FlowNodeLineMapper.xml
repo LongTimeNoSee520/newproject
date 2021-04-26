@@ -9,15 +9,17 @@
 		<result column="operate_type" property="operateType" />
 		<result column="next_node_id" property="nextNodeId" />
 		<result column="create_time" property="createTime" />
+		<result column="sort" property="sort" />
 	</resultMap>
 	<resultMap id="FlowNodeLineInfoMap" type="com.zjtc.model.FlowNodeLineInfo">
 		<result column="node_code" property="nodeCode" />
 		<result column="flow_node_id" property="flowNodeId" />
 		<result column="operate_type" property="operateType" />
 		<result column="next_node_id" property="nextNodeId" />
+		<result column="sort" property="sort" />
 	</resultMap>
 	<select id="selectLineInfo" resultMap="FlowNodeLineInfoMap">
-		SELECT node_code,flow_node_id,operate_type,next_node_id
+		SELECT node_code,flow_node_id,operate_type,next_node_id,sort
 		FROM t_flow_node_line
 		WHERE flow_node_id IN
 		(SELECT id

@@ -29,8 +29,9 @@ public interface FlowProcessService extends IService<FlowProcess> {
    * @param businessId 业务id
    * @param operator 操作人
    * @param operatorId  操作人id
+   * @param sort 排序
    */
-  void add(String nodeCode ,String businessId,String operator,String operatorId);
+  void add(String nodeCode ,String businessId,String operator,String operatorId,Integer sort);
 
   /**
    * 查询该审核流程发起人

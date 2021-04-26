@@ -372,7 +372,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         flowProcess.setAuditStatus(AuditConstants.GET_APPROVED);
       }
       //新增审核流程下一环节记录
-      flowProcessService.add(user.getNodeCode(), endPaper.getId(), auditorName, auditorId);
+      flowProcessService.add(user.getNodeCode(), endPaper.getId(), auditorName,auditorId,Integer.parseInt(hasNext.get(0).get("sort").toString()));
       //修改待办状态
       todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
       //新增一条待办

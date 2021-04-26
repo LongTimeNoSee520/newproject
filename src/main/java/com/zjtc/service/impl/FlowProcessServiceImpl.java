@@ -42,6 +42,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     commit.setNodeCode(user.getNodeCode());
     commit.setBusinessId(businessId);
     commit.setOperationTime(commit.getCreateTime());
+    commit.setSort(1);//第一环节
     /**办结单退、减免单提交(审核通过)*/
     FlowProcess commitAudit = new FlowProcess();
     commitAudit.setAuditContent(opinions);
@@ -52,6 +53,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     commitAudit.setNodeCode(user.getNodeCode());
     commitAudit.setBusinessId(businessId);
     commitAudit.setOperationTime(commit.getCreateTime());
+    commit.setSort(1);//第一环节
     /**提交后的下一环节数据*/
     FlowProcess next = new FlowProcess();
     next.setAuditStatus("1");
@@ -60,6 +62,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     next.setOperatorId(auditorId);
     next.setBusinessId(businessId);
     next.setNodeCode(user.getNodeCode());
+    next.setSort(2);//第2环节
     List<FlowProcess> flowProcesses = new ArrayList<>();
     flowProcesses.add(commit);
     flowProcesses.add(commitAudit);
@@ -81,7 +84,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
   }
 
   @Override
-  public void add(String nodeCode, String businessId, String operator, String operatorId) {
+  public void add(String nodeCode, String businessId, String operator, String operatorId,Integer sort) {
     FlowProcess flowProcess = new FlowProcess();
     flowProcess.setNodeCode(nodeCode);
     flowProcess.setAuditStatus("1");
