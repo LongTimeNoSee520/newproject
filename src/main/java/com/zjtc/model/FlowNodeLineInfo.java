@@ -51,7 +51,7 @@ public class FlowNodeLineInfo extends Model<FlowNodeLineInfo>{
 
   @ApiModelProperty("排序")
   @TableField(value = "sort", exist = true)
-  private String sort;
+  private Integer sort;
 	/**
 	 * 实例化
 	 */
