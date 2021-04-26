@@ -159,11 +159,14 @@ public class CommonServiceImpl implements CommonService{
   public boolean updatePrintStatus(List<String> ids, String module) {
     boolean result = false;
     if (SystemConstants.DAILY_ADJUST_PRINT.equals(module)) {
-      result = commonMapper.updatePrintStatus(ids, SystemConstants.DAILY_ADJUST_PRINT_TABLE);
+      commonMapper.updatePrintStatus(ids, SystemConstants.DAILY_ADJUST_PRINT_TABLE);
+      result = true;
     } else if (SystemConstants.PAY_PRINT.equals(module)) {
-      result = commonMapper.updatePrintStatus(ids, SystemConstants.PAY_PRINT_TABLE);
+      commonMapper.updatePrintStatus(ids, SystemConstants.PAY_PRINT_TABLE);
+      result = true;
     } else if (SystemConstants.ADJUST_AUDIT_PRINT.equals(module)) {
-      result = commonMapper.updatePrintStatus(ids, SystemConstants.ADJUST_AUDIT_PRINT_TABLE);
+      commonMapper.updatePrintStatus(ids, SystemConstants.ADJUST_AUDIT_PRINT_TABLE);
+      result = true;
     } else {
       result = false;
     }
