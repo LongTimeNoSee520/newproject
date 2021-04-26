@@ -1281,7 +1281,7 @@
 		SELECT
 		unit_name,
 		unit_code,
-		price,
+		round(price,2) as price,
 		year_plan,
 		quarter_plan,
 		water_num1,
@@ -1316,7 +1316,7 @@
 		count_year,
 		unit_name,
 		unit_code,
-		price,
+		round(price,2) as price,
 		year_plan,
 		quarter_plan,
 		water_num1,

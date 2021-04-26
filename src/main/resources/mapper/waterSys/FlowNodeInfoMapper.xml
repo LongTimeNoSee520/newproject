@@ -35,23 +35,24 @@
           t1.id as flowNodeId,
           t4.user_id as userId,
           t4.user_name as userName,
-          t3.org_name AS orgName
+          t3.org_name AS orgName,
+          t1.sort
         FROM
           (
             select
             id,
-            flow_node_role_id
-            from t_flow_node_info
-            where id in
-            (
+            flow_node_role_id,
+            sort
+            from t_flow_node_info as a
+            inner join (
               select
-              next_node_id as id
+              next_node_id
               from
               t_flow_node_line_info
                 where operate_type=#{auditBtn}
 				        and flow_node_id=#{nextNodeId}
-		   )
-		   and business_id =#{id}
+            ) as b on b.next_node_id=a.id
+		        and a.business_id =#{id}
           ) t1
          left join (select user_id ,user_name,role_id,rank from  t_user_role_ref ) t4 on t4.role_id=t1.flow_node_role_id
          left JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t4.user_id = t2.id

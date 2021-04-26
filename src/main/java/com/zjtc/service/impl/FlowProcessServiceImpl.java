@@ -53,7 +53,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
     commitAudit.setNodeCode(user.getNodeCode());
     commitAudit.setBusinessId(businessId);
     commitAudit.setOperationTime(commit.getCreateTime());
-    commit.setSort(1);//第一环节
+    commitAudit.setSort(1);//第一环节
     /**提交后的下一环节数据*/
     FlowProcess next = new FlowProcess();
     next.setAuditStatus("1");

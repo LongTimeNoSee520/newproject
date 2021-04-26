@@ -191,7 +191,6 @@ public class WaterUsePayInfoServiceImpl extends
     }
     String nextPersonId = jsonObject.getString("nextPersonId");
     String nextPersonName = jsonObject.getString("nextPersonName");
-    String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
     List<com.zjtc.model.File> files = jsonObject.getJSONArray("sysFiles")
         .toJavaList(com.zjtc.model.File.class);

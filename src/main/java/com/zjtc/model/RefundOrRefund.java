@@ -178,6 +178,10 @@ public class RefundOrRefund extends Model<RefundOrRefund> {
   @TableField(exist = false)
   private List<Map<String, Object>> auditFlow;
 
+  @ApiModelProperty("打印需要的审核流程")
+  @TableField(exist = false)
+  private List<FlowProcess> printAuditFlow;
+
   /**
    *
    */

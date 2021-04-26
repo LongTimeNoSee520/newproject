@@ -18,6 +18,13 @@
     <!--<result column="business_id" property="businessId" jdbcType="INTEGER"/>-->
   </resultMap>
 
+  <resultMap id="result_flowProcess" type="com.zjtc.model.FlowProcess">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="audit_content" property="auditContent" jdbcType="VARCHAR"/>
+    <result column="operator" property="operator" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+
   <select id="queryAuditList" resultType="java.util.LinkedHashMap">
     SELECT
     t1.id AS id,
@@ -122,5 +129,50 @@
     ) t1
     inner join (select user_id ,role_id from  t_user_role_ref ) t4 on t4.role_id=t1.flow_node_role_id
     where user_id=#{userId}
+  </select>
+
+  <select id="queryPrintAuditData" resultMap="result_flowProcess">
+    select
+    t1.audit_content,
+    t1.sort
+    from (
+    select
+    audit_content,
+    sort,
+    create_time
+    from t_flow_process
+    where 1=1
+    <if test="null !=businessId">
+      and business_id=#{businessId}
+    </if>
+    ) as t1
+    inner join
+    (
+    select
+    sort,
+    max(create_time) as create_time
+    from t_flow_process
+    where create_time>=(
+    select
+    top 1
+    create_time
+    from t_flow_process
+    where sort='1'
+    <if test="null !=businessId">
+      and business_id=#{businessId}
+    </if>
+    order by create_time desc
+    )
+    <if test="null !=businessId">
+      and business_id=#{businessId}
+    </if>
+    <if test="null !=nodeCode">
+      and node_code=#{nodeCode}
+    </if>
+    <!--只要同意的流程-->
+    and audit_status='2'
+    group by sort
+    )as t2 on t1.create_time=t2.create_time and t1.sort=t2.sort
+    order by t1.sort
   </select>
 </mapper>

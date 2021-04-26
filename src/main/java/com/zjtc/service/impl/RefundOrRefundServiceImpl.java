@@ -107,7 +107,7 @@ public class RefundOrRefundServiceImpl extends
       for (RefundOrRefund refundOrRefund : list) {
         if (!refundOrRefund.getSysFiles().isEmpty()) {
           for (File file : refundOrRefund.getSysFiles()) {
-            file.setUrl(preViewRealPath  + "/" + file.getFilePath());
+            file.setUrl(preViewRealPath + "/" + file.getFilePath());
           }
         }
       }
@@ -137,10 +137,12 @@ public class RefundOrRefundServiceImpl extends
         //审核操作记录
         refundOrRefund.setAuditFlow(
             flowProcessMapper.queryAuditList(refundOrRefund.getId(), refundOrRefund.getNodeCode()));
+        //打印需要的操作记录
+        refundOrRefund.setPrintAuditFlow(flowProcessMapper.queryPrintAuditData(refundOrRefund.getId(), refundOrRefund.getNodeCode()));
         //附件
         if (!refundOrRefund.getSysFiles().isEmpty()) {
           for (File file : refundOrRefund.getSysFiles()) {
-            file.setUrl(preViewRealPath+ file.getFilePath());
+            file.setUrl(preViewRealPath + file.getFilePath());
           }
         }
         //当前退减免单是否可修改
@@ -181,17 +183,17 @@ public class RefundOrRefundServiceImpl extends
     String nextPersonName = jsonObject.getString("nextPersonName");
     //审核传入的判定 1:同意,2 不同意
     String auditBtn = jsonObject.getString("auditBtn");
-    String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
     //查询下一环节
-    List<Map<String, Object>> hasNext = flowNodeInfoService
+    List<Map<String, Object>> hasNextList = flowNodeInfoService
         .nextAuditRole(entity.getNextNodeId(), id, user.getNodeCode(), auditBtn);
+    Map<String, Object> hasNext = hasNextList.get(0) == null ? null : hasNextList.get(0);
     //获取当前环节的审核操作记录
     FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), entity.getId());
     //查询流程的发起人
     FlowProcess firstProcess = flowProcessService.selectFirstRecords(id);
     /**当前环节为最后环节：审核流程结束*/
-    if (hasNext.isEmpty()) {
+    if (null == hasNext) {
       //不通过
       if ("0".equals(auditBtn)) {
         entity.setStatus(AuditConstants.NOT_APPROVED);
@@ -253,7 +255,7 @@ public class RefundOrRefundServiceImpl extends
     } else {
       /**审核流程继续*/
       /**1.修改当前退减免单:下一环节id*/
-      String nextFlowNodeId = hasNext.get(0).get("flowNodeId").toString();
+      String nextFlowNodeId = hasNext.get("flowNodeId").toString();
       entity.setNextNodeId(nextFlowNodeId);
       /**2.流程操作记录表：修改当前环节审核状态*/
       if ("0".equals(auditBtn)) {
@@ -273,7 +275,9 @@ public class RefundOrRefundServiceImpl extends
       flowProcess.setAuditContent(content);
       flowProcessService.updateById(flowProcess);
       /**3.流程操作记录表:新增下一环节操作记录*/
-      flowProcessService.add(user.getNodeCode(), entity.getId(), nextPersonName, nextPersonId);
+
+      flowProcessService.add(user.getNodeCode(), entity.getId(), nextPersonName, nextPersonId,
+          Integer.parseInt(hasNext.get("sort").toString()));
       /**4：待办表：修改当前待办状态*/
       todoService.edit(entity.getId(), user.getNodeCode(), user.getId());
       /**待办表：新增一条待办*/

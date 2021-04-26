@@ -31,4 +31,7 @@ public interface FlowProcessMapper extends BaseMapper<FlowProcess> {
 
   long isFirstFlowNode(@Param("userId") String userId, @Param("nodeCode") String nodeCode,
       @Param("flowCode") String flowCode);
+
+  List<FlowProcess> queryPrintAuditData(@Param("businessId") String businessId,
+      @Param("nodeCode") String nodeCode);
 }
