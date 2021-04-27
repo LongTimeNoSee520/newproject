@@ -59,7 +59,7 @@ public class Finance extends Model<Finance> {
   @TableField(value = "drawer", exist = true)
   private String drawer;
 
-  @ApiModelProperty(value = "类型")
+  @ApiModelProperty(value = "类型(0:fare,1:sewage)")
   @TableField(value = "type", exist = true)
   private char type;
 

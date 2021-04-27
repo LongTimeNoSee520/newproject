@@ -3,12 +3,14 @@ package com.zjtc.mapper.waterBiz;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnit;
+import com.zjtc.model.vo.OrgTreeVO;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.model.vo.UseWaterUnitVo;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import  com.zjtc.model.vo.UseWaterUnitOrgVo;
 
 /**
  * @author yuyantian
@@ -131,4 +133,20 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
    *查询左侧管理户数、计划用水量、实际用水量
    */
   List<Map<String, Object>> selectLeftData(JSONObject jsonObject);
+
+  /**
+   * 查询所有的用水单位类型
+   * @param nodeCode
+   * @return
+   */
+  List<OrgTreeVO> selectUnitCode(@Param("nodeCode") String nodeCode);
+
+  /**
+   * 查询用水单位信息
+   * @param type
+   * @return
+   */
+  List<OrgTreeVO> selectByTypeUnitAll(@Param("type") String type);
+
+
 }

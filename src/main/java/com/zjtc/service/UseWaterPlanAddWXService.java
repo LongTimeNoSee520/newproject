@@ -59,6 +59,11 @@ public interface UseWaterPlanAddWXService extends IService<UseWaterPlanAddWX> {
    */
   boolean update(UseWaterPlanAddWX useWaterPlanAddWX,User user);
 
-
+  /**
+   * 通过id查看详情
+   * @param id
+   * @return
+   */
+  UseWaterPlanAddWX selectByIdAll(String id);
 
 }

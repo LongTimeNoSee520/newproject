@@ -5,6 +5,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.OrgTreeVO;
 import com.zjtc.service.UseWaterUnitService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -552,7 +553,7 @@ public class UseWaterUnitController {
   public ApiResponse selectAllType(@ApiParam("{\n"
       + "\"nodeCode\":\"节点编码\"\n"
       + "}")
-      @RequestBody JSONObject jsonObject,
+  @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse apiResponse = new ApiResponse();
     String nodeCode = jsonObject.getString("nodeCode");
@@ -568,5 +569,51 @@ public class UseWaterUnitController {
       apiResponse.recordError(500);
     }
     return apiResponse;
+  }
+
+
+
+
+//  @ResponseBody
+//  @ApiOperation(value = "根据类型查询对应的用水单位信息")
+//  @RequestMapping(value = "selectByUnitCodeAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//  public ApiResponse selectByUnitCodeAll(@RequestHeader("token") String token,
+//      @ApiParam("{\"type\":\"类型\"}")
+//      @RequestBody JSONObject jsonObject) {
+//    ApiResponse response = new ApiResponse();
+//    User user = jwtUtil.getUserByToken(token);
+//    if (null == user) {
+//      response.recordError("系统异常");
+//      return response;
+//    }
+//    String type = jsonObject.getString("type");
+//    try {
+//      List<OrgTreeVO> treeVOS = useWaterUnitService.selectByUnitCodeAll(type);
+//      response.setData(treeVOS);
+//      return response;
+//    } catch (Exception e) {
+//      log.error("根据类型查询对应的用水单位信息异常==" + e.getMessage());
+//      e.printStackTrace();
+//    }
+//    return response;
+//  }
+
+
+  @ResponseBody
+  @ApiOperation(value = "查询所有的用水单位类型")
+  @RequestMapping(value = "selectUnitCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse selectUnitCode(@ApiParam("{\"nodeCode\":\"节点编码\"}")
+      @RequestBody JSONObject jsonObject) {
+    ApiResponse response = new ApiResponse();
+    String nodeCode = jsonObject.getString("nodeCode");
+    try {
+      List<OrgTreeVO> list = useWaterUnitService.selectUnitCode(nodeCode);
+      response.setData(list);
+      return response;
+    } catch (Exception e) {
+      log.error("查询所有的用水单位类型异常==" + e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
   }
 }

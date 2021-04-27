@@ -8,9 +8,11 @@ import com.zjtc.base.util.DictUtils;
 import com.zjtc.mapper.waterBiz.UseWaterUnitMapper;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.File;
+import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.UseWaterUnitRef;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.OrgTreeVO;
 import com.zjtc.model.vo.RefEditData;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.model.vo.UseWaterUnitVo;
@@ -19,6 +21,7 @@ import com.zjtc.service.CommonService;
 import com.zjtc.service.ContactsService;
 import com.zjtc.service.FileService;
 import com.zjtc.service.SystemLogService;
+import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterQuotaService;
 import com.zjtc.service.UseWaterUnitMeterService;
 import com.zjtc.service.UseWaterUnitModifyService;
@@ -41,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import  com.zjtc.model.vo.UseWaterUnitOrgVo;
 
 /**
  * @author yuyantian
@@ -843,5 +847,21 @@ public class UseWaterUnitServiceImpl extends
     sql = sql.substring(0, sql.length() - 1);
     return sql;
   }
+
+
+  @Override
+  public List<OrgTreeVO> selectUnitCode(String nodeCode) {
+
+//    查询全部类型,相当于是顶级部门
+    List<OrgTreeVO> treeVOS = this.baseMapper.selectUnitCode(nodeCode);
+//    for (OrgTreeVO orgTreeVO : treeVOS){
+////      查询对应类型下的子集
+//      String type = orgTreeVO.getId();
+//      orgTreeVO.setOrgTreeVOS(this.baseMapper.selectByTypeUnitAll(type));
+//    }
+    treeVOS.addAll(treeVOS);
+    return treeVOS;
+  }
+
 
 }

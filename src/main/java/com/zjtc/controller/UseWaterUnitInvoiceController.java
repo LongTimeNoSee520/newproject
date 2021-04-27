@@ -401,7 +401,7 @@ public class UseWaterUnitInvoiceController {
       + "\"payInfoId\":\"缴费记录id\",\n"
       + "\"invoiceMoney\":\"发票金额\",\n"
       + "\"invoiceUnitName\":\"发票单位名称\",\n"
-      + "\"invoiceType\":\"0有效1作废\",\n"
+      + "\"enabled\":\"0有效1作废\",\n"
       + "\"invoiceUnitCode\":\"发票单位编号\"\n"
       + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     log.info("分页查询数据,参数param==={" + jsonObject.toJSONString() + "}");

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.UseWaterPlan;
+import com.zjtc.model.UseWaterUnit;
 
 /**
  * TWUseWaterPlan的服务接口
@@ -50,4 +51,10 @@ public interface UseWaterPlanService extends IService<UseWaterPlan> {
   UseWaterPlan selectUseWaterPlanAll(String nodeCode,Integer planYear,String waterUnitId,String unitCode);
 
   UseWaterPlan selectUseWaterPlan(String nodeCode, String unitCode, Integer planYear);
+
+  /**
+   * 用水计划调整 查看当前计划
+   * @param id 用水计划调整审核待办id
+   */
+  UseWaterPlan selectNowPlan(String id);
 }

@@ -5,7 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.UseWaterPlanMapper;
 import com.zjtc.model.UseWaterPlan;
+import com.zjtc.model.UseWaterPlanAddWX;
+import com.zjtc.model.UseWaterUnit;
+import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterPlanService;
+import java.util.Calendar;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,6 +22,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class UseWaterPlanServiceImpl extends ServiceImpl<UseWaterPlanMapper, UseWaterPlan> implements
 		UseWaterPlanService {
+
+  @Autowired
+  private UseWaterPlanAddWXService useWaterPlanAddWXService;
 
 	@Override
 	public boolean saveModel(JSONObject jsonObject) {
@@ -54,5 +62,21 @@ public class UseWaterPlanServiceImpl extends ServiceImpl<UseWaterPlanMapper, Use
   public UseWaterPlan selectUseWaterPlan(String nodeCode, String unitCode, Integer planYear) {
 
     return this.baseMapper.selectUseWaterPlan( nodeCode,  unitCode,  planYear);
+  }
+
+  @Override
+  public UseWaterPlan selectNowPlan(String id) {
+    UseWaterPlanAddWX useWaterPlanAddWX = useWaterPlanAddWXService.selectByIdAll(id);
+    UseWaterPlan useWaterPlan = this.baseMapper
+        .selectUseWaterPlanAll(useWaterPlanAddWX.getNodeCode(), getYear(),
+            useWaterPlanAddWX.getUseWaterUnitId(), useWaterPlanAddWX.getUnitCode());
+    return useWaterPlan;
+  }
+
+  //获取当前年份
+  public static Integer getYear() {
+    Calendar date = Calendar.getInstance();
+    String year = String.valueOf(date.get(Calendar.YEAR));
+    return Integer.valueOf(year);
   }
 }

@@ -414,4 +414,9 @@ public class UseWaterPlanAddWXServiceImpl extends
     }
     return waterPlanAddWXVO;
   }
+
+  @Override
+  public UseWaterPlanAddWX selectByIdAll(String id) {
+    return this.baseMapper.selectById(id);
+  }
 }
