@@ -149,30 +149,5 @@ public class UseWaterPlanController {
 	}
 
 
-  @RequestMapping(value = "selectNowPlan", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation("用水计划调整 查看当前计划")
-  public ApiResponse selectNowPlan(@ApiParam("   {\n"
-      + "     \"id\":\"用水计划调整审核id\"\n"
-      + "   }") @RequestBody JSONObject jsonObject,
-      @RequestHeader("token") String token) {
-    log.info("用水计划调整 查看当前计划,参数param==={" + jsonObject.toJSONString() + "}");
-    ApiResponse response = new ApiResponse();
 
-    if (null == jsonObject) {
-      response.recordError("系统异常");
-      return response;
-    }
-    String id = jsonObject.getString("id");
-    try {
-      UseWaterPlan useWaterPlan = useWaterPlanService.selectNowPlan(id);
-     response.setData(useWaterPlan);
-      return response;
-    } catch (Exception e) {
-      response.setCode(500);
-      response.setMessage("用水计划调整 查看当前计划异常");
-      log.error("用水计划调整 查看当前计划错误,errMsg==={}", e.getMessage());
-      e.printStackTrace();
-    }
-    return response;
-  }
 }

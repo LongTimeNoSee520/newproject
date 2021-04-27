@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.UseWaterPlanAddWXVO;
 import java.util.List;
 
 /**
@@ -66,4 +67,8 @@ public interface UseWaterPlanAddWXService extends IService<UseWaterPlanAddWX> {
    */
   UseWaterPlanAddWX selectByIdAll(String id);
 
+  /**
+   * 查看当前计划
+   */
+  UseWaterPlanAddWXVO selectNowPlan(String id);
 }

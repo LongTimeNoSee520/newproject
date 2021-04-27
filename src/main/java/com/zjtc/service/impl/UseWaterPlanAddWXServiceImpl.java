@@ -419,4 +419,32 @@ public class UseWaterPlanAddWXServiceImpl extends
   public UseWaterPlanAddWX selectByIdAll(String id) {
     return this.baseMapper.selectById(id);
   }
+
+  @Override
+  public UseWaterPlanAddWXVO selectNowPlan(String id) {
+    UseWaterPlanAddWXVO useWaterPlanAddWXVO = new UseWaterPlanAddWXVO();
+    UseWaterPlanAddWX useWaterPlanAddWX = this.baseMapper.selectById(id);
+
+    UseWaterPlan useWaterPlan = useWaterPlanService
+        .selectUseWaterPlanAll(useWaterPlanAddWX.getNodeCode(), getYear(),
+            useWaterPlanAddWX.getUseWaterUnitId(), useWaterPlanAddWX.getUnitCode());
+
+    useWaterPlanAddWXVO.setCurYearPlan(useWaterPlanAddWX.getCurYearPlan());
+    useWaterPlanAddWXVO.setPlanYear(useWaterPlanAddWX.getPlanYear());
+    useWaterPlanAddWXVO.setFirstQuarter(useWaterPlanAddWX.getFirstQuarter());
+    useWaterPlanAddWXVO.setSecondQuarter(useWaterPlanAddWX.getSecondQuarter());
+    useWaterPlanAddWXVO.setThirdQuarter(useWaterPlanAddWX.getThirdQuarter());
+    useWaterPlanAddWXVO.setFourthQuarter(useWaterPlanAddWX.getFourthQuarter());
+    try {
+      useWaterPlanAddWXVO.setFrontCurYearPlan(useWaterPlan.getCurYearPlan());
+      useWaterPlanAddWXVO.setFrontPlanYear(useWaterPlan.getPlanYear());
+      useWaterPlanAddWXVO.setFrontFirstQuarter(useWaterPlan.getFirstQuarter());
+      useWaterPlanAddWXVO.setFrontSecondQuarter(useWaterPlan.getSecondQuarter());
+      useWaterPlanAddWXVO.setFrontThirdQuarter(useWaterPlan.getThirdQuarter());
+      useWaterPlanAddWXVO.setFrontFourthQuarter(useWaterPlan.getFourthQuarter());
+    } catch (Exception e) {
+      log.error("查询用水计划原始数据为空,数据id为:" + useWaterPlanAddWXVO.getUseWaterUnitId());
+    }
+    return useWaterPlanAddWXVO;
+  }
 }

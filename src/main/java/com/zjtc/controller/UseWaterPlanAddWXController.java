@@ -3,7 +3,9 @@ package com.zjtc.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
+import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.UseWaterPlanAddWXVO;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.UseWaterPlanAddWXService;
@@ -207,4 +209,30 @@ public class UseWaterPlanAddWXController {
     return response;
   }
 
+  @RequestMapping(value = "selectNowPlan", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation("用水计划调整 查看当前计划")
+  public ApiResponse selectNowPlan(@ApiParam("   {\n"
+      + "     \"id\":\"用水计划调整审核id\"\n"
+      + "   }") @RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
+    log.info("用水计划调整 查看当前计划,参数param==={" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+
+    if (null == jsonObject) {
+      response.recordError("系统异常");
+      return response;
+    }
+    String id = jsonObject.getString("id");
+    try {
+      UseWaterPlanAddWXVO useWaterPlanAddWXVO = useWaterPlanAddWXService.selectNowPlan(id);
+      response.setData(useWaterPlanAddWXVO);
+      return response;
+    } catch (Exception e) {
+      response.setCode(500);
+      response.setMessage("用水计划调整 查看当前计划异常");
+      log.error("用水计划调整 查看当前计划错误,errMsg==={}", e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
 }
