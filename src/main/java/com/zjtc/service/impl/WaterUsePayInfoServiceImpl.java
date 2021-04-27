@@ -223,6 +223,7 @@ public class WaterUsePayInfoServiceImpl extends
     String todoContent =
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请退款" + entity.getMoney()
             + "元";
+    entity.setAuditFlow(flowProcessMapper.queryAuditList(entity.getId(), user.getNodeCode()));
     todoService
         .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent,
             JSONObject.toJSONString(entity),
@@ -279,6 +280,7 @@ public class WaterUsePayInfoServiceImpl extends
     String todoContent =
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请减免" + entity.getMoney()
             + "元";
+    entity.setAuditFlow(flowProcessMapper.queryAuditList(entity.getId(), user.getNodeCode()));
     todoService
         .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent,
             JSONObject.toJSONString(entity),
@@ -633,6 +635,10 @@ public class WaterUsePayInfoServiceImpl extends
     for (String type : typeList) {
       jsonObject.put("unitCodeType",type);
       List<PayPrintVo> list=  baseMapper.printExPlan1(jsonObject);
+      //测试
+      for(int i=1;i<6;i++){
+        list.addAll(list);
+      }
       if(!list.isEmpty()){
         result.put(type,list);
       }
@@ -651,6 +657,10 @@ public class WaterUsePayInfoServiceImpl extends
     for (String type : typeList) {
       jsonObject.put("unitCodeType",type);
       List<PayPrintVo> list=  baseMapper.printExPlan2(jsonObject);
+      //测试
+      for(int i=1;i<6;i++){
+        list.addAll(list);
+      }
       if(!list.isEmpty()){
         result.put(type,list);
       }

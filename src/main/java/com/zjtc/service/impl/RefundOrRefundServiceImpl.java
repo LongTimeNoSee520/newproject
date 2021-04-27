@@ -294,6 +294,7 @@ public class RefundOrRefundServiceImpl extends
                 .getMoney()
                 + "元";
       }
+      entity.setAuditFlow(flowProcessMapper.queryAuditList(entity.getId(), user.getNodeCode()));
       todoService.add(entity.getId(), user, nextPersonId, nextPersonName, todoContent,
           JSONObject.toJSONString(entity),
           detailConfig, AuditConstants.PAY_TODO_TYPE);
