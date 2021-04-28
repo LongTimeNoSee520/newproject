@@ -46,6 +46,7 @@
             from t_flow_node_info as a
             inner join (
               select
+              sort,
               next_node_id
               from
               t_flow_node_line_info
