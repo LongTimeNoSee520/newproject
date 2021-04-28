@@ -429,12 +429,14 @@ public class UseWaterPlanAddWXServiceImpl extends
         .selectUseWaterPlanAll(useWaterPlanAddWX.getNodeCode(), getYear(),
             useWaterPlanAddWX.getUseWaterUnitId(), useWaterPlanAddWX.getUnitCode());
 
+    //调整后
     useWaterPlanAddWXVO.setCurYearPlan(useWaterPlanAddWX.getCurYearPlan());
     useWaterPlanAddWXVO.setPlanYear(useWaterPlanAddWX.getPlanYear());
     useWaterPlanAddWXVO.setFirstQuarter(useWaterPlanAddWX.getFirstQuarter());
     useWaterPlanAddWXVO.setSecondQuarter(useWaterPlanAddWX.getSecondQuarter());
     useWaterPlanAddWXVO.setThirdQuarter(useWaterPlanAddWX.getThirdQuarter());
     useWaterPlanAddWXVO.setFourthQuarter(useWaterPlanAddWX.getFourthQuarter());
+//    当前
     try {
       useWaterPlanAddWXVO.setFrontCurYearPlan(useWaterPlan.getCurYearPlan());
       useWaterPlanAddWXVO.setFrontPlanYear(useWaterPlan.getPlanYear());
