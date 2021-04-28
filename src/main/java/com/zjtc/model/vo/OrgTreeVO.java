@@ -93,8 +93,7 @@ public class OrgTreeVO extends Model<OrgTreeVO> {
   @TableField(value = "drawer", exist = false)
   private String drawer;
 
-  @ApiModelProperty(value="子集")
-  private List<OrgTreeVO> orgTreeVOS;
+
 
 
 

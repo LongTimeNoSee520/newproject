@@ -174,12 +174,12 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    */
   List<OrgTreeVO> selectUnitCode(String nodeCode);
 
-//  /**
-//   * 根据类型查询用水单位
-//   * @param
-//   * @return
-//   */
-//  List<OrgTreeVO> selectByUnitCodeAll(String type);
+  /**
+   * 根据类型查询用水单位
+   * @param
+   * @return
+   */
+  List<OrgTreeVO> selectByUnitCodeAll(String type);
 
 
 }

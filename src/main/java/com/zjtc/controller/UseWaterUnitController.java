@@ -573,32 +573,6 @@ public class UseWaterUnitController {
 
 
 
-
-//  @ResponseBody
-//  @ApiOperation(value = "根据类型查询对应的用水单位信息")
-//  @RequestMapping(value = "selectByUnitCodeAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//  public ApiResponse selectByUnitCodeAll(@RequestHeader("token") String token,
-//      @ApiParam("{\"type\":\"类型\"}")
-//      @RequestBody JSONObject jsonObject) {
-//    ApiResponse response = new ApiResponse();
-//    User user = jwtUtil.getUserByToken(token);
-//    if (null == user) {
-//      response.recordError("系统异常");
-//      return response;
-//    }
-//    String type = jsonObject.getString("type");
-//    try {
-//      List<OrgTreeVO> treeVOS = useWaterUnitService.selectByUnitCodeAll(type);
-//      response.setData(treeVOS);
-//      return response;
-//    } catch (Exception e) {
-//      log.error("根据类型查询对应的用水单位信息异常==" + e.getMessage());
-//      e.printStackTrace();
-//    }
-//    return response;
-//  }
-
-
   @ResponseBody
   @ApiOperation(value = "查询所有的用水单位类型")
   @RequestMapping(value = "selectUnitCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -612,6 +586,24 @@ public class UseWaterUnitController {
       return response;
     } catch (Exception e) {
       log.error("查询所有的用水单位类型异常==" + e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "根据类型查询用水单位")
+  @RequestMapping(value = "selectByUnitCodeAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse selectByUnitCodeAll(@ApiParam("{\"type\":\"类型\"}")
+  @RequestBody JSONObject jsonObject) {
+    ApiResponse response = new ApiResponse();
+    String type = jsonObject.getString("type");
+    try {
+      List<OrgTreeVO> list = useWaterUnitService.selectByUnitCodeAll(type);
+      response.setData(list);
+      return response;
+    } catch (Exception e) {
+      log.error("根据类型查询用水单位异常==" + e.getMessage());
       e.printStackTrace();
     }
     return response;

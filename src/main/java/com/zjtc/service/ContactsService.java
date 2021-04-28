@@ -2,6 +2,7 @@ package com.zjtc.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.Contacts;
+import com.zjtc.model.vo.OrgTreeVO;
 import java.util.List;
 
 /**
@@ -48,4 +49,11 @@ public interface ContactsService extends IService<Contacts> {
    * @return
    */
   int selectMaxCount(List<String> useWaterUnitIds);
+
+
+  /**
+   * 部门人员树 查询人员
+   * @return
+   */
+  List<OrgTreeVO> selectContacts(String nodeCode);
 }

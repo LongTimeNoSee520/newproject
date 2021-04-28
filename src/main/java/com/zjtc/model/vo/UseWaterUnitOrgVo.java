@@ -29,7 +29,6 @@ import lombok.EqualsAndHashCode;
 @Data
 public class UseWaterUnitOrgVo extends Model<UseWaterUnitOrgVo> {
 
-
   @ApiModelProperty("主键")
   private String id;
 

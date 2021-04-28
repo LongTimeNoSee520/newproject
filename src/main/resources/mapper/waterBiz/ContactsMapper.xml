@@ -51,4 +51,27 @@
 	 GROUP BY use_water_unit_id
 	 ) t
   </select>
+
+
+  <select id="selectContacts" resultType="com.zjtc.model.vo.OrgTreeVO">
+    SELECT
+    t1.id,
+    t1.use_water_unit_id AS parentId,
+    t1.node_code AS nodeCode,
+    null AS orgRank,
+    null AS orgName,
+    t1.mobile_number AS dutyTel,
+    'person' AS tag,
+    NULL AS personOrg,
+    NULL AS position,
+    contacts AS userName,
+    t1.phone_number AS mobilePhone,
+    t1.id AS drawerId,
+    t1.contacts AS drawer
+    FROM
+    t_w_use_water_unit_contacts t1  WHERE deleted = '0' AND main = '1'
+    <if test="nodeCode != null and nodeCode != ''">
+    AND node_code = #{nodeCode}
+    </if>
+  </select>
 </mapper>

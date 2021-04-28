@@ -3,6 +3,7 @@ package com.zjtc.mapper.waterBiz;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.Contacts;
+import com.zjtc.model.vo.OrgTreeVO;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -31,4 +32,10 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
 
 
   int selectMaxCount(@Param("useWaterUnitIds") List<String> useWaterUnitIds);
+
+  /**
+   * 部门人员树 查询人员
+   * @return
+   */
+  List<OrgTreeVO> selectContacts(@Param("nodeCode") String nodeCode);
 }

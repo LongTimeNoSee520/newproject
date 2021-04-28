@@ -857,11 +857,14 @@ public class UseWaterUnitServiceImpl extends
 //    for (OrgTreeVO orgTreeVO : treeVOS){
 ////      查询对应类型下的子集
 //      String type = orgTreeVO.getId();
-//      orgTreeVO.setOrgTreeVOS(this.baseMapper.selectByTypeUnitAll(type));
+//      treeVOS.addAll(this.baseMapper.selectByTypeUnitAll(type));
 //    }
-    treeVOS.addAll(treeVOS);
     return treeVOS;
   }
 
-
+  @Override
+  public List<OrgTreeVO> selectByUnitCodeAll(String type) {
+    List<OrgTreeVO> treeVOS = this.baseMapper.selectByTypeUnitAll(type);
+    return treeVOS;
+  }
 }

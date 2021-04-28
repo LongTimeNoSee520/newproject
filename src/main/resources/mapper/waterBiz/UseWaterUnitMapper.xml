@@ -1070,7 +1070,7 @@
     ( SELECT DISTINCT unit_code_type, node_code FROM t_w_use_water_unit  WHERE node_code = #{nodeCode} and deleted = '0'
     ) t1
     ORDER BY
-    t1.unit_code_type DESC
+    t1.unit_code_type asc
   </select>
 
   <select id="selectByTypeUnitAll" resultType="com.zjtc.model.vo.OrgTreeVO">

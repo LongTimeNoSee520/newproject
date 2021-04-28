@@ -3,6 +3,7 @@ package com.zjtc.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.ContactsMapper;
 import com.zjtc.model.Contacts;
+import com.zjtc.model.vo.OrgTreeVO;
 import com.zjtc.service.ContactsService;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,5 +86,10 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   @Override
   public int selectMaxCount(List<String> useWaterUnitIds) {
     return baseMapper.selectMaxCount(useWaterUnitIds);
+  }
+
+  @Override
+  public List<OrgTreeVO> selectContacts(String nodeCode) {
+    return this.baseMapper.selectContacts(nodeCode);
   }
 }
