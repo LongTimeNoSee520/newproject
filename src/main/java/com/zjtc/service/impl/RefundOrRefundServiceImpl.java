@@ -1,6 +1,7 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
@@ -296,7 +297,7 @@ public class RefundOrRefundServiceImpl extends
       }
       entity.setAuditFlow(flowProcessMapper.queryAuditList(entity.getId(), user.getNodeCode()));
       todoService.add(entity.getId(), user, nextPersonId, nextPersonName, todoContent,
-          JSONObject.toJSONString(entity),
+          JSONObject.toJSONString(entity, SerializerFeature.WriteMapNullValue),
           detailConfig, AuditConstants.PAY_TODO_TYPE);
       /**websocket推送待办*/
       webSocketUtil.pushWaterTodo(user.getNodeCode(), nextPersonId);

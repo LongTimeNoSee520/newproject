@@ -1,6 +1,7 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.constant.SmsConstants;
@@ -226,7 +227,7 @@ public class WaterUsePayInfoServiceImpl extends
     entity.setAuditFlow(flowProcessMapper.queryAuditList(entity.getId(), user.getNodeCode()));
     todoService
         .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent,
-            JSONObject.toJSONString(entity),
+            JSONObject.toJSONString(entity,SerializerFeature.WriteMapNullValue),
             detailConfig,
             AuditConstants.PAY_TODO_TYPE);
     /**websocket推送*/
@@ -283,7 +284,7 @@ public class WaterUsePayInfoServiceImpl extends
     entity.setAuditFlow(flowProcessMapper.queryAuditList(entity.getId(), user.getNodeCode()));
     todoService
         .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent,
-            JSONObject.toJSONString(entity),
+            JSONObject.toJSONString(entity, SerializerFeature.WriteMapNullValue),
             detailConfig,
             AuditConstants.PAY_TODO_TYPE);
     /**websocket推送*/
