@@ -89,7 +89,7 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   }
 
   @Override
-  public List<OrgTreeVO> selectContacts(String nodeCode) {
-    return this.baseMapper.selectContacts(nodeCode);
+  public List<OrgTreeVO> selectContacts(List<String> nodeCodes,String condition) {
+    return this.baseMapper.selectContacts(nodeCodes,condition);
   }
 }

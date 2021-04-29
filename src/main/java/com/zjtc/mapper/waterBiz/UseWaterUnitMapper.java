@@ -138,14 +138,14 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
    * @param nodeCode
    * @return
    */
-  List<OrgTreeVO> selectUnitCode(@Param("nodeCode") String nodeCode);
+  List<OrgTreeVO> selectUnitCode(@Param("nodeCode") String nodeCode,@Param("condition")String condition);
 
   /**
    * 查询用水单位信息
    * @param type
    * @return
    */
-  List<OrgTreeVO> selectByTypeUnitAll(@Param("type") String type);
+  List<OrgTreeVO> selectByTypeUnitAll(@Param("type") String type,@Param("condition")String condition);
 
 
 }

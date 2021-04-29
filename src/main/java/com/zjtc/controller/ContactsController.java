@@ -41,9 +41,10 @@ public class ContactsController {
   public ApiResponse selectContacts(@ApiParam("{\"nodeCode\":\"节点编码\"}")
   @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
-    String nodeCode = jsonObject.getString("nodeCode");
+    List<String> nodeCodes = jsonObject.getJSONArray("nodeCodes").toJavaList(String.class);
+    String condition = jsonObject.getString("condition");
     try {
-      List<OrgTreeVO> list = contactsService.selectContacts(nodeCode);
+      List<OrgTreeVO> list = contactsService.selectContacts(nodeCodes,condition);
       response.setData(list);
       return response;
     } catch (Exception e) {

@@ -18,14 +18,14 @@
   </resultMap>
   <select id="queryByUnitId" resultMap="BaseResultMap">
     SELECT id,node_code,use_water_unit_id,unit_code,contacts,mobile_number,phone_number,
-     CASE main WHEN '1' THEN '主联系人' WHEN '0' THEN '备用联系人' END AS main,
-     open_id,deleted,locked,wrong_times
+    CASE main WHEN '1' THEN '主联系人' WHEN '0' THEN '备用联系人' END AS main,
+    open_id,deleted,locked,wrong_times
     FROM t_w_use_water_unit_contacts
     WHERE deleted = '0'
     AND use_water_unit_id = #{useWaterUnitId}
-    ORDER BY  main DESC
+    ORDER BY main DESC
   </select>
-  <update id="delete" >
+  <update id="delete">
     UPDATE t_w_use_water_unit_contacts SET deleted ='1',open_id= ''
     WHERE id IN
     <foreach collection="ids" item="id" separator="," open="(" close=")">
@@ -37,19 +37,19 @@
     FROM t_w_use_water_unit_contacts
     WHERE unit_code = #{unitCode}
     AND main ='1'
-    AND  deleted = '0'
+    AND deleted = '0'
   </select>
   <select id="selectMaxCount" resultType="java.lang.Integer">
-  SELECT
-	max( t.num ) AS num
-  FROM
-	( SELECT count( 0 ) AS num FROM t_w_use_water_unit_contacts WHERE
+    SELECT
+    max( t.num ) AS num
+    FROM
+    ( SELECT count( 0 ) AS num FROM t_w_use_water_unit_contacts WHERE
     use_water_unit_id IN
     <foreach collection="useWaterUnitIds" item="id" separator="," open="(" close=")">
       #{id}
     </foreach>
-	 GROUP BY use_water_unit_id
-	 ) t
+    GROUP BY use_water_unit_id
+    ) t
   </select>
 
 
@@ -59,19 +59,32 @@
     t1.use_water_unit_id AS parentId,
     t1.node_code AS nodeCode,
     null AS orgRank,
-    null AS orgName,
+    contacts AS orgName,
     t1.mobile_number AS dutyTel,
     'person' AS tag,
-    NULL AS personOrg,
+    (SELECT unit_name from t_w_use_water_unit t2 WHERE t2.id = t1.use_water_unit_id) AS personOrg,
     NULL AS position,
     contacts AS userName,
     t1.phone_number AS mobilePhone,
     t1.id AS drawerId,
-    t1.contacts AS drawer
+    t1.contacts AS drawer,
+    t1.unit_code as unitCode,
+    '1' as son
     FROM
-    t_w_use_water_unit_contacts t1  WHERE deleted = '0' AND main = '1'
-    <if test="nodeCode != null and nodeCode != ''">
-    AND node_code = #{nodeCode}
+    t_w_use_water_unit_contacts t1 WHERE deleted = '0' AND main = '1'
+    <if test="nodeCodes != null and nodeCodes.size > 0">
+      AND node_code in
+      <foreach collection="nodeCodes"  item="nodeCode" open="(" close=")" separator=",">
+        #{nodeCode}
+      </foreach>
     </if>
+    <if test="condition != null and condition != ''">
+      and contacts LIKE '%${condition}%'
+    </if>
+  </select>
+
+  <select id="selectOrgIsHavePerson" resultType="int">
+    SELECT COUNT(1) FROM t_w_use_water_unit_contacts WHERE deleted = '0' AND main = '1' AND
+    use_water_unit_id = #{orgId}
   </select>
 </mapper>

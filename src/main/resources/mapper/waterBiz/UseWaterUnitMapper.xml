@@ -1065,10 +1065,19 @@
     null as position,
     null as userName,
     null as mobilePhone,
-    null AS parentName
+    null AS parentName,
+    '1' as son
     FROM
-    ( SELECT DISTINCT unit_code_type, node_code FROM t_w_use_water_unit  WHERE node_code = #{nodeCode} and deleted = '0'
+    ( SELECT DISTINCT unit_code_type, node_code FROM t_w_use_water_unit
+    WHERE  deleted = '0'
+    <if test="nodeCode != null and nodeCode != ''">
+      and node_code = #{nodeCode}
+    </if>
     ) t1
+    where 1 = 1
+    <if test="condition != null and condition != ''">
+      and unit_code_type like '%${condition}%'
+    </if>
     ORDER BY
     t1.unit_code_type asc
   </select>
@@ -1091,13 +1100,21 @@
     NULL AS unitCode,
     'org' AS tag,
     'null' AS personOrg,
-    'null' AS position,
+    'null' AS POSITION,
     'null' AS userName,
     'null' AS mobilePhone,
-    'null' AS parentName
+    'null' AS parentName,
+    CASE
+    ( SELECT COUNT ( 1 ) FROM t_w_use_water_unit_contacts t2 WHERE deleted = '0' AND main = '1' AND t2.use_water_unit_id = t1.id )
+    WHEN 0 THEN '0'
+    ELSE '1'
+    END son
     FROM
     t_w_use_water_unit t1
     WHERE
     unit_code_type = #{type} and deleted = '0'
+    <if test="condition != null and condition != ''">
+      AND (unit_name LIKE '%${condition}%' OR t1.unit_code LIKE '%${condition}%')
+    </if>
   </select>
 </mapper>

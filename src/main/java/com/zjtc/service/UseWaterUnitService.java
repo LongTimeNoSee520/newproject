@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 /**
@@ -172,14 +173,9 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param nodeCode 节点编码
    * @return
    */
-  List<OrgTreeVO> selectUnitCode(String nodeCode);
+  List<OrgTreeVO> selectUnitCode(String nodeCode,String condition);
 
-  /**
-   * 根据类型查询用水单位
-   * @param
-   * @return
-   */
-  List<OrgTreeVO> selectByUnitCodeAll(String type);
+
 
 
 }

@@ -8,7 +8,6 @@ import com.zjtc.base.util.DictUtils;
 import com.zjtc.mapper.waterBiz.UseWaterUnitMapper;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.File;
-import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.UseWaterUnitRef;
 import com.zjtc.model.User;
@@ -21,7 +20,6 @@ import com.zjtc.service.CommonService;
 import com.zjtc.service.ContactsService;
 import com.zjtc.service.FileService;
 import com.zjtc.service.SystemLogService;
-import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterQuotaService;
 import com.zjtc.service.UseWaterUnitMeterService;
 import com.zjtc.service.UseWaterUnitModifyService;
@@ -33,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import  com.zjtc.model.vo.UseWaterUnitOrgVo;
 
 /**
  * @author yuyantian
@@ -704,44 +702,44 @@ public class UseWaterUnitServiceImpl extends
   @Override
   public ApiResponse exportQueryData(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
-    ApiResponse apiResponse=new ApiResponse();
+    ApiResponse apiResponse = new ApiResponse();
     List<Map<String, Object>> map = baseMapper.exportQueryData(jsonObject);
     if (map.isEmpty()) {
       apiResponse.recordError("无导出数据！");
       return apiResponse;
     }
-      for (Map item : map) {
-        //查询电话号码
-        List<Contacts> contactsList = contactsService.queryByUnitId(item.get("id").toString());
-        if (!contactsList.isEmpty()) {
-          for (int i = 0; i < contactsList.size(); i++) {
-            item.put("contacts" + (i + 1), contactsList.get(i).getContacts());
-            item.put("mobileNumber" + (i + 1), contactsList.get(i).getMobileNumber());
-            item.put("phoneNumber" + (i + 1), contactsList.get(i).getPhoneNumber());
-          }
+    for (Map item : map) {
+      //查询电话号码
+      List<Contacts> contactsList = contactsService.queryByUnitId(item.get("id").toString());
+      if (!contactsList.isEmpty()) {
+        for (int i = 0; i < contactsList.size(); i++) {
+          item.put("contacts" + (i + 1), contactsList.get(i).getContacts());
+          item.put("mobileNumber" + (i + 1), contactsList.get(i).getMobileNumber());
+          item.put("phoneNumber" + (i + 1), contactsList.get(i).getPhoneNumber());
         }
-        //查询相关编号
-        List<String> idList = useWaterUnitRefService
-            .findIdList(item.get("id").toString(), user.getNodeCode());
-        if (!idList.isEmpty()) {
-          //相关编号集合
-          List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
-              .queryUnitRef(idList, user.getNodeCode(), user.getId(),
-                  item.get("id").toString());
-          //相关编号，用逗号隔开
-          String useWaterUnitIdRef = "";
-          if (!useWaterUnitRefList.isEmpty()) {
-            for (UseWaterUnitRefVo useWaterUnitRefVo : useWaterUnitRefList) {
-              useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
-            }
-          }
-          if (useWaterUnitIdRef.length() > 0) {
-            useWaterUnitIdRef= useWaterUnitIdRef.substring(0, useWaterUnitIdRef.length() - 1);
-          }
-          item.put("useWaterUnitIdRef",useWaterUnitIdRef);
-        }
-
       }
+      //查询相关编号
+      List<String> idList = useWaterUnitRefService
+          .findIdList(item.get("id").toString(), user.getNodeCode());
+      if (!idList.isEmpty()) {
+        //相关编号集合
+        List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
+            .queryUnitRef(idList, user.getNodeCode(), user.getId(),
+                item.get("id").toString());
+        //相关编号，用逗号隔开
+        String useWaterUnitIdRef = "";
+        if (!useWaterUnitRefList.isEmpty()) {
+          for (UseWaterUnitRefVo useWaterUnitRefVo : useWaterUnitRefList) {
+            useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
+          }
+        }
+        if (useWaterUnitIdRef.length() > 0) {
+          useWaterUnitIdRef = useWaterUnitIdRef.substring(0, useWaterUnitIdRef.length() - 1);
+        }
+        item.put("useWaterUnitIdRef", useWaterUnitIdRef);
+      }
+
+    }
     Map<String, Object> data = new HashMap<>();
     data.put("excelData", map);
     data.put("nowDate", new Date());
@@ -757,9 +755,9 @@ public class UseWaterUnitServiceImpl extends
   @Override
   public ApiResponse exportMoreAndLess(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
-    ApiResponse apiResponse=new ApiResponse();
+    ApiResponse apiResponse = new ApiResponse();
     List<Map<String, Object>> list = baseMapper
-        .exportMoreAndLess(jsonObject.getString("nodeCode"),user.getId());
+        .exportMoreAndLess(jsonObject.getString("nodeCode"), user.getId());
     if (list.isEmpty()) {
       apiResponse.recordError("无导出数据！");
       return apiResponse;
@@ -850,21 +848,44 @@ public class UseWaterUnitServiceImpl extends
 
 
   @Override
-  public List<OrgTreeVO> selectUnitCode(String nodeCode) {
-
+  public List<OrgTreeVO> selectUnitCode(String nodeCode,String condition) {
+    List<OrgTreeVO> orgTreeVOList = new ArrayList<>();
+    List<OrgTreeVO> orgTreeVOSPerson = new ArrayList<>();
 //    查询全部类型,相当于是顶级部门
-    List<OrgTreeVO> treeVOS = this.baseMapper.selectUnitCode(nodeCode);
-//    for (OrgTreeVO orgTreeVO : treeVOS){
-////      查询对应类型下的子集
-//      String type = orgTreeVO.getId();
-//      treeVOS.addAll(this.baseMapper.selectByTypeUnitAll(type));
-//    }
+    List<OrgTreeVO> treeVOS = this.baseMapper.selectUnitCode(nodeCode,condition);
+    for (OrgTreeVO orgTreeVO : treeVOS) {
+//      查询子集
+      String type = orgTreeVO.getId();
+      List<OrgTreeVO> treeVOS1 = this.baseMapper.selectByTypeUnitAll(type,condition);
+      orgTreeVOList.addAll(treeVOS1);
+    }
+    List<String> codeNodeList = new ArrayList<>();
+    //      人员
+    for (OrgTreeVO treeVO : orgTreeVOList) {
+      codeNodeList.add(treeVO.getNodeCode());
+    }
+    List<String> list = this.removeDuplicationByHashSet(codeNodeList);
+      List<OrgTreeVO> orgTreePerson = contactsService.selectContacts(list,condition);
+      orgTreeVOSPerson.addAll(orgTreePerson);
+//    部门的子集
+    treeVOS.addAll(orgTreeVOList);
+//    人员
+    treeVOS.addAll(orgTreeVOSPerson);
     return treeVOS;
   }
 
-  @Override
-  public List<OrgTreeVO> selectByUnitCodeAll(String type) {
-    List<OrgTreeVO> treeVOS = this.baseMapper.selectByTypeUnitAll(type);
-    return treeVOS;
+
+  /**
+   * list去重
+   * @param list
+   * @return
+   */
+  public static List<String> removeDuplicationByHashSet(List<String> list) {
+    HashSet set = new HashSet(list);
+    //把List集合所有元素清空
+    list.clear();
+    //把HashSet对象添加至List集合
+    list.addAll(set);
+    return list;
   }
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.vo.OrgTreeVO;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author lianghao
@@ -55,5 +56,6 @@ public interface ContactsService extends IService<Contacts> {
    * 部门人员树 查询人员
    * @return
    */
-  List<OrgTreeVO> selectContacts(String nodeCode);
+  List<OrgTreeVO> selectContacts(List<String> nodeCodes,String condition);
+
 }

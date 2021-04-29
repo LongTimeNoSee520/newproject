@@ -576,34 +576,20 @@ public class UseWaterUnitController {
   @ResponseBody
   @ApiOperation(value = "查询所有的用水单位类型")
   @RequestMapping(value = "selectUnitCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse selectUnitCode(@ApiParam("{\"nodeCode\":\"节点编码\"}")
+  public ApiResponse selectUnitCode(@ApiParam("{\n"
+      + "    \"nodeCode\":\"节点编码\",\n"
+      + "    \"condition\":\"用水单位编号、单位名称、人员名称\"\n"
+      + "}")
       @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
     String nodeCode = jsonObject.getString("nodeCode");
+    String condition = jsonObject.getString("condition");
     try {
-      List<OrgTreeVO> list = useWaterUnitService.selectUnitCode(nodeCode);
+      List<OrgTreeVO> list = useWaterUnitService.selectUnitCode(nodeCode,condition);
       response.setData(list);
       return response;
     } catch (Exception e) {
       log.error("查询所有的用水单位类型异常==" + e.getMessage());
-      e.printStackTrace();
-    }
-    return response;
-  }
-
-  @ResponseBody
-  @ApiOperation(value = "根据类型查询用水单位")
-  @RequestMapping(value = "selectByUnitCodeAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse selectByUnitCodeAll(@ApiParam("{\"type\":\"类型\"}")
-  @RequestBody JSONObject jsonObject) {
-    ApiResponse response = new ApiResponse();
-    String type = jsonObject.getString("type");
-    try {
-      List<OrgTreeVO> list = useWaterUnitService.selectByUnitCodeAll(type);
-      response.setData(list);
-      return response;
-    } catch (Exception e) {
-      log.error("根据类型查询用水单位异常==" + e.getMessage());
       e.printStackTrace();
     }
     return response;
