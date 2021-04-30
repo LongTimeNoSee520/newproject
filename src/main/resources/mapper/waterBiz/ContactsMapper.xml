@@ -60,18 +60,18 @@
     t1.node_code AS nodeCode,
     null AS orgRank,
     contacts AS orgName,
-    t1.mobile_number AS dutyTel,
+    t1.phone_number AS dutyTel,
     'person' AS tag,
     (SELECT unit_name from t_w_use_water_unit t2 WHERE t2.id = t1.use_water_unit_id) AS personOrg,
     NULL AS position,
     contacts AS userName,
-    t1.phone_number AS mobilePhone,
+    t1.mobile_number AS mobilePhone,
     t1.id AS drawerId,
     t1.contacts AS drawer,
     t1.unit_code as unitCode,
     '1' as son
     FROM
-    t_w_use_water_unit_contacts t1 WHERE deleted = '0' AND main = '1'
+    t_w_use_water_unit_contacts t1 WHERE deleted = '0'
     <if test="nodeCodes != null and nodeCodes.size > 0">
       AND node_code in
       <foreach collection="nodeCodes"  item="nodeCode" open="(" close=")" separator=",">

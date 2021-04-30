@@ -49,7 +49,7 @@ public interface UseWaterPlanAddWXService extends IService<UseWaterPlanAddWX> {
    * @param nextNodeId    下一审核环节id
    * @return 响应结果
    */
-  ApiResponse audit(String auditPersonId, String userName, String id, String auditStatus,
+  ApiResponse audit( String id, String auditStatus,
       String auditResult, Double firstWater, Double secondWater, User user, String auditorName,
       String auditorId, String businessJson, String detailConfig, String nextNodeId);
 

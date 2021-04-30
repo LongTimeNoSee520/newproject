@@ -161,7 +161,7 @@ public class UseWaterPlanAddWXController {
     String nextNodeId = jsonObject.getString("nextNodeId");
     try {
       response = useWaterPlanAddWXService
-          .audit(user.getId(), user.getUsername(), id, auditStatus, auditResult, firstWater,
+          .audit(id, auditStatus, auditResult, firstWater,
               secondWater, user, auditorName, auditorId, businessJson, detailConfig, nextNodeId);
       return response;
     } catch (Exception e) {
