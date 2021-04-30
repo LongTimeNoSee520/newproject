@@ -5,15 +5,18 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.UseWaterPlanAddWXMapper;
+import com.zjtc.model.Person;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.UseWaterPlanAddWXVO;
 import com.zjtc.service.FileService;
 import com.zjtc.service.MessageService;
+import com.zjtc.service.PersonService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.SmsService;
 import com.zjtc.service.SystemLogService;
+import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddWXService;
 import com.zjtc.service.UseWaterPlanService;
 import java.util.ArrayList;
@@ -63,6 +66,12 @@ public class UseWaterPlanAddWXServiceImpl extends
 
   @Autowired
   private SystemLogService systemLogService;
+
+  @Autowired
+  private TodoService todoService;
+
+  @Autowired
+  private PersonService personService;
 
 
   @Override
@@ -327,22 +336,28 @@ public class UseWaterPlanAddWXServiceImpl extends
         response.setCode(200);
 //      日志记录
         systemLogService.logInsert(user, "用水计划调整审核", "用水计划增加/调整审核", "");
-//        List<Person> personList1 = null;
-//        try {
-//          personList1 = personService
-//              .selectPersonByResCode("waterAdjustAudit", user.getNodeCode());
-//        } catch (Exception e) {
-//          log.error("根据资源code查询,资源下所有角色的所有人异常:" + e.getMessage());
-//        }
-//        assert personList1 != null;
-//        for (Person person : personList1) {
-//          //      取消待办
-//          try {
-//            todoService.edit(id, person.getNodeCode(), person.getId());
-//          } catch (Exception e) {
-//            log.error("审核人信息为空");
-//          }
-//        }
+        List<Person> personList1 = null;
+        try {
+//          调整计划
+          List<Person> personList = personService
+              .selectPersonByResCode("quarterApply", user.getNodeCode());
+          personList1.addAll(personList);
+//          增加计划
+          List<Person> personList2 = personService
+              .selectPersonByResCode("addApply", user.getNodeCode());
+          personList1.addAll(personList2);
+        } catch (Exception e) {
+          log.error("根据资源code查询,资源下所有角色的所有人异常:" + e.getMessage());
+        }
+        assert personList1 != null;
+        for (Person person : personList1) {
+          //      取消待办
+          try {
+            todoService.edit(id, person.getNodeCode(), person.getId());
+          } catch (Exception e) {
+            log.error("审核人信息为空");
+          }
+        }
 //        //     发起待办
 //        List<Person> personList = null;
 //        try {
