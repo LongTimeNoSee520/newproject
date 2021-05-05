@@ -350,7 +350,7 @@ public class UseWaterPlanAddWXServiceImpl extends
         }
         for (Person person : personList1) {
           //      取消待办
-            todoService.edit(id, user.getNodeCode(), user.getId());
+            todoService.edit(id, person.getNodeCode(), person.getId());
         }
         return response;
       } else if (Objects.requireNonNull(response1).getCode() == 500) {
