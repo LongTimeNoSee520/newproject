@@ -8,6 +8,7 @@ import com.zjtc.model.User;
 import com.zjtc.service.UseWaterUnitInvoiceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -301,6 +302,7 @@ public class UseWaterUnitInvoiceController {
           + "    \"ids\":[\n"
           + "       \"id数据集\"\n"
           + "    ]\n"
+          + "    \"receiveTime\":\"领取时间\"\n"
           + "}") @RequestBody JSONObject jsonObject) {
     log.info("重置==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     ApiResponse response = new ApiResponse();
@@ -313,12 +315,13 @@ public class UseWaterUnitInvoiceController {
       response.recordError("重置异常");
       return response;
     }
+    Date receiveTime = jsonObject.getDate("receiveTime");
     List<String> ids = jsonObject.getJSONArray("ids").toJavaList(String.class);
     if (ids.isEmpty()) {
       response.recordError("发票标记失败");
       return response;
     }
-    response = useWaterUnitInvoiceService.sign(ids);
+    response = useWaterUnitInvoiceService.sign(ids,receiveTime);
     return response;
   }
 

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterUnitInvoice;
 import com.zjtc.model.User;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -73,7 +74,7 @@ public interface UseWaterUnitInvoiceService extends IService<UseWaterUnitInvoice
    * @param ids 发票id集
    * @return 响应结果
    */
-  ApiResponse sign(List<String> ids);
+  ApiResponse sign(List<String> ids, Date receiveTime);
 
 
   /**

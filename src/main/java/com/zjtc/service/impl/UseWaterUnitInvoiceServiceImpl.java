@@ -284,7 +284,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
   }
 
   @Override
-  public ApiResponse sign(List<String> ids) {
+  public ApiResponse sign(List<String> ids, Date receiveTime) {
     ApiResponse response = new ApiResponse();
     if (ids.isEmpty()) {
       response.recordError("标记失败");
@@ -297,7 +297,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
       invoice = new UseWaterUnitInvoice();
       invoice.setId(id);
       invoice.setReceived("1");
-      invoice.setReceiveTime(new Date());
+      invoice.setReceiveTime(receiveTime);
       list.add(invoice);
     }
     b = this.updateBatchById(list);
