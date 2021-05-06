@@ -59,7 +59,7 @@ public class UseWaterUnitRefServiceImpl extends
 
   @Override
   public boolean deleteBatch(List<String> ids) {
-    return false;
+    return this.removeByIds(ids);
   }
 
   private void recursion(List<String> param) {
