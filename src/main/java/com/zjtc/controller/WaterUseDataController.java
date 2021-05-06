@@ -5,13 +5,11 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterMonthUseData;
-import com.zjtc.model.WaterUseData;
 import com.zjtc.service.WaterMonthUseDataService;
 import com.zjtc.service.WaterUseDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -98,18 +96,19 @@ public class WaterUseDataController {
     }
     String useWaterUnitId = jsonObject.getString("useWaterUnitId");
     try {
-      List<WaterMonthUseData>  waterMonthUseDataList = waterMonthUseDataService
+      List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
           .selectWaterUseData(waterMeterCodes, useWaterUnitId);
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList) {
-        if (null != waterMonthUseData && !StringUtils.isBlank(waterMonthUseData.getUseWaterUnitId())) {
-          response.setMessage("该水表档案号:"+waterMonthUseData.getWaterMeterCode()+"已被其他单位使用");
+        if (StringUtils.isNotBlank(waterMonthUseData.getUseWaterUnitId()) && !useWaterUnitId
+            .equals(waterMonthUseData.getUseWaterUnitId())) {
+          response.setMessage("该水表档案号:" + waterMonthUseData.getWaterMeterCode() + "已被其他单位使用");
           return response;
         }
       }
       if (null == waterMonthUseDataList || waterMonthUseDataList.size() == 0) {
         response.setMessage("未查到该水表信息");
         return response;
-      }else {
+      } else {
         response.setCode(200);
         response.setData(waterMonthUseDataList);
         return response;
