@@ -80,6 +80,9 @@ public class Bank extends Model<Bank> {
   @TableField(value = "deleted", exist = true)
   private String deleted;
 
+  @ApiModelProperty(value = "是否导出")
+  @TableField(value = "isExport", exist = true)
+  private String isExport;
 
   @Override
   protected Serializable pkVal() {

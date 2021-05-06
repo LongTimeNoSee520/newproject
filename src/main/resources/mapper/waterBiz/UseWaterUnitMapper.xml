@@ -606,6 +606,7 @@
   </select>
   <select id="exportRevoca" resultType="java.util.LinkedHashMap">
     select
+    id,
     type='d',
     agreement_number as agreementNumber,
     sBankName=#{sBankName},
@@ -615,7 +616,10 @@
     bank_of_deposit as bankOfDeposit,
     people_bank_pay_sys_number as peopleBankPaySysNumber,
     entrust_unit_name as entrustUnitName,
-    bank_account as bankAccount
+    bank_account as bankAccount,
+    case  when isExport='0' then '未导出过'
+    when isExport='1' then '已导出过'
+    end as isExport
     from t_w_bank
     where deleted='0'
     and main='3'

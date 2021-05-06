@@ -9,6 +9,7 @@ import com.zjtc.service.SystemLogService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
     for (Bank bank : banks) {
       ids.add(bank.getId());
     }
-    if (ids.isEmpty()){
+    if (ids.isEmpty()) {
       return false;
     }
     return this.baseMapper.deletedBank(ids);
@@ -64,13 +65,14 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
       if (i > 0) {
         return false;
       }
-      if("3".equals(bank1.getMain())){
+      if ("3".equals(bank1.getMain())) {
         bank1.setRevocationDate(new Date());
       }
       bank1.setId("");
       bank1.setUseWaterUnitId(useWaterUnitId);
       bank1.setDeleted("0");
       bank1.setNodeCode(nodeCode);
+      bank1.setIsExport("0");
     }
 //    判断是本行还是他行(默认为建设银行)未实现
     return this.saveBatch(bank);
@@ -103,6 +105,22 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
     wrapper.eq("node_code", nodeCode);
     wrapper.orderByDesc("main");
     return this.list(wrapper);
+  }
+
+  @Override
+  public boolean updateIsExport(List<Map<String, Object>> list) {
+    List<String> ids = new ArrayList<>();
+    if (!list.isEmpty()) {
+      for (Map map : list) {
+        ids.add(map.get("id").toString());
+      }
+      QueryWrapper queryWrapper=new QueryWrapper();
+      queryWrapper.in(ids);
+      Bank bank=new Bank();
+      bank.setIsExport("1");
+      return this.update(bank,queryWrapper);
+    }
+    return false;
   }
 
 }

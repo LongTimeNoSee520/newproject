@@ -698,6 +698,8 @@ public class UseWaterUnitServiceImpl extends
     String fileName = "计划用水户撤销格式.xls";
     String templateName = "template/Revoca.xls";
     commonService.export(fileName, templateName, request, response, data);
+    //导出的撤销账户标志
+    bankService.updateIsExport(list);
     systemLogService.logInsert(user, "用水单位管理", "导出撤销格式", null);
     return apiResponse;
   }
@@ -727,7 +729,8 @@ public class UseWaterUnitServiceImpl extends
       if (!idList.isEmpty()) {
         //查询所属区域
         item.put("areaCountryName",
-            dictUtils.getDictItemName(AREA_COUNTRY_CODE, item.get("areaCountry").toString(), user.getNodeCode()));
+            dictUtils.getDictItemName(AREA_COUNTRY_CODE, item.get("areaCountry").toString(),
+                user.getNodeCode()));
         //相关编号集合
         List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
             .queryUnitRef(idList, user.getNodeCode(), user.getId(),
@@ -854,15 +857,15 @@ public class UseWaterUnitServiceImpl extends
 
 
   @Override
-  public List<OrgTreeVO> selectUnitCode(String nodeCode,String condition) {
+  public List<OrgTreeVO> selectUnitCode(String nodeCode, String condition) {
     List<OrgTreeVO> orgTreeVOList = new ArrayList<>();
     List<OrgTreeVO> orgTreeVOSPerson = new ArrayList<>();
 //    查询全部类型,相当于是顶级部门
-    List<OrgTreeVO> treeVOS = this.baseMapper.selectUnitCode(nodeCode,condition);
+    List<OrgTreeVO> treeVOS = this.baseMapper.selectUnitCode(nodeCode, condition);
     for (OrgTreeVO orgTreeVO : treeVOS) {
 //      查询子集
       String type = orgTreeVO.getId();
-      List<OrgTreeVO> treeVOS1 = this.baseMapper.selectByTypeUnitAll(type,condition);
+      List<OrgTreeVO> treeVOS1 = this.baseMapper.selectByTypeUnitAll(type, condition);
       orgTreeVOList.addAll(treeVOS1);
     }
     List<String> codeNodeList = new ArrayList<>();
@@ -871,8 +874,8 @@ public class UseWaterUnitServiceImpl extends
       codeNodeList.add(treeVO.getNodeCode());
     }
     List<String> list = this.removeDuplicationByHashSet(codeNodeList);
-      List<OrgTreeVO> orgTreePerson = contactsService.selectContacts(list,condition);
-      orgTreeVOSPerson.addAll(orgTreePerson);
+    List<OrgTreeVO> orgTreePerson = contactsService.selectContacts(list, condition);
+    orgTreeVOSPerson.addAll(orgTreePerson);
 //    部门的子集
     treeVOS.addAll(orgTreeVOList);
 //    人员
@@ -883,8 +886,6 @@ public class UseWaterUnitServiceImpl extends
 
   /**
    * list去重
-   * @param list
-   * @return
    */
   public static List<String> removeDuplicationByHashSet(List<String> list) {
     HashSet set = new HashSet(list);

@@ -3,6 +3,7 @@ package com.zjtc.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.Bank;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: ZhouDaBo
@@ -51,4 +52,11 @@ public interface BankService extends IService<Bank> {
    * @return 银行结果集
    */
   List<Bank> selectBank(String useWaterUnitId, String nodeCode);
+
+  /**
+   * 导出撤销格式的标志
+   * @param list
+   * @return
+   */
+  boolean updateIsExport(List<Map<String, Object>> list);
 }
