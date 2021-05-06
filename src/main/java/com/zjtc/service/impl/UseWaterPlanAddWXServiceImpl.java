@@ -224,6 +224,26 @@ public class UseWaterPlanAddWXServiceImpl extends
       } catch (Exception e) {
         log.error("用水计划增加或调整审核短信发送失败");
       }
+
+//      取消待办
+      List<Person> personList1 = null;
+      try {
+//          调整计划
+        List<Person> personList = personService
+            .selectPersonByResCode("quarterApply", user.getNodeCode());
+        personList1.addAll(personList);
+//          增加计划
+        List<Person> personList2 = personService
+            .selectPersonByResCode("addApply", user.getNodeCode());
+        personList1.addAll(personList2);
+      } catch (Exception e) {
+        log.error("根据资源code查询,资源下所有角色的所有人异常:" + e.getMessage());
+      }
+      for (Person person : personList1) {
+        //      取消待办
+        todoService.edit(id, person.getNodeCode(), person.getId());
+      }
+
     } else if ("2".equals(auditStatus)) {
 
       JSONObject jsonObject = new JSONObject();

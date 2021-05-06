@@ -9,6 +9,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.UseWaterSelfDefinePlanMapper;
 import com.zjtc.model.File;
+import com.zjtc.model.Person;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;
@@ -444,8 +445,18 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       response.setCode(200);
       systemLogService.logInsert(user, "用水计划自平", "用水计划自平执行", "");
 //      取消待办
+      List<Person> personLis = null;
+      try {
+        personLis = personService
+            .selectPersonByResCode("selfBalance", user.getNodeCode());
+      } catch (Exception e) {
+        log.error("根据资源code查询,资源下所有角色的所有人异常:" + e.getMessage());
+      }
+//      取消待办
       for (String id : ids) {
-        todoService.edit(id, user.getNodeCode(), user.getId());
+        for (Person person : personLis) {
+          todoService.edit(id, person.getNodeCode(), person.getId());
+        }
       }
       return response;
     } else {
