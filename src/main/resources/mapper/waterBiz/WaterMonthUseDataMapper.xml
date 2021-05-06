@@ -141,6 +141,10 @@
     a.node_code=#{nodeCode}
     )t1
     where 1=1
+    <!--单位编号-->
+    <if test="null !=unitCode">
+      and b.unit_code like '%${unitCode}%'
+    </if>
     <!--单位名称-->
     <if test="null !=unitName">
       and unit_names like '%${unitName}%'
@@ -209,6 +213,10 @@
     a.node_code=#{nodeCode}
     ) t1
     where 1=1
+    <!--单位编号-->
+    <if test="null !=unitCode">
+      and b.unit_code like '%${unitCode}%'
+    </if>
     <!--单位名称-->
     <if test="null !=unitName">
       and unit_names like '%${unitName}%'
@@ -276,6 +284,10 @@
     a.node_code=#{nodeCode}
     )t1
     where 1=1
+    <!--单位编号-->
+    <if test="null !=unitCode">
+      and b.unit_code like '%${unitCode}%'
+    </if>
     <!--单位名称-->
     <if test="null !=unitName">
       and unit_names like '%${unitName}%'

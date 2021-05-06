@@ -41,6 +41,7 @@ public class WaterMonthUseDataController {
   @ApiOperation("水使用量月数据分页")
   public ApiResponse queryPage(
       @ApiParam("{\n"
+          + "  \"unitCode\":\"单位编号\",\n"
           + "  \"nodeCode\":\"节点编码\",\n"
           + "  \"current\":\"页码，必填\",\n"
           + "  \"size\":\"显示数据条数，必填\",\n"
