@@ -722,6 +722,9 @@ public class UseWaterUnitServiceImpl extends
       List<String> idList = useWaterUnitRefService
           .findIdList(item.get("id").toString(), user.getNodeCode());
       if (!idList.isEmpty()) {
+        //查询所属区域
+        item.put("areaCountryName",
+            dictUtils.getDictItemName(AREA_COUNTRY_CODE, item.get("areaCountry").toString(), user.getNodeCode()));
         //相关编号集合
         List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
             .queryUnitRef(idList, user.getNodeCode(), user.getId(),
