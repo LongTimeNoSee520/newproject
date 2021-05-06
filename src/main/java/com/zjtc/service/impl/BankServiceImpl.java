@@ -115,7 +115,7 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements
         ids.add(map.get("id").toString());
       }
       QueryWrapper queryWrapper=new QueryWrapper();
-      queryWrapper.in(ids);
+      queryWrapper.in("id",ids);
       Bank bank=new Bank();
       bank.setIsExport("1");
       return this.update(bank,queryWrapper);

@@ -18,6 +18,7 @@
     <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
     <result column="use_water_unit_Id" property="useWaterUnitId" jdbcType="VARCHAR"/>
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
+    <result column="isExport" property="isExport" jdbcType="VARCHAR"/>
   </resultMap>
 
   <select id="selectBankAccount" resultType="int">
@@ -57,7 +58,7 @@
     focus_user_remark,
     use_water_unit_Id,
     deleted,
-    bank_code
+    isExport
 
     from t_w_bank where deleted = '0' and use_water_unit_Id = #{id}
   </select>
