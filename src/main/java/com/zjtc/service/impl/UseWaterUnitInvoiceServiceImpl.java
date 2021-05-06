@@ -373,7 +373,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
   @Override
   public List<Map<String, Object>> selectInvoices(String loginId, String nodeCode,
       String invoiceNumber) {
-    return this.baseMapper.selectInvoices(loginId, nodeCode,invoiceNumber);
+    return this.baseMapper.selectInvoices(loginId, nodeCode, invoiceNumber);
   }
 
 
@@ -435,8 +435,21 @@ public class UseWaterUnitInvoiceServiceImpl extends
     List<UseWaterUnitInvoice> export = this.baseMapper
         .export(invoiceNumber, begin, end, enabled, received, user.getNodeCode(), user.getId());
     for (UseWaterUnitInvoice waterUnitInvoice : export) {
-      String invoiceTime = TimeUtil.formatTimeStr(waterUnitInvoice.getInvoiceDate());
-      waterUnitInvoice.setInvoiceTime(invoiceTime);
+      try {
+        String invoiceTime = TimeUtil.formatTimeStr(waterUnitInvoice.getInvoiceDate());
+        waterUnitInvoice.setInvoiceTime(invoiceTime);
+        if (null != waterUnitInvoice.getCountYear() && StringUtils
+            .isBlank(waterUnitInvoice.getCountQuarter())) {
+          waterUnitInvoice.setArrearageTime(
+              waterUnitInvoice.getCountYear().toString() + "年" + waterUnitInvoice.getCountQuarter()
+                  + "季度");
+        }
+        if ("请选择".equals(waterUnitInvoice.getInvoiceNumber())) {
+          waterUnitInvoice.setInvoiceNumber("");
+        }
+      } catch (Exception e) {
+        log.error("导出发票台账数据错误");
+      }
     }
     Map<String, Object> data = new HashMap<>(16);
     data.put("export", export);
@@ -444,7 +457,7 @@ public class UseWaterUnitInvoiceServiceImpl extends
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
     data.put("dateFormat", dateFmt);
     try {
-      String fileName = "发票管理.xls";
+      String fileName = "发票台账.xls";
       String saveFilePath =
           fileUploadRootPath + File.separator + fileUploadPath + File.separator + fileName;
       InputStream inputStream = getClass().getClassLoader()

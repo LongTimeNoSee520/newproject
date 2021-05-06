@@ -34,7 +34,8 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
       @Param("executed") String executed,
       @Param("nodeCode") String nodeCode,
       @Param("status") List<String> status,
-      @Param("userId") String userId);
+      @Param("userId") String userId,
+      @Param("unitCode") String unitCode);
 
   /**
    * 分页查询
@@ -57,7 +58,8 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
       @Param("nodeCode") String nodeCode,
       @Param("status") List<String> status,
       @Param("userId") String userId,
-      @Param("path") String path);
+      @Param("path") String path,
+      @Param("unitCode") String unitCode);
 
 
   /**

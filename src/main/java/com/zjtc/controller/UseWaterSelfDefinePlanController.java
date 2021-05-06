@@ -52,6 +52,7 @@ public class UseWaterSelfDefinePlanController {
       + "    \"executed\":\"是否执行(0:未执行,1:已执行)\"\n"
       + "    \"unitCodeType\":\"用户类型(5-6)\"\n"
       + "    \"areaCode\":\"编号开头\"\n"
+      + "    \"unitCode\":\"单位编号\"\n"
       + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("自平计划管理分页查询,参数param==={" + jsonObject.toJSONString() + "}");

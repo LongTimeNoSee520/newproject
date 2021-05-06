@@ -110,17 +110,22 @@ public class UseWaterPlanAddWXServiceImpl extends
     if (null != jsonObject.getString("executed")) {
       executed = jsonObject.getString("executed");
     }
+//    单位编号
+    String unitCode = "";
+    if (null != jsonObject.getString("unitCode")) {
+      unitCode = jsonObject.getString("unitCode");
+    }
 //    附件展示路径
     String path = preViewRealPath;
 //    总条数
     Integer total = this.baseMapper
-        .selectCount(unitName, userType, executed, nodeCode, status, userId);
+        .selectCount(unitName, userType, executed, nodeCode, status, userId,unitCode);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<UseWaterPlanAddWXVO> useWaterPlanAdds = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType,
-            executed, nodeCode, status, userId, path);
+            executed, nodeCode, status, userId, path,unitCode);
     UseWaterPlan useWaterPlan = null;
     for (UseWaterPlanAddWXVO useWaterPlanAddWXVO : useWaterPlanAdds) {
       try {

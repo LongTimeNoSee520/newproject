@@ -115,7 +115,7 @@ public class WaterMonthUseData extends Model<WaterMonthUseData> {
 
   @ApiModelProperty(value = "水表公司用户单位名称")
   @TableField(value = "unit_names", exist = true)
-  private String unitNames;//水表公司用户单位名称
+    private String unitNames;//水表公司用户单位名称
 
   @ApiModelProperty(value = "水表公司用户单位地址")
   @TableField(value = "unit_address", exist = true)

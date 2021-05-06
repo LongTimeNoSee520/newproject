@@ -161,6 +161,10 @@ public class UseWaterUnitInvoice extends Model<UseWaterUnitInvoice>{
   @ApiModelProperty("开票日期")
   @TableField(value = "invoiceTime",exist = false)
   private String invoiceTime;
+
+  @ApiModelProperty("欠费日期")
+  @TableField(value = "arrearageTime",exist = false)
+  private String arrearageTime;
 	/**
 	 * 实例化
 	 */

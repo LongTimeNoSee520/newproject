@@ -101,7 +101,7 @@ public class WaterUseDataController {
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList) {
         if (StringUtils.isNotBlank(waterMonthUseData.getUseWaterUnitId()) && !useWaterUnitId
             .equals(waterMonthUseData.getUseWaterUnitId())) {
-          response.setMessage("该水表档案号:" + waterMonthUseData.getWaterMeterCode() + "已被其他单位使用");
+          response.setMessage("该水表档案号【" + waterMonthUseData.getWaterMeterCode() + "】已被用水单位【"+waterMonthUseData.getUnitNames()+"】占用!");
           return response;
         }
       }
@@ -116,7 +116,6 @@ public class WaterUseDataController {
     } catch (Exception e) {
       response.setMessage("查询水表信息异常");
       log.error("根据水表档案号回填水表信息错误,errMsg==={}", e.getMessage());
-      e.printStackTrace();
     }
     return response;
   }

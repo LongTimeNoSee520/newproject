@@ -203,6 +203,9 @@
     <if test="executed != null and executed != ''">
       and t1.executed = #{executed}
     </if>
+    <if test="unitCode != null and unitCode != ''">
+      and t1.unit_code like '%${unitCode}%'
+    </if>
     <if test="status != null and status.size > 0">
       and t1.audit_status in (
       <foreach collection="status" item="status" separator=",">
@@ -240,6 +243,9 @@
     </if>
     <if test="executed != null and executed != ''">
       and t1.executed = #{executed}
+    </if>
+    <if test="unitCode != null and unitCode != ''">
+      and t1.unit_code like '%${unitCode}%'
     </if>
     <if test="status != null and status.size > 0">
       and t1.audit_status in (

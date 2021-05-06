@@ -56,6 +56,7 @@ public class UseWaterPlanAddWXController {
       + "    \"userType\":\"用户类型(截取的是5-6位)\",\n"
       + "    \"auditStatus\":\"审核状态(0:未审核,2:已审核)\",\n"
       + "    \"executed\":\"是否执行(0:未执行,1:已执行)\"\n"
+      + "    \"unitCode\":\"单位编号\"\n"
       + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     log.info("用水计划调整审核分页查询,参数param==={" + jsonObject.toJSONString() + "}");
