@@ -104,7 +104,9 @@
 		AND balance_test_id =#{id}
 	</select>
 	<select id="queryFiles" resultType="java.util.LinkedHashMap">
-		SELECT id, file_name AS fileName,#{preViewRealPath}+ file_path AS filePath,deleted,size,
+		SELECT id, file_name AS fileName,#{preViewRealPath}+ file_path AS filePath,deleted,
+		CASE  WHEN size &lt;1024 THEN CONVERT(VARCHAR(20),size)+'bytes' WHEN (size >1024 AND size  &lt;= 1024*1024)THEN  CONVERT(VARCHAR(20),(size/1024))+'kb'
+		ELSE  CONVERT(VARCHAR(20),(size/(1024*1024)))+'mb' END AS size,
 		CONVERT(varchar(100), create_time, 23) AS createTime
 		FROM t_file
 		WHERE deleted ='0'

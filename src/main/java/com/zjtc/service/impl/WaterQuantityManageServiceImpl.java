@@ -442,7 +442,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 	  try {
       this.importEnd(user,fileProcessId);
     }catch (Exception e){
-	    log.error("月使用数据写入出错errMsg==={}", e.getMessage());
+	    log.error("fileProcessId:"+fileProcessId+"月使用数据写入出错errMsg==={}", e.getMessage());
     }
   }
   /**解析excel数据到bean*/
