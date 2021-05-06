@@ -278,7 +278,9 @@ public class UseWaterUnitInvoiceController {
       return response;
     }
     String begin = jsonObject.getString("begin");
+    begin = "0" + begin;
     String end = jsonObject.getString("end");
+    end = "0" + end;
     String personId = jsonObject.getString("personId");
     response = useWaterUnitInvoiceService.shift(begin, end, personId, user);
     return response;

@@ -277,7 +277,8 @@ public class UseWaterUnitInvoiceServiceImpl extends
       systemLogService.logInsert(user, "发票管理", "移交发票", "");
       return response;
     } else {
-      response.recordError("移交发票失败");
+      response.setCode(200);
+      response.setMessage("移交发票失败");
       return response;
     }
   }
