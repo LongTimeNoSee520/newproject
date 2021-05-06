@@ -245,7 +245,7 @@ public class UseWaterOriginalPlan extends Model<UseWaterOriginalPlan>{
     @TableField(value = "added",exist = true)
     private String added;
     /**
-     *
+     *如果下年初始计划(基础)大于下年初计划(定额)，基础计划默认等于定额计划
      */
     @ApiModelProperty("基础计划大于，定额计划的标识")
     @TableField(value = "sign",exist = true)
