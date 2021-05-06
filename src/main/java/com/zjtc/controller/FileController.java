@@ -82,6 +82,7 @@ public class FileController {
           sysAttrFile.setId(UUID.randomUUID().toString().replace("-", ""));
           sysAttrFile.setFileName(file.getOriginalFilename());
           sysAttrFile.setFilePath(fileUploadPath + fileName);//非全路径（排除跟目录）
+          sysAttrFile.setSize((int)(file.getSize()));
           sysAttrFile.setCreateTime(new Date());
           sysAttrFile.setCreaterId(user.getId());
           sysAttrFile.setDeleted("0");
