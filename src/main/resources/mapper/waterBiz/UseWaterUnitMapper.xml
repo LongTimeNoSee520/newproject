@@ -279,52 +279,52 @@
     and a.deleted='0'
     and a.node_code=#{nodeCode}
     <!--筛选水表档案号-->
-    <if test="null !=waterMeterCode">
+    <if test="null !=waterMeterCode and waterMeterCode!=''">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_meter where
       water_meter_code like '%${waterMeterCode}%' )
     </if>
     <!--筛选手机号码-->
-    <if test="null !=mobileNumber">
+    <if test="null !=mobileNumber and  mobileNumber!=''" >
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
       mobile_number like '%${mobileNumber}%' and deleted='0')
     </if>
-    <if test="null !=contacts">
+    <if test="null !=contacts and  contacts!='' ">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
       contacts like '%${contacts}%' and deleted='0')
     </if>
     <!--筛选银行账号-->
-    <if test="null !=bankAccount">
+    <if test="null !=bankAccount and  bankAccount!=''">
       and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
       '%${bankAccount}%' and deleted='0')
     </if>
     <!--是否签约-->
-    <if test="null !=signed">
+    <if test="null !=signed and  signed!=''">
       and a.id in (select use_water_unit_Id as id from t_w_bank where signed =#{signed} and
       deleted='0')
     </if>
     <!--是否异常-->
-    <if test="null !=abnormal">
+    <if test="null !=abnormal and  abnormal!=''">
       and a.abnormal =#{abnormal}
     </if>
 
     <!--筛选单位编号-->
-    <if test="null !=unitCode">
+    <if test="null !=unitCode  and  unitCode!=''">
       and a.unit_code like '%${unitCode}%'
     </if>
     <!--筛选单位名称-->
-    <if test="null !=unitName">
+    <if test="null !=unitName and  unitName!=''">
       and a.unit_name like '%${unitName}%'
     </if>
     <!--筛选类型-->
-    <if test="null !=unitCodeType">
+    <if test="null !=unitCodeType and  unitCodeType!=''">
       and a.unit_code_type like '%${unitCodeType}%'
     </if>
     <!--责任书编号-->
-    <if test=" null !=responsibilityCode">
+    <if test=" null !=responsibilityCode and  responsibilityCode!=''">
     and a.responsibility_code like '%${responsibilityCode}%'
     </if>
     <!--筛选-->
-    <if test="null !=industryId">
+    <if test="null !=industryId and  industryId!=''">
       and industry =#{industryId}
     </if>
     ) temp_row
@@ -361,52 +361,52 @@
     and a.deleted='0'
     and a.node_code=#{nodeCode}
     <!--筛选水表档案号-->
-    <if test="null !=waterMeterCode">
+    <if test="null !=waterMeterCode and  waterMeterCode !=''">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_meter where
       water_meter_code like '%${waterMeterCode}%' )
     </if>
     <!--筛选手机号码-->
-    <if test="null !=mobileNumber">
+    <if test="null !=mobileNumber and mobileNumber!=''">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
       mobile_number like '%${mobileNumber}%' and deleted='0')
     </if>
-    <if test="null !=contacts">
+    <if test="null !=contacts and contacts !=''">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
       contacts like '%${contacts}%' and deleted='0')
     </if>
     <!--筛选银行账号-->
-    <if test="null !=bankAccount">
+    <if test="null !=bankAccount and bankAccount !=''">
       and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
       '%${bankAccount}%' and deleted='0')
     </if>
     <!--是否签约-->
-    <if test="null !=signed">
+    <if test="null !=signed and signed !=''">
       and a.id in (select use_water_unit_Id as id from t_w_bank where signed =#{signed} and
       deleted='0')
     </if>
     <!--是否异常-->
-    <if test="null !=abnormal">
+    <if test="null !=abnormal and abnormal !=''">
       and a.abnormal =#{abnormal}
     </if>
 
     <!--筛选单位编号-->
-    <if test="null !=unitCode">
+    <if test="null !=unitCode and unitCode !=''">
       and a.unit_code like '%${unitCode}%'
     </if>
     <!--筛选单位名称-->
-    <if test="null !=unitName">
+    <if test="null !=unitName and unitName !=''">
       and a.unit_name like '%${unitName}%'
     </if>
     <!--筛选类型-->
-    <if test="null !=unitCodeType">
+    <if test="null !=unitCodeType and unitCodeType !=''">
       and a.unit_code_type like '%${unitCodeType}%'
     </if>
     <!--责任书编号-->
-    <if test=" null !=responsibilityCode">
+    <if test=" null !=responsibilityCode and responsibilityCode !=''">
       and a.responsibility_code like '%${responsibilityCode}%'
     </if>
     <!--筛选-->
-    <if test="null !=industryId">
+    <if test="null !=industryId and industryId !=''">
       and industry =#{industryId}
     </if>
   </select>
@@ -765,53 +765,53 @@
     and a.deleted='0'
     and a.node_code=#{nodeCode}
     <!--筛选水表档案号-->
-    <if test="null !=waterMeterCode">
+    <if test="null !=waterMeterCode and waterMeterCode !=''">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_meter where
       water_meter_code like '%${waterMeterCode}%' )
     </if>
     <!--筛选手机号码-->
-    <if test="null !=mobileNumber">
+    <if test="null !=mobileNumber and mobileNumber !=''">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
       mobile_number like '%${mobileNumber}%' and deleted='0')
     </if>
-    <if test="null !=contacts">
+    <if test="null !=contacts and contacts !=''">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
       contacts like '%${contacts}%' and deleted='0')
     </if>
     <!--筛选银行账号-->
-    <if test="null !=bankAccount">
+    <if test="null !=bankAccount and bankAccount !=''">
       and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
       '%${bankAccount}%' and deleted='0')
     </if>
     <!--是否签约-->
-    <if test="null !=signed">
+    <if test="null !=signed and signed !=''">
       and a.id in (select use_water_unit_Id as id from t_w_bank where signed =#{signed} and
       deleted='0')
       and signed=#{signed}
     </if>
     <!--是否异常-->
-    <if test="null !=abnormal">
+    <if test="null !=abnormal and abnormal !=''">
       and a.abnormal =#{abnormal}
     </if>
 
     <!--筛选单位编号-->
-    <if test="null !=unitCode">
+    <if test="null !=unitCode and unitCode !=''">
       and a.unit_code like '%${unitCode}%'
     </if>
     <!--筛选单位名称-->
-    <if test="null !=unitName">
+    <if test="null !=unitName and unitName!=''">
       and a.unit_name like '%${unitName}%'
     </if>
     <!--筛选类型-->
-    <if test="null !=unitCodeType">
+    <if test="null !=unitCodeType and unitCodeType !=''">
       and a.unit_code_type like '%${unitCodeType}%'
     </if>
     <!--责任书编号-->
-    <if test=" null !=responsibilityCode">
+    <if test=" null !=responsibilityCode and responsibilityCode!=''">
       and a.responsibility_code like '%${responsibilityCode}%'
     </if>
     <!--筛选-->
-    <if test="null !=industryId">
+    <if test="null !=industryId and industryId !=''">
       and industry =#{industryId}
     </if>
 
