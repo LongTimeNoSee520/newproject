@@ -99,7 +99,7 @@
               and price &lt;= #{priceEnd}
             </if>
             <if test="caliberStart != null">
-              and caliber &gt; #{caliberStart}
+              and caliber &gt;= #{caliberStart}
             </if>
             <if test="caliberEnd != null">
               and caliber &lt;= #{caliberEnd}
