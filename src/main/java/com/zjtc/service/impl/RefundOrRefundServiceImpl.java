@@ -188,7 +188,7 @@ public class RefundOrRefundServiceImpl extends
     //查询下一环节
     List<Map<String, Object>> hasNextList = flowNodeInfoService
         .nextAuditRole(entity.getNextNodeId(), id, user.getNodeCode(), auditBtn);
-    Map<String, Object> hasNext = hasNextList.get(0).isEmpty() ? null : hasNextList.get(0);
+    Map<String, Object> hasNext = hasNextList.size()>0? hasNextList.get(0) :null;
     //获取当前环节的审核操作记录
     FlowProcess flowProcess = flowProcessService.getLastData(user.getNodeCode(), entity.getId());
     //查询流程的发起人
