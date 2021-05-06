@@ -596,14 +596,18 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
             .getFirstQuarter() + "方,二季度"
             + useWaterPlan.getSecondQuarter() + "方,三季度" + useWaterPlan.getThirdQuarter() + "方,四季度"
             + useWaterPlan.getFourthQuarter() + "方。";
-    messageService.messageToUnit(useWaterPlan.getUnitCode(), messageContent,
-        AuditConstants.END_PAPER_TODO_TITLE);
-    /**向用水单位发送短信*/
-    smsService.sendMsgToUnit(user, useWaterPlan.getUnitCode(), messageContent, "计划通知");
-    // webSocket向公共服务平台推送消息
-    webSocketUtil.pushPublicNews(useWaterPlan.getNodeCode(), useWaterPlan.getUnitCode());
-    /**日志*/
-    systemLogService.logInsert(user, "办结单管理", "执行", null);
+    try {
+      messageService.messageToUnit(useWaterPlan.getUnitCode(), messageContent,
+          AuditConstants.END_PAPER_TODO_TITLE);
+      /**向用水单位发送短信*/
+      smsService.sendMsgToUnit(user, useWaterPlan.getUnitCode(), messageContent, "计划通知");
+      // webSocket向公共服务平台推送消息
+      webSocketUtil.pushPublicNews(useWaterPlan.getNodeCode(), useWaterPlan.getUnitCode());
+      /**日志*/
+      systemLogService.logInsert(user, "办结单管理", "执行", null);
+    } catch (Exception e) {
+      log.error("办结单执行通知或短信发送失败,errMsg==={}" + e.getMessage());
+    }
     return response;
 
   }
