@@ -317,6 +317,9 @@ public class UseWaterUnitServiceImpl extends
           useWaterUnitRefService.updateBatchById(sonList);
         }
         if (parList.isEmpty() && !sonList.isEmpty()) {
+          for (UseWaterUnitRef ref : sonList) {
+            sonIds.add(ref.getId());
+          }
           useWaterUnitRefService.deleteBatch(sonIds);
         }
         if (sonList.isEmpty() && !parList.isEmpty()) {
