@@ -125,8 +125,6 @@ public class UseWaterPlanAddWXController {
       + "    \"secondWater\":\"第二水量\",\n"
       + "    \"auditorName\":\"下一环节审核人\",\n"
       + "    \"auditorId\":\"下一环节Role审核人id\",\n"
-      + "    \"businessJson\":\"关联业务json数据(待办相关)\",\n"
-      + "    \"detailConfig\":\"详情配置文件(待办相关)\",\n"
       + "    \"nextNodeId\":\"下一审核环节id\"\n"
       + "}") @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
