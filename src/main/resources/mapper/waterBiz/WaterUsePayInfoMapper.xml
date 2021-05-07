@@ -324,7 +324,7 @@
 		<if test="null !=countYear and countYear !=''">
 			and count_year=#{countYear}
 		</if><if test="null !=countQuarter and countQuarter !=''">
-		and count_quarter=#{countQuarter}
+		and count_quarter > #{countQuarter}
 	</if>
 		<if test="unitIds.size()>0">
 			and use_water_unit_id in
@@ -598,7 +598,7 @@
 			and t6.countYear=#{countYear}
 		</if>
 		<if test="null !=countQuarter and countQuarter !=''">
-			and t6.countQuarter=#{countQuarter}
+			and t6.countQuarter>#{countQuarter}
 		</if>
 		<if test="unitIds.size()>0">
 			and t6.use_water_unit_id in
