@@ -6,6 +6,7 @@ import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.OrgTreeVO;
+import com.zjtc.model.vo.UseWaterUnitVo;
 import com.zjtc.service.UseWaterUnitService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -594,4 +594,24 @@ public class UseWaterUnitController {
     }
     return response;
   }
+  @ApiOperation(value = "新增时，根据选择的相关编号，回填用水单位数据")
+  @RequestMapping(value = "selectById", method = RequestMethod.POST)
+  public ApiResponse selectById(@ApiParam("{\n"
+      + "    \"id\":\"单位id\"\n"
+      + "}")
+      @RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
+    ApiResponse response = new ApiResponse();
+    User user=jwtUtil.getUserByToken(token);
+    try {
+      UseWaterUnitVo result = useWaterUnitService.selectById(jsonObject,user);
+      response.setData(result);
+      return response;
+    } catch (Exception e) {
+      log.error("查询所有的用水单位类型异常==" + e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
+
 }

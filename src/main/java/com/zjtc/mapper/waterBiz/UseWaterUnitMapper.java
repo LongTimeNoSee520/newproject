@@ -40,7 +40,7 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
    *
    * @param jsonObject 单位id
    */
-  UseWaterUnit selectById(JSONObject jsonObject);
+  UseWaterUnitVo selectById(JSONObject jsonObject);
 
   /**
    *

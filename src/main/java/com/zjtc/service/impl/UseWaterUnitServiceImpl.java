@@ -510,7 +510,7 @@ public class UseWaterUnitServiceImpl extends
   }
 
   @Override
-  public UseWaterUnit selectById(JSONObject jsonObject, User user) {
+  public UseWaterUnitVo selectById(JSONObject jsonObject, User user) {
     /**先根据id查询用水单位信息*/
     /**查询水表信息*/
     /**查询银行信息*/
@@ -521,15 +521,21 @@ public class UseWaterUnitServiceImpl extends
     jsonObject.put("dictCode", AREA_COUNTRY_CODE);
     jsonObject.put("nodeCode", user.getNodeCode());
     jsonObject.put("userId", user.getId());
-    UseWaterUnit useWaterUnit = baseMapper.selectById(jsonObject);
-    /**查询相关编号信息*/
+    UseWaterUnitVo useWaterUnit = baseMapper.selectById(jsonObject);
     if (null != useWaterUnit) {
+      /**查询相关编号信息*/
       List<String> idList = useWaterUnitRefService
           .findIdList(useWaterUnit.getId(), user.getNodeCode());
       if (!idList.isEmpty()) {
         useWaterUnit.setUseWaterUnitRefList(
             baseMapper.queryUnitRef(idList, user.getNodeCode(), user.getId(),
                 jsonObject.getString("id")));
+      }
+      //附件
+      if (!useWaterUnit.getSysFile().isEmpty()) {
+        for (File file : useWaterUnit.getSysFile()) {
+          file.setUrl(preViewRealPath + file.getFilePath());
+        }
       }
     }
     return useWaterUnit;
@@ -599,6 +605,7 @@ public class UseWaterUnitServiceImpl extends
     QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("deleted", "0");
     wrapper.eq("node_code", user.getNodeCode());
+    wrapper.select("id","unit_code","unit_name");
     List<String> param = useWaterUnitRoleService
         .selectUseWaterUnitRole(user.getId(), user.getNodeCode());
     if (null != param && param.size() > 0) {

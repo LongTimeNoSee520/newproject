@@ -6,11 +6,11 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.OrgTreeVO;
+import com.zjtc.model.vo.UseWaterUnitVo;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 /**
@@ -44,7 +44,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
   /**
    * 根据单位id查询详情
    */
-  UseWaterUnit selectById(JSONObject jsonObject, User user);
+  UseWaterUnitVo selectById(JSONObject jsonObject, User user);
 
   /**
    * 新增用水单位时，查询相关编号
