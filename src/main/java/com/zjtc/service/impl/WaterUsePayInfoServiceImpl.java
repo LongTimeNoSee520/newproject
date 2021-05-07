@@ -168,6 +168,28 @@ public class WaterUsePayInfoServiceImpl extends
   @Transactional(rollbackFor = Exception.class)
   public boolean initPayInfo(JSONObject jsonObject) {
     boolean result = true;
+    Calendar now = Calendar.getInstance();
+    //获取本年
+    int newYear = now.get(Calendar.YEAR);
+    int nowMonth = now.get(Calendar.MONTH)+1;
+    //获取当前季度
+    int countQuarter = nowMonth % 3 == 0 ? nowMonth / 3 : nowMonth / 3 + 1;
+    /**重算加价考核，考核过的数据不更新*/
+    /**1.本年第1季度，上年第3季度已考核*/
+    /**2.本年第2季度，上年第4季度已考核*/
+    /**3.本年第3季度，本年第1季度已考核*/
+    /**4.本年第4季度，本年第2季度已考核*/
+    switch (countQuarter) {
+      case 1:
+      case 2:
+        newYear = newYear - 1;
+        break;
+    }
+    String newQuarter = dictUtils
+        .getDictItemName("increaseMoneyQuarterCode", String.valueOf(countQuarter),
+            jsonObject.getString("nodeCode"));
+    jsonObject.put("countYear",newYear);
+    jsonObject.put("countQuarter",newQuarter);
     /**重算加价前先删除之前的数据*/
     //三种情况:1.托收缴费已托收，2.已选择发票，3：有退减免过程
     baseMapper.deleteByParam(jsonObject);
@@ -227,7 +249,7 @@ public class WaterUsePayInfoServiceImpl extends
     entity.setAuditFlow(flowProcessMapper.queryAuditList(entity.getId(), user.getNodeCode()));
     todoService
         .add(entity.getId(), user, nextPersonId, nextPersonName, todoContent,
-            JSONObject.toJSONString(entity,SerializerFeature.WriteMapNullValue),
+            JSONObject.toJSONString(entity, SerializerFeature.WriteMapNullValue),
             detailConfig,
             AuditConstants.PAY_TODO_TYPE);
     /**websocket推送*/
@@ -276,7 +298,8 @@ public class WaterUsePayInfoServiceImpl extends
     /**修改业务表数据*/
     refundOrRefundService.updateById(entity);
     /**流程进度（操作记录）表 新增三条数据*/
-    flowProcessService.create(user, entity.getId(), entity.getTreatmentAdvice(), nextPersonName, nextPersonId);
+    flowProcessService
+        .create(user, entity.getId(), entity.getTreatmentAdvice(), nextPersonName, nextPersonId);
     /**发起待办*/
     String todoContent =
         "用水单位" + entity.getUnitCode() + "(" + entity.getUnitName() + ") 申请减免" + entity.getMoney()
@@ -634,14 +657,14 @@ public class WaterUsePayInfoServiceImpl extends
       return result;
     }
     for (String type : typeList) {
-      jsonObject.put("unitCodeType",type);
-      List<PayPrintVo> list=  baseMapper.printExPlan1(jsonObject);
+      jsonObject.put("unitCodeType", type);
+      List<PayPrintVo> list = baseMapper.printExPlan1(jsonObject);
       //测试
-      for(int i=1;i<6;i++){
+      for (int i = 1; i < 6; i++) {
         list.addAll(list);
       }
-      if(!list.isEmpty()){
-        result.put(type,list);
+      if (!list.isEmpty()) {
+        result.put(type, list);
       }
     }
     return result;
@@ -656,14 +679,14 @@ public class WaterUsePayInfoServiceImpl extends
       return result;
     }
     for (String type : typeList) {
-      jsonObject.put("unitCodeType",type);
-      List<PayPrintVo> list=  baseMapper.printExPlan2(jsonObject);
+      jsonObject.put("unitCodeType", type);
+      List<PayPrintVo> list = baseMapper.printExPlan2(jsonObject);
       //测试
-      for(int i=1;i<6;i++){
+      for (int i = 1; i < 6; i++) {
         list.addAll(list);
       }
-      if(!list.isEmpty()){
-        result.put(type,list);
+      if (!list.isEmpty()) {
+        result.put(type, list);
       }
     }
     return result;
