@@ -345,7 +345,7 @@
   </update>
 
   <select id="selectWaterUseData" resultMap="WaterMonthUseDataModel">
-    SELECT
+    SELECT TOP 1
     id,
     use_water_unit_id,
     use_year,
@@ -371,16 +371,16 @@
     unit_names,
     unit_address,
     (
-    SELECT SUM
+    SELECT  SUM
     ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + november_count + december_count )
     FROM
-    t_w_water_month_use_data
+    t_w_water_month_use_data t2
     WHERE
-    water_meter_code = #{waterMeterCode}
+    water_meter_code =  #{waterMeterCode}   AND t1.id = t2.id
     ) AS waterNumber
     FROM
-    t_w_water_month_use_data
+    t_w_water_month_use_data t1
     WHERE
-    water_meter_code = #{waterMeterCode}
+    water_meter_code =  #{waterMeterCode}  ORDER  BY use_year desc
   </select>
 </mapper>
