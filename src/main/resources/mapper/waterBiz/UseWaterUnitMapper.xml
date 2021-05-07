@@ -1006,11 +1006,10 @@
       and create_time &lt; #{createTime}
     </if>
     ) n1,
-    <!--计划用水量  基建加计划-->
+    <!--计划用水量  不算基建-->
     (
     select
     yearPlan=sum(t2.first_quarter)+sum(t2.second_quarter)+sum (t2.third_quarter)+sum(t2.fourth_quarter)
-    +sum (t3.one_quarter)+sum (t3.two_quarter)+sum (t3.three_quarter)+sum (t3.four_quarter)
     from (
     select
      id
@@ -1022,7 +1021,6 @@
     ) t1
     <!--基建-->
     LEFT join ( SELECT * FROM t_w_use_water_plan WHERE plan_type = '0' <if test="null !=year">and plan_year=#{year}</if>) t2 ON t2.use_water_unit_id = t1.id
-    LEFT JOIN (SELECT * FROM t_w_use_water_base_plan where deleted='0' <if test="null !=year">and plan_year=#{year}</if>) t3 ON t3.use_water_unit_id = t2.use_water_unit_id
     ) n2,
     <!--实际水量-->
     (
