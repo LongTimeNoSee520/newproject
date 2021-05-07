@@ -119,13 +119,13 @@ public class UseWaterPlanAddWXServiceImpl extends
     String path = preViewRealPath;
 //    总条数
     Integer total = this.baseMapper
-        .selectCount(unitName, userType, executed, nodeCode, status, userId,unitCode);
+        .selectCount(unitName, userType, executed, nodeCode, status, userId, unitCode);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<UseWaterPlanAddWXVO> useWaterPlanAdds = this.baseMapper
         .queryList(currPage, pageSize, unitName, userType,
-            executed, nodeCode, status, userId, path,unitCode);
+            executed, nodeCode, status, userId, path, unitCode);
     UseWaterPlan useWaterPlan = null;
     for (UseWaterPlanAddWXVO useWaterPlanAddWXVO : useWaterPlanAdds) {
       try {
@@ -189,14 +189,14 @@ public class UseWaterPlanAddWXServiceImpl extends
       String auditResult, Double firstWater, Double secondWater, User user, String auditorName,
       String auditorId, String businessJson, String detailConfig, String nextNodeId) {
     ApiResponse response = new ApiResponse();
-    if ( StringUtils.isBlank(id) || StringUtils.isBlank(auditStatus)) {
+    if (StringUtils.isBlank(id) || StringUtils.isBlank(auditStatus)) {
       response.recordError("系统异常");
       return response;
     }
     int i = 0;
 //    审核增加或调整水量申请
     i = this.baseMapper
-        .updateAudit(user.getId(),user.getUsername(), id, auditStatus, auditResult, new Date(),
+        .updateAudit(user.getId(), user.getUsername(), id, auditStatus, auditResult, new Date(),
             firstWater,
             secondWater);
 
@@ -220,12 +220,13 @@ public class UseWaterPlanAddWXServiceImpl extends
               useWaterPlanAddWX.getCurYearPlan() + ",审核未通过,已被驳回。";
       /**发送消息**/
       messageService
-          .add(useWaterPlanAddWX.getNodeCode(), user.getId(),user.getUsername(),
+          .add(useWaterPlanAddWX.getNodeCode(), user.getId(), user.getUsername(),
               AuditConstants.NOT_APPROVED, messageContent, id);
 
       try {
         /**发送短信**/
-        smsService.sendMsgToPromoter(user,user.getId(),user.getUsername(), messageContent, "计划通知");
+        smsService
+            .sendMsgToPromoter(user, user.getId(), user.getUsername(), messageContent, "计划通知");
       } catch (Exception e) {
         log.error("用水计划增加或调整审核短信发送失败");
       }
@@ -236,19 +237,26 @@ public class UseWaterPlanAddWXServiceImpl extends
 //          调整计划
         List<Person> personList = personService
             .selectPersonByResCode("quarterApply", user.getNodeCode());
-        personList1.addAll(personList);
+        if (!personList.isEmpty()) {
+          personList1.addAll(personList);
+        }
 //          增加计划
         List<Person> personList2 = personService
             .selectPersonByResCode("addApply", user.getNodeCode());
-        personList1.addAll(personList2);
+        if (!personList2.isEmpty()) {
+          personList1.addAll(personList2);
+        }
       } catch (Exception e) {
         log.error("根据资源code查询,资源下所有角色的所有人异常:" + e.getMessage());
       }
-      for (Person person : personList1) {
-        //      取消待办
-        todoService.edit(id, person.getNodeCode(), person.getId());
+      if (!personList1.isEmpty()) {
+        for (Person person : personList1) {
+          //      取消待办
+          todoService.edit(id, person.getNodeCode(), person.getId());
+        }
+      } else {
+        log.error("根据资源code查询,资源下所有角色的所有人为空");
       }
-
     } else if ("2".equals(auditStatus)) {
 
       JSONObject jsonObject = new JSONObject();
@@ -297,7 +305,7 @@ public class UseWaterPlanAddWXServiceImpl extends
           auditFiles.add(map);
         }
       } catch (Exception e) {
-        log.error("审批申请附件id异常："+e.getMessage());
+        log.error("审批申请附件id异常：" + e.getMessage());
       }
       jsonObject.put("auditFiles", auditFiles);
 
@@ -313,7 +321,7 @@ public class UseWaterPlanAddWXServiceImpl extends
           waterProofFiles.add(map1);
         }
       } catch (Exception e) {
-        log.error("近2月水量凭证附件："+e.getMessage());
+        log.error("近2月水量凭证附件：" + e.getMessage());
       }
       jsonObject.put("waterProofFiles", waterProofFiles);
 
@@ -363,7 +371,7 @@ public class UseWaterPlanAddWXServiceImpl extends
               "方,第四季度计划:" + useWaterPlanAddWX.getFourthQuarter() + "方,年计划水量:" +
               useWaterPlanAddWX.getCurYearPlan() + ",审核已通过。";
       messageService
-          .add(useWaterPlanAddWX.getNodeCode(), user.getId(),user.getUsername(),
+          .add(useWaterPlanAddWX.getNodeCode(), user.getId(), user.getUsername(),
               AuditConstants.GET_APPROVED, messageContent, id);
 
       log.info("审核通过往办结单中增加数据返回状态:" + response1.getCode());
@@ -386,7 +394,7 @@ public class UseWaterPlanAddWXServiceImpl extends
         }
         for (Person person : personList1) {
           //      取消待办
-            todoService.edit(id, person.getNodeCode(), person.getId());
+          todoService.edit(id, person.getNodeCode(), person.getId());
         }
         return response;
       } else if (Objects.requireNonNull(response1).getCode() == 500) {

@@ -43,6 +43,7 @@ public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> impleme
     doPost = HttpUtil.doPost(ipPort+url, jsonObject.toJSONString());
     System.out.println(doPost);
     JSONObject json = JSON.parseObject(doPost);
+    System.out.println("xxxxxxx"+  json.getJSONArray("data").toJavaList(Person.class));
     return json.getJSONArray("data").toJavaList(Person.class);
   }
 
