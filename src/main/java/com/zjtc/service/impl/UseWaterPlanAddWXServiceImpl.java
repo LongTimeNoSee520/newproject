@@ -285,24 +285,35 @@ public class UseWaterPlanAddWXServiceImpl extends
 
 //==========================================================================
 //       审批申请附件id列表\"]没有时传[]
-      String[] auditFileIds = useWaterPlanAddWX.getAuditFileId().split(",");
-      Map<String, Object> map = new HashMap<>(16);
-      List<Map<String, Object>> auditFiles = new ArrayList<>();
-      for (String dd : auditFileIds) {
-        map.put("id", dd);
-        map.put("deleted", "0");
-        auditFiles.add(map);
+      Map<String, Object> map = null;
+      List<Map<String, Object>> auditFiles = null;
+      try {
+        String[] auditFileIds = useWaterPlanAddWX.getAuditFileId().split(",");
+        map = new HashMap<>(16);
+        auditFiles = new ArrayList<>();
+        for (String dd : auditFileIds) {
+          map.put("id", dd);
+          map.put("deleted", "0");
+          auditFiles.add(map);
+        }
+      } catch (Exception e) {
+        log.error("审批申请附件id异常："+e.getMessage());
       }
       jsonObject.put("auditFiles", auditFiles);
 
 //       近2月水量凭证附件id列表\"]没有时传[]
-      String[] waterProofFileIds = useWaterPlanAddWX.getWaterProofFileId().split(",");
-      Map<String, Object> map1 = new HashMap<>(16);
-      List<Map<String, Object>> waterProofFiles = new ArrayList<>();
-      for (String ss : waterProofFileIds) {
-        map1.put("id", ss);
-        map1.put("deleted", 0);
-        waterProofFiles.add(map1);
+      List<Map<String, Object>> waterProofFiles = null;
+      try {
+        String[] waterProofFileIds = useWaterPlanAddWX.getWaterProofFileId().split(",");
+        Map<String, Object> map1 = new HashMap<>(16);
+        waterProofFiles = new ArrayList<>();
+        for (String ss : waterProofFileIds) {
+          map1.put("id", ss);
+          map1.put("deleted", 0);
+          waterProofFiles.add(map1);
+        }
+      } catch (Exception e) {
+        log.error("近2月水量凭证附件："+e.getMessage());
       }
       jsonObject.put("waterProofFiles", waterProofFiles);
 
