@@ -273,6 +273,13 @@
     left join (
     select id,industry_name as industryName from t_w_quota_info
     ) as d on d.id=a.industry
+    <!--是否签约-->
+    <if test="null !=signed and signed!=''">
+    inner join (
+    select use_water_unit_Id from t_w_bank where deleted='0'  and signed=#{signed}
+    group  by use_water_unit_Id
+    ) as e on e.use_water_unit_Id=a.id
+    </if>
     WHERE
     a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
     where person_id=#{userId})
@@ -297,11 +304,7 @@
       and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
       '%${bankAccount}%' and deleted='0')
     </if>
-    <!--是否签约-->
-    <if test="null !=signed and  signed!=''">
-      and a.id in (select use_water_unit_Id as id from t_w_bank where signed =#{signed} and
-      deleted='0')
-    </if>
+
     <!--是否异常-->
     <if test="null !=abnormal and  abnormal!=''">
       and a.abnormal =#{abnormal}
@@ -355,6 +358,13 @@
     left join (
     select id,industry_name as industryName from t_w_quota_info
     ) as d on d.id=a.industry
+    <!--是否签约-->
+    <if test="null !=signed and signed!=''">
+      inner join (
+      select use_water_unit_Id from t_w_bank where deleted='0'  and signed=#{signed}
+      group  by use_water_unit_Id
+      ) as e on e.use_water_unit_Id=a.id
+    </if>
     WHERE
     a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
     where person_id=#{userId})
@@ -378,11 +388,6 @@
     <if test="null !=bankAccount and bankAccount !=''">
       and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
       '%${bankAccount}%' and deleted='0')
-    </if>
-    <!--是否签约-->
-    <if test="null !=signed and signed !=''">
-      and a.id in (select use_water_unit_Id as id from t_w_bank where signed =#{signed} and
-      deleted='0')
     </if>
     <!--是否异常-->
     <if test="null !=abnormal and abnormal !=''">
@@ -763,6 +768,13 @@
     left join (
     select id,industry_name as industryName from t_w_quota_info
     ) as d on d.id=a.industry
+    <!--是否签约-->
+    <if test="null !=signed and signed!=''">
+      inner join (
+      select use_water_unit_Id from t_w_bank where deleted='0'  and signed=#{signed}
+      group  by use_water_unit_Id
+      ) as e on e.use_water_unit_Id=a.id
+    </if>
     WHERE
     a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
     where person_id=#{userId})
@@ -787,12 +799,7 @@
       and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
       '%${bankAccount}%' and deleted='0')
     </if>
-    <!--是否签约-->
-    <if test="null !=signed and signed !=''">
-      and a.id in (select use_water_unit_Id as id from t_w_bank where signed =#{signed} and
-      deleted='0')
-      and signed=#{signed}
-    </if>
+
     <!--是否异常-->
     <if test="null !=abnormal and abnormal !=''">
       and a.abnormal =#{abnormal}

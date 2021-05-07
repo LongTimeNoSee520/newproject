@@ -491,6 +491,7 @@ public class UseWaterUnitController {
         apiResponse = useWaterUnitService.exportQueryData(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("导出查询结果错误,errMsg==={}", e.getMessage());
+        e.printStackTrace();
         apiResponse.recordError(500);
       }
     } else {
@@ -590,7 +591,6 @@ public class UseWaterUnitController {
       return response;
     } catch (Exception e) {
       log.error("查询所有的用水单位类型异常==" + e.getMessage());
-      e.printStackTrace();
     }
     return response;
   }
@@ -609,7 +609,6 @@ public class UseWaterUnitController {
       return response;
     } catch (Exception e) {
       log.error("查询所有的用水单位类型异常==" + e.getMessage());
-      e.printStackTrace();
     }
     return response;
   }
