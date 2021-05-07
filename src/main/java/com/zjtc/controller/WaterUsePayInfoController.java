@@ -373,6 +373,7 @@ public class WaterUsePayInfoController {
         waterUsePayInfoService.exportQueryData(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出查询结果失败,errMsg==={}", e.getMessage());
+        e.printStackTrace();
         apiResponse.recordError(500);
       }
     } else {

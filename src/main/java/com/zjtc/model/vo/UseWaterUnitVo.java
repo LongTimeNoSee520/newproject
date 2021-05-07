@@ -144,6 +144,11 @@ public class UseWaterUnitVo extends Model<UseWaterUnitVo> {
   @TableField(value = "signed", exist = false)
   private String signed;
 
+  //如果主户签约：是，反正否
+  @ApiModelProperty(value = "是否签约托收，0否1是")
+  @TableField(value = "signedEntrust", exist = false)
+  private String signedEntrust;
+
   @ApiModelProperty(value = "联系人")
   @TableField(value = "contacts", exist = false)
   private String  contacts;

@@ -37,6 +37,7 @@
     <result column="agreementNumber" property="agreementNumber" jdbcType="VARCHAR"/>
     <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
     <result column="other_bank" property="otherBank" jdbcType="VARCHAR"/>
+    <result column="signedEntrust" property="signedEntrust" jdbcType="VARCHAR"/>
     <collection property="meterList" column="{id=id,nodeCode=node_code}"
       select="selectUseWaterUnitMeter"
       ofType="com.zjtc.model.WaterMonthUseData">
@@ -243,10 +244,9 @@
     abnormal ,
     abnormal_cause,
     remark,
-    case signed
-    when '1' then '1'
-    when '0' then '0'
-    else '0'end as signed,
+    <!--是否签约托收，主户签约-->
+    case when signed is null or signed='' then '否'
+    else '是'end as signedEntrust,
     bank_of_deposit,
     bank_account,
     responsibility_code as responsibilityCode,
@@ -266,9 +266,9 @@
     and node_code=#{nodeCode}
     and main='1'
     ) as b on a.id =b.use_water_unit_id
-    <!--关联银行表取主户数据-->
+    <!--关联银行表取主户签约数据-->
     left join (
-      select use_water_unit_Id,bank_of_deposit,bank_account,signed,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank from t_w_bank where deleted='0' and main='1'
+      select use_water_unit_Id,bank_of_deposit,bank_account,signed,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank from t_w_bank where deleted='0' and main='1' and signed='1'
     ) as c on c.use_water_unit_Id=a.id
     left join (
     select id,industry_name as industryName from t_w_quota_info
