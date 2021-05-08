@@ -43,15 +43,14 @@
     money,
     payment_date,
     invoice_state,
-    CASE
-    drawer
-    WHEN NULL THEN
-    '' ELSE drawer
-    END drawer,
-    CASE drawer_id
+    CASE drawer
     WHEN NULL THEN ''
     ELSE drawer
     END drawer,
+    CASE drawer_id
+    WHEN NULL THEN ''
+    ELSE drawer_id
+    END drawer_id,
     type,
     unit_code,
     print_person,
@@ -60,7 +59,8 @@
     invoice_number,
     user_type
     FROM
-    t_w_finance t1 where deleted = '0'
+    t_w_finance t1
+    where deleted = '0'
     AND (invoice_state = '0' OR invoice_state = '1')
     and t1.node_code = #{nodeCode}
     <if test="unitName != null and unitName != ''">
