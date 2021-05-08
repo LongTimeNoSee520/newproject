@@ -66,6 +66,6 @@
 
   <update id="editByBusinessId">
     update t_w_todo set status = #{afterTodoStatus},operation_time = GETDATE()
-    where business_id = #{businessId}
+    where business_id = #{businessId} and status != #{afterTodoStatus}
   </update>
 </mapper>

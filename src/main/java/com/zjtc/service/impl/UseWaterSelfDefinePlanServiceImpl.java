@@ -346,11 +346,6 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     UseWaterPlanAdd waterPlanAdd = new UseWaterPlanAdd();
 
     for (UseWaterSelfDefinePlan useWaterSelfDefinePlan : useWaterSelfDefinePlans) {
-//      QueryWrapper<UseWaterPlan> wrapper1 = new QueryWrapper<>();
-//      wrapper1.eq("node_code", useWaterSelfDefinePlan.getNodeCode());
-//      wrapper1.eq("unit_code", useWaterSelfDefinePlan.getUnitCode());
-//      wrapper1.eq("plan_year", useWaterSelfDefinePlan.getPlanYear());
-//      UseWaterPlan useWaterPlanModel = useWaterPlanService.getOne(wrapper1);//实际上只有一条数据
       UseWaterPlan useWaterPlanModel = useWaterPlanService
           .selectUseWaterPlan(useWaterSelfDefinePlan.getNodeCode(),
               useWaterSelfDefinePlan.getUnitCode(), useWaterSelfDefinePlan.getPlanYear());
@@ -444,20 +439,19 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     if (zp > 0 && planAdd) {
       response.setCode(200);
       systemLogService.logInsert(user, "用水计划自平", "用水计划自平执行", "");
-//      取消待办
-      List<Person> personLis = null;
-      try {
-        personLis = personService
-            .selectPersonByResCode("selfBalance", user.getNodeCode());
-      } catch (Exception e) {
-        log.error("根据资源code查询,资源下所有角色的所有人异常:" + e.getMessage());
-      }
-//      取消待办
+////      取消待办
+//      List<Person> personLis = null;
+//      try {
+//        personLis = personService
+//            .selectPersonByResCode("selfBalance", user.getNodeCode());
+//      } catch (Exception e) {
+//        log.error("根据资源code查询,资源下所有角色的所有人异常:" + e.getMessage());
+//      }
+////      取消待办
       for (String id : ids) {
-        for (Person person : personLis) {
-          todoService.edit(id, person.getNodeCode(), person.getId());
+          todoService.editByBusinessId(id);
         }
-      }
+
       return response;
     } else {
       response.recordError("操作失败");
