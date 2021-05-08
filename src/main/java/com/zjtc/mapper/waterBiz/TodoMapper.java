@@ -19,4 +19,7 @@ public interface TodoMapper extends BaseMapper<Todo> {
   List<Map<String,Object>> queryList(@Param("userId")String userId,@Param("nodeCode")String nodeCode);
 
   Todo selectTodoModel(@Param("businessId") String businessId,@Param("nodeCode") String nodeCode,@Param("executePersonId") String executePersonId);
+
+  boolean editByBusinessId(@Param("businessId") String businessId,@Param("afterTodoStatus") String afterTodoStatus);
+
 }

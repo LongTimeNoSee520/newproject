@@ -37,6 +37,13 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     if (AuditConstants.PAY_MESSAGE_TYPE.equals(messageType)) {
       message.setMsgTitle(AuditConstants.PAY_MESSAGE_TITLE);
     }
+    if (AuditConstants.PLAN_ADJUST_APPLY_TODO_TITLE.equals(messageType)){
+      message.setMsgTitle(AuditConstants.PLAN_ADJUST_APPLY_TODO_TITLE);
+    }
+    if (AuditConstants.SELF_ADJUST_AUDIT_TODO_TITLE.equals(messageType)){
+      message.setMsgTitle(AuditConstants.SELF_ADJUST_AUDIT_TODO_TITLE);
+    }
+
     message.setMsgContent(messageContent);
     message.setMsgStatus("0");//未读
     this.baseMapper.insert(message);

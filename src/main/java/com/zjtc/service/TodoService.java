@@ -33,6 +33,8 @@ public interface TodoService extends IService<Todo> {
    * @param executePersonId 执行人员
    */
   boolean edit(String businessId,String nodeCode,String executePersonId);
+
+  boolean editByBusinessId(String businessId);
   /**
    * 办结单/退减免单撤销时根据业务id删除待办数据
    * @param businessId 业务id

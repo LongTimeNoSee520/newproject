@@ -63,4 +63,9 @@
     and node_code = #{nodeCode}
     and execute_person_id = #{executePersonId}
   </select>
+
+  <update id="editByBusinessId">
+    update t_w_todo set status = #{afterTodoStatus},operation_time = GETDATE()
+    where business_id = #{businessId}
+  </update>
 </mapper>

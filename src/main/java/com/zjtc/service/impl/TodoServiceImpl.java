@@ -89,6 +89,11 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
   }
 
   @Override
+  public boolean editByBusinessId(String businessId) {
+    return this.baseMapper.editByBusinessId(businessId,AuditConstants.AFTER_TODO_STATUS);
+  }
+
+  @Override
   public boolean deleteByBusinessId(String businessId) {
     return this.baseMapper.deleteByBusinessId(businessId);
   }

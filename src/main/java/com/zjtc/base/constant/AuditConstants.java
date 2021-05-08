@@ -104,6 +104,15 @@ public class AuditConstants {
    * 用水计划超额标题
    */
   public static final String PLAN_EXCESS_TITLE = "用水计划超额审批";
+
+  /**
+   * 办结单标题：计划调整申请(公共服务平台)
+   */
+  public static final String PLAN_ADJUST_APPLY_TODO_TITLE = "计划调整申请(公共服务平台)";
+  /**
+   * 办结单标题：自平计划审核
+   */
+  public static final String SELF_ADJUST_AUDIT_TODO_TITLE = "自平计划审核(公共服务平台)";
   /***************************************************************************
    * ****************************审核状态**************************************
    * *************************************************************************
