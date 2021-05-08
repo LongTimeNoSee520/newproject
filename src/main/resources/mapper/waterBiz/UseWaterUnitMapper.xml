@@ -441,32 +441,44 @@
     and node_code=#{nodeCode}
   </select>
   <select id="selectUseWaterUnitMeter" resultMap="WaterMonthUseDataModel">
-      select
+     select
       t1.water_meter_code,
-      use_year,
+      t3.use_year,
       now_price,
       node_code,
       is_warning,
       caliber,
       sector,
       waterNumber
-      from (select  water_meter_code  from t_w_use_water_unit_meter where use_water_unit_id = #{id}) t1
+      from
+			(select  water_meter_code  from t_w_use_water_unit_meter where use_water_unit_id =#{id}) t1
       left join (
       SELECT
-      use_year,
-      water_meter_code,
+			water_meter_code,
+			SUM( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + november_count +       december_count ) as waterNumber
+			FROM t_w_water_month_use_data
+			GROUP BY water_meter_code
+
+      ) t2 on t1.water_meter_code=t2.water_meter_code
+      inner join (
+			select
+			water_meter_code,
+			 use_year,
       now_price,
       node_code,
       is_warning,
       caliber,
-      sector,
-      ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + october_count + november_count + december_count ) AS waterNumber
-      FROM
+      sector
+			FROM
       t_w_water_month_use_data
-      WHERE
-      node_code = #{nodeCode}
-      AND use_year = DateName(YEAR,GetDate())
-      ) t2 on t1.water_meter_code=t2.water_meter_code
+      ) t3 on t1.water_meter_code=t3.water_meter_code
+	    inner join (
+			select
+			water_meter_code,
+			 max(use_year) as use_year
+			 from t_w_water_month_use_data
+			 GROUP BY water_meter_code
+			) t4 on t3.water_meter_code=t4.water_meter_code and t3.use_year =t4.use_year
       ORDER BY waterNumber DESC;
   </select>
   <select id="selectBank" resultMap="bankMapper">
