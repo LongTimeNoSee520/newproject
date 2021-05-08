@@ -24,7 +24,6 @@ import com.zjtc.model.User;
 import com.zjtc.model.vo.EndPaperPrintVO;
 import com.zjtc.model.vo.EndPaperVO;
 import com.zjtc.model.vo.SendListVO;
-import com.zjtc.service.DictItemService;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.FileService;
 import com.zjtc.service.FlowExampleService;
@@ -91,7 +90,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   private SmsService smsService;
 
   @Autowired
-  private DictItemService dictItemService;
+  private DictUtils dictUtils;
 
   @Autowired
   private JWTUtil jwtUtil;
@@ -104,9 +103,6 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
   @Autowired
   private SmsSendService smsSendService;
-
-  @Autowired
-  private DictUtils dictUtils;
 
   @Autowired
   private FileService fileService;
@@ -415,8 +411,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       wrapper.eq("plan_year", endPaper.getPlanYear());
       UseWaterPlan useWaterPlan = planDailyAdjustmentService.getOne(wrapper);
       Double increaseLimit = Double.valueOf(
-          dictItemService.findByDictCode("increaseLimit", user.getNodeCode(), user.getNodeCode())
-              .getDictItemName());
+          dictUtils.getDictItemName("increaseLimit", user.getNodeCode(), user.getNodeCode()));
       if (!endPaper.getNodeCode().equals(SystemConstants.MUNICIPAL_NODE_CODE)
           && endPaper.getAddNumber().compareTo(increaseLimit) > 0) {
         //当前办结单不属于市级且计划超额
@@ -434,8 +429,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
         todo.setRegistrant(user.getUsername());
         todo.setSubmitNodeCode(user.getNodeCode());
         todo.setSubmitNodeName(
-            dictItemService.findByDictCode("area", user.getNodeCode(), user.getNodeCode())
-                .getDictItemName());
+            dictUtils.getDictItemName("area", user.getNodeCode(), user.getNodeCode()));
         JSONObject businessJson = new JSONObject();
         businessJson.put("unitCode", endPaper.getUnitCode());
         businessJson.put("unitName", endPaper.getUnitName());

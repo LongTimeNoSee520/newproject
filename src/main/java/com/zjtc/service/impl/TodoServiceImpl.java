@@ -3,6 +3,7 @@ package com.zjtc.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
+import com.zjtc.base.util.DictUtils;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.TodoMapper;
 import com.zjtc.model.EndPaper;
@@ -10,7 +11,6 @@ import com.zjtc.model.FlowProcess;
 import com.zjtc.model.Todo;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
-import com.zjtc.service.DictItemService;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.MessageService;
@@ -41,7 +41,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
   @Autowired
   private UseWaterPlanAddWXService useWaterPlanAddWXService;
   @Autowired
-  private DictItemService dictItemService;
+  private DictUtils dictUtils;
   @Autowired
   private WebSocketUtil webSocketUtil;
   @Override
@@ -70,7 +70,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     todo.setStatus(AuditConstants.BEFORE_TODO_STATUS);
     todo.setCreateTime(new Date());
     todo.setSubmitNodeCode(user.getNodeCode());
-    String nodeName = dictItemService.findByDictCode("area",user.getNodeCode(),user.getNodeCode()).getDictItemName();
+    String nodeName = dictUtils.getDictItemName("area",user.getNodeCode(),user.getNodeCode());
     todo.setSubmitNodeName(nodeName);
     this.baseMapper.insert(todo);
   }
