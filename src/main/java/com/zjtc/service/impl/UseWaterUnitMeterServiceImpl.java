@@ -68,11 +68,15 @@ public class UseWaterUnitMeterServiceImpl extends
 ////      单位id
         waterMonthUseData.setUseWaterUnitId(useWaterUnitId);
       } catch (Exception e) {
-        log.error("回填发票号为waterMeterCode异常");
+        log.error("回填水表档案号异常");
       }
       waterMonthUseDataList.add(waterMonthUseData);
 //      更新月使用量数据
-      b1 = waterMonthUseDataService.updateBatchById(waterMonthUseDataList);
+      for (WaterMonthUseData waterMonthUseData1 : waterMonthUseDataList) {
+        if (StringUtils.isNotBlank(waterMonthUseData1.getId())) {
+          b1 = waterMonthUseDataService.updateBatchById(waterMonthUseDataList);
+        }
+      }
       if (!b1) {
         return false;
       }
@@ -87,8 +91,8 @@ public class UseWaterUnitMeterServiceImpl extends
   public boolean deletedUseWaterUnitMeter(String id) {
     List<UseWaterUnitMeter> meters = this.baseMapper.selectUseWaterUnitMeter(id);
     List<String> ids = new ArrayList<>();
-    List<String> monthUseDatas=new ArrayList<>();
-    if(!meters.isEmpty()){
+    List<String> monthUseDatas = new ArrayList<>();
+    if (!meters.isEmpty()) {
       for (UseWaterUnitMeter useWaterUnitMeter : meters) {
         ids.add(useWaterUnitMeter.getId());
         monthUseDatas.add(useWaterUnitMeter.getWaterMeterCode());
@@ -100,13 +104,13 @@ public class UseWaterUnitMeterServiceImpl extends
 //    删除关联表的数据
     int integer = this.baseMapper.deleteBatchIds(ids);
 //    同时清空水使用量月数据表对应的部门id
-    boolean b=false;
-    if(!monthUseDatas.isEmpty()){
-      QueryWrapper wrapper=new QueryWrapper();
-      wrapper.in("water_meter_code",monthUseDatas);
-      WaterMonthUseData param=new WaterMonthUseData();
+    boolean b = false;
+    if (!monthUseDatas.isEmpty()) {
+      QueryWrapper wrapper = new QueryWrapper();
+      wrapper.in("water_meter_code", monthUseDatas);
+      WaterMonthUseData param = new WaterMonthUseData();
       param.setUseWaterUnitId("");
-      b=waterMonthUseDataService.update(param,wrapper);
+      b = waterMonthUseDataService.update(param, wrapper);
     }
     //   boolean b = waterMonthUseDataService.deletedUnit(ids);
 ////    同时清空水使用量数据表对应的部门id
@@ -138,7 +142,7 @@ public class UseWaterUnitMeterServiceImpl extends
 
   @Override
   public ApiResponse selectUseWaterUnitMeterAll(List<String> waterMeterCodes,
-      String nodeCode,String useWaterUnitId) {
+      String nodeCode, String useWaterUnitId) {
     ApiResponse response = new ApiResponse();
     String unitName = null;
     if (waterMeterCodes.isEmpty()) {
@@ -153,7 +157,7 @@ public class UseWaterUnitMeterServiceImpl extends
       }
     }
     List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
-        .selectWaterUseData(waterMeterCodes,useWaterUnitId);
+        .selectWaterUseData(waterMeterCodes, useWaterUnitId);
     response.setData(waterMonthUseDataList);
     return response;
   }

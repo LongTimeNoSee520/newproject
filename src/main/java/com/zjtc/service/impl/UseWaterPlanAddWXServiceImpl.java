@@ -237,22 +237,28 @@ public class UseWaterPlanAddWXServiceImpl extends
 //          调整计划
         List<Person> personList = personService
             .selectPersonByResCode("quarterApply", user.getNodeCode());
-        if (!personList.isEmpty()) {
+        if (!personList.isEmpty() && personList.size() > 0) {
           personList1.addAll(personList);
+          System.out.println("调整计划:"+personList);
         }
 //          增加计划
         List<Person> personList2 = personService
             .selectPersonByResCode("addApply", user.getNodeCode());
-        if (!personList2.isEmpty()) {
+        if (!personList2.isEmpty() && personList2.size() > 0) {
           personList1.addAll(personList2);
+          System.out.println("调整计划:"+personList2);
         }
       } catch (Exception e) {
         log.error("根据资源code查询,资源下所有角色的所有人异常:" + e.getMessage());
       }
-      if (!personList1.isEmpty()) {
+      if (!personList1.isEmpty()  && personList1.size() > 0) {
+        System.out.println("最后的结果集："+personList1);
         for (Person person : personList1) {
-          //      取消待办
-          todoService.edit(id, person.getNodeCode(), person.getId());
+          System.out.println("查询到的人："+person);
+          if (!StringUtils.isBlank(person.getNodeCode()) && !StringUtils.isBlank(person.getId())) {
+            //      取消待办
+            todoService.edit(id, person.getNodeCode(), person.getId());
+          }
         }
       } else {
         log.error("根据资源code查询,资源下所有角色的所有人为空");
@@ -379,22 +385,38 @@ public class UseWaterPlanAddWXServiceImpl extends
         response.setCode(200);
 //      日志记录
         systemLogService.logInsert(user, "用水计划调整审核", "用水计划增加/调整审核", "");
+
+//      取消待办
         List<Person> personList1 = null;
         try {
 //          调整计划
           List<Person> personList = personService
               .selectPersonByResCode("quarterApply", user.getNodeCode());
-          personList1.addAll(personList);
+          if (!personList.isEmpty() && personList.size() > 0) {
+            personList1.addAll(personList);
+            System.out.println("调整计划:"+personList);
+          }
 //          增加计划
           List<Person> personList2 = personService
               .selectPersonByResCode("addApply", user.getNodeCode());
-          personList1.addAll(personList2);
+          if (!personList2.isEmpty() && personList2.size() > 0) {
+            personList1.addAll(personList2);
+            System.out.println("调整计划:"+personList2);
+          }
         } catch (Exception e) {
           log.error("根据资源code查询,资源下所有角色的所有人异常:" + e.getMessage());
         }
-        for (Person person : personList1) {
-          //      取消待办
-          todoService.edit(id, person.getNodeCode(), person.getId());
+        if (!personList1.isEmpty()  && personList1.size() > 0) {
+          System.out.println("最后的结果集："+personList1);
+          for (Person person : personList1) {
+            System.out.println("查询到的人："+person);
+            if (!StringUtils.isBlank(person.getNodeCode()) && !StringUtils.isBlank(person.getId())) {
+              //      取消待办
+              todoService.edit(id, person.getNodeCode(), person.getId());
+            }
+          }
+        } else {
+          log.error("根据资源code查询,资源下所有角色的所有人为空");
         }
         return response;
       } else if (Objects.requireNonNull(response1).getCode() == 500) {

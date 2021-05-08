@@ -118,13 +118,13 @@
     (
     select
     row_number ( ) over ( ORDER BY use_year desc
-     <if test="unitCodeRank">
+    <if test="unitCodeRank">
       ,unit_code ${unitCodeRank}
-     </if>
-     <if test="unitNameRank">
+    </if>
+    <if test="unitNameRank">
       ,unit_name ${unitNameRank}
-     </if>
-     ) AS rownumber,
+    </if>
+    ) AS rownumber,
     *
     from
     (
@@ -261,7 +261,7 @@
     <if test=" null !=useYear">
       and use_year = #{useYear}
     </if>
-  ;
+    ;
 
   </select>
 
@@ -371,16 +371,24 @@
     unit_names,
     unit_address,
     (
-    SELECT  SUM
-    ( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + november_count + december_count )
+    SELECT SUM
+    ( january_count + february_count + march_count + april_count + may_count + june_count +
+    july_count + august_count + september_count + october_count + november_count + december_count )
     FROM
     t_w_water_month_use_data t2
-    WHERE
-    water_meter_code =  #{waterMeterCode}   AND t1.id = t2.id
+    WHERE 1 = 1
+    <if test="waterMeterCode != null and waterMeterCode != ''">
+      and t2.water_meter_code = #{waterMeterCode}
+    </if>
+    AND t1.id = t2.id
     ) AS waterNumber
     FROM
     t_w_water_month_use_data t1
     WHERE
-    water_meter_code =  #{waterMeterCode}  ORDER  BY use_year desc
+    WHERE 1 = 1
+    <if test="waterMeterCode != null and waterMeterCode != ''">
+      and t2.water_meter_code = #{waterMeterCode}
+    </if>
+    ORDER BY use_year desc
   </select>
 </mapper>
