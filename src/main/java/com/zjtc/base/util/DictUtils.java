@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zjtc.model.DictItem;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,38 @@ public class DictUtils {
    */
   public String getDictItemName(String dictCode, String dictItemCode,String nodeCode) {
     /** 数据字典缓存数据（json字符串） **/
-    Map<String, String> dictCacheMap = redisUtil.hgetAll("dict_"+nodeCode);
+    Map<String, String> dictCacheMap = redisUtil.hgetAll("dict");
+    try {
+      if (null != dictCacheMap && null != dictCacheMap.get(dictCode)) {
+        List<DictItem> dictItemList = JSONObject
+            .parseArray(dictCacheMap.get(dictCode), DictItem.class);
+        if (null != dictItemList && dictItemList.size() > 0) {
+          for (DictItem dictItem : dictItemList) {
+            if (dictItemCode.equals(dictItem.getDictItemCode())) {
+              return dictItem.getDictItemName();
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      return "未知";
+    }
+    return "未知";
+  }
+
+  /**分区县
+   * 获取数据字典项名称
+   *
+   * @param dictCode 数据字典code
+   * @param dictItemCode 数据字典项code
+   * @param nodeCode  节点编码
+   */
+  public String getDictItemNameCountry(String dictCode, String dictItemCode,String nodeCode) {
+    /** 数据字典缓存数据（json字符串） **/
+    Map<String, String> dictCacheMap = redisUtil.hgetAll("dict");
+    if(StringUtils.isNotBlank(dictCode)){
+      dictCode=dictCode+nodeCode;
+    }
     try {
       if (null != dictCacheMap && null != dictCacheMap.get(dictCode)) {
         List<DictItem> dictItemList = JSONObject
@@ -53,8 +85,39 @@ public class DictUtils {
    */
   public String getDictItemCode(String dictCode, String dictDataName,String nodeCode) {
     /** 数据字典缓存数据（json字符串） **/
-    Map<String, String> dictCacheMap = redisUtil.hgetAll("dict_"+nodeCode);
+    Map<String, String> dictCacheMap = redisUtil.hgetAll("dict");
     try {
+      if (null != dictCacheMap && null != dictCacheMap.get(dictCode)) {
+        List<DictItem> dictItemList = JSONObject
+            .parseArray(dictCacheMap.get(dictCode), DictItem.class);
+        if (null != dictItemList && dictItemList.size() > 0) {
+          for (DictItem dictItem : dictItemList) {
+            if (dictDataName.equals(dictItem.getDictItemName())) {
+              return dictItem.getDictItemCode();
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      return "未知";
+    }
+    return "未知";
+  }
+
+  /**分区县
+   * 获取数据字典项值
+   *
+   * @param dictCode 数据字典code
+   * @param dictDataName 数据字典项name
+   * @param nodeCode  节点编码
+   */
+  public String getDictItemCodeCountry(String dictCode, String dictDataName,String nodeCode) {
+    /** 数据字典缓存数据（json字符串） **/
+    Map<String, String> dictCacheMap = redisUtil.hgetAll("dict");
+    try {
+      if(StringUtils.isNotBlank(dictCode)){
+        dictCode=dictCode+nodeCode;
+      }
       if (null != dictCacheMap && null != dictCacheMap.get(dictCode)) {
         List<DictItem> dictItemList = JSONObject
             .parseArray(dictCacheMap.get(dictCode), DictItem.class);

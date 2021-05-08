@@ -489,7 +489,7 @@ public class UseWaterUnitServiceImpl extends
         }
         //查询所属区域
         item.setAreaCountryName(
-            dictUtils.getDictItemName(AREA_COUNTRY_CODE, item.getAreaCountry(), nodeCode));
+            dictUtils.getDictItemNameCountry(AREA_COUNTRY_CODE, item.getAreaCountry(), nodeCode));
         //附件
         if (!item.getSysFile().isEmpty()) {
           for (File file : item.getSysFile()) {
@@ -674,16 +674,16 @@ public class UseWaterUnitServiceImpl extends
     //结束时间
     String endTime = jsonObject.getString("endTime");
     //开户行行名
-    String sBankName = dictUtils.getDictItemName("receive_user_info", "1", nodeCode);
+    String sBankName = dictUtils.getDictItemNameCountry("receive_user_info", "1", nodeCode);
     jsonObject.put("sBankName", sBankName);
     //开户行号
-    String sBankNum = dictUtils.getDictItemName("receive_user_info", "2", nodeCode);
+    String sBankNum = dictUtils.getDictItemNameCountry("receive_user_info", "2", nodeCode);
     jsonObject.put("sBankNum", sBankNum);
     //户名
-    String sUnitName = dictUtils.getDictItemName("receive_user_info", "3", nodeCode);
+    String sUnitName = dictUtils.getDictItemNameCountry("receive_user_info", "3", nodeCode);
     jsonObject.put("sUnitName", sUnitName);
     //账号
-    String sBankAccount = dictUtils.getDictItemName("receive_user_info", "4", nodeCode);
+    String sBankAccount = dictUtils.getDictItemNameCountry("receive_user_info", "4", nodeCode);
     jsonObject.put("sBankAccount", sBankAccount);
     if (StringUtils.isNotBlank(startTime)) {
       jsonObject.put("startTime", startTime + " 00:00:00");
@@ -736,7 +736,7 @@ public class UseWaterUnitServiceImpl extends
       if (!idList.isEmpty()) {
         //查询所属区域
         item.put("areaCountryName",
-            dictUtils.getDictItemName(AREA_COUNTRY_CODE, item.get("areaCountry").toString(),
+            dictUtils.getDictItemNameCountry(AREA_COUNTRY_CODE, item.get("areaCountry").toString(),
                 user.getNodeCode()));
         //相关编号集合
         List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
