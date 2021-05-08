@@ -263,6 +263,8 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     @TableField(value = "create_time",exist = true,fill = FieldFill.INSERT)
     private Date createTime;
 
+
+
     @ApiModelProperty("缴费时间")
     @TableField(exist = false)
     private String countDate;

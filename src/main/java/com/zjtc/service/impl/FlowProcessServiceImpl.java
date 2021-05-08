@@ -122,6 +122,7 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
   @Override
   public List<FlowProcess> queryAll(String nodeCode) {
     QueryWrapper wrapper = new QueryWrapper();
+    wrapper.select("busIness_id","operator_id","audit_status");
     wrapper.eq("node_code", nodeCode);
     return this.list(wrapper);
   }

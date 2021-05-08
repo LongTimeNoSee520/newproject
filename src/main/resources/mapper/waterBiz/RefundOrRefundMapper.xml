@@ -105,11 +105,10 @@
     when '2' then '减免单'
     else '未知' end as typeName
     from t_w_refund_or_refund t1
-    where node_code=#{json.nodeCode}
-    and is_revoke='0'
     <!--待审核-->
     <if test="json.keyWrod==1">
-      and id in(select busIness_id as id from
+    inner join (select busIness_id
+    from
       <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
         select
         #{item.businessId} as busIness_id,
@@ -117,12 +116,13 @@
         #{item.auditStatus} as audit_status
       </foreach>
       t2
-      where audit_status='1' and operator_id=#{json.userId})
+      where audit_status='1' and operator_id=#{json.userId}
+      group by busIness_id
+      ) tt2 on tt2.busIness_id=t1.id
     </if>
     <!--已审核-->
     <if test="json.keyWrod==2">
-      and id in(
-      select busIness_id as id
+      inner join(select busIness_id as id
       from
       <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
         select
@@ -131,8 +131,12 @@
         #{item.auditStatus} as audit_status
       </foreach>
       t2
-      where (audit_status='2' or audit_status='3') and operator_id=#{json.userId})
+      where (audit_status='2' or audit_status='3') and operator_id=#{json.userId}
+      group by busIness_id
+      ) tt2 on tt2.busIness_id=t1.id
     </if>
+    where node_code=#{json.nodeCode}
+    and is_revoke='0'
     <if test="null !=json.unitCode and json.unitCode !=''">
       and unit_code like '%${json.unitCode}%'
     </if>
