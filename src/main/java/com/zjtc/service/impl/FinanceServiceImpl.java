@@ -184,12 +184,6 @@ public class FinanceServiceImpl extends ServiceImpl<FinanceMapper, Finance> impl
     List<Finance> templates = this.baseMapper
         .queryList(currPage, pageSize, nodeCode, unitName, paymentDateBegin, paymentDateFinish,
             money, invoiceState, drawer);
-//    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//    for (Finance finance : templates) {
-//      Date paymentDate = finance.getPaymentDate();
-//      Date date = TimeUtil.formatTimeToDate(dateFormat.format(paymentDate));
-//      finance.setPaymentDate(date);
-//    }
 //    查询未开票金额和已开票金额
     List<String> sumMoney = this.baseMapper
         .countMoney(unitName, paymentDateBegin, paymentDateFinish, drawer, nodeCode);

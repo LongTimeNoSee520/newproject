@@ -36,15 +36,22 @@
     FROM
     (
     SELECT
-    row_number () OVER ( ORDER BY [id] ) AS rownumber,
+    row_number () OVER ( ORDER BY [unit_code] ) AS rownumber,
     id,
     node_code,
     unit_name,
     money,
     payment_date,
     invoice_state,
-    drawer,
-    drawer_id,
+    CASE
+    drawer
+    WHEN NULL THEN
+    '' ELSE drawer
+    END drawer,
+    CASE drawer_id
+    WHEN NULL THEN ''
+    ELSE drawer
+    END drawer,
     type,
     unit_code,
     print_person,
