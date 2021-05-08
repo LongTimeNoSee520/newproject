@@ -364,7 +364,8 @@
 		unit_code as unitCode,
 		editedActual=0,
 		cashCheck ='0',
-		transferCheck='0'
+		transferCheck='0',
+		create_time=GETDATE()
 		from
 		(
 		SELECT
@@ -381,7 +382,7 @@
 		) AS multiple,
 		t5.payRatio,
 		payStatus = 0,
-		payType = 0,
+		payType = '',
 		t5.price,
 		t5.quarterPlan,
 		t5.use_water_unit_id,
