@@ -253,39 +253,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //      取消待办
       todoService.edit(id, user.getNodeCode(), user.getId());
       systemLogService.logInsert(user, "用水计划自平", "用水计划自平审核通过", "");
-//      List<Person> personList1 = null;
-//      try {
-//        personList1 = personService
-//            .selectPersonByResCode("selfBalance", user.getNodeCode());
-//      } catch (Exception e) {
-//        log.error("根据资源code查询,资源下所有角色的所有人异常:"+e.getMessage());
-//      }
-//      assert personList1 != null;
-//      for (Person person : personList1) {
 //        //      取消待办
-//        todoService.edit(id, person.getNodeCode(), person.getId());
-//      }
-////     发起待办
-//      List<Person> personList = null;
-//      try {
-//        personList = personService.selectPersonAll(auditorId);
-//      } catch (Exception e) {
-//        log.error("查询下一环节审核人员为空:"+e.getMessage());
-//      }
-//      assert personList != null;
-//      for (Person person : personList) {
-//        todoService.add(
-//            id,
-//            user,
-//            person.getId(),
-//            person.getUserName(),
-//            messageContent,
-//            JSONObject.toJSONString(useWaterSelfDefinePlan),
-//            detailConfig,
-//            AuditConstants.END_PAPER_TODO_TYPE);
-////        webSocket消息推送
-//        webSocketUtil.pushWaterNews(user.getNodeCode(),user.getId());
-//      }
+        todoService.editByBusinessId(id);
 
       return response;
     } else {

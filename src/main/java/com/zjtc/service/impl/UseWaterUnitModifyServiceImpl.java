@@ -34,6 +34,7 @@ public class UseWaterUnitModifyServiceImpl extends
     if (StringUtils.isBlank(id) || StringUtils.isBlank(nodeCode) || StringUtils.isBlank(unitName)
         || StringUtils.isBlank(personName) || StringUtils.isBlank(personId)) {
       log.error("判断部门名称是否被修改时传入参数出错");
+
       return false;
     }
     UseWaterUnitModify modify = new UseWaterUnitModify();
