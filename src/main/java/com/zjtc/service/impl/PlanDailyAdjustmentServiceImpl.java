@@ -235,8 +235,8 @@ public class PlanDailyAdjustmentServiceImpl extends
        }
      }
     if (calculatedNumber <= 0){
-      response.setCode(500);
       response.recordError("没做任何改变，不能增加计划");
+      response.setCode(501);
     }
     else {
       Map<String,Object> result = new HashMap<>();
@@ -274,6 +274,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     /**如果有未完成流程的办结单，则不允许操作*/
     if("1".equals(useWaterPlan.getExistSettlementForm())){
       response.recordError("该计划存在未完成的办结单");
+      response.setCode(501);
       return response;
     }
     if (SystemConstants.PLAN_CHANGE_TYPE_AJUST.equals(paperType)) {
@@ -316,6 +317,7 @@ public class PlanDailyAdjustmentServiceImpl extends
         systemLogService.logInsert(user, "用水计划日常调整", "计划日常调整", null);
       }else {
       response.recordError("没有作任何修改");
+      response.setCode(501);
       return response;
     }
     }else if (SystemConstants.PLAN_CHANGE_TYPE_ADD.equals(paperType)) {//增加计划
@@ -375,6 +377,7 @@ public class PlanDailyAdjustmentServiceImpl extends
         systemLogService.logInsert(user,"用水计划日常调整","增加计划",null);
       }else {
         response.recordError("没有作任何修改");
+        response.setCode(501);
         return response;
       }
     }
@@ -392,6 +395,7 @@ public class PlanDailyAdjustmentServiceImpl extends
                 .getThirdQuarter() + useWaterPlanAdd.getFourthQuarter();
         if (sum != useWaterPlanAdd.getCurYearPlan()){
           response.recordError("数据修改后4个季度的和应该和年计划的数量相等，"+"水表号为:"+useWaterPlanAdd.getWaterMeterCode());
+          response.setCode(501);
           return response;
         }
       }
@@ -413,6 +417,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     /**如果有未完成流程的办结单，则不允许操作*/
     if("1".equals(useWaterPlan.getExistSettlementForm())){
       response.recordError("计划存在未完成的办结单");
+      response.setCode(501);
       return response;
     }
     useWaterPlan.setCurYearPlan(useWaterPlan.getCurYearPlan() + useWaterPlanAdd.getCurYearPlan());
@@ -427,6 +432,7 @@ public class PlanDailyAdjustmentServiceImpl extends
        * 增加计划只在年计划上有增加水量没有在4个季度上分配或者分配后和不等于年计划)
        * 则不让累加*/
       response.recordError("各季度计划和不等于年计划");
+      response.setCode(501);
       return response;
     }
     /**更新调整表累加状态*/
@@ -450,6 +456,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     }else {
       log.error("更新调整表累加状态失败");
       response.recordError("更新调整表累加状态失败");
+      response.setCode(501);
     }
    return response;
   }
@@ -541,6 +548,7 @@ public class PlanDailyAdjustmentServiceImpl extends
      /**有则不让在发起*/
     if(null !=useWaterPlan && "1".equals(useWaterPlan.getExistSettlementForm())){
       response.recordError("该计划已存在未完成的办结单");
+      response.setCode(501);
       return response;
     }
     EndPaper endPaper = new EndPaper();
@@ -706,6 +714,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     List<UseWaterPlanExportVO>  useWaterPlans = this.baseMapper.selectExportData(map);
     if (useWaterPlans.isEmpty()){
       apiResponse.recordError("没有数据需要导出");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     Map<String, Object> data = new HashMap<>(8);

@@ -203,6 +203,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
       if (!"0".equals(endPaper.getAuditStatus())) {//0为办结单提交审核还未经过下一环节审核的状态
         //如果不是刚提交未审核状态，则不能撤销
         response.recordError("处于审核中或者审核通过的办结单不能撤销");
+        response.setCode(501);
         return response;
       } else {
         /**根据单位编号更新是否存在办结单状态为否*/
@@ -481,6 +482,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
 
     if (curYearPlan != firstQuarter + secondQuarter + thirdQuarter + fourthQuarter) {
       response.recordError("4个季度水量和不等于年计划");
+      response.setCode(501);
       return response;
     }
     /**查询办结单信息*/
@@ -488,6 +490,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
     if (!("1".equals(endPaper.getAuditStatus()) && "1".equals(endPaper.getConfirmed()))) {
       //审核没有完成或没有通过、没有确认
       response.recordError("该数据没有审核通过或者还未确认，不能执行");
+      response.setCode(501);
       return response;
     }
     /**查询计划表信息*/

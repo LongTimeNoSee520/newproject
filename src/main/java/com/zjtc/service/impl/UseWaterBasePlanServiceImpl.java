@@ -56,6 +56,7 @@ public class UseWaterBasePlanServiceImpl extends
         .checkUserRight(user.getId(), useWaterBasePlan.getUnitCode(), user.getNodeCode());
     if (!result) {
       response.recordError("当前登录用户没有操作当前类型的权限");
+      response.setCode(501);
       return response;
     }
     /**查询当前单位编码在当前nodeCode下、当前年份下是否已经有基建计划*/
@@ -63,6 +64,7 @@ public class UseWaterBasePlanServiceImpl extends
         useWaterBasePlan.getPlanYear());
     if (num > 0) {
       response.recordError("当前单位在该年份已有计划，无法再新增");
+      response.setCode(501);
       return response;
     }
     useWaterBasePlan.setCreateTime(new Date());
@@ -94,6 +96,7 @@ public class UseWaterBasePlanServiceImpl extends
         .checkUserRight(user.getId(), useWaterBasePlan.getUnitCode(), user.getNodeCode());
     if (!result) {
       response.recordError("当前登录用户没有操作当前类型的权限");
+      response.setCode(501);
       return response;
     }
     /**因为有可能修改了单位编号，所以需要查询当前单位编号是否已经有编制(排除自己),
@@ -101,6 +104,7 @@ public class UseWaterBasePlanServiceImpl extends
     int others = this.baseMapper.queryOthers(useWaterBasePlan);
     if (others > 0 ){
       response.recordError("当前单位编号在该年份已有基建计划");
+      response.setCode(501);
       return response;
     }else {
       this.baseMapper.updateById(useWaterBasePlan);
@@ -226,6 +230,7 @@ public class UseWaterBasePlanServiceImpl extends
    List<UseWaterBasePlan>  useWaterBasePlans = this.baseMapper.selectExportData(map);
     if (useWaterBasePlans.isEmpty()){
       apiResponse.recordError("没有数据需要导出");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     Map<String, Object> data = new HashMap<>(8);
@@ -250,18 +255,21 @@ public class UseWaterBasePlanServiceImpl extends
     /**查询当前登录人员是否有操作该类型的权限*/
     if(unitCode.length()<= 5){
       response.recordError("没有查询到相关单位编号的单位信息");
+      response.setCode(501);
       return response;
     }
     boolean result = useWaterUnitRoleService
         .checkUserRight(user.getId(),unitCode, user.getNodeCode());
     if (!result) {
       response.recordError("当前登录用户没有操作当前类型的权限");
+      response.setCode(501);
       return response;
     }
     /**查询当前单位编码在当前nodeCode下、当前年份下是否已经有基建计划*/
     int num = this.baseMapper.queryExistNum(unitCode, user.getNodeCode(),planYear);
     if (num > 0) {
       response.recordError("当前单位在该年份已有计划，无法再新增");
+      response.setCode(501);
       return response;
     }
     return response;

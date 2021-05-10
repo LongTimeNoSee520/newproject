@@ -112,6 +112,7 @@ public class UseWaterUnitMonitorServiceImpl extends
     List<UseWaterUnitMonitor> monitors = this.list(wrapper);
     if(!monitors.isEmpty()){
       response.recordError("该单位该年监控信息已存在，不能再次添加");
+      response.setCode(501);
       return  response;
     }
     monitor.setCreatePersonId(user.getId());
@@ -179,6 +180,7 @@ public class UseWaterUnitMonitorServiceImpl extends
    List <UseWaterMonitorExportVO> monitors = this.baseMapper.selectExportData(map);
     if (monitors.isEmpty()){
       apiResponse.recordError("没有数据需要导出");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     Map<String, Object> data = new HashMap<>(8);

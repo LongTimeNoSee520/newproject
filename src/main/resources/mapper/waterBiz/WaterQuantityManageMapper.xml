@@ -67,15 +67,22 @@
     </if>
   </select>
   <select id="queryPage" resultType="java.util.LinkedHashMap">
-    SELECT t.id AS id, t.use_water_unit_id AS useWaterUnitId,t.unit_code AS unitCode,t.unit_name AS unitName,unit_address AS unitAddress,
-    convert(varchar(50),t.use_year)+'年' + convert(varchar(50),t.use_month) +'月' AS yearAndMonth,
-    t.water_meter_code AS waterMeterCode,t.water_begin AS waterBegin,t.water_end AS waterEnd,
-    t.water_number AS waterNumber,t.price AS price,t.caliber AS caliber,t.sector AS sector,
-    t.water_use_kinds AS waterUseKinds,t.uid AS uid,t.node_code AS nodeCode,t.type AS type,
-    t.remarks AS remarks
-    FROM
-    (SELECT TOP ${size} t1.*
-      FROM(SELECT row_number () OVER ( ORDER BY [id]) AS rownumber,*
+--     SELECT t.id AS id, t.use_water_unit_id AS useWaterUnitId,t.unit_code AS unitCode,t.unit_name AS unitName,unit_address AS unitAddress,
+--     convert(varchar(50),t.use_year)+'年' + convert(varchar(50),t.use_month) +'月' AS yearAndMonth,
+--     t.water_meter_code AS waterMeterCode,t.water_begin AS waterBegin,t.water_end AS waterEnd,
+--     t.water_number AS waterNumber,t.price AS price,t.caliber AS caliber,t.sector AS sector,
+--     t.water_use_kinds AS waterUseKinds,t.uid AS uid,t.node_code AS nodeCode,t.type AS type,
+--     t.remarks AS remarks
+--     FROM
+--     (
+    SELECT  TOP ${size} t1.unit_name AS unitName,t1.unit_address AS unitAddress,
+    convert(varchar(10),t1.use_year)+'年' + convert(varchar(10),t1.use_month) +'月' AS yearAndMonth,
+    t1.water_meter_code AS waterMeterCode,t1.water_begin AS waterBegin,t1.water_end AS waterEnd,
+    t1.water_number AS waterNumber,t1.price AS price,t1.caliber AS caliber,t1.sector AS sector,
+    t1.water_use_kinds AS waterUseKinds,t1.type AS type,
+    t1.remarks AS remarks
+    FROM(SELECT row_number () OVER ( ORDER BY [use_year] DESC ,[use_month] DESC ,[id]) AS rownumber,unit_name,unit_address,use_year,use_month,
+    water_meter_code,water_begin,water_end,water_number,price,caliber,sector,water_use_kinds,type,remarks
             FROM
             t_w_water_use_data
             WHERE
@@ -118,8 +125,6 @@
             </if>
       )t1
       WHERE  rownumber > (#{current}-1)* #{size}
-      ORDER BY use_year DESC ,use_month DESC
-    )t
   </select>
 
   <insert id="insertOrUpdate" parameterType="com.zjtc.model.WaterUseData" useGeneratedKeys="true" keyProperty="id">

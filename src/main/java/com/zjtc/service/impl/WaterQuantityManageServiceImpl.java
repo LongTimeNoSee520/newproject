@@ -396,6 +396,7 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
       files.add(file2);
       fileService.saveBatch(files);
       response.recordError("本次导入数据存在错误，请查看错误日志文件");
+      response.setCode(501);
     }else {
       /**数据插入数据库,有则更新，无则新增*/
       for (WaterUseData waterUseData:waterUseDataList) {

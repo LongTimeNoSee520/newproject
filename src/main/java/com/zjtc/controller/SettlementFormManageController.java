@@ -312,6 +312,7 @@ public class SettlementFormManageController {
           response.setData(result);
         }else {
           response.recordError("请选择要打印的单位");
+          response.setCode(501);
           return  response;
         }
       } catch (Exception e) {
