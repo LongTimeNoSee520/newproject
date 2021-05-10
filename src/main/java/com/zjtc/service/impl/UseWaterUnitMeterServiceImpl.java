@@ -41,9 +41,6 @@ public class UseWaterUnitMeterServiceImpl extends
         .isBlank(nodeCode)) {
       return false;
     }
-//    水使用量月数据
-    WaterMonthUseData waterMonthUseData = new WaterMonthUseData();
-    List<WaterMonthUseData> waterMonthUseDataList = new ArrayList<>();
     boolean b1 = false;
     //    遍历水表信息
     for (UseWaterUnitMeter useWaterUnitMeter1 : useWaterUnitMeter) {
@@ -57,25 +54,25 @@ public class UseWaterUnitMeterServiceImpl extends
         return false;
       }
       try {
+        List<WaterMonthUseData> param=new ArrayList<>();
 //      通过水表档案号查询对应数据的id
-        String id = this.baseMapper.selectWaterMeterCodeMyId(waterMeterCode);
-        if (StringUtils.isBlank(id)) {
-          return false;
-        }
-        waterMonthUseData.setId(id);
-////      同时更新月水使用量月数据数据
-        waterMonthUseData.setNodeCode(nodeCode);
+        List<WaterMonthUseData> waterMonthUseDatalist = this.baseMapper
+            .selectWaterMeterCodeMyId(waterMeterCode);
+        if (!waterMonthUseDatalist.isEmpty()) {
+          for (WaterMonthUseData item : waterMonthUseDatalist) {
+            WaterMonthUseData waterMonthUseData = new WaterMonthUseData();
+            waterMonthUseData.setId(item.getId());
 ////      单位id
-        waterMonthUseData.setUseWaterUnitId(useWaterUnitId);
-      } catch (Exception e) {
-        log.error("回填水表档案号异常");
-      }
-      waterMonthUseDataList.add(waterMonthUseData);
-//      更新月使用量数据
-      for (WaterMonthUseData waterMonthUseData1 : waterMonthUseDataList) {
-        if (StringUtils.isNotBlank(waterMonthUseData1.getId())) {
-          b1 = waterMonthUseDataService.updateBatchById(waterMonthUseDataList);
+            waterMonthUseData.setUseWaterUnitId(useWaterUnitId);
+            param.add(waterMonthUseData);
+          }
+          //      更新月使用量数据
+          b1 = waterMonthUseDataService.updateBatchById(param);
         }
+
+      } catch (Exception e) {
+        e.printStackTrace();
+        log.error("回填水表档案号异常");
       }
       if (!b1) {
         return false;

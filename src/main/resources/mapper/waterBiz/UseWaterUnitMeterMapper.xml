@@ -9,6 +9,34 @@
     <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
   </resultMap>
 
+  <resultMap id="WaterMonthUseDataModel" type="com.zjtc.model.WaterMonthUseData">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="use_water_unit_id" property="useWaterUnitId" jdbcType="VARCHAR"/>
+    <result column="use_year" property="useYear" jdbcType="VARCHAR"/>
+    <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+    <result column="january_count" property="januaryCount" jdbcType="DOUBLE"/>
+    <result column="february_count" property="februaryCount" jdbcType="DOUBLE"/>
+    <result column="march_count" property="marchCount" jdbcType="DOUBLE"/>
+    <result column="may_count" property="mayCount" jdbcType="DOUBLE"/>
+    <result column="june_count" property="juneCount" jdbcType="DOUBLE"/>
+    <result column="july_count" property="julyCount" jdbcType="DOUBLE"/>
+    <result column="august_count" property="augustCount" jdbcType="DOUBLE"/>
+    <result column="september_count" property="septemberCount" jdbcType="DOUBLE"/>
+    <result column="october_count" property="octoberCount" jdbcType="DOUBLE"/>
+    <result column="november_count" property="novemberCount" jdbcType="DOUBLE"/>
+    <result column="december_count" property="decemberCount" jdbcType="DOUBLE"/>
+    <result column="now_price" property="nowPrice" jdbcType="DOUBLE"/>
+    <result column="is_warning" property="isWarning" jdbcType="INTEGER"/>
+    <result column="caliber" property="caliber" jdbcType="DOUBLE"/>
+    <result column="sector" property="sector" jdbcType="VARCHAR"/>
+    <result column="water_use_kinds" property="waterUseKinds" jdbcType="VARCHAR"/>
+    <result column="unit_names" property="unitNames" jdbcType="VARCHAR"/>
+    <result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
+    <result column="waterNumber" property="waterNumber" jdbcType="DOUBLE"/>
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+  </resultMap>
+
 
   <select id="selectWaterMeterCodeWhetherOccupy" resultType="String">
     SELECT
@@ -31,7 +59,7 @@
     from t_w_use_water_unit_meter where use_water_unit_id = #{id}
   </select>
 
-  <select id="selectWaterMeterCodeMyId" resultType="String">
+  <select id="selectWaterMeterCodeMyId" resultMap="WaterMonthUseDataModel">
     select id from t_w_water_month_use_data where 1=1
     <if test="waterMeterCode != null and waterMeterCode != ''">
       and water_meter_code = #{waterMeterCode}

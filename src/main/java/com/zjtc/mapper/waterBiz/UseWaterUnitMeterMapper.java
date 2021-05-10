@@ -3,6 +3,7 @@ package com.zjtc.mapper.waterBiz;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnitMeter;
+import com.zjtc.model.WaterMonthUseData;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -42,5 +43,5 @@ public interface UseWaterUnitMeterMapper extends BaseMapper<UseWaterUnitMeter> {
    * @param waterMeterCode 水表档案号
    * @return 对应数据的id
    */
-  String selectWaterMeterCodeMyId(@Param("waterMeterCode") String waterMeterCode);
+  List<WaterMonthUseData> selectWaterMeterCodeMyId(@Param("waterMeterCode") String waterMeterCode);
 }
