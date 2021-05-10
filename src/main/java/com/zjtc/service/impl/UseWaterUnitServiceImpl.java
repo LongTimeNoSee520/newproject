@@ -128,6 +128,7 @@ public class UseWaterUnitServiceImpl extends
     if (!flag && unitTypeList.contains(unitType)) {
       //当前用户没有操作权限
       apiResponse.recordError("当前用户没有操作该类型权限,请联系管理员!");
+      apiResponse.setCode(501);
       return apiResponse;
     } else {
       //新增该用户类型权限
@@ -138,6 +139,7 @@ public class UseWaterUnitServiceImpl extends
     /**验证单位编号是否重复,先查询出当前节点编码*/
     if (ValidateUnit(entity.getUnitCode(), user.getNodeCode(), entity.getId())) {
       apiResponse.recordError("当前排序号重复");
+      apiResponse.setCode(501);
       /**生成新的排序号*/
       String maxCount = baseMapper.maxUnitCode(entity.getUnitCode(), null, user.getNodeCode());
       maxCount = craeatRank(maxCount);
@@ -206,6 +208,7 @@ public class UseWaterUnitServiceImpl extends
     if (!flag && unitTypeList.contains(unitType)) {
       //当前用户没有操作权限
       apiResponse.recordError("当前用户没有操作该类型权限,请联系管理员！");
+      apiResponse.setCode(501);
       return apiResponse;
     } else {
       //新增该用户类型权限
@@ -216,6 +219,7 @@ public class UseWaterUnitServiceImpl extends
     /**验证单位编号是否重复,先查询出当前节点编码*/
     if (ValidateUnit(entity.getUnitCode(), user.getNodeCode(), entity.getId())) {
       apiResponse.recordError("当前排序号重复");
+      apiResponse.setCode(501);
       /**生成新的排序号*/
       String maxCount = baseMapper
           .maxUnitCode(entity.getUnitCode(), entity.getId(), user.getNodeCode());
@@ -559,6 +563,7 @@ public class UseWaterUnitServiceImpl extends
     if (!flag && unitTypeList.contains(unitType)) {
       //当前用户没有操作权限
       apiResponse.recordError("当前用户没有操作该类型权限,请联系管理员!");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     /**排序号：查询当前节点编码、当前批次,节点编码后三位最大值*/
@@ -628,6 +633,7 @@ public class UseWaterUnitServiceImpl extends
         .exportAccountAudit(jsonObject.getString("nodeCode"));
     if (list.isEmpty()) {
       apiResponse.recordError("无导出数据！");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     Map<String, Object> data = new HashMap<>();
@@ -650,6 +656,7 @@ public class UseWaterUnitServiceImpl extends
         .exportForm(jsonObject.getString("nodeCode"));
     if (list.isEmpty()) {
       apiResponse.recordError("无导出数据！");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     Map<String, Object> data = new HashMap<>();
@@ -695,6 +702,7 @@ public class UseWaterUnitServiceImpl extends
         .exportRevoca(jsonObject);
     if (list.isEmpty()) {
       apiResponse.recordError("您所选择的时间区间无数据！");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     Map<String, Object> data = new HashMap<>();
@@ -718,6 +726,7 @@ public class UseWaterUnitServiceImpl extends
     List<Map<String, Object>> map = baseMapper.exportQueryData(jsonObject);
     if (map.isEmpty()) {
       apiResponse.recordError("无导出数据！");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     for (Map item : map) {
@@ -776,6 +785,7 @@ public class UseWaterUnitServiceImpl extends
         .exportMoreAndLess(jsonObject.getString("nodeCode"), user.getId());
     if (list.isEmpty()) {
       apiResponse.recordError("无导出数据！");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     Map<String, Object> data = new HashMap<>();

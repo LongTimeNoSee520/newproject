@@ -198,10 +198,8 @@ public class WaterSavingUnitController {
     User user = jwtUtil.getUserByToken(token);
     try {
       jwtUtil.getUserByToken(token);
-      ApiResponse result = waterSavingUnitService
+      apiResponse = waterSavingUnitService
           .importExcel(file, user);
-      apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
-      return result;
     } catch (Exception e) {
       log.error("导入错误,errMsg==={}", e.getMessage());
       e.printStackTrace();

@@ -114,9 +114,6 @@ public class WaterUsePayInfoController {
     if (null != jsonObject && null != user) {
       try {
         apiResponse = waterUsePayInfoService.updateModel(jsonObject, user);
-        if (apiResponse.getCode() == 500) {
-          return apiResponse;
-        }
       } catch (Exception e) {
         log.error("新增错误,errMsg==={}", e.getMessage());
         e.printStackTrace();
@@ -188,10 +185,8 @@ public class WaterUsePayInfoController {
     if (null != jsonObject && null != user) {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
-        ApiResponse result = waterUsePayInfoService.toStartReduction(jsonObject, user);
-        if (result.getCode() != 200) {
-          return result;
-        }
+        apiResponse = waterUsePayInfoService.toStartReduction(jsonObject, user);
+
       } catch (Exception e) {
         log.error("发起减免单,errMsg==={}", e.getMessage());
         e.printStackTrace();
@@ -229,10 +224,7 @@ public class WaterUsePayInfoController {
     User user = jwtUtil.getUserByToken(token);
     if (null != jsonObject && null != user) {
       try {
-        ApiResponse result = waterUsePayInfoService.toStartRefund(jsonObject, user);
-        if (result.getCode() != 200) {
-          return result;
-        }
+        apiResponse = waterUsePayInfoService.toStartRefund(jsonObject, user);
       } catch (Exception e) {
         log.error("发起退款单,errMsg==={}", e.getMessage());
         e.printStackTrace();
@@ -456,11 +448,8 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        ApiResponse result = waterUsePayInfoService
+        apiResponse = waterUsePayInfoService
             .exportBankInfo(user, jsonObject, request, response);
-        if (result.getCode() == 500) {
-          return result;
-        }
       } catch (Exception e) {
         log.error("缴费管理：导出本行托收数据失败,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);
@@ -488,11 +477,8 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        ApiResponse result = waterUsePayInfoService
+        apiResponse = waterUsePayInfoService
             .exportOtherBankInfo(user, jsonObject, request, response);
-        if (500 == result.getCode()) {
-          return result;
-        }
       } catch (Exception e) {
         log.error("缴费管理：导出他行托收数据失败,errMsg==={}", e.getMessage());
         e.printStackTrace();

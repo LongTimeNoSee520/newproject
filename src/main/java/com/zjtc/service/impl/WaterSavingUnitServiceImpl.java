@@ -90,6 +90,7 @@ public class WaterSavingUnitServiceImpl extends
     if (!oldData.isEmpty()) {
       //删除之前的单位数据
       apiResponse.recordError("当前单位编号已存在");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     //修改主数据
@@ -217,6 +218,7 @@ public class WaterSavingUnitServiceImpl extends
       result.setDeleted("0");
     } else {
       apiResponse.recordError("无导入数据，无法导入！");
+      apiResponse.setCode(501);
     }
     //验证该单位是否已经存在 存在：覆盖，不存在新增
     List<WaterSavingUnit> oldData = validateUnitCode(result.getUnitCode(), user.getNodeCode(),

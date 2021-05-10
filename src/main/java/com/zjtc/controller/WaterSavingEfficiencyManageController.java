@@ -131,10 +131,8 @@ public class WaterSavingEfficiencyManageController {
     User user = jwtUtil.getUserByToken(token);
     try {
       jwtUtil.getUserByToken(token);
-      apiResponse.setMessage(ResponseMsgConstants.OPERATE_SUCCESS);
-      ApiResponse result = waterSavingEfficiencyManageService
+      apiResponse = waterSavingEfficiencyManageService
           .importExcel(file, user, id);
-      return result;
     } catch (Exception e) {
       log.error("导入错误,errMsg==={}", e.getMessage());
       e.printStackTrace();

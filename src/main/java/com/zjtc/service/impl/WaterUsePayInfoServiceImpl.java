@@ -133,7 +133,7 @@ public class WaterUsePayInfoServiceImpl extends
         useWaterUnitInvoice.setInvoiceUnitName(entity.getUnitName());
         apiResponse = useWaterUnitInvoiceService
             .updateInvoicesUnitMessage(useWaterUnitInvoice, user.getUsername(), user.getNodeCode());
-        if (500 == apiResponse.getCode()) {
+        if (501 == apiResponse.getCode()) {
           return apiResponse;
         }
       }
@@ -210,6 +210,7 @@ public class WaterUsePayInfoServiceImpl extends
     /**判断当前缴费记录是否有退减免流程*/
     if (refundOrRefundService.auditCount(entity.getPayId(), user.getNodeCode())) {
       apiResponse.recordError("当前缴费记录退减免流程尚未结束");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     String nextPersonId = jsonObject.getString("nextPersonId");
@@ -267,6 +268,7 @@ public class WaterUsePayInfoServiceImpl extends
     ApiResponse apiResponse = new ApiResponse();
     if (refundOrRefundService.auditCount(entity.getPayId(), user.getNodeCode())) {
       apiResponse.recordError("当前缴费记录退减免流程尚未结束");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     String nextPersonId = jsonObject.getString("nextPersonId");
@@ -514,18 +516,21 @@ public class WaterUsePayInfoServiceImpl extends
             null == map.get("agreementNumber") ? "" : map.get("agreementNumber").toString();
         if (StringUtils.isBlank(agreementNumber)) {
           apiResponse.recordError("单位编号:" + unitCode + " 协议号为空 无法导出");
+          apiResponse.setCode(501);
           return apiResponse;
         }
         String bankOfDeposit =
             null == map.get("bankOfDeposit") ? "" : map.get("bankOfDeposit").toString();
         if (StringUtils.isBlank(bankOfDeposit)) {
           apiResponse.recordError("单位编号:" + unitCode + " 开户行为空 无法导出");
+          apiResponse.setCode(501);
           return apiResponse;
         }
         String bankAccount =
             null == map.get("bankAccount") ? "" : map.get("bankAccount").toString();
         if (StringUtils.isBlank(bankAccount)) {
           apiResponse.recordError("单位编号:" + unitCode + " 银行账户为空 无法导出");
+          apiResponse.setCode(501);
           return apiResponse;
         }
         String entrustUnitName =
@@ -542,6 +547,7 @@ public class WaterUsePayInfoServiceImpl extends
       }
     } else {
       apiResponse.recordError("无本行数据 无法导出");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     //写文件
@@ -582,24 +588,28 @@ public class WaterUsePayInfoServiceImpl extends
             null == map.get("agreementNumber") ? "" : map.get("agreementNumber").toString();
         if (StringUtils.isBlank(agreementNumber)) {
           apiResponse.recordError(unitCode + " 协议号为空 无法导出");
+          apiResponse.setCode(501);
           return apiResponse;
         }
         String bankOfDeposit =
             null == map.get("bankOfDeposit") ? "" : map.get("bankOfDeposit").toString();
         if (StringUtils.isBlank(bankOfDeposit)) {
           apiResponse.recordError("单位编号:" + unitCode + " 开户行为空 无法导出");
+          apiResponse.setCode(501);
           return apiResponse;
         }
         String bankAccount =
             null == map.get("bankAccount") ? "" : map.get("bankAccount").toString();
         if (StringUtils.isBlank(bankAccount)) {
           apiResponse.recordError("单位编号:" + unitCode + " 银行账户为空 无法导出");
+          apiResponse.setCode(501);
           return apiResponse;
         }
         String signed =
             null == map.get("signed") ? "" : map.get("signed").toString();
         if ("0".equals(signed)) {
           apiResponse.recordError("单位编号:" + unitCode + " 未开通托收 无法导出");
+          apiResponse.setCode(501);
           return apiResponse;
         }
         String entrustUnitName =
@@ -616,6 +626,7 @@ public class WaterUsePayInfoServiceImpl extends
       }
     } else {
       apiResponse.recordError("无他行数据 无法导出");
+      apiResponse.setCode(501);
       return apiResponse;
     }
     //写文件

@@ -112,11 +112,7 @@ public class UseWaterUnitController {
     log.debug("用水单位新增，参数param==={" + useWaterUnit.toString() + "}");
     if (null != useWaterUnit && null != user) {
       ApiResponse result = useWaterUnitService.save(useWaterUnit, user);
-      if (500 == result.getCode()) {
-        return result;
-      } else {
-        return response;
-      }
+      response=result;
     } else {
       response.recordError(500);
     }
@@ -220,11 +216,7 @@ public class UseWaterUnitController {
     log.debug("用水单位修改，参数param==={" + useWaterUnit.toString() + "}");
     if (null != useWaterUnit && null != user) {
       ApiResponse result = useWaterUnitService.update(useWaterUnit, user);
-      if (500 == result.getCode()) {
-        return result;
-      } else {
-        return response;
-      }
+      response=result;
     } else {
       response.recordError(500);
     }

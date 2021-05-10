@@ -159,10 +159,7 @@ public class UseWaterOriginalPlanController {
     if (null != jsonObject && null!=user) {
       try {
         jsonObject.put("nodeCode",user.getNodeCode());
-        ApiResponse result = useWaterOriginalPlanService.save(user,jsonObject);
-        if(200!=result.getCode()){
-          return result;
-        }
+        apiResponse = useWaterOriginalPlanService.save(user,jsonObject);
       } catch (Exception e) {
         log.error("老户/新户保存错误,errMsg==={}", e.getMessage());
         e.printStackTrace();
@@ -185,10 +182,7 @@ public class UseWaterOriginalPlanController {
     User user = jwtUtil.getUserByToken(token);
     if (null != jsonObject && null !=user) {
       try {
-        ApiResponse result = useWaterOriginalPlanService.saveOriginal(jsonObject,user);
-        if(200!=result.getCode()){
-          return result;
-        }
+        apiResponse = useWaterOriginalPlanService.saveOriginal(jsonObject,user);
       } catch (Exception e) {
         log.error("老户,errMsg==={}", e.getMessage());
         e.printStackTrace();

@@ -18,7 +18,6 @@
     <result column="imain" property="imain" jdbcType="VARCHAR"/>
     <result column="department" property="department" jdbcType="VARCHAR"/>
     <result column="area_country" property="areaCountry" jdbcType="VARCHAR"/>
-    <result column="areaCountryName" property="areaCountryName" jdbcType="VARCHAR"/>
     <result column="remark" property="remark" jdbcType="VARCHAR"/>
     <result column="abnormal" property="abnormal" jdbcType="VARCHAR"/>
     <result column="abnormal_cause" property="abnormalCause" jdbcType="VARCHAR"/>
@@ -32,9 +31,9 @@
     <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
     <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
     <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
-    <result column="peopleBankPaySysNumber" property="peopleBankPaySysNumber" jdbcType="VARCHAR"/>
-    <result column="entrustUnitName" property="entrustUnitName" jdbcType="VARCHAR"/>
-    <result column="agreementNumber" property="agreementNumber" jdbcType="VARCHAR"/>
+    <result column="people_bank_pay_sys_number" property="peopleBankPaySysNumber" jdbcType="VARCHAR"/>
+    <result column="entrust_unit_name" property="entrustUnitName" jdbcType="VARCHAR"/>
+    <result column="agreement_number" property="agreementNumber" jdbcType="VARCHAR"/>
     <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
     <result column="other_bank" property="otherBank" jdbcType="VARCHAR"/>
     <result column="signedEntrust" property="signedEntrust" jdbcType="VARCHAR"/>
@@ -204,7 +203,48 @@
   <select id="queryPage" resultMap="useWaterUnit_map">
     SELECT
     top ${size}
-    *
+    id,
+    node_code,
+    unit_code,
+    unit_code_type,
+    unit_code_group,
+    STUFF((
+    SELECT ',' + water_meter_code
+    FROM t_w_use_water_unit_meter
+    WHERE use_water_unit_id=temp_row.id
+    and node_code=#{nodeCode}
+    FOR XML PATH('')), 1, 1, ''
+    ) as water_meter_code,
+    responsibility_code,
+    unit_name,
+    id as industry,
+    industryName,
+    contacts,
+    mobile_number,
+    phone_number,
+    save_unit_type,
+    unit_address,
+    zip_name,
+    zip_address,
+    department,
+    invoice_unit_name,
+    area_country,
+    gisX ,
+    gisY ,
+    imain,
+    abnormal ,
+    abnormal_cause,
+    remark,
+    <!--是否签约托收，主户签约-->
+    case when signed is null or signed='' then '否'
+    else '是'end as signedEntrust,
+    bank_of_deposit,
+    bank_account,
+    people_bank_pay_sys_number ,
+    agreement_number ,
+    entrust_unit_name ,
+    focus_user_remark,
+    other_bank
     FROM
     (
     SELECT
@@ -217,13 +257,6 @@
     a.unit_code,
     a.unit_code_type,
     a.unit_code_group,
-    STUFF((
-    SELECT ',' + water_meter_code
-    FROM t_w_use_water_unit_meter
-    WHERE use_water_unit_id=a.id
-    and node_code=#{nodeCode}
-    FOR XML PATH('')), 1, 1, ''
-    ) as water_meter_code,
     a.responsibility_code,
     a.unit_name,
     d.id as industry,
@@ -244,15 +277,12 @@
     abnormal ,
     abnormal_cause,
     remark,
-    <!--是否签约托收，主户签约-->
-    case when signed is null or signed='' then '否'
-    else '是'end as signedEntrust,
+    signed,
     bank_of_deposit,
     bank_account,
-    responsibility_code as responsibilityCode,
-    people_bank_pay_sys_number as peopleBankPaySysNumber,
-    agreement_number as agreementNumber,
-    entrust_unit_name as entrustUnitName,
+    people_bank_pay_sys_number ,
+    agreement_number ,
+    entrust_unit_name ,
     focus_user_remark,
     other_bank
     FROM

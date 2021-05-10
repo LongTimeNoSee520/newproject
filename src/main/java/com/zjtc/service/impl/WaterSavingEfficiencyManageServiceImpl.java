@@ -118,6 +118,7 @@ public class WaterSavingEfficiencyManageServiceImpl extends
       this.saveBatch(entity);
     } else {
       response.recordError("无导入数据，请核对！");
+      response.setCode(501);
     }
     systemLogService.logInsert(user,"节水效率评估管理","导入",null);
     return response;

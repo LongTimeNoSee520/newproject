@@ -63,11 +63,13 @@ public class UseWaterOriginalPlanServiceImpl extends
       //已编制的数据不能再编制
       if (item.getPlaned().equals("1")) {
         apiResponse.recordError("当前保存的数据中存在已编制数据");
+        apiResponse.setCode(501);
         break;
       }
       /**请选择季度,新户保存需要选择季度*/
       if (0 == item.getAssessQuarter() && "1".equals(item.getAdded())) {
         apiResponse.recordError("请选择考核季度");
+        apiResponse.setCode(501);
         break;
       }
       /**如果是新增户，并且本年计划为空*/
@@ -101,15 +103,18 @@ public class UseWaterOriginalPlanServiceImpl extends
     for (UseWaterOriginalPlan item : entity) {
       if (item.getPlaned().equals("1")) {
         apiResponse.recordError("当前要编制的数据中存在已编制数据");
+        apiResponse.setCode(501);
         break;
       }
       if ("0".equals(item.getAlgorithmType())) {
         apiResponse.recordError("请选择算法");
+        apiResponse.setCode(501);
         break;
       }
       /**请选择季度,新户编制需要选择季度*/
       if (0 == item.getAssessQuarter() && "1".equals(item.getAdded())) {
         apiResponse.recordError("请选择考核季度");
+        apiResponse.setCode(501);
         break;
       }
       /**如果是新增户，并且本年计划为空*/

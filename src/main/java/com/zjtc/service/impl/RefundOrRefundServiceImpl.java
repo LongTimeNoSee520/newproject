@@ -5,7 +5,6 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.constant.AuditConstants;
-import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.RefundOrRefundMapper;
 import com.zjtc.mapper.waterSys.FlowProcessMapper;
@@ -308,7 +307,6 @@ public class RefundOrRefundServiceImpl extends
   @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean revoke(JSONObject jsonObject, User user) {
-    ApiResponse apiResponse = new ApiResponse();
     String id = jsonObject.getString("id");
     RefundOrRefund refundOrRefund = new RefundOrRefund();
     refundOrRefund.setIsRevoke("1");
