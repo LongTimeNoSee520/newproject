@@ -56,8 +56,8 @@ public class WaterUseDataController {
     try {
       List<Integer> list = waterUseDataService.queryYear(jsonObject.getString("nodeCode"));
       if (list.isEmpty()) {
-        response.setCode(501);
         response.setMessage("没有可使用年份");
+        response.setCode(501);
         return response;
       } else {
         response.setData(list);
@@ -92,8 +92,8 @@ public class WaterUseDataController {
     List<String> waterMeterCodes = jsonObject.getJSONArray("waterMeterCode")
         .toJavaList(String.class);
     if (null == waterMeterCodes || waterMeterCodes.size() == 0) {
-      response.setCode(501);
       response.setMessage("未查到该水表信息");
+      response.setCode(501);
       return response;
     }
     String useWaterUnitId = jsonObject.getString("useWaterUnitId");
@@ -103,8 +103,8 @@ public class WaterUseDataController {
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList) {
         if (StringUtils.isNotBlank(waterMonthUseData.getUseWaterUnitId()) && !waterMonthUseData.getUseWaterUnitId()
             .equals(useWaterUnitId)) {
-          response.setCode(501);
           response.setMessage("该水表档案号【" + waterMonthUseData.getWaterMeterCode() + "】已被用水单位【"+waterMonthUseData.getUnitNames()+"】占用!");
+          response.setCode(501);
           return response;
         }
       }

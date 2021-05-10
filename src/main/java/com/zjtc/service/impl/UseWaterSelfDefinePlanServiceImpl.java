@@ -248,7 +248,6 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     int integer = this.baseMapper.updateById(waterSelfDefinePlan);
 
     if (integer > 0) {
-      response.setCode(200);
       response.setMessage("审核成功");
 //      取消待办
       todoService.edit(id, user.getNodeCode(), user.getId());
@@ -443,6 +442,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       return response;
     } else {
       response.setMessage("未查到单位自平水量信息");
+      response.setCode(501);
       return response;
     }
   }

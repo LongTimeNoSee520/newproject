@@ -68,7 +68,8 @@ public class UseWaterUnitInvoiceServiceImpl extends
       int i = this.baseMapper.selectInvoiceNumber(invoiceNumber, user.getNodeCode());
       if (i > 0) {
 //        i不0的话说明已存在,直接退出
-        response.recordError("发票号为:" + invoiceNumber + "已存在");
+        response.setMessage("发票号为:" + invoiceNumber + "已存在");
+        response.setCode(501);
         return response;
       } else {
         unitInvoice = new UseWaterUnitInvoice();
@@ -100,8 +101,8 @@ public class UseWaterUnitInvoiceServiceImpl extends
     }
     String invoiceNumber = this.baseMapper.selectReceived(unitInvoice.getId());
     if (!StringUtils.isBlank(invoiceNumber)) {
-      response.setCode(501);
       response.setMessage("发票" + invoiceNumber + "已被领取,不能被登记");
+      response.setCode(501);
       return response;
     }
 //    经手人
@@ -134,8 +135,8 @@ public class UseWaterUnitInvoiceServiceImpl extends
     if (!newList.isEmpty()) {
       String lists = StringUtils.strip(newList.toString(), "[]")
           .replace(" ", "");
-      response.setCode(501);
       response.setMessage("发票:" + lists + "已被领取,不能被删除");
+      response.setCode(501);
       return response;
     } else {
       for (String id : ids) {
@@ -148,7 +149,6 @@ public class UseWaterUnitInvoiceServiceImpl extends
     b = this.updateBatchById(list);
     if (b) {
       response.setMessage("删除发票成功");
-      response.setCode(200);
       systemLogService.logInsert(user, "发票管理", "删除发票", "");
       return response;
     }
@@ -198,13 +198,13 @@ public class UseWaterUnitInvoiceServiceImpl extends
 //        拼接发票号
         String invoiceNumbers = StringUtils.strip(invoiceNumberList.toString(), "[]")
             .replace(" ", "");
-        response.setCode(501);
         response.setMessage("请先取消作废发票号为:" + invoiceNumbers + "的数据");
+        response.setCode(501);
         return response;
       }
       if ("0".equals(unitInvoice1.getEnabled())) {
-        response.setCode(501);
         response.setMessage("请先选择已作废的数据");
+        response.setCode(501);
         return response;
       }
       b = this.baseMapper.updateEnabledStatus(id);
@@ -276,8 +276,8 @@ public class UseWaterUnitInvoiceServiceImpl extends
         .updateUid(Integer.parseInt(begin), Integer.parseInt(end), personId, user.getId(),
             user.getNodeCode());
     if (i > 0) {
-      response.setCode(200);
       response.setMessage("已移交:" + i + "张发票");
+      response.setCode(200);
       systemLogService.logInsert(user, "发票管理", "移交发票", "");
       return response;
     } else {
@@ -391,12 +391,12 @@ public class UseWaterUnitInvoiceServiceImpl extends
     }
     UseWaterUnitInvoice unitInvoice = this.baseMapper.selectById(useWaterUnitInvoice.getId());
     if (unitInvoice.getPayInfoId() != null) {
-      response.setCode(501);
       response.setMessage("发票号已被使用");
+      response.setCode(501);
       return response;
     } else if ("1".equals(unitInvoice.getEnabled())) {
-      response.setCode(501);
       response.setMessage("发票号已经被作废,不能使用");
+      response.setCode(501);
       return response;
     }
     useWaterUnitInvoice.setInvoiceDate(new Date());
