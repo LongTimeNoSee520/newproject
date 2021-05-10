@@ -386,7 +386,7 @@
     t_w_water_month_use_data t1
     WHERE 1 = 1
     <if test="waterMeterCode != null and waterMeterCode != ''">
-      and t2.water_meter_code = #{waterMeterCode}
+      and water_meter_code = #{waterMeterCode}
     </if>
     ORDER BY use_year desc
   </select>
