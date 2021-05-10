@@ -110,7 +110,7 @@
 
   <select id="countMoney" resultType="java.util.Map">
     SELECT DISTINCT
-    ( SELECT SUM ( money ) FROM t_w_finance WHERE deleted = '0' AND invoice_state = '0'
+    ( SELECT ROUND(SUM ( money ),2) FROM t_w_finance WHERE deleted = '0' AND invoice_state = '0'
     <if test="unitName != null and unitName != ''">
       and unit_name like '%${unitName}%'
     </if>
@@ -121,7 +121,7 @@
       and drawer like '%${drawer}%'
     </if>
     ) AS ont,
-    ( SELECT SUM ( money )  FROM t_w_finance WHERE deleted = '0' AND invoice_state = '1'
+    ( SELECT ROUND(SUM ( money ),2)  FROM t_w_finance WHERE deleted = '0' AND invoice_state = '1'
     <if test="unitName != null and unitName != ''">
       and unit_name like '%${unitName}%'
     </if>
