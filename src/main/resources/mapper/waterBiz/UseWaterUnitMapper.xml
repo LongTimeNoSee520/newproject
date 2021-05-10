@@ -37,23 +37,23 @@
     <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
     <result column="other_bank" property="otherBank" jdbcType="VARCHAR"/>
     <result column="signedEntrust" property="signedEntrust" jdbcType="VARCHAR"/>
-    <collection property="meterList" column="{id=id,nodeCode=node_code}"
+    <collection property="meterList" column="id"
       select="selectUseWaterUnitMeter"
       ofType="com.zjtc.model.WaterMonthUseData">
     </collection>
-    <collection property="bankList" column="{id=id,nodeCode=node_code}" select="selectBank"
+    <collection property="bankList" column="id" select="selectBank"
       ofType="com.zjtc.model.Bank">
     </collection>
-    <collection property="contactsList" column="{id=id,nodeCode=node_code}" select="selectContacts"
+    <collection property="contactsList" column="id" select="selectContacts"
       ofType="com.zjtc.model.Contacts">
     </collection>
-    <collection property="sysFile" column="{id=id,nodeCode=node_code}" select="selectsysFile"
+    <collection property="sysFile" column="id" select="selectsysFile"
       ofType="com.zjtc.model.File">
     </collection>
-    <collection property="quotaFile" column="{id=id,nodeCode=node_code}" select="selectUseWaterQuota"
+    <collection property="quotaFile" column="id" select="selectUseWaterQuota"
       ofType="com.zjtc.model.UseWaterQuota">
     </collection>
-    <collection property="ModifyList" column="{id=id,nodeCode=node_code}" select="selectModifyList"
+    <collection property="ModifyList" column="id" select="selectModifyList"
       ofType="com.zjtc.model.UseWaterUnitModify">
     </collection>
     <!--<collection property="useWaterUnitRefList" column="{id=id,nodeCode=nodeCode}"
@@ -209,15 +209,20 @@
     unit_code_type,
     unit_code_group,
     STUFF((
-    SELECT ',' + water_meter_code
-    FROM t_w_use_water_unit_meter
-    WHERE use_water_unit_id=temp_row.id
-    and node_code=#{nodeCode}
-    FOR XML PATH('')), 1, 1, ''
-    ) as water_meter_code,
+    SELECT
+    ',' + water_meter_code
+    FROM
+    t_w_use_water_unit_meter
+    WHERE
+    use_water_unit_id = temp_row.id
+    FOR XML PATH ( '' )),
+    1,
+    1,
+    ''
+    ) AS water_meter_code,
     responsibility_code,
     unit_name,
-    id as industry,
+    id AS industry,
     industryName,
     contacts,
     mobile_number,
@@ -229,29 +234,28 @@
     department,
     invoice_unit_name,
     area_country,
-    gisX ,
-    gisY ,
+    gisX,
+    gisY,
     imain,
-    abnormal ,
+    abnormal,
     abnormal_cause,
     remark,
-    <!--是否签约托收，主户签约-->
-    case when signed is null or signed='' then '否'
-    else '是'end as signedEntrust,
+    CASE
+    WHEN signed IS NULL
+    OR signed = '' THEN
+    '否' ELSE '是'
+    END AS signedEntrust,
     bank_of_deposit,
     bank_account,
-    people_bank_pay_sys_number ,
-    agreement_number ,
-    entrust_unit_name ,
+    people_bank_pay_sys_number,
+    agreement_number,
+    entrust_unit_name,
     focus_user_remark,
     other_bank
     FROM
     (
     SELECT
-    row_number ( ) over (
-    ORDER BY
-      a.unit_code
-     ) AS rownumber,
+    row_number ( ) OVER ( ORDER BY a.unit_code,a.unit_code_type ) AS rownumber,
     a.id,
     a.node_code,
     a.unit_code,
@@ -259,7 +263,7 @@
     a.unit_code_group,
     a.responsibility_code,
     a.unit_name,
-    d.id as industry,
+    d.id AS industry,
     d.industryName,
     b.contacts,
     b.mobile_number,
@@ -271,29 +275,57 @@
     department,
     invoice_unit_name,
     area_country,
-    gisX ,
-    gisY ,
+    gisX,
+    gisY,
     imain,
-    abnormal ,
+    abnormal,
     abnormal_cause,
     remark,
     signed,
     bank_of_deposit,
     bank_account,
-    people_bank_pay_sys_number ,
-    agreement_number ,
-    entrust_unit_name ,
+    people_bank_pay_sys_number,
+    agreement_number,
+    entrust_unit_name,
     focus_user_remark,
     other_bank
     FROM
-    t_w_use_water_unit as a
+    (select
+    id,
+    industry,
+    node_code,
+    unit_code,
+    unit_code_type,
+    unit_code_group,
+    responsibility_code,
+    unit_name,
+    save_unit_type,
+    unit_address,
+    zip_name,
+    zip_address,
+    department,
+    invoice_unit_name,
+    area_country,
+    gisX,
+    gisY,
+    imain,
+    abnormal,
+    abnormal_cause,
+    remark
+    from t_w_use_water_unit
+    where deleted= '0'
+    AND node_code=#{nodeCode}
+    ) AS a
+    inner join (
+    SELECT unit_type_code  FROM t_w_use_water_unit_role WHERE person_id =#{userId}
+    group by unit_type_code
+    ) as f on a.unit_code_type=f.unit_type_code
     <!--关联用水单位联系人联系人-->
     left join (
     select use_water_unit_id,contacts,mobile_number,phone_number
     from t_w_use_water_unit_contacts
     where
     deleted='0'
-    and node_code=#{nodeCode}
     and main='1'
     ) as b on a.id =b.use_water_unit_id
     <!--关联银行表取主户签约数据-->
@@ -310,11 +342,7 @@
     group  by use_water_unit_Id
     ) as e on e.use_water_unit_Id=a.id
     </if>
-    WHERE
-    a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
-    where person_id=#{userId})
-    and a.deleted='0'
-    and a.node_code=#{nodeCode}
+    WHERE 1=1
     <!--筛选水表档案号-->
     <if test="null !=waterMeterCode and waterMeterCode!=''">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_meter where
@@ -371,23 +399,21 @@
     SELECT
     count(1)
     FROM
-    t_w_use_water_unit as a
-    <!--关联用水单位联系人联系人-->
-    left join (
-    select use_water_unit_id,contacts,mobile_number,phone_number
-    from t_w_use_water_unit_contacts
-    where
-    deleted='0'
-    and node_code=#{nodeCode}
-    and main='1'
-    ) as b on a.id =b.use_water_unit_id
-    <!--关联银行表取主户数据-->
-    left join (
-    select use_water_unit_Id,bank_of_deposit,bank_account from t_w_bank where deleted='0' and main='1'
-    ) as c on c.use_water_unit_Id=a.id
-    left join (
-    select id,industry_name as industryName from t_w_quota_info
-    ) as d on d.id=a.industry
+    (select
+    id,
+    abnormal,
+    unit_code,
+    unit_name,
+    unit_code_type,
+    responsibility_code,
+    industry
+    from t_w_use_water_unit
+    where deleted= '0'
+    ) AS a
+    inner join (
+    SELECT unit_type_code  FROM t_w_use_water_unit_role WHERE person_id =#{userId}
+    group by unit_type_code
+    ) as f on a.unit_code_type=f.unit_type_code
     <!--是否签约-->
     <if test="null !=signed and signed!=''">
       inner join (
@@ -395,53 +421,50 @@
       group  by use_water_unit_Id
       ) as e on e.use_water_unit_Id=a.id
     </if>
-    WHERE
-    a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
-    where person_id=#{userId})
-    and a.deleted='0'
-    and a.node_code=#{nodeCode}
+    WHERE 1=1
     <!--筛选水表档案号-->
-    <if test="null !=waterMeterCode and  waterMeterCode !=''">
+    <if test="null !=waterMeterCode and waterMeterCode!=''">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_meter where
       water_meter_code like '%${waterMeterCode}%' )
     </if>
     <!--筛选手机号码-->
-    <if test="null !=mobileNumber and mobileNumber!=''">
+    <if test="null !=mobileNumber and  mobileNumber!=''" >
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
       mobile_number like '%${mobileNumber}%' and deleted='0')
     </if>
-    <if test="null !=contacts and contacts !=''">
+    <if test="null !=contacts and  contacts!='' ">
       and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
       contacts like '%${contacts}%' and deleted='0')
     </if>
     <!--筛选银行账号-->
-    <if test="null !=bankAccount and bankAccount !=''">
+    <if test="null !=bankAccount and  bankAccount!=''">
       and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
       '%${bankAccount}%' and deleted='0')
     </if>
+
     <!--是否异常-->
-    <if test="null !=abnormal and abnormal !=''">
+    <if test="null !=abnormal and  abnormal!=''">
       and a.abnormal =#{abnormal}
     </if>
 
     <!--筛选单位编号-->
-    <if test="null !=unitCode and unitCode !=''">
+    <if test="null !=unitCode  and  unitCode!=''">
       and a.unit_code like '%${unitCode}%'
     </if>
     <!--筛选单位名称-->
-    <if test="null !=unitName and unitName !=''">
+    <if test="null !=unitName and  unitName!=''">
       and a.unit_name like '%${unitName}%'
     </if>
     <!--筛选类型-->
-    <if test="null !=unitCodeType and unitCodeType !=''">
+    <if test="null !=unitCodeType and  unitCodeType!=''">
       and a.unit_code_type like '%${unitCodeType}%'
     </if>
     <!--责任书编号-->
-    <if test=" null !=responsibilityCode and responsibilityCode !=''">
+    <if test=" null !=responsibilityCode and  responsibilityCode!=''">
       and a.responsibility_code like '%${responsibilityCode}%'
     </if>
     <!--筛选-->
-    <if test="null !=industryId and industryId !=''">
+    <if test="null !=industryId and  industryId!=''">
       and industry =#{industryId}
     </if>
   </select>
@@ -468,7 +491,6 @@
     abnormal_cause
     from t_w_use_water_unit
     where id=#{id}
-    and node_code=#{nodeCode}
   </select>
   <select id="selectUseWaterUnitMeter" resultMap="WaterMonthUseDataModel">
      select
@@ -516,7 +538,6 @@
     from t_w_bank
     where use_water_unit_id =#{id}
     and deleted='0'
-    and node_code=#{nodeCode}
     order By main desc
   </select>
   <select id="selectContacts" resultMap="BaseResultMap_Contacts">
@@ -524,7 +545,6 @@
     from t_w_use_water_unit_contacts
     where use_water_unit_id =#{id}
     and deleted='0'
-    and node_code=#{nodeCode}
     order by main desc
   </select>
   <select id="selectsysFile" resultMap="sysAttrFileMap">
@@ -532,7 +552,6 @@
     from t_file
     where business_id =#{id}
     and deleted='0'
-    and node_code=#{nodeCode}
     order by create_time desc
   </select>
   <select id="selectUseWaterQuota" resultMap="BaseResultMap_UseWaterQuota">
@@ -542,14 +561,12 @@
     (select industry_name  as productName from t_w_quota_info where id=a.product) as productName
     FROM t_w_use_water_quota as a
     WHERE use_water_unit_id = #{id}
-    and node_code=#{nodeCode}
     ORDER BY create_time desc
   </select>
   <select id="selectModifyList" resultMap="UseWaterUnitModify_map">
     select id,before_name,after_name,modify_time,modify_person
     from t_w_use_water_unit_modify
-    where node_code=#{nodeCode}
-    and use_water_unit_id=#{id}
+    where use_water_unit_id=#{id}
     order by modify_time desc
   </select>
   <select id="queryUnitRef" resultMap="useWaterUnitRefVo_map">

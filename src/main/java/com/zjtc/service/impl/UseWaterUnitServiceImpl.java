@@ -463,7 +463,10 @@ public class UseWaterUnitServiceImpl extends
   public Map<String, Object> queryPage(JSONObject jsonObject) {
     String nodeCode = jsonObject.getString("nodeCode");
     Map<String, Object> page = new LinkedHashMap<>();
+    long start=System.currentTimeMillis();
     List<UseWaterUnitVo> result = baseMapper.queryPage(jsonObject);
+    long end=System.currentTimeMillis()-start;
+    System.out.println("=================>end"+end);
     if (!result.isEmpty()) {
       for (UseWaterUnitVo item : result) {
         //查询相关编号
@@ -510,6 +513,8 @@ public class UseWaterUnitServiceImpl extends
     page.put("total", total);
     long pageSize = jsonObject.getInteger("size");
     page.put("page", total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
+    long end2=System.currentTimeMillis()-start;
+    System.out.println("=================>end2:"+end2);
     return page;
   }
 
