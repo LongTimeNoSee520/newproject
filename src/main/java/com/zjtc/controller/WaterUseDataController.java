@@ -56,6 +56,7 @@ public class WaterUseDataController {
     try {
       List<Integer> list = waterUseDataService.queryYear(jsonObject.getString("nodeCode"));
       if (list.isEmpty()) {
+        response.setCode(501);
         response.setMessage("没有可使用年份");
         return response;
       } else {
@@ -81,7 +82,7 @@ public class WaterUseDataController {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     if (user == null) {
-      response.setMessage("获取登录用户信息错误");
+      response.recordError("系统异常");
       return response;
     }
     if (null == jsonObject) {
@@ -91,6 +92,7 @@ public class WaterUseDataController {
     List<String> waterMeterCodes = jsonObject.getJSONArray("waterMeterCode")
         .toJavaList(String.class);
     if (null == waterMeterCodes || waterMeterCodes.size() == 0) {
+      response.setCode(501);
       response.setMessage("未查到该水表信息");
       return response;
     }
@@ -101,11 +103,13 @@ public class WaterUseDataController {
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList) {
         if (StringUtils.isNotBlank(waterMonthUseData.getUseWaterUnitId()) && !waterMonthUseData.getUseWaterUnitId()
             .equals(useWaterUnitId)) {
+          response.setCode(501);
           response.setMessage("该水表档案号【" + waterMonthUseData.getWaterMeterCode() + "】已被用水单位【"+waterMonthUseData.getUnitNames()+"】占用!");
           return response;
         }
       }
       if (null == waterMonthUseDataList || waterMonthUseDataList.size() == 0) {
+        response.setCode(501);
         response.setMessage("未查到该水表信息");
         return response;
       } else {
@@ -114,8 +118,7 @@ public class WaterUseDataController {
         return response;
       }
     } catch (Exception e) {
-      response.setMessage("查询水表信息异常");
-      e.printStackTrace();
+      response.recordError("查询水表信息异常");
       log.error("根据水表档案号回填水表信息错误,errMsg==={}", e.getMessage());
     }
     return response;

@@ -149,6 +149,7 @@ public class UseWaterUnitMeterServiceImpl extends
     for (String waterMeterCode : waterMeterCodes) {
       unitName = this.baseMapper.selectWaterMeterCodeWhetherOccupy(waterMeterCode);
       if (!StringUtils.isBlank(unitName)) {
+        response.setCode(501);
         response.setMessage(unitName + "正在使用档案号为" + waterMeterCode + "的水表");
         return response;
       }
