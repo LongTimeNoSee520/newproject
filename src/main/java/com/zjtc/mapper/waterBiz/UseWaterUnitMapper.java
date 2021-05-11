@@ -43,12 +43,9 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   UseWaterUnitVo selectById(JSONObject jsonObject);
 
   /**
-   *
-   * @param ids  单位id集合
-   * @param nodeCode
+   * @param ids 单位id集合
    * @param UserId 用户id
-   * @param id  当前单位id
-   * @return
+   * @param id 当前单位id
    */
   List<UseWaterUnitRefVo> queryUnitRef(@Param("ids") List<String> ids,
       @Param("nodeCode") String nodeCode, @Param("userId") String UserId,
@@ -76,76 +73,79 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
       @Param("refs") List<String> ids,
       @Param("sql") String updateSql
   );
-/**
- * 计划用水户账户审查表导出数据查询
- * 所有未签约、且存在银行账号的数据
- */
-  List<Map<String,Object>> exportAccountAudit(String nodeCode);
 
   /**
-   * 计划用水户导出开通格式查询：签约成功的用水户;
-   * 付款人名称一期取的法人名称，这里不再取
-   * @param nodeCode 节点编码
-   * @return
+   * 计划用水户账户审查表导出数据查询 所有未签约、且存在银行账号的数据
    */
-  List<Map<String,Object>> exportForm(String nodeCode);
+  List<Map<String, Object>> exportAccountAudit(String nodeCode);
+
+  /**
+   * 计划用水户导出开通格式查询：签约成功的用水户; 付款人名称一期取的法人名称，这里不再取
+   *
+   * @param nodeCode 节点编码
+   */
+  List<Map<String, Object>> exportForm(String nodeCode);
+
   /**
    * 计划用水户导出撤销格式查询：撤销成功的用水户;
+   *
    * @param jsonObject 节点编码
-   * @return
    */
-  List<Map<String,Object>> exportRevoca(JSONObject jsonObject);
+  List<Map<String, Object>> exportRevoca(JSONObject jsonObject);
+
   /**
    * 导出用水单位增减情况表
+   *
    * @param nodeCode 节点编码
-   * @return
    */
-  List<Map<String,Object>> exportMoreAndLess(@Param("nodeCode") String nodeCode,@Param("userId") String userId);
+  List<Map<String, Object>> exportMoreAndLess(@Param("nodeCode") String nodeCode,
+      @Param("userId") String userId);
 
-  List<Map<String,Object>> exportQueryData(JSONObject jsonObject);
+  List<Map<String, Object>> exportQueryData(JSONObject jsonObject);
+
   /**
    * 单位id集合
-   * @param ids
    */
-  List<Map<String,Object>> selectByIds(@Param("ids") List<String> ids);
+  List<Map<String, Object>> selectByIds(@Param("ids") List<String> ids);
 
-  Map<String,Object> selectByUnitCode (@Param("unitCode") String unitCode,@Param("nodeCode")String nodeCode);
+  Map<String, Object> selectByUnitCode(@Param("unitCode") String unitCode,
+      @Param("nodeCode") String nodeCode);
 
-  List<Map<String,Object>> selectCodeByName(JSONObject jsonObject);
+  List<Map<String, Object>> selectCodeByName(JSONObject jsonObject);
 
   List<String> selectAllType(@Param("nodeCode") String nodeCode);
 
-  /**数字大屏
-   * 查询节水中心：中间地图区域标点
-   * @param jsonObject
-   * @return
+  /**
+   * 数字大屏 查询节水中心：中间地图区域标点
    */
-  List<Map<String,Object>>  selectUnitMap(JSONObject jsonObject);
+  List<Map<String, Object>> selectUnitMap(JSONObject jsonObject);
 
-  /**数字大屏
-   *根据用水单位id查询用水户信息
+  /**
+   * 数字大屏 根据用水单位id查询用水户信息
    */
   Map<String, Object> selectUnitById(JSONObject jsonObject);
 
 
-  /**数字大屏
-   *查询左侧管理户数、计划用水量、实际用水量
+  /**
+   * 数字大屏 查询左侧管理户数、计划用水量、实际用水量
    */
   List<Map<String, Object>> selectLeftData(JSONObject jsonObject);
 
   /**
    * 查询所有的用水单位类型
-   * @param nodeCode
-   * @return
    */
-  List<OrgTreeVO> selectUnitCode(@Param("nodeCode") String nodeCode,@Param("condition")String condition);
+  List<OrgTreeVO> selectUnitCode(@Param("nodeCode") String nodeCode,
+      @Param("condition") String condition);
 
   /**
    * 查询用水单位信息
-   * @param type
-   * @return
    */
-  List<OrgTreeVO> selectByTypeUnitAll(@Param("type") String type,@Param("condition")String condition);
+  List<OrgTreeVO> selectByTypeUnitAll(@Param("type") String type,
+      @Param("condition") String condition);
 
+  /**
+   * 新增[修改]界面：相关编号下拉回填数据
+   */
+  List<Map<String, Object>> addUnitCodeList(@Param("nodeCode") String nodeCode,@Param("userId") String userId);
 
 }

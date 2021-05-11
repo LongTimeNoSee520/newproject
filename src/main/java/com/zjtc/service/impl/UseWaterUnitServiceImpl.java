@@ -463,7 +463,10 @@ public class UseWaterUnitServiceImpl extends
   public Map<String, Object> queryPage(JSONObject jsonObject) {
     String nodeCode = jsonObject.getString("nodeCode");
     Map<String, Object> page = new LinkedHashMap<>();
+    long start = System.currentTimeMillis();
     List<UseWaterUnitVo> result = baseMapper.queryPage(jsonObject);
+    long end = System.currentTimeMillis() - start;
+    System.out.println("=================>end" + end);
     if (!result.isEmpty()) {
       for (UseWaterUnitVo item : result) {
         //查询相关编号
@@ -510,6 +513,8 @@ public class UseWaterUnitServiceImpl extends
     page.put("total", total);
     long pageSize = jsonObject.getInteger("size");
     page.put("page", total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
+    long end2 = System.currentTimeMillis() - start;
+    System.out.println("=================>end2:" + end2);
     return page;
   }
 
@@ -610,13 +615,8 @@ public class UseWaterUnitServiceImpl extends
     QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("deleted", "0");
     wrapper.eq("node_code", user.getNodeCode());
-    wrapper.select("id","unit_code","unit_name");
-    List<String> param = useWaterUnitRoleService
-        .selectUseWaterUnitRole(user.getId(), user.getNodeCode());
-    if (null != param && param.size() > 0) {
-      wrapper.in("unit_code_type", param);
-    }
-    return this.list(wrapper);
+    wrapper.select("id", "unit_code", "unit_name");
+    return baseMapper.addUnitCodeList(user.getNodeCode(), user.getId());
   }
 
   @Override
