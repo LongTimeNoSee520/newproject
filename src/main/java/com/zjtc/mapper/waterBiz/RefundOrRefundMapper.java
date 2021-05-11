@@ -2,7 +2,6 @@ package com.zjtc.mapper.waterBiz;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zjtc.model.FlowProcess;
 import com.zjtc.model.RefundOrRefund;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,12 +20,12 @@ public interface RefundOrRefundMapper extends BaseMapper<RefundOrRefund> {
   /**
    * 分页
    */
-  List<RefundOrRefund> queryPage(@Param("json") JSONObject jsonObject, @Param("list") List<FlowProcess> list);
+  List<RefundOrRefund> queryPage( JSONObject jsonObject);
 
   /**
    * 分页查询出的数据总条数
    */
-  long queryListTotal(@Param("json")JSONObject jsonObject, @Param("list") List<FlowProcess> list);
+  long queryListTotal(JSONObject jsonObject);
 /**
  * 查询某条缴费记录是否有未走完的退减免单
  */

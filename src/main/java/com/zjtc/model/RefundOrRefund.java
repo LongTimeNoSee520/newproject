@@ -127,11 +127,18 @@ public class RefundOrRefund extends Model<RefundOrRefund> {
   @TableField(value = "create_time", exist = true, fill = FieldFill.INSERT)
   private Date createTime;
   /**
-   *
+   *，
    */
-  @ApiModelProperty("审核人")
-  @TableField(value = "audit_person", exist = true)
-  private String auditPerson;
+  @ApiModelProperty("待审核人（待谁审核）")
+  @TableField(value = "to_audit_person", exist = true)
+  private String toAuditPerson;
+
+  /**
+   *，不管审核通过还是未通过，存入审核人id,用逗号隔开
+   */
+  @ApiModelProperty("已审核过的人")
+  @TableField(value = "audit_persons", exist = true)
+  private String auditPersons;
   /**
    *
    */

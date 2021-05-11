@@ -75,7 +75,7 @@
 
   <select id="queryPage" resultMap="result_RefundOrRefund_Map">
     SELECT
-    top ${json.pageSize}
+    top ${size}
     *
     FROM
     (
@@ -105,120 +105,77 @@
     when '2' then '减免单'
     else '未知' end as typeName
     from t_w_refund_or_refund t1
+    where node_code=#{nodeCode}
     <!--待审核-->
-    <if test="json.keyWrod==1">
-    inner join (select busIness_id
-    from
-      <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
-        select
-        #{item.businessId} as busIness_id,
-        #{item.operatorId} as operator_id,
-        #{item.auditStatus} as audit_status
-      </foreach>
-      t2
-      where audit_status='1' and operator_id=#{json.userId}
-      group by busIness_id
-      ) tt2 on tt2.busIness_id=t1.id
-    </if>
+    <if test="keyWrod==1">
+    and to_audit_person=#{userId}
     <!--已审核-->
-    <if test="json.keyWrod==2">
-      inner join(select busIness_id as id
-      from
-      <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
-        select
-        #{item.businessId} as busIness_id,
-        #{item.operatorId} as operator_id,
-        #{item.auditStatus} as audit_status
-      </foreach>
-      t2
-      where (audit_status='2' or audit_status='3') and operator_id=#{json.userId}
-      group by busIness_id
-      ) tt2 on tt2.busIness_id=t1.id
+    <if test="keyWrod==2">
+    and audit_persons like '%${userId}%'
     </if>
-    where node_code=#{json.nodeCode}
+    </if>
     and is_revoke='0'
-    <if test="null !=json.unitCode and json.unitCode !=''">
-      and unit_code like '%${json.unitCode}%'
+    <if test="null !=unitCode and unitCode !=''">
+      and unit_code like '%${unitCode}%'
     </if>
-    <if test="null !=json.unitName and json.unitName !=''">
-      and unit_name like '%${json.unitName}%'
+    <if test="null !=unitName and unitName !=''">
+      and unit_name like '%${unitName}%'
     </if>
-    <if test="null !=json.waterMeterCode and json.waterMeterCode !=''">
-      and water_meter_code like '%${json.waterMeterCode}%'
+    <if test="null !=waterMeterCode and waterMeterCode !=''">
+      and water_meter_code like '%${waterMeterCode}%'
     </if>
-    <if test="null !=json.year and json.year !=''">
-      and t1.year =#{json.year}
+    <if test="null !=year and year !=''">
+      and t1.year =#{year}
     </if>
-    <if test="null !=json.type and json.type !=''">
-      and t1.type =#{json.type}
+    <if test="null !=type and type !=''">
+      and t1.type =#{type}
     </if>
-    <if test="null !=json.startTime and json.startTime !=''">
-      and t1.create_time &gt;= #{json.startTime}
+    <if test="null !=startTime and startTime !=''">
+      and t1.create_time &gt;= #{startTime}
     </if>
-    <if test="null !=json.endTime and json.endTime !=''">
-      and t1.create_time &lt; #{json.endTime}
+    <if test="null !=endTime and endTime !=''">
+      and t1.create_time &lt; #{endTime}
     </if>
     ) temp_row
     WHERE
-    rownumber > ( ( #{json.current}- 1 ) * #{json.pageSize} );
+    rownumber > ( ( #{current}- 1 ) * #{size} );
   </select>
 
   <select id="queryListTotal" resultType="java.lang.Long">
-
-
     SELECT
     count(1)
     from t_w_refund_or_refund t1
-    where node_code=#{json.nodeCode}
-    and is_revoke='0'
+    where node_code=#{nodeCode}
     <!--待审核-->
-    <if test="json.keyWrod==1">
-      and id in(select busIness_id as id from
-      <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
-        select
-        #{item.businessId} as busIness_id,
-        #{item.operatorId} as operator_id,
-        #{item.auditStatus} as audit_status
-      </foreach>
-      t2
-      where audit_status='1' and operator_id=#{json.userId})
+    <if test="keyWrod==1">
+      and to_audit_person=#{userId}
+      <!--已审核-->
+      <if test="keyWrod==2">
+        and audit_persons like '%${userId}%'
+      </if>
     </if>
-    <!--已审核-->
-    <if test="json.keyWrod==2">
-      and id in(
-      select busIness_id as id
-      from
-      <foreach collection="list" index="index" item="item" open="(" separator="union" close=")">
-        select
-        #{item.businessId} as busIness_id,
-        #{item.operatorId} as operator_id,
-        #{item.auditStatus} as audit_status
-      </foreach>
-      t2
-      where (audit_status='2' or audit_status='3') and operator_id=#{json.userId})
+    and is_revoke='0'
+    <if test="null !=unitCode and unitCode !=''">
+      and unit_code like '%${unitCode}%'
     </if>
-    <if test="null !=json.unitCode and json.unitCode !=''">
-      and unit_code like '%${json.unitCode}%'
+    <if test="null !=unitName and unitName !=''">
+      and unit_name like '%${unitName}%'
     </if>
-    <if test="null !=json.unitName and json.unitName !=''">
-      and unit_name like '%${json.unitName}%'
+    <if test="null !=waterMeterCode and waterMeterCode !=''">
+      and water_meter_code like '%${waterMeterCode}%'
     </if>
-    <if test="null !=json.waterMeterCode and json.waterMeterCode !=''">
-      and water_meter_code like '%${json.waterMeterCode}%'
+    <if test="null !=year and year !=''">
+      and t1.year =#{year}
     </if>
-    <if test="null !=json.year and json.year !=''">
-      and t1.year =#{json.year}
+    <if test="null !=type and type !=''">
+      and t1.type =#{type}
     </if>
-    <if test="null !=json.type and json.type !=''">
-      and t1.type =#{json.type}
+    <if test="null !=startTime and startTime !=''">
+      and t1.create_time &gt;= #{startTime}
     </if>
-    <if test="null !=json.startTime and json.startTime !=''">
-      and t1.create_time &gt;= #{json.startTime}
+    <if test="null !=endTime and endTime !=''">
+      and t1.create_time &lt; #{endTime}
     </if>
-    <if test="null !=json.endTime and json.endTime !=''">
-      and t1.create_time &lt; #{json.endTime}
-    </if>
-    ;
 
   </select>
 

@@ -128,10 +128,7 @@ public class RefundOrRefundServiceImpl extends
     if (StringUtils.isNotBlank(endTime)) {
       jsonObject.put("endTime", endTime + " 23:59:59");
     }
-    //查询所有操作记录
-    List<FlowProcess> flowProcesses = flowProcessService.queryAll(nodeCode);
-    jsonObject.put("pageSize", jsonObject.getString("size"));
-    List<RefundOrRefund> list = baseMapper.queryPage(jsonObject, flowProcesses);
+    List<RefundOrRefund> list = baseMapper.queryPage(jsonObject);
     if (!list.isEmpty()) {
       for (RefundOrRefund refundOrRefund : list) {
         //审核操作记录
@@ -162,7 +159,7 @@ public class RefundOrRefundServiceImpl extends
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
     //查询总数据条数
-    long total = baseMapper.queryListTotal(jsonObject, flowProcesses);
+    long total = baseMapper.queryListTotal(jsonObject);
     page.put("total", total);
     long pageSize = jsonObject.getInteger("size");
     page.put("page", total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
@@ -206,9 +203,15 @@ public class RefundOrRefundServiceImpl extends
         //审核开始，更改审核状态
       }
       /**1.修改当前退减免单：下一环节id、审核人、审核时间、审核状态*/
-      entity.setAuditPerson(user.getId());
-      entity.setAuditTime(new Date());
+//      entity.setAuditPerson(user.getId());
+//      entity.setAuditTime(new Date());
       entity.setNextNodeId("");
+      //待审核人
+      entity.setToAuditPerson("");
+      StringBuffer str=new StringBuffer(entity.getAuditPersons());
+      str.append(user.getId());
+      str.append(",");
+      entity.setAuditPersons(str.toString());
       this.updateById(entity);
       /**2.修改当前审核操作记录表：当前环节审核状态，操作时间*/
       flowProcess.setOperationTime(new Date());
@@ -271,6 +274,12 @@ public class RefundOrRefundServiceImpl extends
         //审核开始，更改审核状态
         entity.setStatus("1");
       }
+      //待审核人
+      entity.setToAuditPerson(nextPersonId);
+      StringBuffer str=new StringBuffer(entity.getAuditPersons());
+      str.append(user.getId());
+      str.append(",");
+      entity.setAuditPersons(str.toString());
       this.updateById(entity);
       flowProcess.setAuditContent(content);
       flowProcessService.updateById(flowProcess);

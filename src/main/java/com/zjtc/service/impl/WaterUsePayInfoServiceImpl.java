@@ -239,6 +239,11 @@ public class WaterUsePayInfoServiceImpl extends
             firStAudit.get(0).get("flowNodeId").toString());
     entity.setNextNodeId(newFirStCodeId);
     /**修改业务表数据*/
+    //待谁审核，谁审核过
+    entity.setToAuditPerson(nextPersonId);
+    StringBuffer str=new StringBuffer(user.getId());
+    str.append(",");
+    entity.setAuditPersons(str.toString());
     refundOrRefundService.updateById(entity);
     /**流程进度（操作记录）表 新增三条数据*/
     flowProcessService
@@ -298,6 +303,12 @@ public class WaterUsePayInfoServiceImpl extends
             firStAudit.get(0).get("flowNodeId").toString());
     entity.setNextNodeId(newFirStCodeId);
     /**修改业务表数据*/
+    //待谁审核，谁审核过
+    entity.setToAuditPerson(nextPersonId);
+    StringBuffer str=new StringBuffer(user.getId());
+    str.append(",");
+    entity.setAuditPersons(str.toString());
+    refundOrRefundService.updateById(entity);
     refundOrRefundService.updateById(entity);
     /**流程进度（操作记录）表 新增三条数据*/
     flowProcessService
