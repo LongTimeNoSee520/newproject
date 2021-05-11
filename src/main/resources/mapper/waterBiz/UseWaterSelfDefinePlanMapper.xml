@@ -112,6 +112,93 @@
     <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
   </resultMap>
 
+  <!-- 2021.05.11 yuchen -->
+  <select id="queryList" parameterType="java.util.Map" resultMap="UseWaterSelfDefinePlanVOModel">
+    SELECT TOP
+    ${pageSize} c.*
+    FROM
+    (
+    SELECT
+    row_number () OVER ( ORDER BY create_time DESC ) AS rownumber,
+    id,
+    node_code,
+    use_water_unit_id,
+    unit_name,
+    unit_code,
+    water_meter_code,
+    plan_year,
+    cur_year_plan,
+    first_quarter,
+    second_quarter,
+    third_quarter,
+    fourth_quarter,
+    create_time,
+    audit_time,
+    audit_person,
+    audit_person_id,
+    audit_result,
+    execute_time,
+    executor,
+    executor_id,
+    execute_result,
+    audit_status,
+    CASE audit_status
+    WHEN 0 THEN '未审核'
+    WHEN 1 THEN '审核不通过'
+    WHEN 2 THEN '审核通过'
+    END as auditStatusName,
+    executed,
+    CASE executed
+    WHEN 0 THEN '未执行'
+    WHEN 1 THEN '已执行'
+    END as executedName,
+    #{preViewRealPath} AS preViewRealPath
+    FROM
+    t_w_use_water_self_define_plan t1
+    WHERE t1.node_code = #{nodeCode}
+    and audit_status != 3
+    <if test="unitName != null and unitName != ''">
+      and t1.unit_name like '%${unitName}%'
+    </if>
+    <if test="userType != null and userType != ''">
+      and SUBSTRING(t1.unit_code, 5, 2) like '%${userType}%'
+    </if>
+    <if test="planYear != null  and planYear != ''">
+      and t1.plan_year like '%${planYear}%'
+    </if>
+    <if test="unitCode != null and unitCode != ''">
+      and t1.unit_code like '%${unitCode}%'
+    </if>
+    <if test="audit != null and audit.size > 0">
+      and t1.audit_status in (
+      <foreach collection="audit" item="audit" separator=",">
+        #{audit}
+      </foreach>
+      )
+    </if>
+    <if test="executed != null and executed != ''">
+      and t1.executed = #{executed}
+    </if>
+    <if test="unitCodeType != null and unitCodeType != ''">
+      and SUBSTRING(t1.unit_code, 5, 2) = #{unitCodeType}
+    </if>
+    <if test="areaCode != null and areaCode != ''">
+      and SUBSTRING(t1.unit_code, 1, 2) = #{areaCode}
+    </if>
+    and
+    SUBSTRING ( unit_code,5,2 )
+    IN ( SELECT unit_type_code
+    FROM t_w_use_water_unit_role WHERE person_id = #{userId}
+    <if test="unitCodeType != null and unitCodeType != ''">
+      and unit_type_code = #{unitCodeType}
+    </if>
+      )
+    ) c
+    WHERE
+    rownumber > (${pageSize}*(${currPage}-1))
+  </select>
+
+  <!--
   <select id="queryList" parameterType="java.util.Map" resultMap="UseWaterSelfDefinePlanVOModel">
     SELECT TOP
     ${pageSize} c.*
@@ -198,7 +285,55 @@
     WHERE
     rownumber > (${pageSize}*(${currPage}-1))
   </select>
+  -->
+  <!-- 2021.05.11 yuchen -->
+  <select id="selectCount" resultType="int">
+    SELECT
+    count(1)
+    FROM
+    t_w_use_water_self_define_plan t1
+    WHERE 1 = 1
+    AND t1.node_code = #{nodeCode}
+    and audit_status != 3
+    <if test="unitName != null and unitName != ''">
+      and t1.unit_name like '%${unitName}%'
+    </if>
+    <if test="userType != null and userType != ''">
+      and SUBSTRING(t1.unit_code, 5, 2) like '%${userType}%'
+    </if>
+    <if test="planYear != null  and planYear != ''">
+      and t1.plan_year like '%${planYear}%'
+    </if>
+    <if test="unitCode != null and unitCode != ''">
+      and t1.unit_code like '%${unitCode}%'
+    </if>
+    <if test="audit != null and audit.size > 0">
+      and t1.audit_status in (
+      <foreach collection="audit" item="audit" separator=",">
+        #{audit}
+      </foreach>
+      )
+    </if>
+    <if test="executed != null and executed != ''">
+      and t1.executed = #{executed}
+    </if>
+    <if test="unitCodeType != null and unitCodeType != ''">
+      and SUBSTRING(t1.unit_code, 5, 2) = #{unitCodeType}
+    </if>
+    <if test="areaCode != null and areaCode != ''">
+      and SUBSTRING(t1.unit_code, 1, 2) = #{areaCode}
+    </if>
+    and
+    SUBSTRING ( unit_code,5,2 )
+    IN ( SELECT unit_type_code
+    FROM t_w_use_water_unit_role WHERE person_id = #{userId}
+    <if test="unitCodeType != null and unitCodeType != ''">
+      and unit_type_code = #{unitCodeType}
+    </if>
+    )
+  </select>
 
+  <!--
   <select id="selectCount" resultType="int">
 
     SELECT
@@ -247,6 +382,8 @@
     IN ( SELECT unit_type_code
     FROM t_w_use_water_unit_role WHERE person_id = #{userId}))
   </select>
+
+  -->
 
   <select id="selectSysAttrFileMap" resultMap="sysAttrFileMap">
     select
