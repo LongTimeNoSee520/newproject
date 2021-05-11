@@ -182,7 +182,7 @@
       SELECT unit_type_code FROM t_w_use_water_unit_role
       WHERE person_id = #{userId}
       <if test="userType != null and userType != ''">
-        and unit_type_code like '%${userType}%'
+        and unit_type_code = #{userType}
       </if>
     )
     <if test="unitName != null and unitName != ''">
@@ -315,7 +315,7 @@
   <!-- 2021.05.11 yuchen -->
   <select id="selectCount" resultType="int">
     SELECT
-    count(1)
+    count(id)
     FROM
     t_wx_use_water_plan_add t1
     WHERE
@@ -323,15 +323,15 @@
     AND SUBSTRING ( t1.unit_code, 5, 2 ) IN (
       SELECT unit_type_code FROM t_w_use_water_unit_role
       WHERE person_id = #{userId}
-      <if test="unitCode != null and unitCode != ''">
-        and unit_type_code like '%${unitCode}%'
+      <if test="userType != null and userType != ''">
+        and unit_type_code = #{userType}
       </if>
     )
     <if test="unitName != null and unitName != ''">
       and t1.unit_name like '%${unitName}%'
     </if>
-    <if test="userType != null and userType != ''">
-      and SUBSTRING(t1.unit_code, 5, 2) like '%${userType}%'
+    <if test="unitCode != null and unitCode != ''">
+      and t1.unit_code like '%${unitCode}%'
     </if>
     <if test="executed != null and executed != ''">
       and t1.executed = #{executed}

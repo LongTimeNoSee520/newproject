@@ -292,7 +292,7 @@
   <select id="selectCount" resultType="int">
 
     SELECT
-    count(1)
+    count(id)
     FROM
     t_w_use_water_self_define_plan t1
     WHERE 1 = 1
