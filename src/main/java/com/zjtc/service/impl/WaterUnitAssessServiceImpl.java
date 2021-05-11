@@ -52,10 +52,6 @@ public class WaterUnitAssessServiceImpl implements WaterUnitAssessService {
       response.recordError("系统异常");
       return response;
     }
-    if (null == jsonObject.getInteger("current") || null == jsonObject.getInteger("size")) {
-      response.recordError("分页查询条数和页数不能为空");
-      return response;
-    }
 //    页数
     Integer currPage = jsonObject.getInteger("current");
 //    条数

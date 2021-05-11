@@ -39,101 +39,37 @@
     ( 1 )
     FROM
     (
-    SELECT DISTINCT
-    t1.id,
-    t1.nodeCode,
-    t1.unitCode,
-    t1.unitName,--单位名称
-    t1.unitAddress,--单位地址
-    t2.plan_year AS planYear,--年度
-    t2.curYearPlan,--本年计划
-    t3.yearPracticalWater,--年实际水量
-    t3.waterMeterCode,--水表档案号
-    t4.oneQuarter,--第一季度基建计划水量
-    t4.twoQuarter,--第二季度基建计划
-    t4.threeQuarter,--第三季度基建计划
-    t4.fourQuarter,--第四季度基建计划
-    t2.oneFirstQuarter,--第一季度计划水量
-    t2.secondQuarter,--第二季度计划水量
-    t2.thirdQuarter,-- 第三季度计划水量
-    t2.fourthQuarter,--第四季度计划水量
-    t3.onePracticalWater,-- 第一季度实际水量
-    t3.twoPracticalWater,-- 第二季度实际水量
-    t3.threePracticalWater,-- 第三季度实际水量
-    t3.fourPracticalWater,-- 第四季度实际水量
-    ( t3.onePracticalWater- t2.oneFirstQuarter ) AS oneExceedWater,-- 第一季度超节量
-    ( t3.twoPracticalWater- t2.secondQuarter ) AS twoExceedWater,-- 第二季度超节量
-    ( t3.threePracticalWater - t2.thirdQuarter ) AS threeExceedWater,-- 第三季度超节量
-    ( t3.fourPracticalWater - t2.fourthQuarter ) AS fourExceedWater,-- 第四季度超节量
-    CASE
-    t5.oneStatus
-    WHEN '0' THEN
-    '未缴纳'
-    WHEN '1' THEN
-    '已缴纳' ELSE '无加价'
-    END oneStatus, --第一季度回收情况
-    CASE
-    t5.twoStatus
-    WHEN '0' THEN
-    '未缴纳'
-    WHEN '1' THEN
-    '已缴纳' ELSE '无加价'
-    END twoStatus, --第二季度回收情况
-    CASE
-    t5.threeStatus
-    WHEN '0' THEN
-    '未缴纳'
-    WHEN '1' THEN
-    '已缴纳' ELSE '无加价'
-    END threeStatus, --第三季度回收情况
-    CASE
-    t5.fourStatus
-    WHEN '0' THEN
-    '未缴纳'
-    WHEN '1' THEN
-    '已缴纳' ELSE '无加价'
-    END fourStatus --第四季度回收情况
-
-    FROM
-    (
     SELECT
-    id,
-    node_code AS nodeCode,
-    unit_code AS unitCode,
-    unit_name AS unitName,--单位名称
-    unit_address AS unitAddress --单位地址
-
+    id
     FROM
     t_w_use_water_unit
     WHERE
     deleted = '0'
     AND node_code = #{nodeCode}
+    <if test="unitName != null and unitName != ''">
+      and  unit_name like '%${unitName}%'
+    </if>
+    <if test="unitCode != null and unitCode != ''">
+      and  unit_code like '%${unitCode}%'
+    </if>
     ) t1 --用水单位
     LEFT JOIN (
     SELECT
-    plan_year,
-    cur_year_plan AS curYearPlan,
     use_water_unit_id,
-    first_quarter AS oneFirstQuarter,
-    second_quarter AS secondQuarter,
-    third_quarter AS thirdQuarter,
-    fourth_quarter AS fourthQuarter
+    plan_year
     FROM
     t_w_use_water_plan
     WHERE
     node_code = #{nodeCode}
+    <if test="accessYear != null  and accessYear != ''">
+      and plan_year = #{accessYear}
+    </if>
     ) t2 --用水计划
     ON t1.id = t2.use_water_unit_id
     LEFT JOIN (
     select
     s3.use_water_unit_id,
-    s3.use_year,
-    s3.water_meter_code AS waterMeterCode,
-    ( s3.january_count + s3.february_count +s3. march_count ) AS onePracticalWater,
-    ( s3.april_count + s3.may_count + s3.june_count ) AS twoPracticalWater,
-    ( s3.july_count + s3.august_count + s3.september_count ) AS threePracticalWater,
-    ( s3.october_count + s3.november_count + s3.december_count ) AS fourPracticalWater,
-    ( s3.january_count + s3.february_count + s3.march_count + s3.april_count + s3.may_count + june_count + s3.july_count + s3.august_count + s3.september_count + s3.october_count + s3.november_count + s3.december_count ) AS yearPracticalWater
+    s3.use_year
     FROM (
     SELECT
     s2.use_water_unit_id,
@@ -211,11 +147,7 @@
     LEFT JOIN (
     SELECT
     use_water_unit_Id,
-    plan_year,
-    one_quarter AS oneQuarter,
-    two_quarter AS twoQuarter,
-    three_quarter AS threeQuarter,
-    four_quarter AS fourQuarter
+    plan_year
     FROM
     t_w_use_water_base_plan
     WHERE
@@ -226,11 +158,7 @@
     LEFT JOIN (
     SELECT
     count_year,
-    use_water_unit_id,
-    MIN ( [1] ) AS oneStatus,
-    MIN ( [2] ) AS twoStatus,
-    MIN ( [3] ) AS threeStatus,
-    MIN ( [4] ) AS fourStatus
+    use_water_unit_id
     FROM
     t_w_water_use_pay_info --水使用量季度缴费表
     PIVOT (
@@ -242,18 +170,6 @@
     count_year
     ) t5 ON t1.id = t5.use_water_unit_id
     AND t2.plan_year = t5.count_year
-    ) t6
-    WHERE
-    t6.nodeCode = #{nodeCode}
-    <if test="accessYear != null  and accessYear != ''">
-      and t6.planYear like '%${accessYear}%'
-    </if>
-    <if test="unitName != null and unitName != ''">
-      and  t6.unitName like '%${unitName}%'
-    </if>
-    <if test="unitCode != null and unitCode != ''">
-      and  t6.unitCode like '%${unitCode}%'
-    </if>
   </select>
 
   <select id="queryList" resultMap="WaterUnitAssessModel">
@@ -262,7 +178,7 @@
     FROM
     (
     SELECT
-    row_number () OVER ( ORDER BY [planYear] DESC) AS rownumber,
+    row_number () OVER ( ORDER BY [planYear] DESC,unitCode) AS rownumber,
     *
     FROM
     (
@@ -335,6 +251,12 @@
     WHERE
     deleted = '0'
     AND node_code = #{nodeCode}
+    <if test="unitName != null and unitName != ''">
+      and  unit_name like '%${unitName}%'
+    </if>
+    <if test="unitCode != null and unitCode != ''">
+      and  unit_code like '%${unitCode}%'
+    </if>
     ) t1 --用水单位
     LEFT JOIN (
     SELECT
@@ -349,6 +271,9 @@
     t_w_use_water_plan
     WHERE
     node_code = #{nodeCode}
+    <if test="accessYear != null  and accessYear != ''">
+      and plan_year = #{accessYear}
+    </if>
     ) t2 --用水计划
     ON t1.id = t2.use_water_unit_id
     LEFT JOIN (
@@ -472,15 +397,6 @@
     ) t6
     WHERE
     t6.nodeCode = #{nodeCode}
-    <if test="accessYear != null  and accessYear != ''">
-      and t6.planYear like '%${accessYear}%'
-    </if>
-    <if test="unitName != null and unitName != ''">
-    and  t6.unitName like '%${unitName}%'
-    </if>
-    <if test="unitCode != null and unitCode != ''">
-      and  t6.unitCode like '%${unitCode}%'
-    </if>
     ) c
     WHERE
     rownumber > (${pageSize}*(${currPage}-1))
