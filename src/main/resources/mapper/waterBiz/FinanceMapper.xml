@@ -85,7 +85,7 @@
 
   <select id="selectCountAll" resultType="int">
     SELECT
-    count(1)
+     count(id)
     FROM
     t_w_finance t1 where deleted = '0'
     AND (invoice_state = '0' OR invoice_state = '1')
