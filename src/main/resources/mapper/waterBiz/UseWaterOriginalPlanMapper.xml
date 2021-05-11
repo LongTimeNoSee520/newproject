@@ -264,13 +264,16 @@
     select
     id,
     unit_code as unitCode ,
-    unit_name as unitName
-    from t_w_use_water_unit
+    unit_name as unitName,
+    unit_code_type
+    from t_w_use_water_unit t1
+    <!--查询当前用户有的类型-->
+    inner join (
+    SELECT unit_type_code  FROM t_w_use_water_unit_role WHERE person_id =#{userId}
+    group by unit_type_code
+    ) as t2 on t1.unit_code_type=t2.unit_type_code
     where deleted='0'
     and node_code=#{nodeCode}
-    <!--查询当前用户有的类型-->
-    AND unit_code_type IN ( SELECT unit_type_code AS unit_code_type FROM t_w_use_water_unit_role
-    WHERE person_id = #{userId} )
     <!--筛选类型-->
     <if test="null !=userType and userType !='' ">
       and unit_code_type=#{userType}
