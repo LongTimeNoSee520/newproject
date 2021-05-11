@@ -154,7 +154,7 @@
     CASE t1.printed WHEN '1' THEN '是' ELSE '否' END AS  printed
     FROM(
     select  TOP  ${size} * from
-    ( SELECT row_number () OVER ( ORDER BY id ) AS rownumber,
+    ( SELECT row_number () OVER ( ORDER BY unit_code ASC,id ) AS rownumber,
     id,node_code,use_water_unit_id,unit_name,unit_code,
     water_meter_code,plan_year,minus_pay_status,balance_test,
     create_type,cur_year_plan,first_quarter,second_quarter,
@@ -180,14 +180,13 @@
       and plan_year &lt;= #{yearEnd}
     </if>
     )  ta
-    inner join (SELECT  unit_type_code FROM t_w_use_water_unit_role WHERE person_id = '1' GROUP BY unit_type_code) tb
+    inner join (SELECT  unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{userId} GROUP BY unit_type_code) tb
     on  ta.sub_code= tb.unit_type_code
     <if test="industry != null and industry != ''">
       inner JOIN (SELECT id AS unit_id FROM t_w_use_water_unit WHERE industry = #{industry})tc
       ON ta.use_water_unit_id=tc.unit_id
     </if>
     where ta.rownumber >  (#{current}-1)* #{size}
-    ORDER BY ta.unit_code ASC
     )t1
     <!---->
     <!--SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_name,t1.unit_code,-->
