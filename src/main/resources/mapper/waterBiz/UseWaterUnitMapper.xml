@@ -1099,24 +1099,8 @@
     SELECT
     unit_code_type as id,
     t1.node_code as nodeCode,
-    null as parentId,
-    null as orgRank,
-    null address,
-    null as officeTel,
-    null as fax,
-    null as contact,
-    null as dutyTel,
     t1.unit_code_type as orgName,
-    null as createTime,
-    null as modifiedTime,
-    null as remark,
-    null as unitCode,
     'org' AS tag,
-    null as personOrg,
-    null as position,
-    null as userName,
-    null as mobilePhone,
-    null AS parentName,
     '1' as son
     FROM
     ( SELECT DISTINCT unit_code_type, node_code FROM t_w_use_water_unit
@@ -1138,23 +1122,11 @@
     id,
     node_code AS nodeCode,
     unit_code_type AS parentId,
-    NULL AS orgRank,
     unit_address AS address,
-    NULL AS officeTel,
-    NULL AS fax,
-    NULL AS contact,
-    NULL AS dutyTel,
     unit_name AS orgName,
     create_time AS createTime,
-    NULL AS modifiedTime,
     remark,
-    NULL AS unitCode,
     'org' AS tag,
-    'null' AS personOrg,
-    'null' AS POSITION,
-    'null' AS userName,
-    'null' AS mobilePhone,
-    'null' AS parentName,
     CASE
     ( SELECT COUNT ( 1 ) FROM t_w_use_water_unit_contacts t2 WHERE deleted = '0' AND main = '1' AND t2.use_water_unit_id = t1.id )
     WHEN 0 THEN '0'

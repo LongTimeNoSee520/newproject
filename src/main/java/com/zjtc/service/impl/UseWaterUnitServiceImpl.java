@@ -875,29 +875,34 @@ public class UseWaterUnitServiceImpl extends
 
   @Override
   public List<OrgTreeVO> selectUnitCode(String nodeCode, String condition) {
-    List<OrgTreeVO> orgTreeVOList = new ArrayList<>();
-    List<OrgTreeVO> orgTreeVOSPerson = new ArrayList<>();
+    List<OrgTreeVO> orgTreeVOList = new ArrayList<>(10);
+    List<OrgTreeVO> orgTreeVOSPerson = new ArrayList<>(10);
 //    查询全部类型,相当于是顶级部门
-    List<OrgTreeVO> treeVOS = this.baseMapper.selectUnitCode(nodeCode, condition);
-    for (OrgTreeVO orgTreeVO : treeVOS) {
+    Long start=System.currentTimeMillis();
+    List<OrgTreeVO> treeVOFather = this.baseMapper.selectUnitCode(nodeCode, condition);
+    for (OrgTreeVO orgTreeVO : treeVOFather) {
 //      查询子集
       String type = orgTreeVO.getId();
-      List<OrgTreeVO> treeVOS1 = this.baseMapper.selectByTypeUnitAll(type, condition);
-      orgTreeVOList.addAll(treeVOS1);
+      List<OrgTreeVO> treeVOSon = baseMapper.selectByTypeUnitAll(type, condition);
+      orgTreeVOList.addAll(treeVOSon);
     }
-    List<String> codeNodeList = new ArrayList<>();
+    List<String> codeNodeList = new ArrayList<>(10);
     //      人员
     for (OrgTreeVO treeVO : orgTreeVOList) {
       codeNodeList.add(treeVO.getNodeCode());
     }
+    long end=System.currentTimeMillis()-start;
+    System.out.println("end=====>"+end);
     List<String> list = this.removeDuplicationByHashSet(codeNodeList);
     List<OrgTreeVO> orgTreePerson = contactsService.selectContacts(list, condition);
     orgTreeVOSPerson.addAll(orgTreePerson);
 //    部门的子集
-    treeVOS.addAll(orgTreeVOList);
+    treeVOFather.addAll(orgTreeVOList);
 //    人员
-    treeVOS.addAll(orgTreeVOSPerson);
-    return treeVOS;
+    treeVOFather.addAll(orgTreeVOSPerson);
+    long end1=System.currentTimeMillis()-start;
+    System.out.println("end1=====>"+end1);
+    return treeVOFather;
   }
 
 

@@ -63,7 +63,6 @@
     t1.phone_number AS dutyTel,
     'person' AS tag,
     (SELECT unit_name from t_w_use_water_unit t2 WHERE t2.id = t1.use_water_unit_id) AS personOrg,
-    NULL AS position,
     contacts AS userName,
     t1.mobile_number AS mobilePhone,
     t1.id AS drawerId,
