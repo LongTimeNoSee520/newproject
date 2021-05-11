@@ -341,7 +341,6 @@
     and node_code=#{nodeCode}
     <!--查询当前用户有的类型-->
     AND unit_code_type IN ( SELECT unit_type_code AS unit_code_type FROM t_w_use_water_unit_role
-    and
     WHERE person_id = #{userId} )
     <!--筛选类型-->
     <if test="null !=userType">
@@ -403,7 +402,7 @@
     plan_year=#{year} AND node_code=#{nodeCode})
     <!--类型权限，保存一定是所有，权限的意义就是查看-->
     and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
-    where node_code=#{nodeCode})
+    WHERE person_id = #{userId})
     ) t1
     <!--三年基础-->
     left join (
