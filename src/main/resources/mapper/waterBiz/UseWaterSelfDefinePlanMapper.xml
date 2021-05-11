@@ -160,9 +160,6 @@
     <if test="unitName != null and unitName != ''">
       and t1.unit_name like '%${unitName}%'
     </if>
-    <if test="userType != null and userType != ''">
-      and SUBSTRING(t1.unit_code, 5, 2) like '%${userType}%'
-    </if>
     <if test="planYear != null  and planYear != ''">
       and t1.plan_year like '%${planYear}%'
     </if>
@@ -192,11 +189,15 @@
     <if test="unitCodeType != null and unitCodeType != ''">
       and unit_type_code = #{unitCodeType}
     </if>
+    <if test="userType != null and userType != ''">
+      and unit_type_code = #{userType}
+    </if>
       )
     ) c
     WHERE
     rownumber > (${pageSize}*(${currPage}-1))
   </select>
+
 
   <!--
   <select id="queryList" parameterType="java.util.Map" resultMap="UseWaterSelfDefinePlanVOModel">
@@ -286,8 +287,10 @@
     rownumber > (${pageSize}*(${currPage}-1))
   </select>
   -->
+
   <!-- 2021.05.11 yuchen -->
   <select id="selectCount" resultType="int">
+
     SELECT
     count(1)
     FROM
@@ -297,9 +300,6 @@
     and audit_status != 3
     <if test="unitName != null and unitName != ''">
       and t1.unit_name like '%${unitName}%'
-    </if>
-    <if test="userType != null and userType != ''">
-      and SUBSTRING(t1.unit_code, 5, 2) like '%${userType}%'
     </if>
     <if test="planYear != null  and planYear != ''">
       and t1.plan_year like '%${planYear}%'
@@ -317,20 +317,20 @@
     <if test="executed != null and executed != ''">
       and t1.executed = #{executed}
     </if>
-    <if test="unitCodeType != null and unitCodeType != ''">
-      and SUBSTRING(t1.unit_code, 5, 2) = #{unitCodeType}
-    </if>
     <if test="areaCode != null and areaCode != ''">
       and SUBSTRING(t1.unit_code, 1, 2) = #{areaCode}
     </if>
-    and
-    SUBSTRING ( unit_code,5,2 )
+    AND SUBSTRING ( t1.unit_code,5,2 )
     IN ( SELECT unit_type_code
     FROM t_w_use_water_unit_role WHERE person_id = #{userId}
     <if test="unitCodeType != null and unitCodeType != ''">
       and unit_type_code = #{unitCodeType}
     </if>
+    <if test="userType != null and userType != ''">
+      and unit_type_code = #{userType}
+    </if>
     )
+
   </select>
 
   <!--
