@@ -887,7 +887,6 @@ public class UseWaterUnitServiceImpl extends
     List<OrgTreeVO> orgTreeVOList = new ArrayList<>(10);
     List<OrgTreeVO> orgTreeVOSPerson = new ArrayList<>(10);
 //    查询全部类型,相当于是顶级部门
-    Long start=System.currentTimeMillis();
     List<OrgTreeVO> treeVOFather = this.baseMapper.selectUnitCode(nodeCode, condition);
     for (OrgTreeVO orgTreeVO : treeVOFather) {
 //      查询子集
@@ -900,8 +899,6 @@ public class UseWaterUnitServiceImpl extends
     for (OrgTreeVO treeVO : orgTreeVOList) {
       codeNodeList.add(treeVO.getNodeCode());
     }
-    long end=System.currentTimeMillis()-start;
-    System.out.println("end=====>"+end);
     List<String> list = this.removeDuplicationByHashSet(codeNodeList);
     List<OrgTreeVO> orgTreePerson = contactsService.selectContacts(list, condition);
     orgTreeVOSPerson.addAll(orgTreePerson);
@@ -909,8 +906,6 @@ public class UseWaterUnitServiceImpl extends
     treeVOFather.addAll(orgTreeVOList);
 //    人员
     treeVOFather.addAll(orgTreeVOSPerson);
-    long end1=System.currentTimeMillis()-start;
-    System.out.println("end1=====>"+end1);
     return treeVOFather;
   }
 
