@@ -146,6 +146,8 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   /**
    * 新增[修改]界面：相关编号下拉回填数据
    */
-  List<Map<String, Object>> addUnitCodeList(@Param("nodeCode") String nodeCode,@Param("userId") String userId);
+  List<Map<String, Object>> addUnitCodePage(JSONObject jsonObject);
+
+  long addUnitCodeTotal(JSONObject jsonObject);
 
 }

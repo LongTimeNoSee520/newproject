@@ -610,13 +610,22 @@ public class UseWaterUnitServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> addUnitCodeList(User user) {
-    //查询当前节点编码下所有可操作批次的所有单位的单位编码、单位名称
-    QueryWrapper wrapper = new QueryWrapper();
-    wrapper.eq("deleted", "0");
-    wrapper.eq("node_code", user.getNodeCode());
-    wrapper.select("id", "unit_code", "unit_name");
-    return baseMapper.addUnitCodeList(user.getNodeCode(), user.getId());
+  public Map<String, Object> addUnitCodePage(JSONObject jsonObject,User user) {
+    //查询当前节点编码下所有可操作类型的所有单位的单位编码、单位名称
+    Map<String, Object> page = new LinkedHashMap<>();
+    List<Map<String,Object>> result = baseMapper.addUnitCodePage(jsonObject);
+    page.put("records", result);
+    page.put("current", jsonObject.getInteger("current"));
+    page.put("size", jsonObject.getInteger("size"));
+    //查询总数据条数
+   long total = baseMapper.addUnitCodeTotal(jsonObject);
+    page.put("records", result);
+    page.put("current", jsonObject.getInteger("current"));
+    page.put("size", jsonObject.getInteger("size"));
+    page.put("total", total);
+    long pageSize = jsonObject.getInteger("size");
+    page.put("page", total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
+    return page;
   }
 
   @Override

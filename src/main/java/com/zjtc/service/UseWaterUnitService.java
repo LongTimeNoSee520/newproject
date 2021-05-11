@@ -73,7 +73,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param user
    * @return
    */
-  List<Map<String, Object>> addUnitCodeList(User user);
+  Map<String, Object> addUnitCodePage(JSONObject jsonObject,User user);
 
 
   /**
