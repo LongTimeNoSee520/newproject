@@ -136,7 +136,7 @@
     + a.october_count + a.october_count + a.november_count + a.december_count ) AS waterNumber
     FROM
     t_w_water_month_use_data as a
-    left join t_w_use_water_unit as b on a.use_water_unit_id=b.id
+    left join (select id,unit_code  from t_w_use_water_unit) as b on a.use_water_unit_id=b.id
     WHERE
     a.node_code=#{nodeCode}
     )t1
