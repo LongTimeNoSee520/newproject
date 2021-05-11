@@ -185,8 +185,8 @@
     WHERE  rownumber > (#{current}-1)* #{size}
   </select>
   <select id="queryAdjustList" resultType="java.util.LinkedHashMap">
-    SELECT t1.id,t1.node_code AS nodeCode,t1.use_water_unit_id AS useWaterUnitId,t1.unit_name AS unitName,t1.unit_code AS unitCode,
-    t1.water_meter_code AS waterMeterCode,t1.plan_year AS planYear,
+    SELECT t1.plan_year AS planYear,t1.id,t1.node_code AS nodeCode,t1.use_water_unit_id AS useWaterUnitId,t1.unit_name AS unitName,t1.unit_code AS unitCode,
+    t1.water_meter_code AS waterMeterCode,
     t1.cur_year_plan AS curYearPlan,t1.first_quarter AS firstQuarter,t1.second_quarter AS secondQuarter,
     t1.third_quarter AS thirdQuarter,t1.fourth_quarter AS fourthQuarter,
     t1.plan_type AS planType,
