@@ -41,9 +41,6 @@ public class UseWaterUnitRefServiceImpl extends
       //递归查询出所有关联单位id
       recursion(result);
     }
-    //去重
-//    ArrayList<String> numbersList = new ArrayList<>(sum);
-//    List<String> ids = numbersList.stream().distinct().collect(Collectors.toList());
     return sum;
   }
 

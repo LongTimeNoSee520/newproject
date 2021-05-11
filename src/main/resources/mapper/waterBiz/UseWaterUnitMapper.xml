@@ -582,9 +582,11 @@
     FOR XML PATH('')), 1, 1, ''
     ) as waterMeterCode
     from t_w_use_water_unit as a
+    inner join (
+    SELECT unit_type_code  FROM t_w_use_water_unit_role WHERE person_id =#{userId}
+    group by unit_type_code
+    ) as b on a.unit_code_type=b.unit_type_code
     where node_code=#{nodeCode}
-    and a.unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
-      where person_id=#{userId})
     and id in
     <foreach item="item" collection="ids" index="index" open="(" separator="," close=")">
       #{item}
