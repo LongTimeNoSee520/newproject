@@ -146,26 +146,24 @@
   </select>
 
   <select id="queryPage" resultMap="PageResultMap">
-    SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_name,t1.unit_code,
+    SELECT  t1.unit_code,t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_name,
     t1.water_meter_code,t1.plan_year,t1.minus_pay_status,t1.balance_test,
     t1.create_type,t1.cur_year_plan,t1.first_quarter,t1.second_quarter,
     t1.third_quarter,t1.fourth_quarter,
     '当前计划' AS plan_type_name,t1.update_time,t1.remarks,
     CASE t1.printed WHEN '1' THEN '是' ELSE '否' END AS  printed
-    FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,
+    FROM(
+    select  TOP  ${size} * from
+    ( SELECT row_number () OVER ( ORDER BY id ) AS rownumber,
     id,node_code,use_water_unit_id,unit_name,unit_code,
     water_meter_code,plan_year,minus_pay_status,balance_test,
     create_type,cur_year_plan,first_quarter,second_quarter,
     third_quarter,fourth_quarter,
-    COALESCE (update_time,create_time) AS update_time,remarks,printed
+    COALESCE (update_time,create_time) AS update_time,remarks,printed,
+    SUBSTRING ( unit_code, 5, 2 ) as sub_code
     FROM
-    t_w_use_water_plan  ta
-    inner join (SELECT  unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{userId} GROUP BY unit_type_code) tb
-    on SUBSTRING ( ta.unit_code, 5, 2 ) = tb.unit_type_code
-    <if test="industry != null and industry != ''">
-      inner JOIN (SELECT id AS unit_id FROM t_w_use_water_unit WHERE industry = #{industry})tc
-      ON ta.use_water_unit_id=tc.unit_id
-    </if>
+    t_w_use_water_plan
+    where 1=1
     <if test="unitCode != null and unitCode != ''">
       and unit_code like '%${unitCode}%'
     </if>
@@ -181,8 +179,54 @@
     <if test="yearEnd != null">
       and plan_year &lt;= #{yearEnd}
     </if>
+    )  ta
+    inner join (SELECT  unit_type_code FROM t_w_use_water_unit_role WHERE person_id = '1' GROUP BY unit_type_code) tb
+    on  ta.sub_code= tb.unit_type_code
+    <if test="industry != null and industry != ''">
+      inner JOIN (SELECT id AS unit_id FROM t_w_use_water_unit WHERE industry = #{industry})tc
+      ON ta.use_water_unit_id=tc.unit_id
+    </if>
+    where ta.rownumber >  (#{current}-1)* #{size}
+    ORDER BY ta.unit_code ASC
     )t1
-    WHERE  rownumber > (#{current}-1)* #{size}
+    <!---->
+    <!--SELECT TOP  ${size} t1.id,t1.node_code,t1.use_water_unit_id,t1.unit_name,t1.unit_code,-->
+    <!--t1.water_meter_code,t1.plan_year,t1.minus_pay_status,t1.balance_test,-->
+    <!--t1.create_type,t1.cur_year_plan,t1.first_quarter,t1.second_quarter,-->
+    <!--t1.third_quarter,t1.fourth_quarter,-->
+    <!--'当前计划' AS plan_type_name,t1.update_time,t1.remarks,-->
+    <!--CASE t1.printed WHEN '1' THEN '是' ELSE '否' END AS  printed-->
+    <!--FROM(SELECT row_number () OVER ( ORDER BY [unit_code] ASC ,[id]) AS rownumber,-->
+    <!--id,node_code,use_water_unit_id,unit_name,unit_code,-->
+    <!--water_meter_code,plan_year,minus_pay_status,balance_test,-->
+    <!--create_type,cur_year_plan,first_quarter,second_quarter,-->
+    <!--third_quarter,fourth_quarter,-->
+    <!--COALESCE (update_time,create_time) AS update_time,remarks,printed-->
+    <!--FROM-->
+    <!--t_w_use_water_plan  ta-->
+    <!--inner join (SELECT  unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{userId} GROUP BY unit_type_code) tb-->
+    <!--on SUBSTRING ( ta.unit_code, 5, 2 ) = tb.unit_type_code-->
+    <!--<if test="industry != null and industry != ''">-->
+      <!--inner JOIN (SELECT id AS unit_id FROM t_w_use_water_unit WHERE industry = #{industry})tc-->
+      <!--ON ta.use_water_unit_id=tc.unit_id-->
+    <!--</if>-->
+    <!--<if test="unitCode != null and unitCode != ''">-->
+      <!--and unit_code like '%${unitCode}%'-->
+    <!--</if>-->
+    <!--<if test="unitName != null and unitName != ''">-->
+      <!--and unit_name like '%${unitName}%'-->
+    <!--</if>-->
+    <!--<if test="waterMeterCode != null and waterMeterCode != ''">-->
+      <!--and water_meter_code like '%${waterMeterCode}%'-->
+    <!--</if>-->
+    <!--<if test="yearStart != null">-->
+      <!--and plan_year &gt;= #{yearStart}-->
+    <!--</if>-->
+    <!--<if test="yearEnd != null">-->
+      <!--and plan_year &lt;= #{yearEnd}-->
+    <!--</if>-->
+    <!--)t1-->
+    <!--WHERE  rownumber > (#{current}-1)* #{size}-->
   </select>
   <select id="queryAdjustList" resultType="java.util.LinkedHashMap">
     SELECT t1.plan_year AS planYear,t1.id,t1.node_code AS nodeCode,t1.use_water_unit_id AS useWaterUnitId,t1.unit_name AS unitName,t1.unit_code AS unitCode,
