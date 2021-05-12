@@ -108,11 +108,11 @@
     where node_code=#{nodeCode}
     <!--待审核-->
     <if test="keyWrod=1">
-    and to_audit_person=#{userId}
-    <!--已审核-->
-    <if test="keyWrod=2">
-    and audit_persons like '%${userId}%'
+      and to_audit_person=#{userId}
+      <!--已审核-->
     </if>
+    <if test="keyWrod=2">
+      and audit_persons like '%${userId}%'
     </if>
     and is_revoke='0'
     <if test="null !=unitCode and unitCode !=''">
@@ -150,9 +150,9 @@
     <if test="keyWrod=1">
       and to_audit_person=#{userId}
       <!--已审核-->
-      <if test="keyWrod=2">
-        and audit_persons like '%${userId}%'
-      </if>
+    </if>
+    <if test="keyWrod=2">
+      and audit_persons like '%${userId}%'
     </if>
     and is_revoke='0'
     <if test="null !=unitCode and unitCode !=''">
