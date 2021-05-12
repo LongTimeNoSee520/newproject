@@ -222,7 +222,7 @@
     ) AS water_meter_code,
     responsibility_code,
     unit_name,
-    id AS industry,
+    industry,
     industryName,
     contacts,
     mobile_number,
