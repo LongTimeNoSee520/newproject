@@ -361,8 +361,8 @@ public class UseWaterUnitInvoiceController {
 
       return response;
     } catch (Exception e) {
-      response.recordError("查询人员信息异常");
-      log.error("查询人员信息错误,errMsg==={}", e.getMessage());
+      response.recordError("查询发票信息异常");
+      log.error("查询发票信息错误,errMsg==={}", e.getMessage());
       e.printStackTrace();
     }
     return response;

@@ -71,7 +71,7 @@
 
   <select id="selectCount" resultType="int">
     SELECT
-    count(id)
+    count(i.id)
     FROM
     t_w_use_water_unit_invoice i
     LEFT JOIN t_w_water_use_pay_info p ON i.pay_info_id = p.id
