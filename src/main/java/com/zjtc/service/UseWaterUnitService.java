@@ -175,6 +175,14 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    */
   List<OrgTreeVO> selectUnitCode(String nodeCode,String condition);
 
+  /**
+   * 新增[修改]界面：相关编号下拉回填数据
+   *
+   * @param user
+   * @return
+   */
+  List<Map<String, Object>> addUnitCodeList(User user);
+
 
 
 

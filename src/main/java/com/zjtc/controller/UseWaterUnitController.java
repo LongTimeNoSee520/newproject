@@ -611,4 +611,23 @@ public class UseWaterUnitController {
     return response;
   }
 
+
+  @RequestMapping(value = "addUnitCodeList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  @ApiOperation(value = "新增界面：相关编号下拉回填数据")
+  public ApiResponse addUnitCodeList(@RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
+    ApiResponse response = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    log.debug("用水单位新增，参数param==={" + jsonObject.toString() + "}");
+    if (null != user) {
+      List<Map<String, Object>> result = useWaterUnitService
+          .addUnitCodeList(user);
+      response.setData(result);
+    } else {
+      response.recordError(500);
+    }
+
+    return response;
+  }
+
 }

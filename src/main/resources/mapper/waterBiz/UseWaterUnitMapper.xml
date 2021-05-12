@@ -1225,4 +1225,28 @@
     group by unit_type_code
     ) as t2 on t1.unit_code_type=t2.unit_type_code
   </select>
+
+  <select id="addUnitCodeList" resultType="java.util.LinkedHashMap">
+    select
+    top 20
+    id,
+    unit_code as unitCode,
+    unit_name as unitName
+    from
+    (
+    select
+    id,
+    unit_code,
+    unit_name,
+    unit_code_type
+    from t_w_use_water_unit
+    where deleted='0'
+    and node_code=#{nodeCode}
+    )as t1
+    inner join (
+    SELECT unit_type_code  FROM t_w_use_water_unit_role WHERE person_id =#{userId}
+    group by unit_type_code
+    ) as t2 on t1.unit_code_type=t2.unit_type_code
+    order by unit_code
+  </select>
 </mapper>

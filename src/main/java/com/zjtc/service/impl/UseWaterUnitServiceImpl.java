@@ -921,4 +921,10 @@ public class UseWaterUnitServiceImpl extends
     list.addAll(set);
     return list;
   }
+
+  @Override
+  public List<Map<String, Object>> addUnitCodeList(User user) {
+    //查询当前节点编码下所有可操作批次的所有单位的单位编码、单位名称
+    return baseMapper.addUnitCodeList(user.getNodeCode(), user.getId());
+  }
 }
