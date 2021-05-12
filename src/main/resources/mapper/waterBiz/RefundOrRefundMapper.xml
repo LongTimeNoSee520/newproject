@@ -107,11 +107,11 @@
     from t_w_refund_or_refund t1
     where node_code=#{nodeCode}
     <!--待审核-->
-    <if test="keyWrod=1">
+    <if test="keyWrod==1">
       and to_audit_person=#{userId}
       <!--已审核-->
     </if>
-    <if test="keyWrod=2">
+    <if test="keyWrod==2">
       and audit_persons like '%${userId}%'
     </if>
     and is_revoke='0'
@@ -147,11 +147,11 @@
     from t_w_refund_or_refund t1
     where node_code=#{nodeCode}
     <!--待审核-->
-    <if test="keyWrod=1">
+    <if test="keyWrod==1">
       and to_audit_person=#{userId}
       <!--已审核-->
     </if>
-    <if test="keyWrod=2">
+    <if test="keyWrod==2">
       and audit_persons like '%${userId}%'
     </if>
     and is_revoke='0'
