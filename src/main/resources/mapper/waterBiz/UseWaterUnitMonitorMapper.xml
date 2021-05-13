@@ -469,5 +469,6 @@
     AND  deleted ='0'
     AND  monitor_type = #{monitorType}
     AND node_code = #{nodeCode}
+		AND year= #{currentYear}
   </insert>
 </mapper>
