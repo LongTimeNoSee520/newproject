@@ -29,11 +29,11 @@ public class SystemConstants {
   /**
    * 市节点编码
    */
-  public static final String  MUNICIPAL_NODE_CODE ="510100000000";
+  public static final String  MUNICIPAL_NODE_CODE ="510100";
   /**
    * 计划超额审核人员id
    */
-  public static final String  PLAN_EXCESS_AUDITOR_ID ="123";
+  public static final String  PLAN_EXCESS_AUDITOR_ID ="1";
   /**
    * 计划超额审核人员名称
    */
