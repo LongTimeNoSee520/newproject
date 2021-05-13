@@ -494,6 +494,7 @@
   </select>
   <select id="selectUseWaterUnitMeter" resultMap="WaterMonthUseDataModel">
      select
+      t1.id,
       t1.water_meter_code,
       t3.use_year,
       now_price,
@@ -503,7 +504,7 @@
       sector,
       waterNumber
       from
-			(select  water_meter_code  from t_w_use_water_unit_meter where use_water_unit_id =#{id}) t1
+			(select id, water_meter_code  from t_w_use_water_unit_meter where use_water_unit_id =#{id}) t1
       left join (
       SELECT
 			water_meter_code,
