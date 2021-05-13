@@ -15,7 +15,7 @@ import java.util.Map;
 public interface SmsSendService extends IService<SmsSendInfo> {
 
   /**
-   * 分页查询所有 同一单位、统一手机号，最新一条数据
+   * 分页查询所有 同一单位、统一手机号(主户)，最新一条数据催缴短信记录的状态
    */
   List<SendListVO> queryAll(List<SendListVO> sendListVOS, JSONObject jsonObject);
 

@@ -610,15 +610,15 @@ public class UseWaterUnitServiceImpl extends
   }
 
   @Override
-  public Map<String, Object> addUnitCodePage(JSONObject jsonObject,User user) {
+  public Map<String, Object> addUnitCodePage(JSONObject jsonObject, User user) {
     //查询当前节点编码下所有可操作类型的所有单位的单位编码、单位名称
     Map<String, Object> page = new LinkedHashMap<>();
-    List<Map<String,Object>> result = baseMapper.addUnitCodePage(jsonObject);
+    List<Map<String, Object>> result = baseMapper.addUnitCodePage(jsonObject);
     page.put("records", result);
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
     //查询总数据条数
-   long total = baseMapper.addUnitCodeTotal(jsonObject);
+    long total = baseMapper.addUnitCodeTotal(jsonObject);
     page.put("records", result);
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
@@ -754,7 +754,9 @@ public class UseWaterUnitServiceImpl extends
       if (!idList.isEmpty()) {
         //查询所属区域
         item.put("areaCountryName",
-            dictUtils.getDictItemNameCountry(AREA_COUNTRY_CODE, item.get("areaCountry").toString(),
+            dictUtils.getDictItemNameCountry(AREA_COUNTRY_CODE,
+                null == item.get("areaCountry").toString() ? ""
+                    : item.get("areaCountry").toString(),
                 user.getNodeCode()));
         //相关编号集合
         List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
