@@ -438,9 +438,11 @@ public class WaterUsePayInfoServiceImpl extends
       for (Map item : list) {
         String dictItemCode = item.get("areaCountry").toString();
         //所属区域
-        item.put("areaCountryName", dictUtils
-            .getDictItemName("area_country_code",
-                StringUtils.isNotBlank(dictItemCode) ? dictItemCode : "", nodeCode));
+        if(StringUtils.isNotBlank(dictItemCode)){
+          item.put("areaCountryName", dictUtils
+              .getDictItemNameCountry("area_country_code",
+                  dictItemCode,nodeCode));
+        }
         //查询相关编号
         List<String> idList = useWaterUnitRefService
             .findIdList(item.get("id").toString(), nodeCode);

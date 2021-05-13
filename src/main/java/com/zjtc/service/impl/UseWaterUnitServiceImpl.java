@@ -748,16 +748,18 @@ public class UseWaterUnitServiceImpl extends
           item.put("phoneNumber" + (i + 1), contactsList.get(i).getPhoneNumber());
         }
       }
+     String areaCountry= item.get("areaCountry").toString();
+      if(StringUtils.isNotBlank(areaCountry)){
+        //查询所属区域
+        item.put("areaCountryName",
+            dictUtils.getDictItemNameCountry(AREA_COUNTRY_CODE,
+                areaCountry,
+                user.getNodeCode()));
+      }
       //查询相关编号
       List<String> idList = useWaterUnitRefService
           .findIdList(item.get("id").toString(), user.getNodeCode());
       if (!idList.isEmpty()) {
-        //查询所属区域
-        item.put("areaCountryName",
-            dictUtils.getDictItemNameCountry(AREA_COUNTRY_CODE,
-                null == item.get("areaCountry").toString() ? ""
-                    : item.get("areaCountry").toString(),
-                user.getNodeCode()));
         //相关编号集合
         List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
             .queryUnitRef(idList, user.getNodeCode(), user.getId(),
