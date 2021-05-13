@@ -436,7 +436,8 @@ public class WaterUsePayInfoServiceImpl extends
 //    List<Map<String, Object>> map = useWaterUnitMapper.selectByIds(unitCodeList);
     if (!list.isEmpty()) {
       for (Map item : list) {
-        String dictItemCode = item.get("areaCountry").toString();
+        String dictItemCode =
+            null == item.get("areaCountry") ? null : item.get("areaCountry").toString();
         //所属区域
         if(StringUtils.isNotBlank(dictItemCode)){
           item.put("areaCountryName", dictUtils

@@ -748,7 +748,8 @@ public class UseWaterUnitServiceImpl extends
           item.put("phoneNumber" + (i + 1), contactsList.get(i).getPhoneNumber());
         }
       }
-     String areaCountry= item.get("areaCountry").toString();
+      String areaCountry =
+          null == item.get("areaCountry") ? null : item.get("areaCountry").toString();
       if(StringUtils.isNotBlank(areaCountry)){
         //查询所属区域
         item.put("areaCountryName",
