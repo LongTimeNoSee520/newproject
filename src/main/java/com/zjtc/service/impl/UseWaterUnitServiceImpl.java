@@ -883,11 +883,11 @@ public class UseWaterUnitServiceImpl extends
 
 
   @Override
-  public List<OrgTreeVO> selectUnitCode(String nodeCode, String condition) {
+  public List<OrgTreeVO> selectUnitCode(String nodeCode, String condition,String userId) {
     List<OrgTreeVO> orgTreeVOList = new ArrayList<>(10);
     List<OrgTreeVO> orgTreeVOSPerson = new ArrayList<>(10);
 //    查询全部类型,相当于是顶级部门
-    List<OrgTreeVO> treeVOFather = this.baseMapper.selectUnitCode(nodeCode, condition);
+    List<OrgTreeVO> treeVOFather = this.baseMapper.selectUnitCode(nodeCode, condition,userId);
     for (OrgTreeVO orgTreeVO : treeVOFather) {
 //      查询子集
       String type = orgTreeVO.getId();

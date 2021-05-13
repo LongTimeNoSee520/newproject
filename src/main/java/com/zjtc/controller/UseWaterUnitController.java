@@ -578,13 +578,15 @@ public class UseWaterUnitController {
   public ApiResponse selectUnitCode(@ApiParam("{\n"
       + "    \"nodeCode\":\"节点编码\",\n"
       + "    \"condition\":\"用水单位编号、单位名称、人员名称\"\n"
+      + "    \"userId\":\"登录用户id\"\n"
       + "}")
       @RequestBody JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
     String nodeCode = jsonObject.getString("nodeCode");
     String condition = jsonObject.getString("condition");
+    String userId = jsonObject.getString("userId");
     try {
-      List<OrgTreeVO> list = useWaterUnitService.selectUnitCode(nodeCode,condition);
+      List<OrgTreeVO> list = useWaterUnitService.selectUnitCode(nodeCode,condition,userId);
       response.setData(list);
       return response;
     } catch (Exception e) {

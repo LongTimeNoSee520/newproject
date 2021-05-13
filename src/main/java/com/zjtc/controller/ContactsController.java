@@ -35,22 +35,4 @@ public class ContactsController {
   private ContactsService contactsService;
 
 
-  @ResponseBody
-  @ApiOperation(value = "部门人员树-查询人员")
-  @RequestMapping(value = "selectContacts", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ApiResponse selectContacts(@ApiParam("{\"nodeCode\":\"节点编码\"}")
-  @RequestBody JSONObject jsonObject) {
-    ApiResponse response = new ApiResponse();
-    List<String> nodeCodes = jsonObject.getJSONArray("nodeCodes").toJavaList(String.class);
-    String condition = jsonObject.getString("condition");
-    try {
-      List<OrgTreeVO> list = contactsService.selectContacts(nodeCodes,condition);
-      response.setData(list);
-      return response;
-    } catch (Exception e) {
-      log.error("部门人员树-查询人员异常==" + e.getMessage());
-      e.printStackTrace();
-    }
-    return response;
-  }
 }

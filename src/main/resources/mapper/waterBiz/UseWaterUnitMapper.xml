@@ -330,17 +330,17 @@
     ) as b on a.id =b.use_water_unit_id
     <!--关联银行表取主户签约数据-->
     left join (
-      select use_water_unit_Id,bank_of_deposit,bank_account,signed,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank from t_w_bank where deleted='0' and main='1' and signed='1'
+    select use_water_unit_Id,bank_of_deposit,bank_account,signed,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank from t_w_bank where deleted='0' and main='1' and signed='1'
     ) as c on c.use_water_unit_Id=a.id
     left join (
     select id,industry_name as industryName from t_w_quota_info
     ) as d on d.id=a.industry
     <!--是否签约-->
     <if test="null !=signed and signed!=''">
-    inner join (
-    select use_water_unit_Id from t_w_bank where deleted='0'  and signed=#{signed}
-    group  by use_water_unit_Id
-    ) as e on e.use_water_unit_Id=a.id
+      inner join (
+      select use_water_unit_Id from t_w_bank where deleted='0'  and signed=#{signed}
+      group  by use_water_unit_Id
+      ) as e on e.use_water_unit_Id=a.id
     </if>
     WHERE 1=1
     <!--筛选水表档案号-->
@@ -382,7 +382,7 @@
     </if>
     <!--责任书编号-->
     <if test=" null !=responsibilityCode and  responsibilityCode!=''">
-    and a.responsibility_code like '%${responsibilityCode}%'
+      and a.responsibility_code like '%${responsibilityCode}%'
     </if>
     <!--筛选-->
     <if test="null !=industryId and  industryId!=''">
@@ -493,46 +493,46 @@
     where id=#{id}
   </select>
   <select id="selectUseWaterUnitMeter" resultMap="WaterMonthUseDataModel">
-     select
-      t1.id,
-      t1.water_meter_code,
-      t3.use_year,
-      now_price,
-      node_code,
-      is_warning,
-      caliber,
-      sector,
-      waterNumber
-      from
-			(select id, water_meter_code  from t_w_use_water_unit_meter where use_water_unit_id =#{id}) t1
-      left join (
-      SELECT
-			water_meter_code,
-			SUM( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + november_count +       december_count ) as waterNumber
-			FROM t_w_water_month_use_data
-			GROUP BY water_meter_code
+    select
+    t1.id,
+    t1.water_meter_code,
+    t3.use_year,
+    now_price,
+    node_code,
+    is_warning,
+    caliber,
+    sector,
+    waterNumber
+    from
+    (select  id,water_meter_code  from t_w_use_water_unit_meter where use_water_unit_id =#{id}) t1
+    left join (
+    SELECT
+    water_meter_code,
+    SUM( january_count + february_count + march_count + april_count + may_count + june_count + july_count + august_count + september_count + october_count + november_count +       december_count ) as waterNumber
+    FROM t_w_water_month_use_data
+    GROUP BY water_meter_code
 
-      ) t2 on t1.water_meter_code=t2.water_meter_code
-      inner join (
-			select
-			water_meter_code,
-			 use_year,
-      now_price,
-      node_code,
-      is_warning,
-      caliber,
-      sector
-			FROM
-      t_w_water_month_use_data
-      ) t3 on t1.water_meter_code=t3.water_meter_code
-	    inner join (
-			select
-			water_meter_code,
-			 max(use_year) as use_year
-			 from t_w_water_month_use_data
-			 GROUP BY water_meter_code
-			) t4 on t3.water_meter_code=t4.water_meter_code and t3.use_year =t4.use_year
-      ORDER BY waterNumber DESC;
+    ) t2 on t1.water_meter_code=t2.water_meter_code
+    inner join (
+    select
+    water_meter_code,
+    use_year,
+    now_price,
+    node_code,
+    is_warning,
+    caliber,
+    sector
+    FROM
+    t_w_water_month_use_data
+    ) t3 on t1.water_meter_code=t3.water_meter_code
+    inner join (
+    select
+    water_meter_code,
+    max(use_year) as use_year
+    from t_w_water_month_use_data
+    GROUP BY water_meter_code
+    ) t4 on t3.water_meter_code=t4.water_meter_code and t3.use_year =t4.use_year
+    ORDER BY waterNumber DESC;
   </select>
   <select id="selectBank" resultMap="bankMapper">
     select id,bank_of_deposit,bank_account,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank,main,signed
@@ -618,57 +618,57 @@
     b.people_bank_pay_sys_number as peopleBankPaySysNumber,
     b.other_bank as bankCode,
     CASE
-      b.entrust_unit_name
-      WHEN '' THEN
-      a.unit_name
+    b.entrust_unit_name
+    WHEN '' THEN
+    a.unit_name
     WHEN NULL THEN
-      a.unit_name
-      ELSE b.entrust_unit_name
-      END AS accountUnitName,
+    a.unit_name
+    ELSE b.entrust_unit_name
+    END AS accountUnitName,
     b.bank_account as bankAccount
     from
     (select id, unit_name from t_w_use_water_unit where deleted='0' and node_code=#{nodeCode}) as a
     inner join
     (select
-     use_water_unit_Id,
-     agreement_number,
-     bank_of_deposit,
-     people_bank_pay_sys_number,
-     other_bank,
-     entrust_unit_name,
-     bank_account
-     from t_w_bank
-     where deleted='0'
-     and signed='0'
-     and bank_account is not null
-     and bank_account !=''
+    use_water_unit_Id,
+    agreement_number,
+    bank_of_deposit,
+    people_bank_pay_sys_number,
+    other_bank,
+    entrust_unit_name,
+    bank_account
+    from t_w_bank
+    where deleted='0'
+    and signed='0'
+    and bank_account is not null
+    and bank_account !=''
     )  as b on a.id =b.use_water_unit_Id
   </select>
 
   <select id="exportForm" resultType="java.util.LinkedHashMap">
-     select
-       *
-     from
-     (
-       select
-       use_water_unit_Id,
-       bank_account as bankAccount,
-       bank_of_deposit as bankOfDeposit,
-       people_bank_pay_sys_number as peopleBankPaySysNumber,
-       agreement_number as agreementNumber,
-       other_bank as otherBank
-       from t_w_bank
-       where deleted='0'
-       and signed='1'
-     ) as a
-     inner join
-     (
-       select
-       id
-       from t_w_use_water_unit as b
-       where deleted='0'
-        and node_code=#{nodeCode}
-     ) as b on a.use_water_unit_Id =b.id
+    select
+    *
+    from
+    (
+    select
+    use_water_unit_Id,
+    bank_account as bankAccount,
+    bank_of_deposit as bankOfDeposit,
+    people_bank_pay_sys_number as peopleBankPaySysNumber,
+    agreement_number as agreementNumber,
+    other_bank as otherBank
+    from t_w_bank
+    where deleted='0'
+    and signed='1'
+    ) as a
+    inner join
+    (
+    select
+    id
+    from t_w_use_water_unit as b
+    where deleted='0'
+    and node_code=#{nodeCode}
+    ) as b on a.use_water_unit_Id =b.id
 
   </select>
   <select id="exportRevoca" resultType="java.util.LinkedHashMap">
@@ -702,21 +702,21 @@
     SELECT
     distinct
     CASE
-      a.deleted
-      WHEN 0 THEN
-      '新增'
-      WHEN 1 THEN
-      '注销'
-      END AS userType,
-      unit_code as unitCode,
-      unit_name as unitName,
-      unit_address as unitAddress ,
-      contacts,
-      mobileNumber,
-      remark = '' ,
-      deleted
+    a.deleted
+    WHEN 0 THEN
+    '新增'
+    WHEN 1 THEN
+    '注销'
+    END AS userType,
+    unit_code as unitCode,
+    unit_name as unitName,
+    unit_address as unitAddress ,
+    contacts,
+    mobileNumber,
+    remark = '' ,
+    deleted
     FROM
-      t_w_use_water_unit  as a
+    t_w_use_water_unit  as a
     left join (SELECT use_water_unit_id,contacts,mobile_number as mobileNumber from t_w_use_water_unit_contacts where main='1' ) as b on a.id =b.use_water_unit_id
     where a.node_code=#{nodeCode}
     and
@@ -758,7 +758,7 @@
     b.other_bank as otherBank
     from (select *from t_w_use_water_unit where deleted='0') as a
     left join (
-         SELECT use_water_unit_id,bank_of_deposit,bank_account,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank FROM t_w_bank WHERE deleted = '0' and main='1'
+    SELECT use_water_unit_id,bank_of_deposit,bank_account,people_bank_pay_sys_number,agreement_number,entrust_unit_name,focus_user_remark,other_bank FROM t_w_bank WHERE deleted = '0' and main='1'
     ) b ON b.use_water_unit_id = a.id
     left join (select id,industry_name from t_w_quota_info where deleted='0') as c on c.id=a.industry
     where a.id in
@@ -922,9 +922,9 @@
     unit_code as unitCode
     from
     (
-     select
-      unit_name,unit_code,unit_code_type
-     from t_w_use_water_unit
+    select
+    unit_name,unit_code,unit_code_type
+    from t_w_use_water_unit
     where deleted='0'
     and node_code=#{nodeCode}
     and unit_name like '%${unitName}%'
@@ -973,7 +973,7 @@
   </resultMap>
 
   <select id="selectAllType" resultType="java.lang.String">
-   SELECT
+    SELECT
     unit_code_type
     from t_w_use_water_unit
     where node_code=#{nodeCode}
@@ -995,7 +995,7 @@
       and  create_time &lt; #{year}
     </if>
     <if test="null !=unitName">
-     and  unit_name like '%${unitName}%'
+      and  unit_name like '%${unitName}%'
     </if>
   </select>
 
@@ -1008,20 +1008,20 @@
     unit_address,
     industry_name
     from (
-     select
+    select
     id,
     unit_code ,
     unit_name ,
     unit_address,
     industry
-     from t_w_use_water_unit
-     where id=#{id}
+    from t_w_use_water_unit
+    where id=#{id}
     ) as t1
     left join (
-     select
-     id,
-     industry_name
-     from t_w_quota_info
+    select
+    id,
+    industry_name
+    from t_w_quota_info
     ) as t2 on t2.id=t1.industry
   </select>
 
@@ -1041,7 +1041,7 @@
     select
     yearAndMonth=cast (use_year as varchar(10))+'年'+cast (use_month as varchar(10))+'月',
     t1.water_meter_code,
-     ROUND(price,2) as price,
+    ROUND(price,2) as price,
     sector,
     water_number,
     water_use_kinds
@@ -1081,7 +1081,7 @@
     yearPlan=sum(t2.first_quarter)+sum(t2.second_quarter)+sum (t2.third_quarter)+sum(t2.fourth_quarter)
     from (
     select
-     id
+    id
     from  t_w_use_water_unit
     where deleted='0'
     <if test="null !=nodeCode">
@@ -1117,24 +1117,47 @@
 
   <select id="selectUnitCode" resultType="com.zjtc.model.vo.OrgTreeVO">
     SELECT
-    unit_code_type as id,
-    t1.node_code as nodeCode,
-    t1.unit_code_type as orgName,
+    unit_code_type AS id,
+    t1.node_code AS nodeCode,
+    t1.unit_code_type AS orgName,
     'org' AS tag,
-    '1' as son
+    '1' AS son
     FROM
-    ( SELECT DISTINCT unit_code_type, node_code FROM t_w_use_water_unit
-    WHERE  deleted = '0'
+    (
+    SELECT DISTINCT
+    unit_code_type,
+    node_code
+    FROM
+    t_w_use_water_unit
+    WHERE
+    deleted = '0'
     <if test="nodeCode != null and nodeCode != ''">
       and node_code = #{nodeCode}
     </if>
+    AND id IN (
+    SELECT
+    use_water_unit_Id
+    FROM
+    t_w_use_water_unit_contacts
+    WHERE
+    deleted = '0'
+    AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE  1 = 1
+    <if test="userId != null and userId != ''">
+      and person_id = #{userId}
+    </if>
+    <if test="nodeCode != null and nodeCode != ''">
+      and node_code = #{nodeCode}
+    </if>
+    )
+    )
     ) t1
-    where 1 = 1
+    WHERE
+    1 = 1
     <if test="condition != null and condition != ''">
       and unit_code_type like '%${condition}%'
     </if>
     ORDER BY
-    t1.unit_code_type asc
+    t1.unit_code_type ASC
   </select>
 
   <select id="selectByTypeUnitAll" resultType="com.zjtc.model.vo.OrgTreeVO">
@@ -1162,7 +1185,7 @@
   </select>
 
   <select id="addUnitCodePage" resultType="java.util.LinkedHashMap">
-     SELECT
+    SELECT
     top ${size}
     id,
     unit_code as unitCode,

@@ -173,7 +173,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    * @param nodeCode 节点编码
    * @return
    */
-  List<OrgTreeVO> selectUnitCode(String nodeCode,String condition);
+  List<OrgTreeVO> selectUnitCode(String nodeCode,String condition,String userId);
 
   /**
    * 新增[修改]界面：相关编号下拉回填数据
