@@ -274,7 +274,7 @@ public class UseWaterPlanAddWXServiceImpl extends
         String[] auditFileIds = useWaterPlanAddWX.getAuditFileId().split(",");
         map = new HashMap<>(16);
         auditFiles = new ArrayList<>();
-        if(auditFileIds.length>0){
+        if (auditFileIds.length > 0) {
           for (String dd : auditFileIds) {
             map.put("id", dd);
             map.put("deleted", "0");
@@ -292,7 +292,7 @@ public class UseWaterPlanAddWXServiceImpl extends
         String[] waterProofFileIds = useWaterPlanAddWX.getWaterProofFileId().split(",");
         Map<String, Object> map1 = new HashMap<>(16);
         waterProofFiles = new ArrayList<>();
-        if(waterProofFileIds.length>0){
+        if (waterProofFileIds.length > 0) {
           for (String ss : waterProofFileIds) {
             map1.put("id", ss);
             map1.put("deleted", 0);
@@ -307,7 +307,7 @@ public class UseWaterPlanAddWXServiceImpl extends
 //        其他证明材料id列表\"]没有时传[]
       String[] otherFileIds = new String[0];
       try {
-        if(StringUtils.isNotBlank(useWaterPlanAddWX.getOtherFileId())){
+        if (StringUtils.isNotBlank(useWaterPlanAddWX.getOtherFileId())) {
           otherFileIds = useWaterPlanAddWX.getOtherFileId().split(",");
         }
       } catch (Exception e) {
@@ -315,7 +315,7 @@ public class UseWaterPlanAddWXServiceImpl extends
       }
       Map<String, Object> map2 = new HashMap<>(16);
       List<Map<String, Object>> otherFiles = new ArrayList<>();
-      if(otherFileIds.length>0){
+      if (otherFileIds.length > 0) {
         for (String aa : otherFileIds) {
           map2.put("id", aa);
           map.put("deleted", "0");
@@ -339,6 +339,10 @@ public class UseWaterPlanAddWXServiceImpl extends
       jsonObject.put("nextNodeId", nextNodeId);
       try {
         response1 = planDailyAdjustmentService.initiateSettlement(user, jsonObject);
+        if (501 == response1.getCode() || 500 == response1.getCode()) {
+          response = response1;
+          return response;
+        }
       } catch (Exception e) {
         e.printStackTrace();
         log.error("转换json数据异常" + e.getMessage());

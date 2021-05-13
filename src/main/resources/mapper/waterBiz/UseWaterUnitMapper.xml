@@ -1115,73 +1115,158 @@
     ) n3
   </select>
 
-  <select id="selectUnitCode" resultType="com.zjtc.model.vo.OrgTreeVO">
+<!--  <select id="selectUnitCode" resultType="com.zjtc.model.vo.OrgTreeVO">-->
+<!--    SELECT-->
+<!--    unit_code_type AS id,-->
+<!--    t1.node_code AS nodeCode,-->
+<!--    t1.unit_code_type AS orgName,-->
+<!--    'org' AS tag,-->
+<!--    '1' AS son-->
+<!--    FROM-->
+<!--    (-->
+<!--    SELECT DISTINCT-->
+<!--    unit_code_type,-->
+<!--    node_code-->
+<!--    FROM-->
+<!--    t_w_use_water_unit-->
+<!--    WHERE-->
+<!--    deleted = '0'-->
+<!--    <if test="nodeCode != null and nodeCode != ''">-->
+<!--      and node_code = #{nodeCode}-->
+<!--    </if>-->
+<!--    AND id IN (-->
+<!--    SELECT-->
+<!--    use_water_unit_Id-->
+<!--    FROM-->
+<!--    t_w_use_water_unit_contacts-->
+<!--    WHERE-->
+<!--    deleted = '0'-->
+<!--    AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE  1 = 1-->
+<!--    <if test="userId != null and userId != ''">-->
+<!--      and person_id = #{userId}-->
+<!--    </if>-->
+<!--    <if test="nodeCode != null and nodeCode != ''">-->
+<!--      and node_code = #{nodeCode}-->
+<!--    </if>-->
+<!--    )-->
+<!--    )-->
+<!--    ) t1-->
+<!--    WHERE-->
+<!--    1 = 1-->
+<!--    <if test="condition != null and condition != ''">-->
+<!--      and unit_code_type like '%${condition}%'-->
+<!--    </if>-->
+<!--    ORDER BY-->
+<!--    t1.unit_code_type ASC-->
+<!--  </select>-->
+
+    <select id="selectUnitCode" resultType="com.zjtc.model.vo.OrgTreeVO">
+      SELECT
+      unit_code_type AS id,
+      t5.node_code AS nodeCode,
+      t5.unit_code_type AS orgName,
+      'org' AS tag,
+      '1' AS son
+      FROM
+      (
+      SELECT DISTINCT
+      unit_code_type,
+      node_code
+      FROM
+      t_w_use_water_unit t3
+      INNER JOIN (
+      SELECT
+      use_water_unit_Id
+      FROM
+      t_w_use_water_unit_contacts t1
+      INNER JOIN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE 1 = 1
+      <if test="userId != null and userId != ''">
+        and person_id = #{userId}
+      </if>
+      <if test="nodeCode != null and nodeCode != ''">
+        and node_code = #{nodeCode}
+      </if>
+      ) t2 ON SUBSTRING ( t1.unit_code, 5, 2 ) = t2.unit_type_code
+      WHERE
+      deleted = '0'
+      ) t4 ON t3.id = t4.use_water_unit_Id
+      WHERE
+      deleted = '0'
+      <if test="nodeCode != null and nodeCode != ''">
+        and node_code = #{nodeCode}
+      </if>
+      ) t5
+      WHERE
+      1 = 1
+      <if test="condition != null and condition != ''">
+        and unit_code_type like '%${condition}%'
+      </if>
+      ORDER BY
+      t5.unit_code_type ASC
+    </select>
+
+<!--  <select id="selectByTypeUnitAll" resultType="com.zjtc.model.vo.OrgTreeVO">-->
+<!--    SELECT-->
+<!--    id,-->
+<!--    node_code AS nodeCode,-->
+<!--    unit_code_type AS parentId,-->
+<!--    unit_address AS address,-->
+<!--    unit_name AS orgName,-->
+<!--    create_time AS createTime,-->
+<!--    remark,-->
+<!--    'org' AS tag,-->
+<!--    CASE-->
+<!--    ( SELECT COUNT ( 1 ) FROM t_w_use_water_unit_contacts t2 WHERE deleted = '0' AND main = '1' AND t2.use_water_unit_id = t1.id )-->
+<!--    WHEN 0 THEN '0'-->
+<!--    ELSE '1'-->
+<!--    END son-->
+<!--    FROM-->
+<!--    t_w_use_water_unit t1-->
+<!--    WHERE-->
+<!--    unit_code_type = #{type} and deleted = '0'-->
+<!--    <if test="condition != null and condition != ''">-->
+<!--      AND (unit_name LIKE '%${condition}%' OR t1.unit_code LIKE '%${condition}%')-->
+<!--    </if>-->
+<!--  </select>-->
+  <select id="selectByTypeUnitAll" resultType="com.zjtc.model.vo.OrgTreeVO">
     SELECT
-    unit_code_type AS id,
-    t1.node_code AS nodeCode,
-    t1.unit_code_type AS orgName,
+    t3.id,
+    t3.node_code AS nodeCode,
+    t3.unit_code_type AS parentId,
+    t3.unit_address AS address,
+    t3.unit_name AS orgName,
+    t3.create_time AS createTime,
+    t3.remark,
     'org' AS tag,
-    '1' AS son
+    CASE
+    ( SELECT COUNT ( 1 ) FROM t_w_use_water_unit_contacts t2 WHERE deleted = '0' AND main = '1' AND t2.use_water_unit_id = t3.id )
+    WHEN 0 THEN
+    '0' ELSE '1'
+    END son
     FROM
-    (
-    SELECT DISTINCT
-    unit_code_type,
-    node_code
-    FROM
-    t_w_use_water_unit
-    WHERE
-    deleted = '0'
-    <if test="nodeCode != null and nodeCode != ''">
-      and node_code = #{nodeCode}
-    </if>
-    AND id IN (
+    t_w_use_water_unit t3
+    INNER JOIN (
     SELECT
     use_water_unit_Id
     FROM
-    t_w_use_water_unit_contacts
-    WHERE
-    deleted = '0'
-    AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE  1 = 1
+    t_w_use_water_unit_contacts t1
+    INNER JOIN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE 1 = 1
     <if test="userId != null and userId != ''">
       and person_id = #{userId}
     </if>
     <if test="nodeCode != null and nodeCode != ''">
       and node_code = #{nodeCode}
     </if>
-    )
-    )
-    ) t1
+    ) t2 ON SUBSTRING ( t1.unit_code, 5, 2 ) = t2.unit_type_code
     WHERE
-    1 = 1
-    <if test="condition != null and condition != ''">
-      and unit_code_type like '%${condition}%'
-    </if>
-    ORDER BY
-    t1.unit_code_type ASC
-  </select>
-
-  <select id="selectByTypeUnitAll" resultType="com.zjtc.model.vo.OrgTreeVO">
-    SELECT
-    id,
-    node_code AS nodeCode,
-    unit_code_type AS parentId,
-    unit_address AS address,
-    unit_name AS orgName,
-    create_time AS createTime,
-    remark,
-    'org' AS tag,
-    CASE
-    ( SELECT COUNT ( 1 ) FROM t_w_use_water_unit_contacts t2 WHERE deleted = '0' AND main = '1' AND t2.use_water_unit_id = t1.id )
-    WHEN 0 THEN '0'
-    ELSE '1'
-    END son
-    FROM
-    t_w_use_water_unit t1
+    deleted = '0'
+    ) t4 ON t3.id = t4.use_water_unit_Id
     WHERE
-    unit_code_type = #{type} and deleted = '0'
+    unit_code_type = #{type}
     <if test="condition != null and condition != ''">
       AND (unit_name LIKE '%${condition}%' OR t1.unit_code LIKE '%${condition}%')
     </if>
+    AND deleted = '0'
   </select>
 
   <select id="addUnitCodePage" resultType="java.util.LinkedHashMap">

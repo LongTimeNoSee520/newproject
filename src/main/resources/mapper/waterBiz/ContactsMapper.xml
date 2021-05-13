@@ -53,24 +53,62 @@
   </select>
 
 
+<!--  <select id="selectContacts" resultType="com.zjtc.model.vo.OrgTreeVO">-->
+<!--    SELECT-->
+<!--    t1.id,-->
+<!--    t1.use_water_unit_id AS parentId,-->
+<!--    t1.node_code AS nodeCode,-->
+<!--    null AS orgRank,-->
+<!--    contacts AS orgName,-->
+<!--    t1.phone_number AS dutyTel,-->
+<!--    'person' AS tag,-->
+<!--    (SELECT unit_name from t_w_use_water_unit t2 WHERE t2.id = t1.use_water_unit_id) AS personOrg,-->
+<!--    contacts AS userName,-->
+<!--    t1.mobile_number AS mobilePhone,-->
+<!--    t1.id AS drawerId,-->
+<!--    t1.contacts AS drawer,-->
+<!--    t1.unit_code as unitCode,-->
+<!--    '1' as son-->
+<!--    FROM-->
+<!--    t_w_use_water_unit_contacts t1 WHERE deleted = '0'-->
+<!--    <if test="nodeCodes != null and nodeCodes.size > 0">-->
+<!--      AND node_code in-->
+<!--      <foreach collection="nodeCodes"  item="nodeCode" open="(" close=")" separator=",">-->
+<!--        #{nodeCode}-->
+<!--      </foreach>-->
+<!--    </if>-->
+<!--    <if test="condition != null and condition != ''">-->
+<!--      and contacts LIKE '%${condition}%'-->
+<!--    </if>-->
+<!--  </select>-->
+
   <select id="selectContacts" resultType="com.zjtc.model.vo.OrgTreeVO">
     SELECT
     t1.id,
     t1.use_water_unit_id AS parentId,
     t1.node_code AS nodeCode,
-    null AS orgRank,
     contacts AS orgName,
     t1.phone_number AS dutyTel,
     'person' AS tag,
-    (SELECT unit_name from t_w_use_water_unit t2 WHERE t2.id = t1.use_water_unit_id) AS personOrg,
+    ( SELECT unit_name FROM t_w_use_water_unit t2 WHERE t2.id = t1.use_water_unit_id ) AS personOrg,
     contacts AS userName,
     t1.mobile_number AS mobilePhone,
     t1.id AS drawerId,
     t1.contacts AS drawer,
-    t1.unit_code as unitCode,
-    '1' as son
+    t1.unit_code AS unitCode,
+    '1' AS son
     FROM
-    t_w_use_water_unit_contacts t1 WHERE deleted = '0'
+    t_w_use_water_unit_contacts t1
+    LEFT JOIN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE 1 = 1
+    <if test="userId != null and userId != ''">
+      and person_id = #{userId}
+    </if>
+    <if test="nodeCode != null and nodeCode != ''">
+      and node_code = #{nodeCode}
+    </if>
+    ) t2 ON SUBSTRING ( t1.unit_code, 5, 2 ) = t2.unit_type_code
+    WHERE
+    deleted = '0'
     <if test="nodeCodes != null and nodeCodes.size > 0">
       AND node_code in
       <foreach collection="nodeCodes"  item="nodeCode" open="(" close=")" separator=",">

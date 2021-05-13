@@ -37,7 +37,7 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * 部门人员树 查询人员
    * @return
    */
-  List<OrgTreeVO> selectContacts(@Param("nodeCodes") List<String> nodeCodes,@Param("condition")String condition);
+  List<OrgTreeVO> selectContacts(@Param("nodeCodes") List<String> nodeCodes,@Param("condition")String condition,@Param("userId") String userId,@Param("nodeCode") String nodeCode);
 
   /**
    * 查看部门下是否有人员

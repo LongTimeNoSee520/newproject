@@ -576,17 +576,20 @@ public class UseWaterUnitController {
   @ApiOperation(value = "查询所有的用水单位类型")
   @RequestMapping(value = "selectUnitCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse selectUnitCode(@ApiParam("{\n"
-      + "    \"nodeCode\":\"节点编码\",\n"
+//      + "    \"nodeCode\":\"节点编码\",\n"
       + "    \"condition\":\"用水单位编号、单位名称、人员名称\"\n"
-      + "    \"userId\":\"登录用户id\"\n"
+//      + "    \"userId\":\"登录用户id\"\n"
       + "}")
-      @RequestBody JSONObject jsonObject) {
+      @RequestBody JSONObject jsonObject,
+      @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
-    String nodeCode = jsonObject.getString("nodeCode");
-    String condition = jsonObject.getString("condition");
-    String userId = jsonObject.getString("userId");
+    String condition = null;
+    if (null != jsonObject.getString("condition")) {
+       condition = jsonObject.getString("condition");
+    }
+    User user = jwtUtil.getUserByToken(token);
     try {
-      List<OrgTreeVO> list = useWaterUnitService.selectUnitCode(nodeCode,condition,userId);
+      List<OrgTreeVO> list = useWaterUnitService.selectUnitCode(user.getNodeCode(),condition,user.getId());
       response.setData(list);
       return response;
     } catch (Exception e) {

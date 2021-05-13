@@ -56,6 +56,6 @@ public interface ContactsService extends IService<Contacts> {
    * 部门人员树 查询人员
    * @return
    */
-  List<OrgTreeVO> selectContacts(List<String> nodeCodes,String condition);
+  List<OrgTreeVO> selectContacts(List<String> nodeCodes,String condition,String userId,String nodeCode);
 
 }

@@ -141,7 +141,7 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
    * 查询用水单位信息
    */
   List<OrgTreeVO> selectByTypeUnitAll(@Param("type") String type,
-      @Param("condition") String condition);
+      @Param("condition") String condition,@Param("userId")String userId,@Param("nodeCode")String nodeCode);
 
   /**
    * 新增[修改]界面：相关编号下拉回填数据
