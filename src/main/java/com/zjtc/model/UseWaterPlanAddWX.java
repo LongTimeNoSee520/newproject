@@ -267,6 +267,15 @@ public class UseWaterPlanAddWX extends Model<UseWaterPlanAddWX> {
   @TableField(value = "source", exist = true)
   private String source;
 
+
+  @ApiModelProperty(value = "联系人")
+  @TableField(value = "contacts", exist = true)
+  private String  contacts;
+
+  @ApiModelProperty(value = "手机号")
+  @TableField(value = "mobile_number", exist = true)
+  private String  mobileNumber;
+
   /**
    * 实例化
    */

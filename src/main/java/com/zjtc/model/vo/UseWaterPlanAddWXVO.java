@@ -279,6 +279,14 @@ public class UseWaterPlanAddWXVO extends Model<UseWaterPlanAddWXVO> {
   @TableField(value = "audit", exist = false)
   private boolean audit = false;
 
+
+  @ApiModelProperty(value = "联系人")
+  @TableField(value = "contacts", exist = true)
+  private String  contacts;
+
+  @ApiModelProperty(value = "手机号")
+  @TableField(value = "mobile_number", exist = true)
+  private String  mobileNumber;
   @Override
   protected Serializable pkVal() {
     return null;

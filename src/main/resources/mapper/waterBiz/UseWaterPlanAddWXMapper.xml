@@ -87,18 +87,8 @@
     <result column="FrontCurYearPlan" property="FrontCurYearPlan" jdbcType="DOUBLE"/>
     <result column="FrontPlanYear" property="FrontPlanYear" jdbcType="INTEGER"/>
     <result column="preViewRealPath" property="preViewRealPath" jdbcType="VARCHAR"/>
-    <!--<collection property="auditFileIds" ofType="com.zjtc.model.File"-->
-    <!--column="{id=id,preViewRealPath=preViewRealPath}"-->
-    <!--select="queryAuditFiles">-->
-    <!--</collection>-->
-    <!--<collection property="waterProofFileIds" ofType="com.zjtc.model.File"-->
-    <!--column="{id=id,preViewRealPath=preViewRealPath}"-->
-    <!--select="queryWaterProofFiles">-->
-    <!--</collection>-->
-    <!--<collection property="otherFileIds" ofType="com.zjtc.model.File"-->
-    <!--column="{id=id,preViewRealPath=preViewRealPath}"-->
-    <!--select="queryOtherFiles">-->
-    <!--</collection>-->
+    <result column="contacts" property="contacts" jdbcType="VARCHAR"/>
+    <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
   </resultMap>
 
   <resultMap id="sysAttrFileMap" type="com.zjtc.model.vo.FileVO">
@@ -173,7 +163,8 @@
     WHEN '1' THEN '已打印'
     ELSE '已打印'
     END printed, --是否打印
-    #{path} AS preViewRealPath
+    contacts,
+    mobile_number
     FROM
     t_wx_use_water_plan_add t1
     WHERE
