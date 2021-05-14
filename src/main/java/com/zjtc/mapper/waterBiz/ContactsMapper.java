@@ -55,4 +55,11 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * @return
    */
   UseWaterUnit selectByMobileNumberAll(@Param("mobileNumber") String mobileNumber);
+
+  /**
+   * 通过单位id查询该单位下对用的人员
+   * @param id 单位
+   * @return
+   */
+  List<String> selectByUnitIdInquirePerson(@Param("id") String id);
 }

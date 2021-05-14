@@ -8,6 +8,7 @@ import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.vo.OrgTreeVO;
 import com.zjtc.service.ContactsService;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -97,9 +98,14 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   }
 
   @Override
-  public List<String> selectByMobileNumber(String mobileNumber) {
-//    查询所在的部门
+  public Map<String, Object> selectByMobileNumber(String mobileNumber) {
+    Map<String, Object> map = new HashMap<>();
+//    查询当前登录者所在的单位
     UseWaterUnit useWaterUnit = this.baseMapper.selectByMobileNumberAll(mobileNumber);
-    return null;
+//      查询部门下的人员名称
+    List<String> persons = this.baseMapper.selectByUnitIdInquirePerson(useWaterUnit.getId());
+    map.put("unit",useWaterUnit);
+    map.put("personnel",persons);
+    return map;
   }
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.vo.OrgTreeVO;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -64,5 +65,5 @@ public interface ContactsService extends IService<Contacts> {
   /**
    *   通过联系电话查询所在部门和该部门下所有的人员
    */
-  List<String> selectByMobileNumber(String mobileNumber);
+  Map<String, Object> selectByMobileNumber(String mobileNumber);
 }

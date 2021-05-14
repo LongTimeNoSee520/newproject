@@ -125,27 +125,14 @@
     unit_code,
     unit_name,
     unit_address,
-    industry,
-    save_unit_type,
-    deleted,
-    delete_time,
-    create_time,
-    gisX,
-    gisY,
-    imain,
-    remark,
-    department,
-    area_country,
-    abnormal,
-    abnormal_cause,
-    responsibility_code,
-    unit_code_group,
-    unit_code_type,
-    zip_name,
-    zip_address,
-    invoice_unit_name
+    department
     FROM
     t_w_use_water_unit t1
     inner JOIN ( SELECT use_water_unit_id FROM t_w_use_water_unit_contacts t2 WHERE mobile_number = #{mobileNumber} AND deleted = '0' ) t2 ON t1.id = t2.use_water_unit_id
+  </select>
+
+
+  <select id="selectByUnitIdInquirePerson" resultType="String">
+    SELECT contacts FROM t_w_use_water_unit_contacts WHERE deleted = '0' AND use_water_unit_id = #{id}
   </select>
 </mapper>

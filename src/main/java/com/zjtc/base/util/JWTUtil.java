@@ -105,7 +105,9 @@ public class JWTUtil {
       String result = jsonObject.toString();
       user = com.alibaba.fastjson.JSONObject.parseObject(result, User.class);
       String userId = user.getId();
-      user.setId(userId.substring(0, userId.length() - 14));
+      if (null!=user.getId()) {
+        user.setId(userId.substring(0, userId.length() - 14));
+      }
     } catch (ParseException e) {
       e.printStackTrace();
     }
