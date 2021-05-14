@@ -1239,7 +1239,7 @@
     t3.remark,
     'org' AS tag,
     CASE
-    ( SELECT COUNT ( 1 ) FROM t_w_use_water_unit_contacts t2 WHERE deleted = '0' AND main = '1' AND t2.use_water_unit_id = t3.id )
+    ( SELECT COUNT ( id ) FROM t_w_use_water_unit_contacts t2 WHERE deleted = '0' AND main = '1' AND t2.use_water_unit_id = t3.id )
     WHEN 0 THEN
     '0' ELSE '1'
     END son
