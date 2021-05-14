@@ -8,6 +8,7 @@ import com.zjtc.service.WaterQuantityManageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -177,4 +178,28 @@ public class WaterQuantityManageController {
     return response;
   }
 
+
+  @RequestMapping(value = "threeYearUseData", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "查询3年水使用量")
+  public ApiResponse threeYearUseData(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + " \"unitCode\":\"单位编号\"\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("查询3年水使用量 ==== 参数{" + jsonObject.toJSONString() + "}");
+    ApiResponse response = new ApiResponse();
+    if (null != jsonObject) {
+      try {
+        //User user = jwtUtil.getUserByToken(token);
+        String  unitCode = jsonObject.getString("unitCode");
+        List<Map<String, Object>> result = waterQuantityManageService.threeYearUseData(unitCode);
+        response.setData(result);
+      } catch (Exception e) {
+        log.error("3年水使用量查询失败,errMsg==={}" + e.getMessage());
+        response.recordError(500);
+      }
+    } else {
+      response.recordError("查询参数不能为空");
+    }
+    return response;
+  }
 }

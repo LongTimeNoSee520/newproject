@@ -446,6 +446,13 @@ public class WaterQuantityManageServiceImpl extends ServiceImpl<WaterQuantityMan
 	    log.error("fileProcessId:"+fileProcessId+"月使用数据写入出错errMsg==={}", e.getMessage());
     }
   }
+
+  @Override
+  public List<Map<String, Object>> threeYearUseData(String unitCode) {
+    int currentYear = TimeUtil.getYear(new Date(),0);
+    return this.baseMapper.threeYearUseData(unitCode,currentYear);
+  }
+
   /**解析excel数据到bean*/
 //  public  Map<String, List> importExcel(Map<String, List> beans, String xmlConfig,
 //      String fileRealPath, String uploadFileName,String nodeCode,boolean isThrowException) throws Exception {

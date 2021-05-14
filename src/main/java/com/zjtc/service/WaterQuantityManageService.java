@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUseData;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,4 +60,9 @@ public interface WaterQuantityManageService extends IService<WaterUseData> {
   void importEnd(User user, String fileProcessId);
 
 	void insertMonthData(User user, String fileProcessId);
+	/**
+	 *根据单位编号查询该单位3年水使用数据
+	 * @param unitCode
+	 * */
+	List<Map<String, Object>> threeYearUseData(String unitCode);
 }

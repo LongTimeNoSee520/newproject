@@ -22,4 +22,6 @@ public interface WaterQuantityManageMapper extends BaseMapper<WaterUseData> {
   void insertOrUpdate(@Param("waterUseData") WaterUseData waterUseData);
 
   void insertOrUpdateToMonthData(@Param("year") Integer year);
+
+  List<Map<String,Object>> threeYearUseData(@Param("unitCode") String unitCode,@Param("currentYear") int currentYear);
 }
