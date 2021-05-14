@@ -964,7 +964,7 @@ public class UseWaterUnitServiceImpl extends
   }
 
   @Override
-  public void refreshWaterBalance(String unitCode) {
-     baseMapper.refreshWaterBalance(unitCode,new Date());
+  public void refreshWaterBalance(String unitCode,Date lastTestTime) {
+     baseMapper.refreshWaterBalance(unitCode,lastTestTime);
   }
 }

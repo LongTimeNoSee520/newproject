@@ -187,7 +187,7 @@ public class WaterBalanceTestServiceImpl extends
     this.save(balanceTest);
     //异步刷新用水单位信息 是否有过水平衡测试
     if(StringUtils.isNotBlank(balanceTest.getUnitCode())){
-      useWaterUnitService.refreshWaterBalance(balanceTest.getUnitCode()) ;
+      useWaterUnitService.refreshWaterBalance(balanceTest.getUnitCode(),balanceTest.getLastTestTime()) ;
     }
     /**水平衡测试产品相关信息新增*/
     waterBalanceTestProductService.add(products,user,balanceTest.getId());

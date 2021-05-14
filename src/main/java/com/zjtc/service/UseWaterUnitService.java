@@ -7,6 +7,7 @@ import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.OrgTreeVO;
 import com.zjtc.model.vo.UseWaterUnitVo;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -192,8 +193,9 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
   /**
    * 异步刷新是否经过水平衡测试
    * @param unitCode 单位编号
+   * @param lastTestTime 上次测试时间
    * @return
    */
-  void refreshWaterBalance(String unitCode);
+  void refreshWaterBalance(String unitCode,Date lastTestTime);
 
 }
