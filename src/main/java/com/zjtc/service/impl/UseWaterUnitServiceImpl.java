@@ -914,8 +914,9 @@ public class UseWaterUnitServiceImpl extends
 
   @Override
   public List<OrgTreeVO> selectUnitCode(String nodeCode, String condition,String userId) {
-//    查询全部类型,相当于是顶级部门
-    List<OrgTreeVO> grandFathers = useWaterUnitRoleService.selectUnitRoles(userId,nodeCode);
+//    查询全部类型,相当于是顶级部门 orgTreeVOS
+    List<OrgTreeVO> orgTreeVOS = useWaterUnitRoleService.selectUnitRoles(userId,nodeCode);
+    List<OrgTreeVO> grandFathers = removeModelByHashSet(orgTreeVOS);
     if(null != grandFathers && grandFathers.size()>0){
       //查询用水单位数据
       List<OrgTreeVO> fathers = baseMapper.selectByTypeUnitAll(nodeCode,grandFathers);

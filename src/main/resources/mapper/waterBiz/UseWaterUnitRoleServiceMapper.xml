@@ -71,7 +71,7 @@
 
   <!-- 查询用户类型权限 -->
   <select id="selectUnitRoles" resultType="com.zjtc.model.vo.OrgTreeVO">
-    SELECT
+    SELECT DISTINCT
       unit_type_code AS id,
       node_code AS nodeCode,
       unit_type_code AS orgName,
