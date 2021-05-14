@@ -59,7 +59,7 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     /**
     * 
     */
-    @ApiModelProperty("付款方式，默认0，2现金,3转账")
+    @ApiModelProperty("付款方式，默认0，2现金,3转账,4快捷支付")
     @TableField(value = "pay_type",exist = true)
     private String payType;
     /**
