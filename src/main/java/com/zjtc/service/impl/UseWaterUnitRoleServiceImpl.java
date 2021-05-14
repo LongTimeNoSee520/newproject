@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.UseWaterUnitRoleMapper;
 import com.zjtc.model.UseWaterUnitRole;
+import com.zjtc.model.vo.OrgTreeVO;
 import com.zjtc.service.UseWaterUnitRoleService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,15 +103,7 @@ public class UseWaterUnitRoleServiceImpl extends
 //      return response;
 //    }
 //    如果单位批次号传为空,那么说明这个人没有批次号权限
-    if (unitTypeCodes.isEmpty()) {
-      UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
-      useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
-      useWaterUnitRole.setPersonId(personId);
-      useWaterUnitRole.setUnitTypeCode(null);
-      useWaterUnitRole.setNodeCode(StringUtils.isBlank(nodeCode) ? null : nodeCode);
-      useWaterUnitRole.setCreateTime(new Date());
-      unitRoles.add(useWaterUnitRole);
-    } else {
+    if (!unitTypeCodes.isEmpty()) {
 //    批量新增
       for (String unitTypeCode : unitTypeCodes) {
         UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
@@ -176,5 +169,13 @@ public class UseWaterUnitRoleServiceImpl extends
     response.recordError("授权失败");
     TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     return response;
+  }
+
+  @Override
+  public List<OrgTreeVO> selectUnitRoles(String personId, String nodeCode) {
+    if(StringUtils.isNotBlank(personId) && StringUtils.isNotBlank(nodeCode)){
+      return this.baseMapper.selectUnitRoles(personId,nodeCode);
+    }
+    return null;
   }
 }

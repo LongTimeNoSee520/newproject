@@ -3,8 +3,11 @@ package com.zjtc.mapper.waterBiz;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.Contacts;
+import com.zjtc.model.UseWaterPlan;
+import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.vo.OrgTreeVO;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,7 +40,7 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * 部门人员树 查询人员
    * @return
    */
-  List<OrgTreeVO> selectContacts(@Param("nodeCodes") List<String> nodeCodes,@Param("condition")String condition,@Param("userId") String userId,@Param("nodeCode") String nodeCode);
+  List<OrgTreeVO> selectContacts(@Param("nodeCode") String nodeCode,@Param("fathers") List<OrgTreeVO> fathers);
 
   /**
    * 查看部门下是否有人员
@@ -45,4 +48,11 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * @return
    */
   int selectOrgIsHavePerson(@Param("orgId") String orgId);
+
+  /**
+   * 通过联系人电话查询部门信息
+   * @param mobileNumber
+   * @return
+   */
+  UseWaterUnit selectByMobileNumberAll(@Param("mobileNumber") String mobileNumber);
 }

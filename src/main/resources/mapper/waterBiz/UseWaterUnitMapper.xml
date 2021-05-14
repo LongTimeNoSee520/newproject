@@ -1228,6 +1228,7 @@
 <!--      AND (unit_name LIKE '%${condition}%' OR t1.unit_code LIKE '%${condition}%')-->
 <!--    </if>-->
 <!--  </select>-->
+
   <select id="selectByTypeUnitAll" resultType="com.zjtc.model.vo.OrgTreeVO">
     SELECT
     t3.id,
@@ -1245,28 +1246,18 @@
     END son
     FROM
     t_w_use_water_unit t3
-    INNER JOIN (
-    SELECT
-    use_water_unit_Id
-    FROM
-    t_w_use_water_unit_contacts t1
-    INNER JOIN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE 1 = 1
-    <if test="userId != null and userId != ''">
-      and person_id = #{userId}
-    </if>
-    <if test="nodeCode != null and nodeCode != ''">
-      and node_code = #{nodeCode}
-    </if>
-    ) t2 ON SUBSTRING ( t1.unit_code, 5, 2 ) = t2.unit_type_code
-    WHERE
+    where
     deleted = '0'
-    ) t4 ON t3.id = t4.use_water_unit_Id
-    WHERE
-    unit_code_type = #{type}
-    <if test="condition != null and condition != ''">
-      AND (unit_name LIKE '%${condition}%' OR t1.unit_code LIKE '%${condition}%')
+    <if test="nodeCode != null">
+      AND node_code = #{ nodeCode }
     </if>
-    AND deleted = '0'
+    <if test="fathers != null">
+      AND SUBSTRING ( t3.unit_code, 5, 2 ) in
+      <foreach collection="fathers" item="father" index="index" separator="," open="(" close=")">
+        #{father.id}
+      </foreach>
+    </if>
+    order by id
   </select>
 
   <select id="addUnitCodePage" resultType="java.util.LinkedHashMap">
