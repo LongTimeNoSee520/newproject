@@ -606,4 +606,32 @@ public class WaterUsePayInfoController {
     }
     return apiResponse;
   }
+
+  @ResponseBody
+  @ApiOperation(value = "打印缴费通知书时，新增打印记录")
+  @RequestMapping(value = "addPayPrintDate", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse addPayPrintDate(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "\"ids\":[\"选择打印的缴费id\"]\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("新增打印记录， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user && null != jsonObject) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        Map<String,Object> result = waterUsePayInfoService
+            .printExPlan2(jsonObject, user);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("新增打印记录,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
 }
