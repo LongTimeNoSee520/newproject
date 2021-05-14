@@ -3,10 +3,13 @@ package com.zjtc.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.ContactsMapper;
 import com.zjtc.model.Contacts;
+import com.zjtc.model.UseWaterPlan;
+import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.vo.OrgTreeVO;
 import com.zjtc.service.ContactsService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -89,7 +92,14 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   }
 
   @Override
-  public List<OrgTreeVO> selectContacts(List<String> nodeCodes,String condition,String userId,String nodeCode) {
-    return this.baseMapper.selectContacts(nodeCodes,condition, userId, nodeCode);
+  public List<OrgTreeVO> selectContacts(String nodeCode,List<OrgTreeVO> fathers) {
+    return this.baseMapper.selectContacts(nodeCode,fathers);
+  }
+
+  @Override
+  public List<String> selectByMobileNumber(String mobileNumber) {
+//    查询所在的部门
+    UseWaterUnit useWaterUnit = this.baseMapper.selectByMobileNumberAll(mobileNumber);
+    return null;
   }
 }

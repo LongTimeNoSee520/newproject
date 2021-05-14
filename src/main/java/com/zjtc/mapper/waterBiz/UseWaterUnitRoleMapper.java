@@ -2,6 +2,7 @@ package com.zjtc.mapper.waterBiz;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnitRole;
+import com.zjtc.model.vo.OrgTreeVO;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -56,4 +57,12 @@ public interface UseWaterUnitRoleMapper extends BaseMapper<UseWaterUnitRole> {
    * @return 结果集
    */
   int deletedByPersonId(@Param("personId") String personId);
+
+  /**
+   * 查询用户类型权限
+   * @param personId
+   * @param nodeCode
+   * @return
+   */
+  List<OrgTreeVO> selectUnitRoles(@Param("personId")String personId,@Param("nodeCode")String nodeCode);
 }

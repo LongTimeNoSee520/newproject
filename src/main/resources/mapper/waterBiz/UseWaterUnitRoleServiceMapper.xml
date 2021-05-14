@@ -69,6 +69,22 @@
     GROUP  BY unit_type_code
   </select>
 
+  <!-- 查询用户类型权限 -->
+  <select id="selectUnitRoles" resultType="com.zjtc.model.vo.OrgTreeVO">
+    SELECT DISTINCT
+      unit_type_code AS id,
+      node_code AS nodeCode,
+      unit_type_code AS orgName,
+      'org' as tag,
+      '1' as son
+    FROM
+      t_w_use_water_unit_role
+    WHERE
+      person_id = #{personId}
+    AND node_code =  #{nodeCode}
+    order by unit_type_code
+  </select>
+
   <delete id="deletedByPersonId">
     DELETE  t_w_use_water_unit_role WHERE person_id = #{personId}
   </delete>

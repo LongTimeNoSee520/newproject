@@ -3,6 +3,7 @@ package com.zjtc.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterUnitRole;
+import com.zjtc.model.vo.OrgTreeVO;
 import java.util.List;
 
 /**
@@ -60,4 +61,12 @@ public interface UseWaterUnitRoleService extends IService<UseWaterUnitRole> {
    * @return 响应状态
    */
   ApiResponse addUseWaterUnitRole(String personId,String nodeCode,List<String> unitTypeCodes);
+
+  /**
+   * 查询用户类型权限
+   * @param personId
+   * @param nodeCode
+   * @return
+   */
+  List<OrgTreeVO> selectUnitRoles(String personId,String nodeCode);
 }

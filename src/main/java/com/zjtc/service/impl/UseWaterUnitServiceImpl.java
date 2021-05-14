@@ -914,31 +914,34 @@ public class UseWaterUnitServiceImpl extends
 
   @Override
   public List<OrgTreeVO> selectUnitCode(String nodeCode, String condition,String userId) {
-    List<OrgTreeVO> orgTreeVOList = new ArrayList<>(10);
-    List<OrgTreeVO> orgTreeVOSPerson = new ArrayList<>(10);
-    List<String> codeNodeList = new ArrayList<>(10);
-//    查询全部类型,相当于是顶级部门
-    List<OrgTreeVO> treeVOFather = this.baseMapper.selectUnitCode(nodeCode, condition,userId);
-    for (OrgTreeVO orgTreeVO : treeVOFather) {
-//      查询子集
-      String type = orgTreeVO.getId();
-      List<OrgTreeVO> treeVOSon = baseMapper.selectByTypeUnitAll(type, condition,userId,nodeCode);
-      orgTreeVOList.addAll(treeVOSon);
+//    查询全部类型,相当于是顶级部门 orgTreeVOS
+    List<OrgTreeVO> orgTreeVOS = useWaterUnitRoleService.selectUnitRoles(userId,nodeCode);
+    List<OrgTreeVO> grandFathers = removeModelByHashSet(orgTreeVOS);
+    if(null != grandFathers && grandFathers.size()>0){
+      //查询用水单位数据
+      List<OrgTreeVO> fathers = baseMapper.selectByTypeUnitAll(nodeCode,grandFathers);
+//      if(null != fathers && fathers.size()>0){
+      //查询联系人
+      List<OrgTreeVO> sons = contactsService.selectContacts(nodeCode,grandFathers);
+      grandFathers.addAll(fathers);
+      grandFathers.addAll(sons);
+//      }
     }
-    //      人员
-    for (OrgTreeVO treeVO : orgTreeVOList) {
-      codeNodeList.add(treeVO.getNodeCode());
-    }
-    List<String> list = this.removeDuplicationByHashSet(codeNodeList);
-    List<OrgTreeVO> orgTreePerson = contactsService.selectContacts(list, condition,userId,nodeCode);
-    orgTreeVOSPerson.addAll(orgTreePerson);
-//    部门的子集
-    treeVOFather.addAll(orgTreeVOList);
-//    人员
-    treeVOFather.addAll(orgTreeVOSPerson);
-    return treeVOFather;
+    return grandFathers;
   }
 
+
+  /**
+   * list去重
+   */
+  public static List<OrgTreeVO> removeModelByHashSet(List<OrgTreeVO> list) {
+    HashSet set = new HashSet(list);
+    //把List集合所有元素清空
+    list.clear();
+    //把HashSet对象添加至List集合
+    list.addAll(set);
+    return list;
+  }
 
   /**
    * list去重
@@ -957,7 +960,6 @@ public class UseWaterUnitServiceImpl extends
     //查询当前节点编码下所有可操作批次的所有单位的单位编码、单位名称
     return baseMapper.addUnitCodeList(user.getNodeCode(), user.getId());
   }
-
   @Override
   public void refreshSaveUnitType(String unitCode) {
     baseMapper.refreshSaveUnitType(unitCode,new Date());
