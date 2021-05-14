@@ -183,7 +183,17 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
    */
   List<Map<String, Object>> addUnitCodeList(User user);
 
-
-
+  /**
+   * 异步刷新是否是节水单位
+   * @param unitCode 单位编号
+   * @return
+   */
+  void refreshSaveUnitType(String unitCode);
+  /**
+   * 异步刷新是否经过水平衡测试
+   * @param unitCode 单位编号
+   * @return
+   */
+  void refreshWaterBalance(String unitCode);
 
 }

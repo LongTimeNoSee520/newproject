@@ -6,6 +6,7 @@ import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.vo.OrgTreeVO;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.model.vo.UseWaterUnitVo;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -135,13 +136,14 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
    * 查询所有的用水单位类型
    */
   List<OrgTreeVO> selectUnitCode(@Param("nodeCode") String nodeCode,
-      @Param("condition") String condition,@Param("userId")String userId);
+      @Param("condition") String condition, @Param("userId") String userId);
 
   /**
    * 查询用水单位信息
    */
   List<OrgTreeVO> selectByTypeUnitAll(@Param("type") String type,
-      @Param("condition") String condition,@Param("userId")String userId,@Param("nodeCode")String nodeCode);
+      @Param("condition") String condition, @Param("userId") String userId,
+      @Param("nodeCode") String nodeCode);
 
   /**
    * 新增[修改]界面：相关编号下拉回填数据
@@ -153,7 +155,23 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   /**
    * 新增[修改]界面：相关编号下拉回填数据
    */
-  List<Map<String, Object>> addUnitCodeList(@Param("nodeCode") String nodeCode,@Param("userId") String userId);
+  List<Map<String, Object>> addUnitCodeList(@Param("nodeCode") String nodeCode,
+      @Param("userId") String userId);
 
 
+  /**
+   * 异步刷新是否是节水单位
+   *
+   * @param unitCode 单位编号
+   */
+  boolean refreshSaveUnitType(@Param("unitCode") String unitCode,
+      @Param("createTime") Date createTime);
+
+  /**
+   * 异步刷新是否经过水平衡测试
+   *
+   * @param unitCode 单位编号
+   */
+  boolean refreshWaterBalance(@Param("unitCode") String unitCode,
+      @Param("createTime") Date createTime);
 }

@@ -16,6 +16,7 @@ import com.zjtc.model.vo.WaterSavingUnitVo;
 import com.zjtc.service.CommonService;
 import com.zjtc.service.FileService;
 import com.zjtc.service.SystemLogService;
+import com.zjtc.service.UseWaterUnitService;
 import com.zjtc.service.WaterSavingUnitBaseService;
 import com.zjtc.service.WaterSavingUnitQuotaService;
 import com.zjtc.service.WaterSavingUnitService;
@@ -77,6 +78,8 @@ public class WaterSavingUnitServiceImpl extends
   private CommonService commonService;
   @Autowired
   private SystemLogService systemLogService;
+  @Autowired
+  private UseWaterUnitService useWaterUnitService;
 
 
   @Override
@@ -190,7 +193,7 @@ public class WaterSavingUnitServiceImpl extends
   private ApiResponse transform(WaterSavingUnitVo voList,
       List<WaterSavingUnitQuotaVo> waterSavingUnitQuotaVo,
       List<WaterSavingUnitBaseVo> waterSavingUnitBaseVo,
-      User user) {
+      User user) throws Exception {
     ApiResponse apiResponse = new ApiResponse();
     List<WaterSavingUnitQuota> quotaList = new ArrayList<>();
     List<WaterSavingUnitBase> baseList = new ArrayList<>();
@@ -216,20 +219,25 @@ public class WaterSavingUnitServiceImpl extends
       result.setLeakageRale(voList.getLeakageRale());
       result.setRemarks(voList.getRemarks());
       result.setDeleted("0");
+
+      //验证该单位是否已经存在 存在：覆盖，不存在新增
+      List<WaterSavingUnit> oldData = validateUnitCode(result.getUnitCode(), user.getNodeCode(),
+          null);
+      if (!oldData.isEmpty()) {
+        //删除之前的单位数据
+        for (WaterSavingUnit item : oldData) {
+          deleteModel(item.getId(),user);
+        }
+      }
+      this.save(result);
+      //异步刷新用水单位信息 是否是节水单位
+      if(StringUtils.isNotBlank(result.getUnitCode())){
+        useWaterUnitService.refreshSaveUnitType(result.getUnitCode()) ;
+      }
     } else {
       apiResponse.recordError("无导入数据，无法导入！");
       apiResponse.setCode(501);
     }
-    //验证该单位是否已经存在 存在：覆盖，不存在新增
-    List<WaterSavingUnit> oldData = validateUnitCode(result.getUnitCode(), user.getNodeCode(),
-        null);
-    if (!oldData.isEmpty()) {
-      //删除之前的单位数据
-      for (WaterSavingUnit item : oldData) {
-        deleteModel(item.getId(),user);
-      }
-    }
-    this.save(result);
     if (!waterSavingUnitQuotaVo.isEmpty()) {
       for (WaterSavingUnitQuotaVo item : waterSavingUnitQuotaVo) {
         WaterSavingUnitQuota param = new WaterSavingUnitQuota();

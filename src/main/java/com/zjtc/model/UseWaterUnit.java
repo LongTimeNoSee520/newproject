@@ -69,6 +69,20 @@ public class UseWaterUnit extends Model<UseWaterUnit> {
   @TableField(value = "save_unit_type", exist = true)
   private String saveUnitType;
 
+  @ApiModelProperty(value = "节水评定时间")
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+  @TableField(value = "save_unit_time", exist = true)
+  private Date saveUnitTime;
+
+  @ApiModelProperty(value = "是否经过水平衡测试,0:否，1是")
+  @TableField(value = "water_balance_type", exist = true)
+  private String waterBalanceType;
+
+  @ApiModelProperty(value = "水平衡测试时间")
+  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+  @TableField(value = "water_balance_time", exist = true)
+  private Date waterBalanceTime;
+
   @ApiModelProperty(value = "是否已删除,0：否，1：是")
   @TableField(value = "deleted", exist = true)
   private String deleted;

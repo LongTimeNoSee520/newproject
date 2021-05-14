@@ -38,6 +38,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @description
  */
 @Service
+@Slf4j
 public class UseWaterUnitServiceImpl extends
     ServiceImpl<UseWaterUnitMapper, UseWaterUnit> implements
     UseWaterUnitService {
@@ -954,5 +956,15 @@ public class UseWaterUnitServiceImpl extends
   public List<Map<String, Object>> addUnitCodeList(User user) {
     //查询当前节点编码下所有可操作批次的所有单位的单位编码、单位名称
     return baseMapper.addUnitCodeList(user.getNodeCode(), user.getId());
+  }
+
+  @Override
+  public void refreshSaveUnitType(String unitCode) {
+    baseMapper.refreshSaveUnitType(unitCode,new Date());
+  }
+
+  @Override
+  public void refreshWaterBalance(String unitCode) {
+     baseMapper.refreshWaterBalance(unitCode,new Date());
   }
 }

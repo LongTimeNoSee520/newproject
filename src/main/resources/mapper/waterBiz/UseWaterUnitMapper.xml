@@ -1358,4 +1358,14 @@
     ) as t2 on t1.unit_code_type=t2.unit_type_code
     order by unit_code
   </select>
+  <!--异步刷新是否是节水单位sql-->
+  <update id="refreshSaveUnitType">
+   update t_w_use_water_unit set save_unit_type='1',save_unit_time=#{createTime}
+   where unit_code=#{unitCode}
+  </update>
+  <!--异步刷新是否经过水平衡测试sql-->
+  <update id="refreshWaterBalance">
+ update t_w_use_water_unit set water_balance_type='1',water_balance_time=#{createTime}
+   where unit_code=#{unitCode}
+  </update>
 </mapper>
