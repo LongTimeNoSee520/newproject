@@ -817,8 +817,8 @@ public class UseWaterUnitServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> selectCodeByName(JSONObject jsonObject) {
-    return baseMapper.selectCodeByName(jsonObject);
+  public List<Map<String, Object>> selectCodeByName(String userId,String nodeCode,String unitName,Double actualAmount) {
+    return baseMapper.selectCodeByName(userId,nodeCode,unitName,actualAmount);
   }
 
   @Override

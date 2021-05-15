@@ -137,9 +137,9 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
       HttpServletResponse response);
 
   /**
-   * 根据单位名称查询单位编码
+   * 根据单位名称和金额查询单位编码
    */
-  List<Map<String, Object>> selectCodeByName(JSONObject jsonObject);
+  List<Map<String, Object>> selectCodeByName(String userId,String nodeCode,String unitName,Double actualAmount);
 
   /**
    * 查询所有用户类型

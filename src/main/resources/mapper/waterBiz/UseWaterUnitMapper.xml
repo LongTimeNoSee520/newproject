@@ -957,22 +957,16 @@
   </select>
 
   <select id="selectCodeByName" resultType="java.util.LinkedHashMap">
-    select
-    unit_name as unitName,
-    unit_code as unitCode
-    from
-    (
-    select
-    unit_name,unit_code,unit_code_type
-    from t_w_use_water_unit
-    where deleted='0'
-    and node_code=#{nodeCode}
-    and unit_name like '%${unitName}%'
-    and unit_code_type in(
-    select unit_type_code as unit_code_type from t_w_use_water_unit_role
-    where person_id=#{userId}
-    )
-    ) t1
+    SELECT
+    unit_name AS unitName,
+    unit_code AS unitCode
+    FROM
+    t_w_water_use_pay_info t1
+    INNER JOIN ( SELECT unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{userId} ) t2 ON SUBSTRING ( t1.unit_code, 5, 2 ) = t2.unit_type_code
+    AND t1.node_code = #{nodeCode}
+    AND (
+    unit_name LIKE  '%${unitName}%'
+    AND actual_amount LIKE '%${actualAmount}%') GROUP BY unit_code,unit_name
 
   </select>
 
