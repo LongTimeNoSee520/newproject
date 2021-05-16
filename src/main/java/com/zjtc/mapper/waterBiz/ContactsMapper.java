@@ -61,5 +61,5 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * @param id 单位
    * @return
    */
-  List<String> selectByUnitIdInquirePerson(@Param("id") String id);
+  List<String> selectByUnitIdInquirePerson(@Param("id") String id,@Param("mobileNumber") String mobileNumber);
 }

@@ -133,6 +133,6 @@
 
 
   <select id="selectByUnitIdInquirePerson" resultType="String">
-    SELECT contacts FROM t_w_use_water_unit_contacts WHERE deleted = '0' AND use_water_unit_id = #{id}
+    SELECT contacts FROM t_w_use_water_unit_contacts WHERE deleted = '0' AND use_water_unit_id = #{id}  AND mobile_number != #{mobileNumber}
   </select>
 </mapper>

@@ -103,7 +103,7 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
 //    查询当前登录者所在的单位
     UseWaterUnit useWaterUnit = this.baseMapper.selectByMobileNumberAll(mobileNumber);
 //      查询部门下的人员名称
-    List<String> persons = this.baseMapper.selectByUnitIdInquirePerson(useWaterUnit.getId());
+    List<String> persons = this.baseMapper.selectByUnitIdInquirePerson(useWaterUnit.getId(),mobileNumber);
     map.put("unit",useWaterUnit);
     map.put("personnel",persons);
     return map;
