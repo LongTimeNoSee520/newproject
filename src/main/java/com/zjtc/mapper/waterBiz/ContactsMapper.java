@@ -54,12 +54,12 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * @param mobileNumber
    * @return
    */
-  UseWaterUnit selectByMobileNumberAll(@Param("mobileNumber") String mobileNumber);
+  UseWaterUnit selectByMobileNumberAll(@Param("mobileNumber") String mobileNumber,@Param("personId") String personId);
 
   /**
    * 通过单位id查询该单位下对用的人员
    * @param id 单位
    * @return
    */
-  List<String> selectByUnitIdInquirePerson(@Param("id") String id,@Param("mobileNumber") String mobileNumber);
+  List<String> selectByUnitIdInquirePerson(@Param("id") String id,@Param("mobileNumber") String mobileNumber,@Param("personId")String personId);
 }
