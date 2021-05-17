@@ -537,16 +537,16 @@ public class UseWaterUnitController {
       apiResponse.setCode(501);
       return apiResponse;
     }
-    if (null == jsonObject.getDouble("actualAmount")){
+    if (null == jsonObject.getDouble("money")){
       apiResponse.setMessage("金额不能为空");
       apiResponse.setCode(501);
       return apiResponse;
     }
     String unitName = jsonObject.getString("unitName");
-    Double actualAmount = jsonObject.getDouble("actualAmount");
+    Double money = jsonObject.getDouble("money");
     if (null != user) {
       try {
-        List<Map<String, Object>> result = useWaterUnitService.selectCodeByName(user.getId(),user.getNodeCode(),unitName,actualAmount);
+        List<Map<String, Object>> result = useWaterUnitService.selectCodeByName(user.getId(),user.getNodeCode(),unitName,money);
         apiResponse.setData(result);
       } catch (Exception e) {
         log.error("根据单位名称查询单位编号,errMsg==={}", e.getMessage());

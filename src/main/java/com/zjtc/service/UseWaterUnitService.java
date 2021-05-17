@@ -139,7 +139,7 @@ public interface UseWaterUnitService extends IService<UseWaterUnit> {
   /**
    * 根据单位名称和金额查询单位编码
    */
-  List<Map<String, Object>> selectCodeByName(String userId,String nodeCode,String unitName,Double actualAmount);
+  List<Map<String, Object>> selectCodeByName(String userId,String nodeCode,String unitName,Double money);
 
   /**
    * 查询所有用户类型
