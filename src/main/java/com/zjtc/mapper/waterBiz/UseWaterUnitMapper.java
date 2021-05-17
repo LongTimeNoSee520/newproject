@@ -44,9 +44,9 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   UseWaterUnitVo selectById(JSONObject jsonObject);
 
   /**
-   * @param ids 单位id集合
+   * @param ids    单位id集合
    * @param UserId 用户id
-   * @param id 当前单位id
+   * @param id     当前单位id
    */
   List<UseWaterUnitRefVo> queryUnitRef(@Param("ids") List<String> ids,
       @Param("nodeCode") String nodeCode, @Param("userId") String UserId,
@@ -56,7 +56,7 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   /**
    * 用水单位批量
    *
-   * @param ids 关联的单位编号
+   * @param ids       关联的单位编号
    * @param updateSql 修改sql
    */
   boolean updateUseWaterUnit(
@@ -67,7 +67,7 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   /**
    * 用水单位批量
    *
-   * @param ids 关联的单位编号
+   * @param ids       关联的单位编号
    * @param updateSql 修改sql
    */
   boolean updateMen(
@@ -112,7 +112,17 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   Map<String, Object> selectByUnitCode(@Param("unitCode") String unitCode,
       @Param("nodeCode") String nodeCode);
 
-  List<Map<String, Object>> selectCodeByName(JSONObject jsonObject);
+  /**
+   * 根据单位名称和实收金额模糊匹配单位名称和单位编号
+   * @param userId 登录者id
+   * @param nodeCode 节点编码
+   * @param unitName 单位名称
+   * @param actualAmount 实收金额
+   * @return
+   */
+  List<Map<String, Object>> selectCodeByName(@Param("userId") String userId,
+      @Param("nodeCode") String nodeCode, @Param("unitName") String unitName,
+      @Param("actualAmount") Double actualAmount);
 
   List<String> selectAllType(@Param("nodeCode") String nodeCode);
 
@@ -147,7 +157,8 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   /**
    * 查询用水单位信息
    */
-  List<OrgTreeVO> selectByTypeUnitAll(@Param("nodeCode")String nodeCode,@Param("fathers") List<OrgTreeVO> fathers);
+  List<OrgTreeVO> selectByTypeUnitAll(@Param("nodeCode") String nodeCode,
+      @Param("fathers") List<OrgTreeVO> fathers);
 
 
   /**

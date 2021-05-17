@@ -526,16 +526,27 @@ public class UseWaterUnitController {
   @RequestMapping(value = "selectCodeByName", method = RequestMethod.POST)
   public ApiResponse selectCodeByName
       (@ApiParam("{\n"
-          + "\"unitName\":\"单位编号\"\n"
+          + "\"unitName\":\"单位编号,\"\n"
+          + "\"actualAmount\":\"金额\"\n"
           + "}") @RequestBody JSONObject jsonObject, @RequestHeader("token") String token) {
     log.info("根据单位名称查询单位编号 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     User user = jwtUtil.getUserByToken(token);
     ApiResponse apiResponse = new ApiResponse();
+    if (null == jsonObject.getString("unitName")){
+      apiResponse.setMessage("单位名称不能为空");
+      apiResponse.setCode(501);
+      return apiResponse;
+    }
+    if (null == jsonObject.getDouble("actualAmount")){
+      apiResponse.setMessage("金额不能为空");
+      apiResponse.setCode(501);
+      return apiResponse;
+    }
+    String unitName = jsonObject.getString("unitName");
+    Double actualAmount = jsonObject.getDouble("actualAmount");
     if (null != user) {
       try {
-        jsonObject.put("nodeCode", user.getNodeCode());
-        jsonObject.put("userId", user.getId());
-        List<Map<String, Object>> result = useWaterUnitService.selectCodeByName(jsonObject);
+        List<Map<String, Object>> result = useWaterUnitService.selectCodeByName(user.getId(),user.getNodeCode(),unitName,actualAmount);
         apiResponse.setData(result);
       } catch (Exception e) {
         log.error("根据单位名称查询单位编号,errMsg==={}", e.getMessage());
