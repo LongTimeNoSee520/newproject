@@ -1,13 +1,14 @@
 package com.zjtc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.PayInfoPrintMapper;
 import com.zjtc.model.PayInfoPrint;
 import com.zjtc.model.User;
 import com.zjtc.service.PayInfoPrintService;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,12 +31,19 @@ public class PayInfoPrintServiceImpl extends
   }
 
   @Override
-  public List<PayInfoPrint> queryByPayId(JSONObject jsonObject) {
-    QueryWrapper wrapper = new QueryWrapper();
-    wrapper.eq("pay_id", jsonObject.getString("id"));
-    wrapper.eq("status","1");
-    wrapper.orderByAsc("print_num");
-    return this.list(wrapper);
+  public Map<String,Object> queryPage(JSONObject jsonObject) {
+    Map<String, Object> page = new LinkedHashMap<>();
+
+    List<Map<String,Object>> result = baseMapper.queryPage(jsonObject);
+    page.put("records", result);
+    page.put("current", jsonObject.getInteger("current"));
+    page.put("size", jsonObject.getInteger("size"));
+    //查询总数据条数
+    long total = baseMapper.queryListTotal(jsonObject);
+    page.put("total", total);
+    long pageSize = jsonObject.getInteger("size");
+    page.put("page", total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
+    return page;
   }
 
   @Override

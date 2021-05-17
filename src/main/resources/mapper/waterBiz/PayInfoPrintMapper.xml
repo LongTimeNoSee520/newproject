@@ -19,11 +19,11 @@
     pay_id,
     print_num,
     status
-  FROM t_w_pay_info_print
+    FROM t_w_pay_info_print
     <if test="null !=payId">
       WHERE pay_id=#{payId}
     </if>
-   order by print_num desc;
+    order by print_num desc;
   </select>
 
   <update id="updatePrinted">
@@ -36,4 +36,128 @@
       #{id}
     </foreach>
   </update>
+
+  <select id="queryPage" resultType="java.util.LinkedHashMap">
+    SELECT
+    top ${size}
+    *
+    FROM
+    (
+    select
+    row_number ( ) over ( ORDER BY create_time desc
+    ) AS rownumber,
+    a.id,
+    print_num as printNum,
+    print_person as printPerson,
+    CONVERT(varchar(100), create_time, 23) AS createTime,
+    unit_code as unitCode,
+    unit_name as unitName,
+    count_year as countYear,
+    count_quarter as countQuarter,
+    quarter_plan as quarterPlan,
+    water_num_amount as waterNumAmount,
+    amount_receivable as amountReceivable,
+    water_meter_code as waterMeterCode
+    FROM
+    (
+    select
+    id,
+    pay_id,
+    print_num ,
+    print_person ,
+    create_time
+    from t_w_pay_info_print
+    where status='1'
+    ) as a
+    inner join (
+    select
+    id,
+    unit_code,
+    unit_name,
+    count_year,
+    count_quarter,
+    quarter_plan,
+    water_num_amount,
+    amount_receivable,
+    use_water_unit_id
+    from t_w_water_use_pay_info as a
+    where node_code=#{nodeCode}
+    <if test="null !=unitCode and unitCode !=''">
+      and unit_code=#{unitCode}
+    </if>
+    <if test="null !=countYear and countYear !=''">
+      and count_year=#{countYear}
+    </if>
+    <if test="null !=countQuarter and countQuarter !=''">
+      and count_quarter=#{countQuarter}
+    </if>
+    ) as b on a.pay_id=b.id
+    inner join (
+    select
+    id ,
+    [water_meter_code] = STUFF (
+    ( SELECT ',' + [water_meter_code] FROM t_w_use_water_unit_meter t WHERE t.use_water_unit_id = uu.id FOR XML PATH ( '' ) ),1,1,'')
+    from t_w_use_water_unit uu
+    where deleted='0'
+    <!--筛选当前用户可操作的用户类型-->
+    and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId} group by unit_type_code)
+    ) c on c.id=b.use_water_unit_id
+    ) temp_row
+    WHERE
+    rownumber > ( ( #{current}- 1 ) * #{size} );
+  </select>
+
+
+  <select id="queryListTotal" resultType="java.lang.Long">
+
+    select
+    count(1)
+    FROM
+    (
+    select
+    id,
+    pay_id,
+    print_num ,
+    print_person ,
+    create_time
+    from t_w_pay_info_print
+    where status='1'
+    ) as a
+    inner join (
+    select
+    id,
+    unit_code,
+    unit_name,
+    count_year,
+    count_quarter,
+    quarter_plan,
+    water_num_amount,
+    amount_receivable,
+    use_water_unit_id
+    from t_w_water_use_pay_info as a
+    where node_code=#{nodeCode}
+    <if test="null !=unitCode and unitCode !=''">
+      and unit_code=#{unitCode}
+    </if>
+    <if test="null !=countYear and countYear !=''">
+      and count_year=#{countYear}
+    </if>
+    <if test="null !=countQuarter and countQuarter !=''">
+      and count_quarter=#{countQuarter}
+    </if>
+    ) as b on a.pay_id=b.id
+    inner join (
+    select
+    id ,
+    [water_meter_code] = STUFF (
+    ( SELECT ',' + [water_meter_code] FROM t_w_use_water_unit_meter t WHERE t.use_water_unit_id = uu.id FOR XML PATH ( '' ) ),1,1,'')
+
+    from t_w_use_water_unit uu
+    where deleted='0'
+    <!--筛选当前用户可操作的用户类型-->
+    and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId} group by unit_type_code)
+    ) c on c.id=b.use_water_unit_id
+
+  </select>
+
 </mapper>

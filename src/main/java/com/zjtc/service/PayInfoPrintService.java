@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.PayInfoPrint;
 import com.zjtc.model.User;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yuyantian
@@ -21,11 +22,11 @@ public interface PayInfoPrintService  extends IService<PayInfoPrint> {
   boolean deleteBatch(JSONObject jsonObject);
 
   /**
-   * 根据缴费id查询打印记录
+   * 分页查询打印记录
    * @param jsonObject
    * @return
    */
-  List<PayInfoPrint> queryByPayId(JSONObject jsonObject);
+  Map<String,Object> queryPage(JSONObject jsonObject);
 
   /**
    * 根据缴费id查询打印记录
