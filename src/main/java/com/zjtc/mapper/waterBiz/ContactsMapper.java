@@ -54,7 +54,7 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * @param mobileNumber
    * @return
    */
-  UseWaterUnit selectByMobileNumberAll(@Param("mobileNumber") String mobileNumber,@Param("personId") String personId);
+  UseWaterUnit selectByMobileNumberAll(@Param("mobileNumber") String mobileNumber,@Param("personId") String personId,@Param("unitCode") String unitCode);
 
   /**
    * 通过单位id查询该单位下对用的人员

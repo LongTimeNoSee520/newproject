@@ -98,10 +98,10 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   }
 
   @Override
-  public Map<String, Object> selectByMobileNumber(String mobileNumber,String personId) {
+  public Map<String, Object> selectByMobileNumber(String mobileNumber,String personId,String unitCode) {
     Map<String, Object> map = new HashMap<>();
 //    查询当前登录者所在的单位
-    UseWaterUnit useWaterUnit = this.baseMapper.selectByMobileNumberAll(mobileNumber,personId);
+    UseWaterUnit useWaterUnit = this.baseMapper.selectByMobileNumberAll(mobileNumber,personId,unitCode);
 //      查询部门下的人员名称
     List<String> persons = this.baseMapper.selectByUnitIdInquirePerson(useWaterUnit.getId(),mobileNumber,personId);
     map.put("unit",useWaterUnit);

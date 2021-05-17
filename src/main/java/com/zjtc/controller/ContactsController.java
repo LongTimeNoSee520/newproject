@@ -54,8 +54,9 @@ public class ContactsController {
     if (null != user.getId()){
       personId = user.getId();
     }
+    String unitCode = user.getUnitCode();
     try {
-      Map<String, Object> map = contactsService.selectByMobileNumber(mobileNumber,personId);
+      Map<String, Object> map = contactsService.selectByMobileNumber(mobileNumber,personId,unitCode);
       response.setData(map);
       return response;
     } catch (Exception e) {

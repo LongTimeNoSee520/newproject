@@ -119,7 +119,7 @@
   </select>
 
   <select id="selectByMobileNumberAll" resultType="com.zjtc.model.UseWaterUnit">
-    SELECT top 1
+    SELECT
     id,
     node_code,
     unit_code,
@@ -128,6 +128,9 @@
     department
     FROM
     t_w_use_water_unit t1 where  1 = 1
+    <if test="unitCode != null and unitCode != ''">
+      and unit_code = #{unitCode}
+    </if>
     <if test="mobileNumber != null and mobileNumber != ''">
       and id IN ( SELECT use_water_unit_id
       FROM t_w_use_water_unit_contacts
@@ -149,7 +152,7 @@
     AND mobile_number != #{mobileNumber}
     </if>
     <if test="personId != null and personId != '' ">
-    and  person_id = #{personId}
+    and  person_id != #{personId}
     </if>
   </select>
 </mapper>
