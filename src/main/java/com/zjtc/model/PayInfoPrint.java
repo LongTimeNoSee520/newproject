@@ -22,7 +22,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@TableName("t_w_message")
+@TableName("t_w_pay_info_print")
 public class PayInfoPrint extends Model<PayInfoPrint> {
   @ApiModelProperty("主键")
   @TableId(value = "id", type = IdType.UUID)
@@ -35,10 +35,14 @@ public class PayInfoPrint extends Model<PayInfoPrint> {
   @ApiModelProperty("缴费记录id")
   @TableField(value = "pay_id",exist = true)
   private String payId;
-
+  //生成规则：单位编号+年+季度+编号（3位）
   @ApiModelProperty("打印通知单编号")
   @TableField(value = "print_num",exist = true)
   private String printNum;
+
+  @ApiModelProperty("打印状态，0否1是")
+  @TableField(value = "status",exist = true)
+  private String status;
 
   @ApiModelProperty("打印人")
   @TableField(value = "print_person",exist = true)

@@ -222,7 +222,9 @@ public class WaterUsePayInfoVo extends Model<WaterUsePayInfoVo>{
 
     @ApiModelProperty("是否签约")
     private String signed;
-    /**
+    @ApiModelProperty("打印编号")
+    private String PrintNum;
+  /**
 	 * 实例化
 	 */
 	public WaterUsePayInfoVo() {

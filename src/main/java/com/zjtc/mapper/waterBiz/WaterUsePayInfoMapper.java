@@ -102,4 +102,5 @@ public interface WaterUsePayInfoMapper extends BaseMapper<WaterUsePayInfo> {
    */
   List<String> queryCodeTypeByPersonId(@Param("userId") String userId,@Param("nodeCode") String nodeCode);
 
+  boolean updatePrinted(@Param("ids") List<String> list);
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjtc.mapper.waterBiz.PayInfoPrintMapper">
+
+  <resultMap id="PayInfoPrint_map" type="com.zjtc.model.PayInfoPrint">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+    <result column="pay_id" property="payId" jdbcType="VARCHAR"/>
+    <result column="print_num" property="printNum" jdbcType="VARCHAR"/>
+    <result column="status" property="status" jdbcType="VARCHAR"/>
+    <result column="print_person" property="printPerson" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+  <select id="selectPrintMess" resultMap="PayInfoPrint_map">
+    select
+    top 1
+    id,
+    pay_id,
+    print_num,
+    status
+  FROM t_w_pay_info_print
+    <if test="null !=payId">
+      WHERE pay_id=#{payId}
+    </if>
+   order by print_num desc;
+  </select>
+
+  <update id="updatePrinted">
+    update t_w_pay_info_print
+    set status='1',
+    print_person=#{user.username},
+    create_time=getDate()
+    where pay_id in
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </update>
+</mapper>

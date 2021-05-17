@@ -5,6 +5,7 @@ import com.zjtc.base.constant.ResponseMsgConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
+import com.zjtc.model.vo.WaterUsePayInfoVo;
 import com.zjtc.service.WaterUsePayInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -593,9 +594,9 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        Map<String,Object> result = waterUsePayInfoService
+        Map<String, Object> result = waterUsePayInfoService
             .printExPlan2(jsonObject, user);
-      apiResponse.setData(result);
+        apiResponse.setData(result);
       } catch (Exception e) {
         log.error("打印汇总表2失败,errMsg==={}", e.getMessage());
         e.printStackTrace();
@@ -621,11 +622,71 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        Map<String,Object> result = waterUsePayInfoService
+        Map<String, Object> result = waterUsePayInfoService
             .printExPlan2(jsonObject, user);
         apiResponse.setData(result);
       } catch (Exception e) {
         log.error("新增打印记录,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "打印催缴通知")
+  @RequestMapping(value = "printAdvice", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse printAdvice(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "\"data\":[{\"xx\":\"缴费列表中选择的要打印的数据对象集合\"},{\"xx\":\"\"}]\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("打印催缴通知， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user && null != jsonObject) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        List<WaterUsePayInfoVo> result = waterUsePayInfoService
+            .printAdvice(jsonObject, user);
+        apiResponse.setData(result);
+      } catch (Exception e) {
+        log.error("打印催缴通知,errMsg==={}", e.getMessage());
+        e.printStackTrace();
+        apiResponse.recordError(500);
+      }
+    } else {
+      apiResponse.recordError(500);
+    }
+    return apiResponse;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "打印成功后，修改打印状态")
+  @RequestMapping(value = "prinSuccess", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse prinSuccess(@RequestHeader("token") String token,
+      @ApiParam("{\n"
+          + "\"ids\":[\"记录打印成功的缴费id\"]\n"
+          + "}") @RequestBody JSONObject jsonObject) {
+    log.info("打印成功后，修改打印状态， 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
+    ApiResponse apiResponse = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user && null != jsonObject) {
+      try {
+        jsonObject.put("nodeCode", user.getNodeCode());
+        jsonObject.put("userId", user.getId());
+        boolean result = waterUsePayInfoService
+            .prinSuccess(jsonObject, user);
+        if(result){
+          apiResponse.setData(result);
+        }else{
+          apiResponse.recordError(500);
+        }
+      } catch (Exception e) {
+        log.error("打印成功后，修改打印状态,errMsg==={}", e.getMessage());
         e.printStackTrace();
         apiResponse.recordError(500);
       }

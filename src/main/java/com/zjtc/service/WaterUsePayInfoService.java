@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.User;
 import com.zjtc.model.WaterUsePayInfo;
+import com.zjtc.model.vo.WaterUsePayInfoVo;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +22,7 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
   /**
    * 保存
    */
-  ApiResponse updateModel(JSONObject jsonObject,User user);
-
+  ApiResponse updateModel(JSONObject jsonObject, User user);
 
 
   /**
@@ -60,15 +60,13 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
 
   /**
    * 修改实收
-   * @param id
-   * @param actualAmount
-   * @return
    */
-  boolean updateActualAmount(String id,double actualAmount);
+  boolean updateActualAmount(String id, double actualAmount);
+
   /**
    * 查询退缴费第一个提交流程的角色信息
    */
-  List<Map<String, Object>> firstRole( User user);
+  List<Map<String, Object>> firstRole(User user);
 
   /**
    * 查询当前单位所有未缴费记录
@@ -85,83 +83,76 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
   List<Map<String, Object>> ThreePayMess(String unitId);
 
   /**
-   *查询催缴通知列表
-   * @param jsonObject
-   * @return
+   * 查询催缴通知列表
    */
-  Map<String,Object> selectPayNotice(JSONObject jsonObject);
+  Map<String, Object> selectPayNotice(JSONObject jsonObject);
 
   /**
    * 短信发送
-   * @param jsonObject
-   * @return
    */
-  boolean send(JSONObject jsonObject,User user) throws Exception;
+  boolean send(JSONObject jsonObject, User user) throws Exception;
 
   /**
    * 导出查询结果
-   * @param jsonObject
-   * @param request
-   * @param response
    */
-  void exportQueryData(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+  void exportQueryData(User user, JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response);
 
   /**
    * 导出用户信息
-   * @param jsonObject
-   * @param request
-   * @param response
    */
-  void exportUser(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
+  void exportUser(User user, JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response)
       throws IOException;
 
   /**
-   *导出计划用水户超计划情况汇总
-   * @param jsonObject
-   * @param request
-   * @param response
+   * 导出计划用水户超计划情况汇总
    */
-  void exportPayInfo(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+  void exportPayInfo(User user, JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response);
 
   /**
    * 导出本行数据
-   * @param jsonObject
-   * @param request
-   * @param response
    */
-  ApiResponse exportBankInfo(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
+  ApiResponse exportBankInfo(User user, JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response)
       throws IOException;
 
   /**
    * 导出他行数据
-   * @param jsonObject
-   * @param request
-   * @param response
    */
-  ApiResponse exportOtherBankInfo(User user,JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response)
+  ApiResponse exportOtherBankInfo(User user, JSONObject jsonObject, HttpServletRequest request,
+      HttpServletResponse response)
       throws IOException;
 
   /**
    * 修改发票信息
+   *
    * @param id 缴费记录id
    * @param invoiceId 发票id
    * @param invoiceNumber 发票号
    * @return boolean
    */
-  boolean editInvoiceInfo(String id,String invoiceId,String invoiceNumber);
+  boolean editInvoiceInfo(String id, String invoiceId, String invoiceNumber);
 
   /**
    * 打印汇总表1
-   * @param jsonObject
-   * @param user
-   * @return
    */
-  Map<String,Object> printExPlan1(JSONObject jsonObject,User user);
+  Map<String, Object> printExPlan1(JSONObject jsonObject, User user);
+
   /**
    * 打印汇总表2
-   * @param jsonObject
-   * @param user
-   * @return
    */
-  Map<String,Object> printExPlan2(JSONObject jsonObject,User user);
+  Map<String, Object> printExPlan2(JSONObject jsonObject, User user);
+
+  /**
+   * 打印催缴通知
+   */
+  List<WaterUsePayInfoVo> printAdvice(JSONObject jsonObject, User user);
+
+  /**
+   * 打印催缴通知成功后，修改打印状态
+   */
+  boolean prinSuccess(JSONObject jsonObject,User user);
+
 }

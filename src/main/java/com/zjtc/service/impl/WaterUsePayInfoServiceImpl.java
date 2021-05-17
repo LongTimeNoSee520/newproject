@@ -13,6 +13,7 @@ import com.zjtc.mapper.waterBiz.UseWaterUnitMapper;
 import com.zjtc.mapper.waterBiz.WaterUsePayInfoMapper;
 import com.zjtc.mapper.waterSys.FlowProcessMapper;
 import com.zjtc.model.Contacts;
+import com.zjtc.model.PayInfoPrint;
 import com.zjtc.model.RefundOrRefund;
 import com.zjtc.model.UseWaterUnitInvoice;
 import com.zjtc.model.User;
@@ -27,6 +28,7 @@ import com.zjtc.service.FileService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
+import com.zjtc.service.PayInfoPrintService;
 import com.zjtc.service.RefundOrRefundService;
 import com.zjtc.service.SmsSendService;
 import com.zjtc.service.SmsService;
@@ -39,6 +41,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -102,6 +105,8 @@ public class WaterUsePayInfoServiceImpl extends
 
   @Autowired
   private FlowProcessMapper flowProcessMapper;
+  @Autowired
+  private PayInfoPrintService payInfoPrintService;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -171,7 +176,7 @@ public class WaterUsePayInfoServiceImpl extends
     Calendar now = Calendar.getInstance();
     //获取本年
     int newYear = now.get(Calendar.YEAR);
-    int nowMonth = now.get(Calendar.MONTH)+1;
+    int nowMonth = now.get(Calendar.MONTH) + 1;
     //获取当前季度
     int countQuarter = nowMonth % 3 == 0 ? nowMonth / 3 : nowMonth / 3 + 1;
     /**重算加价考核，考核过的数据不更新*/
@@ -188,8 +193,8 @@ public class WaterUsePayInfoServiceImpl extends
     String newQuarter = dictUtils
         .getDictItemName("increaseMoneyQuarterCode", String.valueOf(countQuarter),
             jsonObject.getString("nodeCode"));
-    jsonObject.put("countYear",newYear);
-    jsonObject.put("countQuarter",newQuarter);
+    jsonObject.put("countYear", newYear);
+    jsonObject.put("countQuarter", newQuarter);
     /**重算加价前先删除之前的数据*/
     //三种情况:1.托收缴费已托收，2.已选择发票，3：有退减免过程
     baseMapper.deleteByParam(jsonObject);
@@ -241,7 +246,7 @@ public class WaterUsePayInfoServiceImpl extends
     /**修改业务表数据*/
     //待谁审核，谁审核过
     entity.setToAuditPerson(nextPersonId);
-    StringBuffer str=new StringBuffer(user.getId());
+    StringBuffer str = new StringBuffer(user.getId());
     str.append(",");
     entity.setAuditPersons(str.toString());
     refundOrRefundService.updateById(entity);
@@ -305,7 +310,7 @@ public class WaterUsePayInfoServiceImpl extends
     /**修改业务表数据*/
     //待谁审核，谁审核过
     entity.setToAuditPerson(nextPersonId);
-    StringBuffer str=new StringBuffer(user.getId());
+    StringBuffer str = new StringBuffer(user.getId());
     str.append(",");
     entity.setAuditPersons(str.toString());
     refundOrRefundService.updateById(entity);
@@ -439,10 +444,10 @@ public class WaterUsePayInfoServiceImpl extends
         String dictItemCode =
             null == item.get("areaCountry") ? null : item.get("areaCountry").toString();
         //所属区域
-        if(StringUtils.isNotBlank(dictItemCode)){
+        if (StringUtils.isNotBlank(dictItemCode)) {
           item.put("areaCountryName", dictUtils
               .getDictItemNameCountry("area_country_code",
-                  dictItemCode,nodeCode));
+                  dictItemCode, nodeCode));
         }
         //查询相关编号
         List<String> idList = useWaterUnitRefService
@@ -707,6 +712,96 @@ public class WaterUsePayInfoServiceImpl extends
         result.put(type, list);
       }
     }
+    return result;
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public List<WaterUsePayInfoVo> printAdvice(JSONObject jsonObject, User user) {
+    List<WaterUsePayInfoVo> result = jsonObject.getJSONArray("data")
+        .toJavaList(WaterUsePayInfoVo.class);
+    //要保持的打印记录
+    List<PayInfoPrint> payInfoPrintList = new ArrayList<>();
+
+    if (!result.isEmpty()) {
+      //新增催缴通知 打印编号打印记录
+      for (WaterUsePayInfoVo item : result) {
+        //要打印记录的集合
+        PayInfoPrint entity = new PayInfoPrint();
+        String newPrintNum;
+        PayInfoPrint payInfoPrint
+            = payInfoPrintService.selectPrintMess(item.getId());
+        //如果当季没有,按规则新增打印编号
+        if (null == payInfoPrint) {
+          newPrintNum = payInfoPrintService
+              .createPrintNum(item.getUnitCode(), item.getCountYear().toString(),
+                  item.getCountQuarter());
+          item.setPrintNum(newPrintNum);
+
+        }
+        //如果当季度已存在，未打印，取已有打印编号
+        else if ("0".equals(payInfoPrint.getStatus())) {
+          newPrintNum = payInfoPrint.getPrintNum();
+          entity.setId(payInfoPrint.getId());
+        }
+        //如果当季度已存在，且已打印，在打印编号上累加1
+        else {
+          newPrintNum = payInfoPrint.getPrintNum();
+          newPrintNum = craeatRank(newPrintNum);
+        }
+        //在结果集中，插入打印编号
+        item.setPrintNum(newPrintNum);
+        entity.setPrintNum(newPrintNum);
+        entity.setNodeCode(user.getNodeCode());
+        entity.setPayId(item.getId());
+        entity.setStatus("0");
+        payInfoPrintList.add(entity);
+      }
+      /**新增或修改打印记录*/
+      payInfoPrintService.saveOrUpdateBatch(payInfoPrintList);
+    }
+    return result;
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public boolean prinSuccess(JSONObject jsonObject, User user) {
+    boolean result1 = true;
+    boolean result2 = true;
+    List<String> param = jsonObject.getJSONArray("ids")
+        .toJavaList(String.class);
+    if (!param.isEmpty()) {
+      //修改缴费记录的是否打印状态
+      result1 = baseMapper.updatePrinted(param);
+      //修改打印记录的打印状态
+      result2 = payInfoPrintService.updatePrinted(param, user);
+    }
+    return result1 && result2;
+  }
+
+  //生成3位排序号
+  private String craeatRank(String printNum) {
+    String result;
+    String maxCount = printNum.substring(printNum.length() - 3);
+    //生成新的排序号，最大值加1
+    int count = 0;
+    if (StringUtils.isNotBlank(maxCount)) {
+
+      count = Integer.parseInt(maxCount) + 1;
+    } else {
+      maxCount = "001";
+    }
+
+    if (count > 0) {
+      maxCount = "00" + count;
+    }
+    if (count > 9) {
+      maxCount = "0" + count;
+    }
+    if (count > 99) {
+      maxCount = String.valueOf(count);
+    }
+    result = printNum.substring(0, printNum.length() - 3) + maxCount;
     return result;
   }
 }

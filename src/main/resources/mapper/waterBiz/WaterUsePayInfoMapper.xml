@@ -1404,4 +1404,13 @@
 		<if test="null !=userId"> and person_id=#{userId} </if>
 		 group by unit_type_code
 	</select>
+
+	<update id="updatePrinted">
+		update t_w_water_use_pay_info
+ 		set printed='1'
+ 		where id in
+		<foreach collection="ids" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</update>
 </mapper>
