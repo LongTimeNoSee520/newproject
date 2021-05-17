@@ -65,5 +65,5 @@ public interface ContactsService extends IService<Contacts> {
   /**
    *   通过联系电话查询所在部门和该部门下所有的人员
    */
-  Map<String, Object> selectByMobileNumber(String mobileNumber);
+  Map<String, Object> selectByMobileNumber(String mobileNumber,String personId,String unitCode);
 }

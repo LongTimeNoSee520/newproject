@@ -45,8 +45,18 @@ public class ContactsController {
     ApiResponse response = new ApiResponse();
     User user = jwtUtil.getUserByToken(token);
     System.out.println("登录的用户信息:"+user);
+    String mobileNumber = null;
+    if (null != user.getMobileNumber()){
+      mobileNumber = user.getMobileNumber();
+    }
+
+    String personId = null;
+    if (null != user.getId()){
+      personId = user.getId();
+    }
+    String unitCode = user.getUnitCode();
     try {
-      Map<String, Object> map = contactsService.selectByMobileNumber(user.getMobileNumber());
+      Map<String, Object> map = contactsService.selectByMobileNumber(mobileNumber,personId,unitCode);
       response.setData(map);
       return response;
     } catch (Exception e) {
