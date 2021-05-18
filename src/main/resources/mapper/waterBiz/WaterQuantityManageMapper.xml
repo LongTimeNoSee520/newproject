@@ -139,13 +139,14 @@
      INNER JOIN
     (
      SELECT use_water_unit_id,use_year,
-    (COALESCE (january_count,0)+COALESCE (february_count,0)+COALESCE (march_count,0)) AS  firstQuarter,
-    (COALESCE (april_count,0)+COALESCE (may_count,0)+COALESCE (june_count,0)) AS  secondQuarter,
-    (COALESCE (july_count,0)+COALESCE (august_count,0)+COALESCE (september_count,0)) AS  threeQuarter,
-    (COALESCE (october_count,0)+COALESCE (november_count,0)+COALESCE (december_count,0)) AS  fourthQuarter
+    sum(COALESCE (january_count,0)+COALESCE (february_count,0)+COALESCE (march_count,0)) AS  firstQuarter,
+    sum(COALESCE (april_count,0)+COALESCE (may_count,0)+COALESCE (june_count,0)) AS  secondQuarter,
+    sum(COALESCE (july_count,0)+COALESCE (august_count,0)+COALESCE (september_count,0)) AS  threeQuarter,
+    sum(COALESCE (october_count,0)+COALESCE (november_count,0)+COALESCE (december_count,0)) AS  fourthQuarter
     FROM t_w_water_month_use_data
     WHERE use_year> #{currentYear}-3
     AND use_year &lt;= #{currentYear}
+    GROUP BY use_water_unit_id,use_year
     )t2
     ON t1.id=t2.use_water_unit_id
     ORDER BY t2.use_year ASC
