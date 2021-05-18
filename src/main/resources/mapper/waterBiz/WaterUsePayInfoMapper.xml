@@ -167,13 +167,16 @@
 		responsibility_code,
 		unit_code_group
 		from t_w_use_water_unit uu
-		where deleted='0'
 		<!--筛选当前用户可操作的用户类型-->
-		and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId})
+		inner join (
+		SELECT unit_type_code  FROM t_w_use_water_unit_role WHERE person_id =#{userId}
 		<!--查询筛选的用户类型-->
 		<if test="null !=userType and userType !=''">
-			and unit_code_type=#{userType}
+			and unit_type_code=#{userType}
 		</if>
+		group by unit_type_code
+		) as tt on uu.unit_code_type=tt.unit_type_code
+		where deleted='0'
 		) t2 on t2.id=t1.use_water_unit_id
 		LEFT JOIN ( SELECT * FROM t_w_bank WHERE main = '1' AND deleted = '0' ) t4 ON t4.use_water_unit_id = t1.use_water_unit_id
 		LEFT JOIN ( SELECT * FROM t_w_use_water_base_plan WHERE deleted = '0' ) t5 ON t5.use_water_unit_id = t1.use_water_unit_id
@@ -294,13 +297,16 @@
 		responsibility_code,
 		unit_code_group
 		from t_w_use_water_unit uu
-		where deleted='0'
 		<!--筛选当前用户可操作的用户类型-->
-		and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId})
+		inner join (
+		SELECT unit_type_code  FROM t_w_use_water_unit_role WHERE person_id =#{userId}
 		<!--查询筛选的用户类型-->
 		<if test="null !=userType and userType !=''">
-			and unit_code_type=#{userType}
+			and unit_type_code=#{userType}
 		</if>
+		group by unit_type_code
+		) as tt on uu.unit_code_type=tt.unit_type_code
+		where deleted='0'
 		) t2 on t2.id=t1.use_water_unit_id
 		LEFT JOIN ( SELECT * FROM t_w_bank WHERE deleted = '0' and main='1' ) t4 ON t4.use_water_unit_id = t1.use_water_unit_id
 		LEFT JOIN ( SELECT * FROM t_w_use_water_base_plan WHERE deleted = '0' ) t5 ON t5.use_water_unit_id = t1.use_water_unit_id
@@ -899,7 +905,7 @@
 			and count_quarter=#{quarter}
 		</if>
 		) t1
-		inner join (select id,unit_code,unit_name,unit_address,area_country,responsibility_code,save_unit_type,zip_address,zip_name,invoice_unit_name,unit_code_type,industry,department,abnormal_cause from t_w_use_water_unit where deleted='0' and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId}))t2 on t2.id=t1.use_water_unit_id
+		inner join (select id,unit_code,unit_name,unit_address,area_country,responsibility_code,save_unit_type,zip_address,zip_name,invoice_unit_name,unit_code_type,industry,department,abnormal_cause from t_w_use_water_unit where deleted='0' and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId} group by unit_type_code))t2 on t2.id=t1.use_water_unit_id
 		LEFT JOIN ( SELECT use_water_unit_id,signed,bank_of_deposit,bank_account,people_bank_pay_sys_number,agreement_number,focus_user_remark,other_bank FROM t_w_bank WHERE main = '1' AND deleted = '0' ) t3 ON t3.use_water_unit_id = t2.id
 	</select>
 
@@ -1033,7 +1039,7 @@
 		from t_w_use_water_unit uu
 		where deleted='0'
 		<!--筛选当前用户可操作的用户类型-->
-		and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId})
+		and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId} group by unit_type_code)
 		<!--查询筛选的用户类型-->
 		<if test="null !=userType and userType !=''">
 			and unit_code_type=#{userType}
@@ -1071,7 +1077,7 @@
 		from t_w_water_use_pay_info
 		where node_code=#{nodeCode}
 		and  pay_status != '1'
-		and substring( unit_code, 5, 2 ) in(select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId} )
+		and substring( unit_code, 5, 2 ) in(select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId} group by unit_type_code)
 		and pay_status != '5'
 		<if test="null !=year and year !=''">
 			and	count_year=#{year}
@@ -1085,7 +1091,7 @@
 		unit_code
 		from t_w_use_water_unit
 		where deleted='0'
-		and   unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId})
+		and   unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId} group by unit_type_code)
 		) as t2 on t2.unit_code =t1.unit_code
 		inner JOIN (
 		SELECT
