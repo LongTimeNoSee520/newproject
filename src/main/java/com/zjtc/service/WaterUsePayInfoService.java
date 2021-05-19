@@ -28,7 +28,7 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
   /**
    * 分页查询
    */
-  Map<String, Object> queryPage(JSONObject jsonObject);
+  Map<String, Object> queryPage(JSONObject jsonObject,User user);
 
   /**
    * 重算加价
@@ -146,9 +146,9 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
   Map<String, Object> printExPlan2(JSONObject jsonObject, User user);
 
   /**
-   * 打印催缴通知
+   * 打印催缴通知--预置打印编号
    */
-  List<WaterUsePayInfoVo> printAdvice(JSONObject jsonObject, User user);
+  List<WaterUsePayInfoVo> printAdvice(List<WaterUsePayInfoVo> list, User user);
 
   /**
    * 打印催缴通知成功后，修改打印状态

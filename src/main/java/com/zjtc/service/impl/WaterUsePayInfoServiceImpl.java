@@ -153,9 +153,10 @@ public class WaterUsePayInfoServiceImpl extends
 
 
   @Override
-  public Map<String, Object> queryPage(JSONObject jsonObject) {
+  public Map<String, Object> queryPage(JSONObject jsonObject,User user) {
     Map<String, Object> page = new LinkedHashMap<>();
     List<WaterUsePayInfoVo> result = baseMapper.queryPage(jsonObject);
+    result=this.printAdvice(result,user);
     page.put("records", result);
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
@@ -717,15 +718,14 @@ public class WaterUsePayInfoServiceImpl extends
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public List<WaterUsePayInfoVo> printAdvice(JSONObject jsonObject, User user) {
-    List<WaterUsePayInfoVo> result = jsonObject.getJSONArray("data")
-        .toJavaList(WaterUsePayInfoVo.class);
+  public List<WaterUsePayInfoVo> printAdvice(List<WaterUsePayInfoVo> list, User user) {
+
     //要保持的打印记录
     List<PayInfoPrint> payInfoPrintList = new ArrayList<>();
 
-    if (!result.isEmpty()) {
+    if (!list.isEmpty()) {
       //新增催缴通知 打印编号打印记录
-      for (WaterUsePayInfoVo item : result) {
+      for (WaterUsePayInfoVo item : list) {
         //要打印记录的集合
         PayInfoPrint entity = new PayInfoPrint();
         String newPrintNum;
@@ -760,7 +760,7 @@ public class WaterUsePayInfoServiceImpl extends
       /**新增或修改打印记录*/
       payInfoPrintService.saveOrUpdateBatch(payInfoPrintList);
     }
-    return result;
+    return list;
   }
 
   @Override
