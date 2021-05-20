@@ -39,13 +39,13 @@ public interface UseWaterOriginalPlanService extends IService<UseWaterOriginalPl
 	Map<String,Object> queryPageOld(JSONObject jsonObject);
 
 	/**
-	 * 获取本年度初始化编制信息老户
+	 * 获取本年度初始化编制信息老户)(老户查询)
 	 * @param jsonObject
 	 * @return
 	 */
   List<Map<String,Object>> goPlanningOld(JSONObject jsonObject);
 	/**
-	 * 获取本年度初始化编制信息新户
+	 * 获取本年度初始化编制信息新户(新户查询)
 	 * @param userId
 	 * @param nodeCode
 	 * @return

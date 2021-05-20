@@ -333,9 +333,12 @@ public class UseWaterOriginalPlanServiceImpl extends
       //计算当前年前三季度(当前年中间俩进度，下一年编制是2021，则今年就是2020)
       threeWaterMonth = "april_count + may_count + june_count + july_count + august_count + september_count";
     }
+    long start= System.currentTimeMillis();
     //初始化的数据
     list = baseMapper
         .initPlanNew(year, userId, nodeCode, ParamOne, ParamTwo, threeWaterMonth, fourWaterMonth);
+    long end= System.currentTimeMillis()-start;
+    System.out.println(end);
     /**初始化基础算法*/
     Algorithm algorithmBase = algorithmService.queryAlgorithm(nodeCode, "1");
     /**初始化定额算法*/

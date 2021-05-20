@@ -396,16 +396,18 @@
     unit_code_type,
     save_unit_type
     FROM
-    t_w_use_water_unit
+    t_w_use_water_unit uu
+    <!--类型权限，保存一定是所有，权限的意义就是查看-->
+    inner join (
+    SELECT unit_type_code  FROM t_w_use_water_unit_role WHERE person_id =#{userId}
+    group by unit_type_code
+    ) as tt on uu.unit_code_type=tt.unit_type_code
     WHERE
     deleted = '0'
     and node_code=#{nodeCode}
     <!--排除再原始表中有当年数据-->
     and id not in(select use_water_unit_id as id from t_w_use_water_original_plan where
     plan_year=#{year} AND node_code=#{nodeCode})
-    <!--类型权限，保存一定是所有，权限的意义就是查看-->
-    and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role
-    WHERE person_id = #{userId})
     ) t1
     <!--三年基础-->
     left join (
