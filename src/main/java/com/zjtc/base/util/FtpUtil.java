@@ -66,16 +66,18 @@ public class FtpUtil {
    * 获取FTPClient对象
    */
   public String upload(MultipartFile file) throws Exception {
-    FTPClient ftpClient = pool.getFTPClient();
     InputStream input = file.getInputStream();
+    FTPClient ftpClient = null;
+    String fileName=null;
+    try {
+     ftpClient = pool.getFTPClient();
     //开始进行文件上传
     String uploadFileName = file.getOriginalFilename();//上传附件名
     String suffix = uploadFileName
-        .substring(uploadFileName.lastIndexOf("."), uploadFileName.length());//文件后缀
+        .substring(uploadFileName.lastIndexOf("."));//文件后缀
     //获取附件上传路径
-    String fileName = UUID.randomUUID().toString().replace("-", "") + TimeUtil
+     fileName = UUID.randomUUID().toString().replace("-", "") + TimeUtil
         .formatTimeyyyyMMdd() + suffix;//文件名重新命名，避免重复
-    try {
       //判断文件目录是否存在
       //切换至存储目录
       boolean flag = ftpClient.changeWorkingDirectory(fileUploadPath);
@@ -86,12 +88,10 @@ public class FtpUtil {
       boolean result = ftpClient.storeFile(fileName, input);//执行文件传输
       // System.out.println( ftpClient.getReplyCode());
       if (!result) {//上传失败
-        log.error("附件上传失败");
+        fileName=null;
         throw new RuntimeException("上传失败");
       }
     } catch (Exception e) {
-      e.printStackTrace();
-      return null;
     } finally {//关闭资源
       input.close();
       pool.returnFTPClient(ftpClient);//归还资源

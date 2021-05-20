@@ -96,7 +96,8 @@ public class FileController {
           result.put("file", sysAttrFile);
           result.put("uploadPath", uploadPath);
           apiResponse.setData(result);
-          apiResponse.setCode(200);
+        }else{
+          apiResponse.recordError(500);
         }
       } catch (Exception e) {
         log.error("附件上传失败,errMsg==={" + e.getMessage() + "}");

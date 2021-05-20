@@ -1,6 +1,10 @@
 package com.zjtc.base.ftp;
 
+import com.zjtc.base.util.FtpUtil;
 import java.io.IOException;
+import java.net.SocketException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.pool2.PooledObject;
@@ -17,7 +21,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class FtpClientFactory implements PooledObjectFactory<FTPClient> {
-
+  private final static Log logger = LogFactory.getLog(FtpUtil.class);
   /**
    * FTP主机服务器
    */
@@ -78,14 +82,18 @@ public class FtpClientFactory implements PooledObjectFactory<FTPClient> {
   //初始化连接
   @Override
   public void activateObject(PooledObject<FTPClient> pooledObject) throws Exception {
-    FTPClient ftpClient = pooledObject.getObject();
-    ftpClient.connect(ftpHost,ftpPort);
-    ftpClient.login(ftpUserName, ftpPassword);
-    ftpClient.setControlEncoding("utf-8");
-    ftpClient.changeWorkingDirectory("/");
-    ftpClient.enterLocalPassiveMode();
-    ftpClient.setFileTransferMode(FTP.STREAM_TRANSFER_MODE);
-    ftpClient.setFileType(FTP.BINARY_FILE_TYPE);//设置上传文件类型为二进制，否则将无法打开文件
+    try{
+      FTPClient ftpClient = pooledObject.getObject();
+      ftpClient.connect(ftpHost,ftpPort);
+      ftpClient.login(ftpUserName, ftpPassword);
+      ftpClient.setControlEncoding("utf-8");
+      ftpClient.changeWorkingDirectory("/");
+      ftpClient.enterLocalPassiveMode();
+      ftpClient.setFileTransferMode(FTP.STREAM_TRANSFER_MODE);
+      ftpClient.setFileType(FTP.BINARY_FILE_TYPE);//设置上传文件类型为二进制，否则将无法打开文件
+    }catch (SocketException e){
+      logger.error("ftp服务连接异常");
+    }
   }
   //钝化连接，使链接变为可用状态
   @Override
