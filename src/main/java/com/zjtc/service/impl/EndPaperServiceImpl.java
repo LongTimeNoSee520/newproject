@@ -24,12 +24,12 @@ import com.zjtc.model.User;
 import com.zjtc.model.vo.EndPaperPrintVO;
 import com.zjtc.model.vo.EndPaperVO;
 import com.zjtc.model.vo.SendListVO;
+import com.zjtc.service.CommonService;
 import com.zjtc.service.EndPaperService;
 import com.zjtc.service.FileService;
 import com.zjtc.service.FlowExampleService;
 import com.zjtc.service.FlowNodeInfoService;
 import com.zjtc.service.FlowProcessService;
-import com.zjtc.service.MessageService;
 import com.zjtc.service.PlanDailyAdjustmentService;
 import com.zjtc.service.SmsSendService;
 import com.zjtc.service.SmsService;
@@ -81,7 +81,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
   private FlowExampleService flowExampleService;
 
   @Autowired
-  private MessageService messageService;
+  private CommonService commonService;
 
   @Autowired
   private WaterUsePayInfoService waterUsePayInfoService;
@@ -290,13 +290,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
             waterPlanAddWX.setAuditStatus("4");//微信端提交审核通过后办结单审核也通过
             waterPlanAddWX.setAddNumber(addNumber);
             useWaterPlanAddWXService.update(waterPlanAddWX, user);
-            /**新增通知给用水单位*/
-            messageService.messageToUnit(endPaper.getUnitCode(), messageContent1,
-                AuditConstants.END_PAPER_TODO_TITLE);
-            /**短信通知给用水单位*/
-            smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent1, "调整结果通知");
-            // webSocket推送到公共服务端
-            webSocketUtil.pushPublicNews(endPaper.getNodeCode(), endPaper.getUnitCode());
+            /**异步发通知、短信、webSocket*/
+            commonService.handleResultMessage(user,endPaper.getNodeCode(),messageContent1,endPaper.getUnitCode());
           }
         }
         /**新增通知给发起人*/
@@ -315,15 +310,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
                   + firstWater + "方，第二水量" + secondWater + "方)]办结单审核已通过。";
         }
         if (!"2".equals(endPaper.getAuditStatus())) {
-          messageService
-              .add(user.getNodeCode(), firstProcess.getOperatorId(), firstProcess.getOperator(),
-                  AuditConstants.END_PAPER_MESSAGE_TYPE, messageContent, id);
-          /**短信通知给发起人*/
-          smsService
-              .sendMsgToPromoter(user, firstProcess.getOperatorId(), firstProcess.getOperator(),
-                  messageContent, "计划通知");
-          //webSocket推送到前端
-          webSocketUtil.pushWaterNews(firstProcess.getNodeCode(), firstProcess.getOperatorId());
+          /**异步新增消息、发送短信、webSocket推送给发起人*/
+          commonService.handleMessageToPromoter(user,firstProcess.getOperatorId(),firstProcess.getOperator(),messageContent,firstProcess.getNodeCode(),id);
         }
       }
       if ("0".equals(auditBtn)) {//本次审核不通过(没有下一环节则是回到提交人，由提交人本人审核的本条数据，不发起通知)
@@ -342,12 +330,8 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
                   + addNumber + "方(第一水量"
                   + firstWater + "方，第二水量" + secondWater + "方)]审核未通过。";
         }
-        messageService.messageToUnit(endPaper.getUnitCode(), messageContent,
-            AuditConstants.END_PAPER_TODO_TITLE);
-        /**短信通知给用水单位*/
-        smsService.sendMsgToUnit(user, endPaper.getUnitCode(), messageContent, "计划通知");
-        // webSocket推送到公共服务端
-        webSocketUtil.pushPublicNews(endPaper.getNodeCode(), endPaper.getUnitCode());
+        /**异步新增消息、发送短信、webSocket推送给单位*/
+        commonService.handleMessageToUnit(user,endPaper.getUnitCode(),messageContent,endPaper.getNodeCode());
       }
       //修改待办状态
       todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
@@ -593,18 +577,9 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
             .getFirstQuarter() + "方,二季度"
             + useWaterPlan.getSecondQuarter() + "方,三季度" + useWaterPlan.getThirdQuarter() + "方,四季度"
             + useWaterPlan.getFourthQuarter() + "方。";
-    try {
-      messageService.messageToUnit(useWaterPlan.getUnitCode(), messageContent,
-          AuditConstants.END_PAPER_TODO_TITLE);
-      /**向用水单位发送短信*/
-      smsService.sendMsgToUnit(user, useWaterPlan.getUnitCode(), messageContent, "计划通知");
-      // webSocket向公共服务平台推送消息
-      webSocketUtil.pushPublicNews(useWaterPlan.getNodeCode(), useWaterPlan.getUnitCode());
-      /**日志*/
-      systemLogService.logInsert(user, "办结单管理", "执行", null);
-    } catch (Exception e) {
-      log.error("办结单执行通知或短信发送失败,errMsg==={}" + e.getMessage());
-    }
+    commonService.handleExecuteMessage(user,useWaterPlan.getUnitCode(),messageContent,useWaterPlan.getNodeCode());
+    /**日志*/
+    systemLogService.logInsert(user, "办结单管理", "执行", null);
     return response;
 
   }

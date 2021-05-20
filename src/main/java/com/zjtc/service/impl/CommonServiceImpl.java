@@ -1,10 +1,15 @@
 package com.zjtc.service.impl;
 
+import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.constant.SystemConstants;
 import com.zjtc.base.util.CommonUtil;
 import com.zjtc.base.util.JxlsUtils;
+import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.CommonMapper;
+import com.zjtc.model.User;
 import com.zjtc.service.CommonService;
+import com.zjtc.service.MessageService;
+import com.zjtc.service.SmsService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,7 +42,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Slf4j
 public class CommonServiceImpl implements CommonService{
-
+  @Autowired
+  private MessageService messageService;
+  @Autowired
+  private SmsService smsService;
+  @Autowired
+  private WebSocketUtil webSocketUtil;
   /**
    * 附件上传盘符
    */
@@ -204,4 +215,69 @@ public class CommonServiceImpl implements CommonService{
       log.error(errorMsg);
     }
   }
+
+  @Override
+  @Async("asyncExecutor")
+  public void handleResultMessage(User user, String nodeCode, String messageContent, String unitCode)
+  {
+    try {
+      /**新增通知给用水单位*/
+      messageService.messageToUnit(unitCode, messageContent,
+          AuditConstants.END_PAPER_TODO_TITLE);
+      /**短信通知给用水单位*/
+      smsService.sendMsgToUnit(user, unitCode, messageContent, "调整结果通知");
+      // webSocket推送到公共服务端
+      webSocketUtil.pushPublicNews(nodeCode,unitCode);
+    }catch (Exception e){
+      log.error("办结单审核通知新增或短信发送失败,errMsg==={}" + e.getMessage());
+    }
+  }
+
+  @Override
+  @Async("asyncExecutor")
+  public void handleMessageToPromoter(User user, String operatorId, String operator,
+      String messageContent, String processNodeCode, String id) {
+    try {
+      messageService
+          .add(user.getNodeCode(), operatorId, operator, AuditConstants.END_PAPER_MESSAGE_TYPE,
+              messageContent, id);
+      /**短信通知给发起人*/
+      smsService.sendMsgToPromoter(user, operatorId, operator, messageContent, "计划通知");
+      //webSocket推送到前端
+      webSocketUtil.pushWaterNews(processNodeCode,operatorId);
+    }catch (Exception e){
+      log.error("办结单审核通知新增或短信发送失败,errMsg==={}" + e.getMessage());
+    }
+  }
+
+  @Override
+  @Async("asyncExecutor")
+  public void handleMessageToUnit(User user,String unitCode, String messageContent, String nodeCode)
+  {
+    try{
+      messageService.messageToUnit(unitCode, messageContent,AuditConstants.END_PAPER_TODO_TITLE);
+      /**短信通知给用水单位*/
+      smsService.sendMsgToUnit(user, unitCode, messageContent, "计划通知");
+      // webSocket推送到公共服务端
+      webSocketUtil.pushPublicNews(nodeCode,unitCode);
+    }catch (Exception e){
+      log.error("办结单审核通知新增或短信发送失败,errMsg==={}" + e.getMessage());
+    }
+  }
+
+  @Override
+  @Async("asyncExecutor")
+  public void handleExecuteMessage(User user,String unitCode, String messageContent, String nodeCode) {
+    try {
+      messageService.messageToUnit(unitCode, messageContent,
+          AuditConstants.END_PAPER_TODO_TITLE);
+      /**向用水单位发送短信*/
+      smsService.sendMsgToUnit(user, unitCode, messageContent, "计划通知");
+      // webSocket向公共服务平台推送消息
+      webSocketUtil.pushPublicNews(nodeCode, unitCode);
+    } catch (Exception e) {
+      log.error("办结单执行通知新增或短信发送失败,errMsg==={}" + e.getMessage());
+    }
+  }
+
 }

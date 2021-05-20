@@ -1,6 +1,7 @@
 package com.zjtc.service;
 
 
+import com.zjtc.model.User;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -47,4 +48,11 @@ public interface CommonService  {
    * @return
    */
   boolean updatePrintStatus(List<String> ids, String module);
+
+  /**异步新增消息、发送短信、webSocket推送*/
+  void handleResultMessage(User user, String nodeCode, String messageContent, String unitCode);
+  void handleMessageToPromoter(User user, String operatorId, String operator,
+      String messageContent, String nodeCode, String id);
+  void handleMessageToUnit(User user,String unitCode, String messageContent, String nodeCode);
+  void handleExecuteMessage(User user,String unitCode, String messageContent, String nodeCode);
 }
