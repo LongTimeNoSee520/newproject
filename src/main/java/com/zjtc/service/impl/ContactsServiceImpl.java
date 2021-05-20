@@ -3,9 +3,8 @@ package com.zjtc.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.ContactsMapper;
 import com.zjtc.model.Contacts;
-import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterUnit;
-import com.zjtc.model.vo.OrgTreeVO;
+import com.zjtc.model.vo.AddressBook;
 import com.zjtc.service.ContactsService;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,13 +92,16 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   }
 
   @Override
-  public List<OrgTreeVO> selectContacts(String nodeCode,List<OrgTreeVO> fathers) {
+  public List<AddressBook> selectContacts(String nodeCode,List<AddressBook> fathers) {
     return this.baseMapper.selectContacts(nodeCode,fathers);
   }
 
   @Override
   public Map<String, Object> selectByMobileNumber(String mobileNumber,String personId,String unitCode) {
     Map<String, Object> map = new HashMap<>();
+    if (StringUtils.isBlank(unitCode)){
+      return map;
+    }
 //    查询当前登录者所在的单位
     UseWaterUnit useWaterUnit = this.baseMapper.selectByMobileNumberAll(mobileNumber,personId,unitCode);
 //      查询部门下的人员名称

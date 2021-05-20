@@ -1011,7 +1011,7 @@
     unit_code_type
     from t_w_use_water_unit
     where node_code=#{nodeCode}
-    GROUP BY unit_code_type
+    GROUP BY unit_code_type order by unit_code_type
   </select>
 
   <select id="selectUnitMap" resultType="java.util.LinkedHashMap">
@@ -1263,7 +1263,7 @@
 <!--    </if>-->
 <!--  </select>-->
 
-  <select id="selectByTypeUnitAll" resultType="com.zjtc.model.vo.OrgTreeVO">
+  <select id="selectByTypeUnitAll" resultType="com.zjtc.model.vo.AddressBook">
     SELECT
     t3.id,
     t3.node_code AS nodeCode,

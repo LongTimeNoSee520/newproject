@@ -3,6 +3,7 @@ package com.zjtc.mapper.waterBiz;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnit;
+import com.zjtc.model.vo.AddressBook;
 import com.zjtc.model.vo.OrgTreeVO;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.model.vo.UseWaterUnitVo;
@@ -157,8 +158,8 @@ public interface UseWaterUnitMapper extends BaseMapper<UseWaterUnit> {
   /**
    * 查询用水单位信息
    */
-  List<OrgTreeVO> selectByTypeUnitAll(@Param("nodeCode") String nodeCode,
-      @Param("fathers") List<OrgTreeVO> fathers);
+  List<AddressBook> selectByTypeUnitAll(@Param("nodeCode") String nodeCode,
+      @Param("fathers") List<AddressBook> fathers);
 
 
   /**

@@ -2,10 +2,9 @@ package com.zjtc.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.Contacts;
-import com.zjtc.model.vo.OrgTreeVO;
+import com.zjtc.model.vo.AddressBook;
 import java.util.List;
 import java.util.Map;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * @author lianghao
@@ -60,7 +59,7 @@ public interface ContactsService extends IService<Contacts> {
    * @param nodeCode 节点编码
    * @param fathers 父级部门
    */
-  List<OrgTreeVO> selectContacts(String nodeCode,List<OrgTreeVO> fathers);
+  List<AddressBook> selectContacts(String nodeCode,List<AddressBook> fathers);
 
   /**
    *   通过联系电话查询所在部门和该部门下所有的人员

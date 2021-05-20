@@ -82,7 +82,7 @@
 <!--    </if>-->
 <!--  </select>-->
 
-  <select id="selectContacts" resultType="com.zjtc.model.vo.OrgTreeVO">
+  <select id="selectContacts" resultType="com.zjtc.model.vo.AddressBook">
     SELECT DISTINCT
       t1.id,
       t1.use_water_unit_id AS parentId,

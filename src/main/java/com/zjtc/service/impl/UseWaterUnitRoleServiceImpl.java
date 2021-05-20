@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.mapper.waterBiz.UseWaterUnitRoleMapper;
 import com.zjtc.model.UseWaterUnitRole;
-import com.zjtc.model.vo.OrgTreeVO;
+import com.zjtc.model.vo.AddressBook;
 import com.zjtc.service.UseWaterUnitRoleService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -172,7 +172,7 @@ public class UseWaterUnitRoleServiceImpl extends
   }
 
   @Override
-  public List<OrgTreeVO> selectUnitRoles(String personId, String nodeCode) {
+  public List<AddressBook> selectUnitRoles(String personId, String nodeCode) {
     if(StringUtils.isNotBlank(personId) && StringUtils.isNotBlank(nodeCode)){
       return this.baseMapper.selectUnitRoles(personId,nodeCode);
     }

@@ -11,7 +11,7 @@ import com.zjtc.model.File;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.UseWaterUnitRef;
 import com.zjtc.model.User;
-import com.zjtc.model.vo.OrgTreeVO;
+import com.zjtc.model.vo.AddressBook;
 import com.zjtc.model.vo.RefEditData;
 import com.zjtc.model.vo.UseWaterUnitRefVo;
 import com.zjtc.model.vo.UseWaterUnitVo;
@@ -913,16 +913,16 @@ public class UseWaterUnitServiceImpl extends
 //  }
 
   @Override
-  public List<OrgTreeVO> selectUnitCode(String nodeCode, String condition,String userId) {
+  public List<AddressBook> selectUnitCode(String nodeCode, String condition,String userId) {
 //    查询全部类型,相当于是顶级部门 orgTreeVOS
-    List<OrgTreeVO> orgTreeVOS = useWaterUnitRoleService.selectUnitRoles(userId,nodeCode);
-    List<OrgTreeVO> grandFathers = removeModelByHashSet(orgTreeVOS);
+    List<AddressBook> orgTreeVOS = useWaterUnitRoleService.selectUnitRoles(userId,nodeCode);
+    List<AddressBook> grandFathers = removeModelByHashSet(orgTreeVOS);
     if(null != grandFathers && grandFathers.size()>0){
       //查询用水单位数据
-      List<OrgTreeVO> fathers = baseMapper.selectByTypeUnitAll(nodeCode,grandFathers);
+      List<AddressBook> fathers = baseMapper.selectByTypeUnitAll(nodeCode,grandFathers);
 //      if(null != fathers && fathers.size()>0){
       //查询联系人
-      List<OrgTreeVO> sons = contactsService.selectContacts(nodeCode,grandFathers);
+      List<AddressBook> sons = contactsService.selectContacts(nodeCode,grandFathers);
       grandFathers.addAll(fathers);
       grandFathers.addAll(sons);
 //      }
@@ -934,7 +934,7 @@ public class UseWaterUnitServiceImpl extends
   /**
    * list去重
    */
-  public static List<OrgTreeVO> removeModelByHashSet(List<OrgTreeVO> list) {
+  public static List<AddressBook> removeModelByHashSet(List<AddressBook> list) {
     HashSet set = new HashSet(list);
     //把List集合所有元素清空
     list.clear();

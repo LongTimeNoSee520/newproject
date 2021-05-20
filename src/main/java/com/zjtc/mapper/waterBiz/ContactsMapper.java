@@ -3,11 +3,9 @@ package com.zjtc.mapper.waterBiz;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.Contacts;
-import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterUnit;
-import com.zjtc.model.vo.OrgTreeVO;
+import com.zjtc.model.vo.AddressBook;
 import java.util.List;
-import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -40,7 +38,7 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * 部门人员树 查询人员
    * @return
    */
-  List<OrgTreeVO> selectContacts(@Param("nodeCode") String nodeCode,@Param("fathers") List<OrgTreeVO> fathers);
+  List<AddressBook> selectContacts(@Param("nodeCode") String nodeCode,@Param("fathers") List<AddressBook> fathers);
 
   /**
    * 查看部门下是否有人员

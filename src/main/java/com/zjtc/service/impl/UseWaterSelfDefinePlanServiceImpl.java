@@ -8,8 +8,6 @@ import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.UseWaterSelfDefinePlanMapper;
-import com.zjtc.model.File;
-import com.zjtc.model.Person;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;
@@ -378,7 +376,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       planAdd = useWaterPlanAddService.save(waterPlanAdd);
 //      修改用水计划表季度水量
       for (UseWaterPlan useWaterPlan : waterPlan) {
-        water = this.baseMapper
+        this.baseMapper
             .updateUseWaterPlanWater(useWaterPlan.getId(), useWaterSelfDefinePlan.getFirstQuarter(),
                 useWaterSelfDefinePlan.getSecondQuarter(), useWaterSelfDefinePlan.getThirdQuarter(),
                 useWaterSelfDefinePlan.getFourthQuarter(), useWaterSelfDefinePlan.getCurYearPlan(),

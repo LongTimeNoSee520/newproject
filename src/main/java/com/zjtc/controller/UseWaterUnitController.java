@@ -5,7 +5,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.User;
-import com.zjtc.model.vo.OrgTreeVO;
+import com.zjtc.model.vo.AddressBook;
 import com.zjtc.model.vo.UseWaterUnitVo;
 import com.zjtc.service.UseWaterUnitService;
 import io.swagger.annotations.Api;
@@ -112,7 +112,7 @@ public class UseWaterUnitController {
     log.debug("用水单位新增，参数param==={" + useWaterUnit.toString() + "}");
     if (null != useWaterUnit && null != user) {
       ApiResponse result = useWaterUnitService.save(useWaterUnit, user);
-      response=result;
+      response = result;
     } else {
       response.recordError(500);
     }
@@ -216,7 +216,7 @@ public class UseWaterUnitController {
     log.debug("用水单位修改，参数param==={" + useWaterUnit.toString() + "}");
     if (null != useWaterUnit && null != user) {
       ApiResponse result = useWaterUnitService.update(useWaterUnit, user);
-      response=result;
+      response = result;
     } else {
       response.recordError(500);
     }
@@ -304,10 +304,10 @@ public class UseWaterUnitController {
     User user = jwtUtil.getUserByToken(token);
     log.debug("用水单位新增，参数param==={" + jsonObject.toString() + "}");
     if (null != jsonObject) {
-      jsonObject.put("userId",user.getId());
-      jsonObject.put("nodeCode",user.getNodeCode());
+      jsonObject.put("userId", user.getId());
+      jsonObject.put("nodeCode", user.getNodeCode());
       Map<String, Object> result = useWaterUnitService
-          .addUnitCodePage(jsonObject,user);
+          .addUnitCodePage(jsonObject, user);
       response.setData(result);
     } else {
       response.recordError(500);
@@ -532,12 +532,12 @@ public class UseWaterUnitController {
     log.info("根据单位名称查询单位编号 ==== 参数{" + jsonObject != null ? jsonObject.toString() : "null" + "}");
     User user = jwtUtil.getUserByToken(token);
     ApiResponse apiResponse = new ApiResponse();
-    if (null == jsonObject.getString("unitName")){
+    if (null == jsonObject.getString("unitName")) {
       apiResponse.setMessage("单位名称不能为空");
       apiResponse.setCode(501);
       return apiResponse;
     }
-    if (null == jsonObject.getDouble("money")){
+    if (null == jsonObject.getDouble("money")) {
       apiResponse.setMessage("金额不能为空");
       apiResponse.setCode(501);
       return apiResponse;
@@ -546,7 +546,8 @@ public class UseWaterUnitController {
     Double money = jsonObject.getDouble("money");
     if (null != user) {
       try {
-        List<Map<String, Object>> result = useWaterUnitService.selectCodeByName(user.getId(),user.getNodeCode(),unitName,money);
+        List<Map<String, Object>> result = useWaterUnitService
+            .selectCodeByName(user.getId(), user.getNodeCode(), unitName, money);
         apiResponse.setData(result);
       } catch (Exception e) {
         log.error("根据单位名称查询单位编号,errMsg==={}", e.getMessage());
@@ -582,25 +583,23 @@ public class UseWaterUnitController {
   }
 
 
-
   @ResponseBody
   @ApiOperation(value = "查询所有的用水单位类型")
   @RequestMapping(value = "selectUnitCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse selectUnitCode(@ApiParam("{\n"
-//      + "    \"nodeCode\":\"节点编码\",\n"
       + "    \"condition\":\"用水单位编号、单位名称、人员名称\"\n"
-//      + "    \"userId\":\"登录用户id\"\n"
       + "}")
-      @RequestBody JSONObject jsonObject,
+  @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
     String condition = null;
     if (null != jsonObject.getString("condition")) {
-       condition = jsonObject.getString("condition");
+      condition = jsonObject.getString("condition");
     }
     User user = jwtUtil.getUserByToken(token);
     try {
-      List<OrgTreeVO> list = useWaterUnitService.selectUnitCode(user.getNodeCode(),condition,user.getId());
+      List<AddressBook> list = useWaterUnitService
+          .selectUnitCode(user.getNodeCode(), condition, user.getId());
       response.setData(list);
       return response;
     } catch (Exception e) {
@@ -608,17 +607,18 @@ public class UseWaterUnitController {
     }
     return response;
   }
+
   @ApiOperation(value = "新增时，根据选择的相关编号，回填用水单位数据")
   @RequestMapping(value = "selectById", method = RequestMethod.POST)
   public ApiResponse selectById(@ApiParam("{\n"
       + "    \"id\":\"单位id\"\n"
       + "}")
-      @RequestBody JSONObject jsonObject,
+  @RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
-    User user=jwtUtil.getUserByToken(token);
+    User user = jwtUtil.getUserByToken(token);
     try {
-      UseWaterUnitVo result = useWaterUnitService.selectById(jsonObject,user);
+      UseWaterUnitVo result = useWaterUnitService.selectById(jsonObject, user);
       response.setData(result);
       return response;
     } catch (Exception e) {

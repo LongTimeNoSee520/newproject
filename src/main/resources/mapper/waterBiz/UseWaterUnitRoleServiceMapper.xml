@@ -66,11 +66,11 @@
     <if test="nodeCode != null and nodeCode != ''">
     AND node_code = #{nodeCode}
     </if>
-    GROUP  BY unit_type_code
+    GROUP  BY unit_type_code order by unit_type_code
   </select>
 
   <!-- 查询用户类型权限 -->
-  <select id="selectUnitRoles" resultType="com.zjtc.model.vo.OrgTreeVO">
+  <select id="selectUnitRoles" resultType="com.zjtc.model.vo.AddressBook">
     SELECT DISTINCT
       unit_type_code AS id,
       node_code AS nodeCode,
