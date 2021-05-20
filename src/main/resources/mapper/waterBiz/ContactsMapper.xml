@@ -87,7 +87,7 @@
       t1.id,
       t1.use_water_unit_id AS parentId,
       t1.node_code AS nodeCode,
-      contacts AS orgName,
+      t2.unit_name AS orgName,
       'person' AS tag,
       contacts AS userName,
       t1.mobile_number AS mobilePhone,
@@ -96,7 +96,7 @@
     FROM
     t_w_use_water_unit_contacts t1 INNER JOIN
     ( SELECT
-      id
+      id,unit_name
       FROM t_w_use_water_unit
       WHERE
       deleted = '0'
