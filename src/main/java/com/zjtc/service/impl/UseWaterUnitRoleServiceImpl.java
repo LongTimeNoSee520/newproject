@@ -91,38 +91,39 @@ public class UseWaterUnitRoleServiceImpl extends
       response.recordError("系统异常");
       return response;
     }
-//    先删除该人员id对应的批次号
     try {
+//    先删除该人员id对应的批次号
       this.baseMapper.deletedByPersonId(personId);
-    } catch (Exception e) {
-      log.error("该用户信息异常:" + e.getMessage());
-    }
-//    if (i == 0) {
-//      response.recordError("系统异常");
-//      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//      return response;
-//    }
+
 //    如果单位批次号传为空,那么说明这个人没有批次号权限
-    if (!unitTypeCodes.isEmpty()) {
+      if (!unitTypeCodes.isEmpty()) {
 //    批量新增
-      for (String unitTypeCode : unitTypeCodes) {
-        UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
-        useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
-        useWaterUnitRole.setPersonId(personId);
-        useWaterUnitRole.setUnitTypeCode(unitTypeCode);
-        useWaterUnitRole.setNodeCode(StringUtils.isBlank(nodeCode) ? null : nodeCode);
-        useWaterUnitRole.setCreateTime(new Date());
-        unitRoles.add(useWaterUnitRole);
+        for (String unitTypeCode : unitTypeCodes) {
+          UseWaterUnitRole useWaterUnitRole = new UseWaterUnitRole();
+          useWaterUnitRole.setId(UUID.randomUUID().toString().replace("-", ""));
+          useWaterUnitRole.setPersonId(personId);
+          useWaterUnitRole.setUnitTypeCode(unitTypeCode);
+          useWaterUnitRole.setNodeCode(StringUtils.isBlank(nodeCode) ? null : nodeCode);
+          useWaterUnitRole.setCreateTime(new Date());
+          unitRoles.add(useWaterUnitRole);
+        }
       }
+      boolean b = false;
+      if (unitRoles.size() > 0) {
+        b  = this.saveBatch(unitRoles);
+      }
+      if (b) {
+        response.setMessage("授权成功");
+        return response;
+      }else{
+        response.setMessage("授权成功");
+        return response;
+      }
+    } catch (Exception e) {
+      log.error("授权失败",e.getMessage());
+      response.setMessage("授权失败");
+      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     }
-    boolean b = this.saveBatch(unitRoles);
-    if (b) {
-      response.setCode(200);
-      response.setMessage("授权成功");
-      return response;
-    }
-    response.recordError("授权失败");
-    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     return response;
   }
 
