@@ -261,7 +261,7 @@
     FROM
     (
     SELECT
-    row_number ( ) OVER ( ORDER BY a.unit_code,a.unit_code_type ) AS rownumber,
+    row_number ( ) OVER ( ORDER BY a.unit_code_type ,cast(SUBSTRING(a.unit_code,7,10) as INTEGER) ) AS rownumber,
     a.id,
     a.node_code,
     a.unit_code,
