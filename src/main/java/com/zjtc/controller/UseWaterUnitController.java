@@ -599,7 +599,7 @@ public class UseWaterUnitController {
     User user = jwtUtil.getUserByToken(token);
     try {
       List<AddressBook> list = useWaterUnitService
-          .selectUnitCode(user.getNodeCode(), condition, "4028839f4d506396014d50839c920042");
+          .selectUnitCode(user.getNodeCode(), condition, user.getId());
       response.setData(list);
       return response;
     } catch (Exception e) {
