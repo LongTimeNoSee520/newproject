@@ -207,7 +207,7 @@
     where ISNULL( t7.use_water_unit_id, '1' ) = '1'
     <!--去掉算法中的新户-->
     and t1.unit_code_group not in (t6.new_batch_num)
-    order by t1.unit_code
+    ORDER BY  cast(substring(t1.unit_code,5,9) as integer)
   </select>
 
   <select id="nowYearPlanOld" resultType="java.util.LinkedHashMap">
@@ -283,7 +283,7 @@
       and unit_code_group=#{unitCodeStart}
     </if>
     ) as u on u.id=p.useWaterUnitId
-    ORDER BY u.unitCode
+    ORDER BY  cast(substring(u.unitCode,5,9) as integer)
   </select>
   <select id="nowYearPlanNew" resultType="java.util.LinkedHashMap">
     SELECT
@@ -452,7 +452,7 @@
     inner join t_w_quota_info as b on a.product=b.id
     group by a.use_water_unit_id
     ) t4 on t4.use_water_unit_id=t1.id
-    order by t1.unit_code
+    ORDER BY  cast(substring(t1.unit_code,5,9) as integer)
   </select>
 
   <select id="initPlanOldPage" resultType="java.util.LinkedHashMap">
