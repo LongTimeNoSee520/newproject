@@ -95,20 +95,20 @@ public interface WaterUsePayInfoService extends IService<WaterUsePayInfo> {
   /**
    * 导出查询结果
    */
-  void exportQueryData(User user, JSONObject jsonObject, HttpServletRequest request,
+  ApiResponse exportQueryData(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response);
 
   /**
    * 导出用户信息
    */
-  void exportUser(User user, JSONObject jsonObject, HttpServletRequest request,
+  ApiResponse exportUser(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response)
       throws IOException;
 
   /**
    * 导出计划用水户超计划情况汇总
    */
-  void exportPayInfo(User user, JSONObject jsonObject, HttpServletRequest request,
+  ApiResponse exportPayInfo(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response);
 
   /**

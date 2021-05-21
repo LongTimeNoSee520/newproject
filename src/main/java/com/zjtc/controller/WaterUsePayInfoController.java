@@ -362,7 +362,7 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        waterUsePayInfoService.exportQueryData(user, jsonObject, request, response);
+       apiResponse=  waterUsePayInfoService.exportQueryData(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出查询结果失败,errMsg==={}", e.getMessage());
         e.printStackTrace();
@@ -391,7 +391,7 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        waterUsePayInfoService.exportUser(user, jsonObject, request, response);
+        apiResponse= waterUsePayInfoService.exportUser(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出用户信息失败,errMsg==={}", e.getMessage());
         e.printStackTrace();
@@ -420,7 +420,7 @@ public class WaterUsePayInfoController {
       try {
         jsonObject.put("nodeCode", user.getNodeCode());
         jsonObject.put("userId", user.getId());
-        waterUsePayInfoService.exportPayInfo(user, jsonObject, request, response);
+       apiResponse=  waterUsePayInfoService.exportPayInfo(user, jsonObject, request, response);
       } catch (Exception e) {
         log.error("缴费管理：导出计划用水户超计划情况汇总表失败,errMsg==={}", e.getMessage());
         apiResponse.recordError(500);

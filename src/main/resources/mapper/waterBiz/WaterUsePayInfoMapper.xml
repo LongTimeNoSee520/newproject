@@ -912,12 +912,8 @@
 	<select id="exportQueryData" resultType="java.util.LinkedHashMap">
 		SELECT
 		t1.id,
-		case t1.pay_type
-		when '2' then '现金'
-		when '3' then '转账'
-		when '4' then '快捷支付'
-		else ''end as payType,
-		t1.unit_code AS unitCode,
+		t1.pay_type as payType,
+ 		t1.unit_code AS unitCode,
 		t1.unit_name AS unitName,
 		t2.unit_code_group as unitCodeGroup,
 		t1.count_year AS countYear,
@@ -975,12 +971,6 @@
 		when t4.signed='0' then '否'
 		ELSE '否'
 		end as signed,
-		case
-		pay_type
-		when '2' THEN '现金'
-		when '3' THEN '转账'
-		when '4' then '快捷支付'
-		ELSE '' END AS payType,
 		countDate=CAST(count_year AS VARCHAR(5))+'第'+CAST(count_quarter AS  VARCHAR(5))+'季度',
 		case
 		pay_status

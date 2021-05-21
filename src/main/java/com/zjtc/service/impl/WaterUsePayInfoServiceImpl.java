@@ -153,10 +153,10 @@ public class WaterUsePayInfoServiceImpl extends
 
 
   @Override
-  public Map<String, Object> queryPage(JSONObject jsonObject,User user) {
+  public Map<String, Object> queryPage(JSONObject jsonObject, User user) {
     Map<String, Object> page = new LinkedHashMap<>();
     List<WaterUsePayInfoVo> result = baseMapper.queryPage(jsonObject);
-    result=this.printAdvice(result,user);
+    result = this.printAdvice(result, user);
     page.put("records", result);
     page.put("current", jsonObject.getInteger("current"));
     page.put("size", jsonObject.getInteger("size"));
@@ -416,23 +416,37 @@ public class WaterUsePayInfoServiceImpl extends
   }
 
   @Override
-  public void exportQueryData(User user, JSONObject jsonObject, HttpServletRequest request,
+  public ApiResponse exportQueryData(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
-    List<Map<String, Object>> list = baseMapper.exportQueryData(jsonObject);
+    ApiResponse result = new ApiResponse();
     Map<String, Object> data = new HashMap<>();
-    data.put("excelData", list);
-    data.put("nowDate", new Date());
-    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
-    data.put("dateFormat", dateFmt);
-    String fileName = "缴费管理查询结果.xls";
-    String templateName = "template/waterUsePayInfoData.xls";
-    commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user, "缴费管理", "导出查询结果", null);
+    List<Map<String, Object>> list = baseMapper.exportQueryData(jsonObject);
+    if (!list.isEmpty()) {
+      for (Map map : list) {
+        String payType = map.get("payType").toString();
+        if (StringUtils.isNotBlank(payType)) {
+          map.put("payType", dictUtils.getDictItemName("payTypeCode", payType, user.getNodeCode()));
+        }
+      }
+      data.put("excelData", list);
+      data.put("nowDate", new Date());
+      SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+      data.put("dateFormat", dateFmt);
+      String fileName = "缴费管理查询结果.xls";
+      String templateName = "template/waterUsePayInfoData.xls";
+      commonService.export(fileName, templateName, request, response, data);
+      systemLogService.logInsert(user, "缴费管理", "导出查询结果", null);
+    } else {
+      result.setMessage("无导出数据");
+      result.setCode(501);
+    }
+    return result;
   }
 
   @Override
-  public void exportUser(User user, JSONObject jsonObject, HttpServletRequest request,
+  public ApiResponse exportUser(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) throws IOException {
+    ApiResponse result = new ApiResponse();
     String nodeCode = jsonObject.getString("nodeCode");
     String year = jsonObject.getString("year");
     String quarter = jsonObject.getString("quarter");
@@ -480,44 +494,54 @@ public class WaterUsePayInfoServiceImpl extends
           }
         }
       }
-    }
-    Map<String, Object> data = new HashMap<>();
-    data.put("excelData", list);
-    data.put("nowDate", new Date());
-    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
-    data.put("dateFormat", dateFmt);
-    String fileName = "加价用户信息.xls";
-    if (null == quarter || quarter.equals("")) {
-      fileName = year + "年" + fileName;
+      Map<String, Object> data = new HashMap<>();
+      data.put("excelData", list);
+      data.put("nowDate", new Date());
+      SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+      data.put("dateFormat", dateFmt);
+      String fileName = "加价用户信息.xls";
+      if (null == quarter || quarter.equals("")) {
+        fileName = year + "年" + fileName;
+      } else {
+        fileName = year + "年" + quarter + "季度" + fileName;
+      }
+      String templateName = "template/waterUsePayInfoUserData.xls";
+      commonService.export(fileName, templateName, request, response, data);
+      systemLogService.logInsert(user, "缴费管理", "导出用户信息", null);
     } else {
-      fileName = year + "年" + quarter + "季度" + fileName;
+      result.setMessage("无导出数据");
+      result.setCode(501);
     }
-    String templateName = "template/waterUsePayInfoUserData.xls";
-    commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user, "缴费管理", "导出用户信息", null);
+    return result;
   }
 
   @Override
-  public void exportPayInfo(User user, JSONObject jsonObject, HttpServletRequest request,
+  public ApiResponse exportPayInfo(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
+    ApiResponse result = new ApiResponse();
     String year = jsonObject.getString("year");
     String quarter = jsonObject.getString("quarter");
-    //List<Map> list = jsonObject.getJSONArray("data").toJavaList(Map.class);
     List<Map<String, Object>> list = baseMapper.exportPayInfo(jsonObject);
-    Map<String, Object> data = new HashMap<>();
-    data.put("excelData", list);
-    data.put("nowDate", new Date());
-    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
-    data.put("dateFormat", dateFmt);
-    String fileName = "计划用水户超计划用水情况汇总表.xls";
-    if (null == quarter || quarter.equals("")) {
-      fileName = year + "年" + fileName;
+    if (!list.isEmpty()) {
+      Map<String, Object> data = new HashMap<>();
+      data.put("excelData", list);
+      data.put("nowDate", new Date());
+      SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy年MM月dd日");
+      data.put("dateFormat", dateFmt);
+      String fileName = "计划用水户超计划用水情况汇总表.xls";
+      if (null == quarter || quarter.equals("")) {
+        fileName = year + "年" + fileName;
+      } else {
+        fileName = year + "年" + quarter + "季度" + fileName;
+      }
+      String templateName = "template/payInfo.xls";
+      commonService.export(fileName, templateName, request, response, data);
+      systemLogService.logInsert(user, "缴费管理", "导出计划用水户超计划情况汇总", null);
     } else {
-      fileName = year + "年" + quarter + "季度" + fileName;
+      result.setMessage("无导出数据");
+      result.setCode(501);
     }
-    String templateName = "template/payInfo.xls";
-    commonService.export(fileName, templateName, request, response, data);
-    systemLogService.logInsert(user, "缴费管理", "导出计划用水户超计划情况汇总", null);
+    return result;
   }
 
   @Override

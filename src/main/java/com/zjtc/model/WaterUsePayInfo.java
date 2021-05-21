@@ -57,9 +57,12 @@ public class WaterUsePayInfo extends Model<WaterUsePayInfo>{
     @TableField(value = "unit_code",exist = true)
     private String unitCode;
     /**
-    * 
+     *描述：
+     *1.付款方式选择托收后，需要自动勾选 “是否需要托收”
+     *
+     *
     */
-    @ApiModelProperty("付款方式，默认0，2现金,3转账,4快捷支付")
+    @ApiModelProperty("付款方式，默认0，2现金,3转账,4快捷支付，5.托收")
     @TableField(value = "pay_type",exist = true)
     private String payType;
     /**
