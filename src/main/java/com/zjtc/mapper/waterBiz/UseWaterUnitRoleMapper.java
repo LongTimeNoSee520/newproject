@@ -3,6 +3,7 @@ package com.zjtc.mapper.waterBiz;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.UseWaterUnitRole;
 import com.zjtc.model.vo.AddressBook;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -64,5 +65,5 @@ public interface UseWaterUnitRoleMapper extends BaseMapper<UseWaterUnitRole> {
    * @param nodeCode
    * @return
    */
-  List<AddressBook> selectUnitRoles(@Param("personId")String personId,@Param("nodeCode")String nodeCode);
+  LinkedList<AddressBook> selectUnitRoles(@Param("personId")String personId,@Param("nodeCode")String nodeCode);
 }

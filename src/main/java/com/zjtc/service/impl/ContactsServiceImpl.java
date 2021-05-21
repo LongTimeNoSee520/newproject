@@ -8,6 +8,7 @@ import com.zjtc.model.vo.AddressBook;
 import com.zjtc.service.ContactsService;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -92,7 +93,7 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   }
 
   @Override
-  public List<AddressBook> selectContacts(String nodeCode,List<AddressBook> fathers) {
+  public LinkedList<AddressBook> selectContacts(String nodeCode,List<AddressBook> fathers) {
     return this.baseMapper.selectContacts(nodeCode,fathers);
   }
 

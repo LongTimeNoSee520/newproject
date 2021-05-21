@@ -82,7 +82,7 @@
     WHERE
       person_id = #{personId}
     AND node_code =  #{nodeCode}
-    order by unit_type_code
+    order by unit_type_code asc
   </select>
 
   <delete id="deletedByPersonId">

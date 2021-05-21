@@ -276,12 +276,11 @@ public class UseWaterUnitInvoiceServiceImpl extends
         .updateUid(Integer.parseInt(begin), Integer.parseInt(end), personId, user.getId(),
             user.getNodeCode());
     if (i > 0) {
-      response.setMessage("已移交:" + i + "张发票");
-      response.setCode(200);
+      response.setMessage("已成功移交:" + i + "张发票");
       systemLogService.logInsert(user, "发票管理", "移交发票", "");
       return response;
     } else {
-      response.recordError("移交发票失败");
+      response.setMessage("已成功移交0张发票");
       return response;
     }
   }
@@ -328,15 +327,21 @@ public class UseWaterUnitInvoiceServiceImpl extends
     if (null != jsonObject.getString("invoiceNumber")) {
       invoiceNumber = jsonObject.getString("invoiceNumber").trim();
     }
+//    String begin = jsonObject.getString("begin");
+//    begin = "0" + begin;
+//    String end = jsonObject.getString("end");
+//    end = "0" + end;
     //    开始票段
-    Integer begin = null;
-    if (null != jsonObject.getInteger("begin")) {
-      begin = jsonObject.getInteger("begin");
+    String begin = null;
+    if (null != jsonObject.getString("begin")) {
+      begin = jsonObject.getString("begin");
+      begin = "0" + begin;
     }
     //    结束票段
-    Integer end = null;
-    if (null != jsonObject.getInteger("end")) {
-      end = jsonObject.getInteger("end");
+    String end = null;
+    if (null != jsonObject.getString("end")) {
+      end = jsonObject.getString("end");
+      end = "0" + end;
     }
     //    是否作废
     String enabled = null;
@@ -354,14 +359,14 @@ public class UseWaterUnitInvoiceServiceImpl extends
     }
 //    总条数
     Integer total = this.baseMapper
-        .selectCount(invoiceNumber, begin, end, enabled,
+        .selectCount(invoiceNumber, Integer.parseInt(begin), Integer.parseInt(end), enabled,
             received, nodeCode, loginId);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<UseWaterUnitInvoice> templates = this.baseMapper
-        .queryList(currPage, pageSize, invoiceNumber, begin,
-            end, enabled, received, nodeCode, loginId);
+        .queryList(currPage, pageSize, invoiceNumber, Integer.parseInt(begin),
+            Integer.parseInt(end), enabled, received, nodeCode, loginId);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));

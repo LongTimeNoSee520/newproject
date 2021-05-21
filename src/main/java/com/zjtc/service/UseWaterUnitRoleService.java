@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterUnitRole;
 import com.zjtc.model.vo.AddressBook;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -68,5 +69,5 @@ public interface UseWaterUnitRoleService extends IService<UseWaterUnitRole> {
    * @param nodeCode
    * @return
    */
-  List<AddressBook> selectUnitRoles(String personId,String nodeCode);
+ LinkedList<AddressBook> selectUnitRoles(String personId,String nodeCode);
 }

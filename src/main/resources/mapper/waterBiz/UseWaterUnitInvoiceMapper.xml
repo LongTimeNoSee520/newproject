@@ -64,9 +64,9 @@
     UPDATE t_w_use_water_unit_invoice
     SET person = #{personId}
     WHERE
-    (convert(int,invoice_number) &gt;= #{begin} AND convert(int,invoice_number) &lt;= #{end})
+   ( invoice_number &gt;= #{begin} AND invoice_number &lt;= #{end})
     AND person = #{loginId}
-    and deleted = '0' AND pay_info_id IS NULL and enabled = '0'  AND received = '0' and node_code = #{nodeCode}
+    and deleted = '0' AND pay_info_id IS Null  and enabled = '0'  AND received = '0' and node_code = #{nodeCode}
   </update>
 
   <select id="selectCount" resultType="int">
@@ -82,7 +82,7 @@
       and  i.invoice_number like '%${invoiceNumber}%'
     </if>
     <if test="(begin != null and begin != '') or (end != null and end != '') ">
-      and  (convert(int,i.invoice_number) &gt;= #{begin} AND convert(int,i.invoice_number) &lt;= #{end})
+      and  (i.invoice_number &gt;= #{begin} AND i.invoice_number &lt;= #{end})
     </if>
     <if test="enabled != null and enabled != ''">
       and  i.enabled = #{enabled}
@@ -167,7 +167,7 @@
       and  i.invoice_number like '%${invoiceNumber}%'
     </if>
     <if test="(begin != null and begin != '') or (end != null and end != '') ">
-    and  (convert(int,i.invoice_number) &gt;= #{begin} AND convert(int,i.invoice_number) &lt;= #{end})
+    and  (i.invoice_number &gt;= #{begin} AND i.invoice_number &lt;= #{end})
     </if>
     <if test="enabled != null and enabled != ''">
       and  i.enabled = #{enabled}

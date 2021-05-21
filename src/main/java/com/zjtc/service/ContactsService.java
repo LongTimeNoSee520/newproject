@@ -3,6 +3,7 @@ package com.zjtc.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.vo.AddressBook;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +60,7 @@ public interface ContactsService extends IService<Contacts> {
    * @param nodeCode 节点编码
    * @param fathers 父级部门
    */
-  List<AddressBook> selectContacts(String nodeCode,List<AddressBook> fathers);
+  LinkedList<AddressBook> selectContacts(String nodeCode,List<AddressBook> fathers);
 
   /**
    *   通过联系电话查询所在部门和该部门下所有的人员

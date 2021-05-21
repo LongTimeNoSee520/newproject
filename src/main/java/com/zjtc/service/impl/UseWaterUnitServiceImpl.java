@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -915,14 +916,14 @@ public class UseWaterUnitServiceImpl extends
   @Override
   public List<AddressBook> selectUnitCode(String nodeCode, String condition,String userId) {
 //    查询全部类型,相当于是顶级部门 orgTreeVOS
-    List<AddressBook> orgTreeVOS = useWaterUnitRoleService.selectUnitRoles(userId,nodeCode);
-    List<AddressBook> grandFathers = removeModelByHashSet(orgTreeVOS);
+    LinkedList<AddressBook> orgTreeVOS = useWaterUnitRoleService.selectUnitRoles(userId,nodeCode);
+    LinkedList<AddressBook> grandFathers = removeModelByHashSet(orgTreeVOS);
     if(null != grandFathers && grandFathers.size()>0){
       //查询用水单位数据
       List<AddressBook> fathers = baseMapper.selectByTypeUnitAll(nodeCode,grandFathers);
 //      if(null != fathers && fathers.size()>0){
       //查询联系人
-      List<AddressBook> sons = contactsService.selectContacts(nodeCode,grandFathers);
+      LinkedList<AddressBook> sons = contactsService.selectContacts(nodeCode,grandFathers);
       grandFathers.addAll(fathers);
       grandFathers.addAll(sons);
 //      }
@@ -934,7 +935,7 @@ public class UseWaterUnitServiceImpl extends
   /**
    * list去重
    */
-  public static List<AddressBook> removeModelByHashSet(List<AddressBook> list) {
+  public static LinkedList<AddressBook> removeModelByHashSet(LinkedList<AddressBook> list) {
     HashSet set = new HashSet(list);
     //把List集合所有元素清空
     list.clear();

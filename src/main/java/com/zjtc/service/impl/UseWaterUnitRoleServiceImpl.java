@@ -8,6 +8,7 @@ import com.zjtc.model.vo.AddressBook;
 import com.zjtc.service.UseWaterUnitRoleService;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -173,7 +174,7 @@ public class UseWaterUnitRoleServiceImpl extends
   }
 
   @Override
-  public List<AddressBook> selectUnitRoles(String personId, String nodeCode) {
+  public LinkedList<AddressBook> selectUnitRoles(String personId, String nodeCode) {
     if(StringUtils.isNotBlank(personId) && StringUtils.isNotBlank(nodeCode)){
       return this.baseMapper.selectUnitRoles(personId,nodeCode);
     }
