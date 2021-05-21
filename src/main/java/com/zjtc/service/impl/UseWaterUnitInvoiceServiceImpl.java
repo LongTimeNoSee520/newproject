@@ -332,16 +332,16 @@ public class UseWaterUnitInvoiceServiceImpl extends
 //    String end = jsonObject.getString("end");
 //    end = "0" + end;
     //    开始票段
-    String begin = null;
-    if (null != jsonObject.getString("begin")) {
-      begin = jsonObject.getString("begin");
-      begin = "0" + begin;
+    Integer begin = null;
+    if (null != jsonObject.getInteger("begin")) {
+      begin = jsonObject.getInteger("begin");
+
     }
     //    结束票段
-    String end = null;
-    if (null != jsonObject.getString("end")) {
-      end = jsonObject.getString("end");
-      end = "0" + end;
+    Integer end = null;
+    if (null != jsonObject.getInteger("end")) {
+      end = jsonObject.getInteger("end");
+
     }
     //    是否作废
     String enabled = null;
@@ -359,20 +359,19 @@ public class UseWaterUnitInvoiceServiceImpl extends
     }
 //    总条数
     Integer total = this.baseMapper
-        .selectCount(invoiceNumber, Integer.parseInt(begin), Integer.parseInt(end), enabled,
+        .selectCount(invoiceNumber, begin, end, enabled,
             received, nodeCode, loginId);
 //    总页数
     double pages = Math.ceil((double) total / pageSize);
 //    数据集
     List<UseWaterUnitInvoice> templates = this.baseMapper
-        .queryList(currPage, pageSize, invoiceNumber, Integer.parseInt(begin),
-            Integer.parseInt(end), enabled, received, nodeCode, loginId);
+        .queryList(currPage, pageSize, invoiceNumber, begin,
+            end, enabled, received, nodeCode, loginId);
     map.put("total", total);
     map.put("size", pageSize);
     map.put("pages", (int) (pages));
     map.put("current", currPage);
     map.put("records", templates);
-    response.setCode(200);
     response.setMessage("分页查询成功");
     response.setData(map);
     return response;

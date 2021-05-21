@@ -82,8 +82,7 @@
       and  i.invoice_number like '%${invoiceNumber}%'
     </if>
     <if test="(begin != null and begin != '') or (end != null and end != '') ">
-      and  (i.invoice_number &gt;= #{begin} AND i.invoice_number &lt;= #{end})
-    </if>
+      and  (convert(int,i.invoice_number) &gt;= #{begin} AND convert(int,i.invoice_number) &lt;= #{end})    </if>
     <if test="enabled != null and enabled != ''">
       and  i.enabled = #{enabled}
     </if>
@@ -167,8 +166,7 @@
       and  i.invoice_number like '%${invoiceNumber}%'
     </if>
     <if test="(begin != null and begin != '') or (end != null and end != '') ">
-    and  (i.invoice_number &gt;= #{begin} AND i.invoice_number &lt;= #{end})
-    </if>
+      and  (convert(int,i.invoice_number) &gt;= #{begin} AND convert(int,i.invoice_number) &lt;= #{end})    </if>
     <if test="enabled != null and enabled != ''">
       and  i.enabled = #{enabled}
     </if>
