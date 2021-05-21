@@ -917,18 +917,18 @@ public class UseWaterUnitServiceImpl extends
   public List<AddressBook> selectUnitCode(String nodeCode, String condition,String userId) {
 //    查询全部类型,相当于是顶级部门 orgTreeVOS
     LinkedList<AddressBook> orgTreeVOS = useWaterUnitRoleService.selectUnitRoles(userId,nodeCode);
-    LinkedList<AddressBook> grandFathers = removeModelByHashSet(orgTreeVOS);
-    if(null != grandFathers && grandFathers.size()>0){
+//    LinkedList<AddressBook> grandFathers = removeModelByHashSet(orgTreeVOS);
+    if(null != orgTreeVOS && orgTreeVOS.size()>0){
       //查询用水单位数据
-      List<AddressBook> fathers = baseMapper.selectByTypeUnitAll(nodeCode,grandFathers);
+      List<AddressBook> fathers = baseMapper.selectByTypeUnitAll(nodeCode,orgTreeVOS);
 //      if(null != fathers && fathers.size()>0){
       //查询联系人
-      LinkedList<AddressBook> sons = contactsService.selectContacts(nodeCode,grandFathers);
-      grandFathers.addAll(fathers);
-      grandFathers.addAll(sons);
+      LinkedList<AddressBook> sons = contactsService.selectContacts(nodeCode,orgTreeVOS);
+      orgTreeVOS.addAll(fathers);
+      orgTreeVOS.addAll(sons);
 //      }
     }
-    return grandFathers;
+    return orgTreeVOS;
   }
 
 
