@@ -101,9 +101,12 @@ public class WaterUseDataController {
       List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
           .selectWaterUseData(waterMeterCodes, useWaterUnitId);
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList) {
-        if (StringUtils.isNotBlank(waterMonthUseData.getUseWaterUnitId()) && !waterMonthUseData.getUseWaterUnitId()
+        if (StringUtils.isNotBlank(waterMonthUseData.getUseWaterUnitId()) && !waterMonthUseData
+            .getUseWaterUnitId()
             .equals(useWaterUnitId)) {
-          response.setMessage("该水表档案号【" + waterMonthUseData.getWaterMeterCode() + "】已被用水单位【"+waterMonthUseData.getUnitNames()+"】占用!");
+          response.setMessage(
+              "该水表档案号【" + waterMonthUseData.getWaterMeterCode() + "】已被用水单位【" + waterMonthUseData
+                  .getUnitNames() + "】占用!");
           response.setCode(501);
           return response;
         }

@@ -2,6 +2,7 @@ package com.zjtc.mapper.waterSys;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.Person;
+import com.zjtc.model.vo.OperatorVo;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -68,4 +69,12 @@ public interface PersonMapper extends BaseMapper<Person> {
    * 通过发起人id查询其电话号码
    * */
   String selectByUserId(@Param("operatorId") String operatorId);
+
+
+  /**
+   * 查询经办人信息
+   * @param personIds
+   * @return
+   */
+  List<OperatorVo> selectOperatorPublic(@Param("personIds") List<String> personIds);
 }

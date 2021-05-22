@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class PersonServiceImpl extends ServiceImpl<PersonMapper, Person> implements
+public class PersonServiceImpl extends ServiceImpl< PersonMapper, Person> implements
     PersonService {
   @Value("${waterSys.selectPersonByResCode}")
   private String url;

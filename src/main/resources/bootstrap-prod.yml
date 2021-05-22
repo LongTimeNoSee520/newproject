@@ -104,6 +104,9 @@ waterReport:
 waterSys:
   selectPersonByResCode: /water/system/person/selectPersonByResCode
 
+waterOperator:
+  selectOperator: /water/system/person/selectOperator
+
 webSocket:
   #节水平台待办webSocket地址
   waterTodoUrl: /water/system/websocket/waterTodo

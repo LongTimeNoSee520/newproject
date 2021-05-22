@@ -3,6 +3,8 @@ package com.zjtc.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.vo.AddressBook;
+import com.zjtc.model.vo.OperatorVo;
+import com.zjtc.model.vo.UnitVo;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -58,12 +60,22 @@ public interface ContactsService extends IService<Contacts> {
    * 查询部门下的人员
    *
    * @param nodeCode 节点编码
-   * @param fathers 父级部门
+   * @param fathers  父级部门
    */
-  LinkedList<AddressBook> selectContacts(String nodeCode,List<AddressBook> fathers);
+  LinkedList<AddressBook> selectContacts(String nodeCode, List<AddressBook> fathers);
 
   /**
-   *   通过联系电话查询所在部门和该部门下所有的人员
+   * 通过联系电话查询所在部门和该部门下所有的人员
    */
-  Map<String, Object> selectByMobileNumber(String mobileNumber,String personId,String unitCode);
+  Map<String, Object> selectByMobileNumber(String mobileNumber, String personId, String unitCode);
+
+  /**
+   * 查询经办人信息公共服务平台
+   * @param mobileNumber 练习电话
+
+   * @return
+   */
+  List<UnitVo> selectOperatorPublic(String mobileNumber);
+
+  List<UnitVo> selectOperatorWX(String openId);
 }

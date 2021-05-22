@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.vo.AddressBook;
+import com.zjtc.model.vo.UnitVo;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -61,4 +62,16 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * @return
    */
   List<String> selectByUnitIdInquirePerson(@Param("id") String id,@Param("mobileNumber") String mobileNumber,@Param("personId")String personId);
+
+  /**
+   * 通过单位编码查询对应的人员id
+   * @return
+   */
+  List<String> selectPersonIdPublic(@Param("unitCode") String unitCode);
+
+  List<String> selectUnitType(@Param("mobileNumber") String mobileNumber);
+
+  String selectUnitTypeWX(@Param("openId") String openId);
+
+  List<UnitVo> selectUnitCode(@Param("mobileNumber") String mobileNumber,@Param("openId") String openId);
 }

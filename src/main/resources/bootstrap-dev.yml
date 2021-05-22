@@ -115,6 +115,8 @@ webSocket:
   #公共服务平台消息webSocket地址
   publicNewsUrl: /water/system/websocket/publicNews
 
+waterOperator:
+  selectOperator: /water/system/person/selectOperator
 
 #ftp相关配置
 Ftp:
