@@ -134,14 +134,14 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   public List<UnitVo> selectOperatorPublic(String mobileNumber) {
 //    1、查询登录人所对应的单位信息
     List<UnitVo> useWaterUnits = this.baseMapper.selectUnitCode(mobileNumber,null);
-    System.out.println("查询到的单位信息：" + useWaterUnits);
+//    System.out.println("查询到的单位信息：" + useWaterUnits);
 //    2、根据单位编号查询对应的节水办人员id
     for (UnitVo unitVo : useWaterUnits){
       List<String> personIds = this.baseMapper.selectPersonIdPublic(unitVo.getUnitCode());
-      System.out.println("查询到的人员id"+ personIds);
+//      System.out.println("查询到的人员id"+ personIds);
 //    3、根据人员id查询人员信息
       List<OperatorVo> operatorVos = personMapper.selectOperatorPublic(personIds);
-      System.out.println("查询到的人员信息："+operatorVos);
+//      System.out.println("查询到的人员信息："+operatorVos);
       for (OperatorVo operatorVo : operatorVos){
         operatorVo.setUnitType(unitVo.getUnitType());
       }
@@ -154,14 +154,14 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   public List<UnitVo> selectOperatorWX(String openId) {
 //    1、查询登录人所对应的单位信息
     List<UnitVo> useWaterUnits = this.baseMapper.selectUnitCode(null,openId);
-    System.out.println("查询到的单位信息：" + useWaterUnits);
+//    System.out.println("查询到的单位信息：" + useWaterUnits);
 //    2、根据单位编号查询对应的节水办人员id
     for (UnitVo unitVo : useWaterUnits){
       List<String> personIds = this.baseMapper.selectPersonIdPublic(unitVo.getUnitCode());
-      System.out.println("查询到的人员id"+ personIds);
+//      System.out.println("查询到的人员id"+ personIds);
 //    3、根据人员id查询人员信息
       List<OperatorVo> operatorVos = personMapper.selectOperatorPublic(personIds);
-      System.out.println("查询到的人员信息："+operatorVos);
+//      System.out.println("查询到的人员信息："+operatorVos);
       for (OperatorVo operatorVo : operatorVos){
         operatorVo.setUnitType(unitVo.getUnitType());
       }

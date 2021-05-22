@@ -73,5 +73,11 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
 
   String selectUnitTypeWX(@Param("openId") String openId);
 
+  /**
+   * 查询登录人所对应的单位信息
+   * @param mobileNumber
+   * @param openId
+   * @return
+   */
   List<UnitVo> selectUnitCode(@Param("mobileNumber") String mobileNumber,@Param("openId") String openId);
 }

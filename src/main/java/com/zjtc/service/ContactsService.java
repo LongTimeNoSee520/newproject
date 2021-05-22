@@ -71,11 +71,16 @@ public interface ContactsService extends IService<Contacts> {
 
   /**
    * 查询经办人信息公共服务平台
-   * @param mobileNumber 练习电话
-
+   * @param mobileNumber 联系电话
    * @return
    */
   List<UnitVo> selectOperatorPublic(String mobileNumber);
 
+  /**
+   * 查询经办人信息公共服务平台
+   * @param openId 微信号
+   * @param openId
+   * @return
+   */
   List<UnitVo> selectOperatorWX(String openId);
 }
