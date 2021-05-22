@@ -179,7 +179,7 @@
     t1.node_code as nodeCode,
     t1.unit_name as unitName,
     t1.unit_code as unitCode,
-    SUBSTRING ( t1.node_code, 5, 2 ) as unitType
+    SUBSTRING ( t1.unit_code, 5, 2 ) as unitType
     FROM
     t_w_use_water_unit t1
     INNER JOIN ( SELECT unit_code FROM t_w_use_water_unit_contacts WHERE deleted = '0'
@@ -192,6 +192,7 @@
     ) t2 ON t1.unit_code = t2.unit_code
     WHERE
     t1.deleted = '0'
+    order by t1.unit_code asc
   </select>
 
 </mapper>
