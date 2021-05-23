@@ -62,8 +62,8 @@ public class UseWaterUnitRefServiceImpl extends
   private void recursion(List<String> param) {
     //查询当前单位id得所有关联单位id
     List<String> refList = new ArrayList<>();
-    QueryWrapper entityQueryWrapper = new QueryWrapper();
     for (String item : param) {
+      QueryWrapper entityQueryWrapper = new QueryWrapper();
       sum.add(item);
       entityQueryWrapper.eq("use_water_unit_id", item);
       List<UseWaterUnitRef> result = this.list(entityQueryWrapper);
