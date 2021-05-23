@@ -87,6 +87,9 @@ public class QuotaInfo extends Model<QuotaInfo> {
   @TableField(value = "quota_rate", exist = true)
   private Float quotaRate;
 
+  @ApiModelProperty(value = "是否年定额用水指标")
+  @TableField(value = "is_year_quota_water_index", exist = true)
+  private String isYearQuotaWaterIndex;
 
   @Override
   protected Serializable pkVal() {

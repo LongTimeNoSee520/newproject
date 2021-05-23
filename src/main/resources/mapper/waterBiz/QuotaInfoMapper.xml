@@ -18,6 +18,7 @@
     <result column="deleted" property="deleted" jdbcType="VARCHAR"/>
     <result column="remark" property="remark" jdbcType="VARCHAR"/>
     <result column="advance_value" property="advanceValue" jdbcType="FLOAT"/>
+    <result column="is_year_quota_water_index" property="isYearQuotaWaterIndex" jdbcType="FLOAT"/>
   </resultMap>
 
   <select id="queryAll" resultMap="BaseResultMap">
@@ -84,6 +85,7 @@
     <if test="quotaInfo.advanceValue != null">,advance_value = #{quotaInfo.advanceValue}</if>
     <if test="quotaInfo.commonValue != null">,common_value = #{quotaInfo.commonValue}</if>
     <if test="quotaInfo.quotaRate != null">,quota_rate = #{quotaInfo.quotaRate}</if>
+      <if test="quotaInfo.isYearQuotaWaterIndex != null">,is_year_quota_water_index = #{quotaInfo.isYearQuotaWaterIndex}</if>
     </set>
     WHERE id = #{quotaInfo.id}
   </update>
