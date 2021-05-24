@@ -195,6 +195,7 @@
     ) c
     WHERE
     rownumber > (${pageSize}*(${currPage}-1))
+    ORDER BY c.create_time desc
   </select>
 
   <!--
