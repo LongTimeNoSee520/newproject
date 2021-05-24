@@ -117,7 +117,8 @@
     FROM
     (
     select
-    row_number ( ) over ( ORDER BY use_year desc
+    row_number ( ) over ( ORDER BY use_year desc,
+    cast(substring(unit_code,5,9) as integer)
     <if test="unitCodeRank">
       ,unit_code ${unitCodeRank}
     </if>

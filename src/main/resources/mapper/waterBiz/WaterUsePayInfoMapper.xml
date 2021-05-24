@@ -193,7 +193,7 @@
 		FROM
 		(
 		SELECT
-		row_number ( ) over ( ORDER BY t1.unit_code, unit_code_group, count_quarter DESC ) AS rownumber,
+		row_number ( ) over ( ORDER BY  cast(substring(t1.unit_code,5,9) as integer) ) AS rownumber,
 		t1.id,
 		t1.pay_type ,
 		t1.unit_code ,
