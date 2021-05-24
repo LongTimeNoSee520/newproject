@@ -22,4 +22,11 @@
     ORDER BY create_time ASC
   </select>
 
+
+  <select id="selectQuotaAddNumber" resultType="java.lang.Double">
+    select
+    round(sum(isnull(b.common_value ,0)* isnull(#{number},0)   * isnull(b.quota_rate,0)*isnull( #{ratio},0)),0) as quotaAddNumber
+    from (select product from t_w_use_water_quota where use_water_unit_id=#{useWaterUnitId}) as a
+    inner join (select id,common_value,quota_rate from t_w_quota_info) as b on a.product=b.id
+  </select>
 </mapper>

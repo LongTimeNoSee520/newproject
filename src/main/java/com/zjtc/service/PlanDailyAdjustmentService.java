@@ -107,4 +107,12 @@ public interface PlanDailyAdjustmentService extends IService<UseWaterPlan> {
   void planAdjustNotification(User user, List<SendListVO> sendList) throws Exception;
 
 	Map<String,Object> sendInfoPage(User user, JSONObject jsonObject);
+
+	/**
+	 * 查询定额增加水量
+	 * @param user
+	 * @param jsonObject
+	 * @return
+	 */
+	double selectQuotaAddNumber(User user, JSONObject jsonObject);
 }

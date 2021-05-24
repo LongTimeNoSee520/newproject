@@ -131,7 +131,7 @@ public class  EndPaper extends Model<EndPaper>{
     /**
     * 
     */
-    @ApiModelProperty("加计划的方式：1-平均，2-最高")
+    @ApiModelProperty("加计划的方式：1-平均，2-最高，3-定额")
     @TableField(value = "add_way",exist = true)
     private String addWay;
     /**

@@ -1,5 +1,6 @@
 package com.zjtc.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.UseWaterQuota;
 import java.util.List;
@@ -35,5 +36,5 @@ public interface UseWaterQuotaService extends IService<UseWaterQuota> {
    * */
   boolean add(List<UseWaterQuota> contactsList,String useWaterUnitId,String nodeCode);
 
-
+  double selectQuotaAddNumber(JSONObject jsonObject);
 }

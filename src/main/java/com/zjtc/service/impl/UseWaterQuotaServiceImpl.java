@@ -1,5 +1,6 @@
 package com.zjtc.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zjtc.mapper.waterBiz.UseWaterQuotaMapper;
 import com.zjtc.model.UseWaterQuota;
@@ -68,5 +69,10 @@ public class UseWaterQuotaServiceImpl extends ServiceImpl<UseWaterQuotaMapper, U
       }
       return this.saveBatch(useWaterQuotaList);
     }
+  }
+
+  @Override
+  public double selectQuotaAddNumber(JSONObject jsonObject) {
+    return baseMapper.selectQuotaAddNumber(jsonObject );
   }
 }

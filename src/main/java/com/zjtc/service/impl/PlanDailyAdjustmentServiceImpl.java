@@ -35,6 +35,7 @@ import com.zjtc.service.SmsService;
 import com.zjtc.service.SystemLogService;
 import com.zjtc.service.TodoService;
 import com.zjtc.service.UseWaterPlanAddService;
+import com.zjtc.service.UseWaterQuotaService;
 import com.zjtc.service.WaterUsePayInfoService;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,6 +100,9 @@ public class PlanDailyAdjustmentServiceImpl extends
   @Autowired
   private FlowProcessMapper flowProcessMapper;
 
+  @Autowired
+  private UseWaterQuotaService useWaterQuotaService;
+
   @Override
   public Map<String, Object> queryPage(User user, JSONObject jsonObject) {
     int current = jsonObject.getInteger("current");//当前页
@@ -118,10 +122,10 @@ public class PlanDailyAdjustmentServiceImpl extends
 //    map.put("nodeCode", nodeCode);
     if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
       map.put("nodeCode", jsonObject.getString("nodeCode"));
-    }else{
+    } else {
       map.put("nodeCode", user.getNodeCode());
     }
-    map.put("userId",userId);
+    map.put("userId", userId);
     if (StringUtils.isNotBlank(unitCode)) {
       map.put("unitCode", unitCode);
     }
@@ -168,93 +172,93 @@ public class PlanDailyAdjustmentServiceImpl extends
   }
 
   @Override
-  public ApiResponse editRemarks(String id,String editType, String remarks) {
-     ApiResponse response =new ApiResponse();
-     if ("0".equals(editType)){
-       /**修改计划表备注*/
-        this.baseMapper.updateRemarks(id,remarks);
-     }else if ("1".equals(editType)){
-       /**修改计划调整表备注*/
-       useWaterPlanAddService.updateRemarks(id,remarks);
-     }else {
-       response.recordError("参数错误，修改备注失败");
-     }
+  public ApiResponse editRemarks(String id, String editType, String remarks) {
+    ApiResponse response = new ApiResponse();
+    if ("0".equals(editType)) {
+      /**修改计划表备注*/
+      this.baseMapper.updateRemarks(id, remarks);
+    } else if ("1".equals(editType)) {
+      /**修改计划调整表备注*/
+      useWaterPlanAddService.updateRemarks(id, remarks);
+    } else {
+      response.recordError("参数错误，修改备注失败");
+    }
     return response;
   }
 
   @Override
   public ApiResponse numberAfterCalculation(JSONObject jsonObject) {
 
-     ApiResponse response = new ApiResponse();
-     Double calculatedNumber =-1d;
-     Double firstQuarter =jsonObject.getDouble("firstQuarter");
-     Double secondQuarter = jsonObject.getDouble("secondQuarter");
-     Double thirdQuarter = jsonObject.getDouble("thirdQuarter");
-     Double fourthQuarter = jsonObject.getDouble("fourthQuarter");
-     Double firstWater = jsonObject.getDouble("firstWater");
-     Double secondWater = jsonObject.getDouble("secondWater");
-     String addWay = jsonObject.getString("addWay");//加计划的方式：1-平均，2-最高
-     Integer quarter = jsonObject.getInteger("quarter");
-     Boolean year = jsonObject.getBoolean("year"); //是否在年计划上增加
+    ApiResponse response = new ApiResponse();
+    Double calculatedNumber = -1d;
+    Double firstQuarter = jsonObject.getDouble("firstQuarter");
+    Double secondQuarter = jsonObject.getDouble("secondQuarter");
+    Double thirdQuarter = jsonObject.getDouble("thirdQuarter");
+    Double fourthQuarter = jsonObject.getDouble("fourthQuarter");
+    Double firstWater = jsonObject.getDouble("firstWater");
+    Double secondWater = jsonObject.getDouble("secondWater");
+    String addWay = jsonObject.getString("addWay");//加计划的方式：1-平均，2-最高
+    Integer quarter = jsonObject.getInteger("quarter");
+    Boolean year = jsonObject.getBoolean("year"); //是否在年计划上增加
 
-    double tempNum =0;
-     if("1".equals(addWay)){//平均
-        tempNum =Math.floor((firstWater+secondWater)/2);//平均后向下取整
-      }else if ("2".equals(addWay)){//最高
-       tempNum =(firstWater>secondWater)?firstWater:secondWater;
-     }
-       if(year){//选择在年计划上增加
-         switch (TimeUtil.toQuarter(new Date())) {
-           case 1:
-             calculatedNumber= tempNum*12-(firstQuarter+secondQuarter+thirdQuarter+fourthQuarter);
-             break;
-           case 2:
-             calculatedNumber= tempNum*9-(secondQuarter+thirdQuarter+fourthQuarter);
-             break;
-           case 3:
-             calculatedNumber= tempNum*6-(thirdQuarter+fourthQuarter);
-             break;
-           case 4:
-             calculatedNumber= tempNum*3-fourthQuarter;
-             break;
-         }
-       }else{
-         switch (quarter) {
-           case 1:
-             calculatedNumber= tempNum*3-firstQuarter;
-             break;
-           case 2:
-             calculatedNumber= tempNum*3-secondQuarter;
-             break;
-           case 3:
-             calculatedNumber= tempNum*3-thirdQuarter;
-             break;
-           case 4:
-             calculatedNumber= tempNum*3-fourthQuarter;
-             break;
-       }
-     }
-    if (calculatedNumber <= 0){
+    double tempNum = 0;
+    if ("1".equals(addWay)) {//平均
+      tempNum = Math.floor((firstWater + secondWater) / 2);//平均后向下取整
+    } else if ("2".equals(addWay)) {//最高
+      tempNum = (firstWater > secondWater) ? firstWater : secondWater;
+    }
+    if (year) {//选择在年计划上增加
+      switch (TimeUtil.toQuarter(new Date())) {
+        case 1:
+          calculatedNumber =
+              tempNum * 12 - (firstQuarter + secondQuarter + thirdQuarter + fourthQuarter);
+          break;
+        case 2:
+          calculatedNumber = tempNum * 9 - (secondQuarter + thirdQuarter + fourthQuarter);
+          break;
+        case 3:
+          calculatedNumber = tempNum * 6 - (thirdQuarter + fourthQuarter);
+          break;
+        case 4:
+          calculatedNumber = tempNum * 3 - fourthQuarter;
+          break;
+      }
+    } else {
+      switch (quarter) {
+        case 1:
+          calculatedNumber = tempNum * 3 - firstQuarter;
+          break;
+        case 2:
+          calculatedNumber = tempNum * 3 - secondQuarter;
+          break;
+        case 3:
+          calculatedNumber = tempNum * 3 - thirdQuarter;
+          break;
+        case 4:
+          calculatedNumber = tempNum * 3 - fourthQuarter;
+          break;
+      }
+    }
+    if (calculatedNumber <= 0) {
       response.recordError("没做任何改变，不能增加计划");
       response.setCode(501);
-    }
-    else {
-      Map<String,Object> result = new HashMap<>();
-      result.put("calculatedNumber",UpRoundTen(calculatedNumber));
+    } else {
+      Map<String, Object> result = new HashMap<>();
+      result.put("calculatedNumber", UpRoundTen(calculatedNumber));
       response.setData(result);
     }
     return response;
   }
 
   @Override
-  public ApiResponse adjustPlan(User user,JSONObject jsonObject) {
+  public ApiResponse adjustPlan(User user, JSONObject jsonObject) {
     ApiResponse response = new ApiResponse();
 
     String useWaterUnitId = jsonObject.getString("useWaterUnitId");
     String unitCode = jsonObject.getString("unitCode");
     String paperType = jsonObject.getString("paperType");
     Integer planYear = jsonObject.getInteger("planYear");
-    Double firstQuarter =jsonObject.getDouble("firstQuarter");
+    Double firstQuarter = jsonObject.getDouble("firstQuarter");
     Double secondQuarter = jsonObject.getDouble("secondQuarter");
     Double thirdQuarter = jsonObject.getDouble("thirdQuarter");
     Double fourthQuarter = jsonObject.getDouble("fourthQuarter");
@@ -267,12 +271,12 @@ public class PlanDailyAdjustmentServiceImpl extends
 
     /**根据id查询数据库原数据*/
     QueryWrapper wrapper = new QueryWrapper();
-    wrapper.eq("use_water_unit_id",useWaterUnitId);
-    wrapper.eq("unit_code",unitCode);
-    wrapper.eq("plan_year",planYear);
-    UseWaterPlan  useWaterPlan =this.getOne(wrapper);
+    wrapper.eq("use_water_unit_id", useWaterUnitId);
+    wrapper.eq("unit_code", unitCode);
+    wrapper.eq("plan_year", planYear);
+    UseWaterPlan useWaterPlan = this.getOne(wrapper);
     /**如果有未完成流程的办结单，则不允许操作*/
-    if("1".equals(useWaterPlan.getExistSettlementForm())){
+    if ("1".equals(useWaterPlan.getExistSettlementForm())) {
       response.recordError("该计划存在未完成的办结单");
       response.setCode(501);
       return response;
@@ -315,16 +319,16 @@ public class PlanDailyAdjustmentServiceImpl extends
         useWaterPlanAddService.save(useWaterPlanAdd);
         /**日志*/
         systemLogService.logInsert(user, "用水计划日常调整", "计划日常调整", null);
-      }else {
-      response.recordError("没有作任何修改");
-      response.setCode(501);
-      return response;
-    }
-    }else if (SystemConstants.PLAN_CHANGE_TYPE_ADD.equals(paperType)) {//增加计划
+      } else {
+        response.recordError("没有作任何修改");
+        response.setCode(501);
+        return response;
+      }
+    } else if (SystemConstants.PLAN_CHANGE_TYPE_ADD.equals(paperType)) {//增加计划
       /**判断有没有增加水量*/
-      if(addNumber != 0 && null != addNumber){
+      if (addNumber != 0 && null != addNumber) {
         /**有，新增一条“增加计划”信息*/
-        UseWaterPlanAdd useWaterPlanAdd =new UseWaterPlanAdd();
+        UseWaterPlanAdd useWaterPlanAdd = new UseWaterPlanAdd();
         useWaterPlanAdd.setPlanType("1");//增加计划
         useWaterPlanAdd.setCreateTime(new Date());
         useWaterPlanAdd.setCreaterId(user.getId());
@@ -334,10 +338,10 @@ public class PlanDailyAdjustmentServiceImpl extends
         useWaterPlanAdd.setSecondQuarter(0d);
         useWaterPlanAdd.setThirdQuarter(0d);
         useWaterPlanAdd.setFourthQuarter(0d);
-        if(year){//在年计划上增加
+        if (year) {//在年计划上增加
           /**只设置年计划,4个季度都是0*/
           useWaterPlanAdd.setCurYearPlan(addNumber);
-        }else {//选择了在某个季度且没有勾选年计划，则默认将增加的水量加到这个季度
+        } else {//选择了在某个季度且没有勾选年计划，则默认将增加的水量加到这个季度
           switch (quarter) {
             case 1:
               useWaterPlanAdd.setFirstQuarter(addNumber);
@@ -374,8 +378,8 @@ public class PlanDailyAdjustmentServiceImpl extends
         useWaterPlanAdd.setSecondWater(secondWater);
         useWaterPlanAddService.save(useWaterPlanAdd);
         /**日志*/
-        systemLogService.logInsert(user,"用水计划日常调整","增加计划",null);
-      }else {
+        systemLogService.logInsert(user, "用水计划日常调整", "增加计划", null);
+      } else {
         response.recordError("没有作任何修改");
         response.setCode(501);
         return response;
@@ -388,43 +392,48 @@ public class PlanDailyAdjustmentServiceImpl extends
   public ApiResponse editPlanAdd(User user, List<UseWaterPlanAdd> useWaterPlanAdds) {
     ApiResponse response = new ApiResponse();
 
-    for (UseWaterPlanAdd useWaterPlanAdd :useWaterPlanAdds){
-        /**判断修改后的数据是否满足4个季度的和为年计划的数量*/
-        double sum =
-            useWaterPlanAdd.getFirstQuarter() + useWaterPlanAdd.getSecondQuarter() + useWaterPlanAdd
-                .getThirdQuarter() + useWaterPlanAdd.getFourthQuarter();
-        if (sum != useWaterPlanAdd.getCurYearPlan()){
-          response.recordError("数据修改后4个季度的和应该和年计划的数量相等，"+"水表号为:"+useWaterPlanAdd.getWaterMeterCode());
-          response.setCode(501);
-          return response;
-        }
+    for (UseWaterPlanAdd useWaterPlanAdd : useWaterPlanAdds) {
+      /**判断修改后的数据是否满足4个季度的和为年计划的数量*/
+      double sum =
+          useWaterPlanAdd.getFirstQuarter() + useWaterPlanAdd.getSecondQuarter() + useWaterPlanAdd
+              .getThirdQuarter() + useWaterPlanAdd.getFourthQuarter();
+      if (sum != useWaterPlanAdd.getCurYearPlan()) {
+        response
+            .recordError("数据修改后4个季度的和应该和年计划的数量相等，" + "水表号为:" + useWaterPlanAdd.getWaterMeterCode());
+        response.setCode(501);
+        return response;
       }
-      useWaterPlanAddService.updatePlanAdd(useWaterPlanAdds);
+    }
+    useWaterPlanAddService.updatePlanAdd(useWaterPlanAdds);
     /**日志*/
-    systemLogService.logInsert(user,"用水计划日常调整","行内编辑调整计划",null);
+    systemLogService.logInsert(user, "用水计划日常调整", "行内编辑调整计划", null);
     return response;
   }
 
   @Override
-  public ApiResponse accumulate(User user,UseWaterPlanAdd useWaterPlanAdd) {
+  public ApiResponse accumulate(User user, UseWaterPlanAdd useWaterPlanAdd) {
     ApiResponse response = new ApiResponse();
-   /**通过节点编码,单位编号,年份查询计划表数据*/
+    /**通过节点编码,单位编号,年份查询计划表数据*/
     QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("node_code", useWaterPlanAdd.getNodeCode());
     wrapper.eq("unit_code", useWaterPlanAdd.getUnitCode());
     wrapper.eq("plan_year", useWaterPlanAdd.getPlanYear());
     UseWaterPlan useWaterPlan = this.getOne(wrapper);
     /**如果有未完成流程的办结单，则不允许操作*/
-    if("1".equals(useWaterPlan.getExistSettlementForm())){
+    if ("1".equals(useWaterPlan.getExistSettlementForm())) {
       response.recordError("计划存在未完成的办结单");
       response.setCode(501);
       return response;
     }
     useWaterPlan.setCurYearPlan(useWaterPlan.getCurYearPlan() + useWaterPlanAdd.getCurYearPlan());
-    useWaterPlan.setFirstQuarter(useWaterPlan.getFirstQuarter() + useWaterPlanAdd.getFirstQuarter());
-    useWaterPlan.setSecondQuarter(useWaterPlan.getSecondQuarter() + useWaterPlanAdd.getSecondQuarter());
-    useWaterPlan.setThirdQuarter(useWaterPlan.getThirdQuarter() + useWaterPlanAdd.getThirdQuarter());
-    useWaterPlan.setFourthQuarter(useWaterPlan.getFourthQuarter() + useWaterPlanAdd.getFourthQuarter());
+    useWaterPlan
+        .setFirstQuarter(useWaterPlan.getFirstQuarter() + useWaterPlanAdd.getFirstQuarter());
+    useWaterPlan
+        .setSecondQuarter(useWaterPlan.getSecondQuarter() + useWaterPlanAdd.getSecondQuarter());
+    useWaterPlan
+        .setThirdQuarter(useWaterPlan.getThirdQuarter() + useWaterPlanAdd.getThirdQuarter());
+    useWaterPlan
+        .setFourthQuarter(useWaterPlan.getFourthQuarter() + useWaterPlanAdd.getFourthQuarter());
     if (useWaterPlanAdd.getCurYearPlan() != (useWaterPlanAdd.getFirstQuarter() + useWaterPlanAdd
         .getSecondQuarter() + useWaterPlanAdd.getThirdQuarter() + useWaterPlanAdd
         .getFourthQuarter())) {
@@ -437,28 +446,29 @@ public class PlanDailyAdjustmentServiceImpl extends
     }
     /**更新调整表累加状态*/
     useWaterPlanAdd.setStatus("3");//已累加
-    boolean result = useWaterPlanAddService.updateStatusOrPrinted(useWaterPlanAdd.getId(),useWaterPlanAdd.getStatus(),null);
+    boolean result = useWaterPlanAddService
+        .updateStatusOrPrinted(useWaterPlanAdd.getId(), useWaterPlanAdd.getStatus(), null);
     if (result) {
       /**更新计划表数据*/
       useWaterPlan.setUpdateTime(new Date());
       useWaterPlan.setUpdateUserId(user.getId());
       this.baseMapper.updateById(useWaterPlan);
       /**日志*/
-      systemLogService.logInsert(user,"用水计划日常调整","累加",null);
+      systemLogService.logInsert(user, "用水计划日常调整", "累加", null);
       /**重算加价*/
       JSONObject jsonObject = new JSONObject();
-      jsonObject.put("countYear",useWaterPlanAdd.getPlanYear());
+      jsonObject.put("countYear", useWaterPlanAdd.getPlanYear());
       List<String> unitIds = new ArrayList<>();
       unitIds.add(useWaterPlanAdd.getUseWaterUnitId());
-      jsonObject.put("unitIds",unitIds);
+      jsonObject.put("unitIds", unitIds);
       jsonObject.put("nodeCode", user.getNodeCode());
       waterUsePayInfoService.initPayInfo(jsonObject);
-    }else {
+    } else {
       log.error("更新调整表累加状态失败");
       response.recordError("更新调整表累加状态失败");
       response.setCode(501);
     }
-   return response;
+    return response;
   }
 
   @Override
@@ -475,40 +485,42 @@ public class PlanDailyAdjustmentServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> queryMessage(User user, String unitCode,String nodeCode) {
+  public List<Map<String, Object>> queryMessage(User user, String unitCode, String nodeCode) {
     List<Map<String, Object>> result = new ArrayList<>();
-    Map<String,Object> map = new HashMap<>();
-    map.put("userId",user.getId());
+    Map<String, Object> map = new HashMap<>();
+    map.put("userId", user.getId());
 //    map.put("nodeCode",user.getNodeCode());
     if (StringUtils.isNotBlank(nodeCode)) {
       map.put("nodeCode", nodeCode);
-    }else{
+    } else {
       map.put("nodeCode", user.getNodeCode());
     }
-    if (StringUtils.isNotBlank(unitCode)){
-      map.put("unitCode",unitCode);
+    if (StringUtils.isNotBlank(unitCode)) {
+      map.put("unitCode", unitCode);
     }
 
     /**上月月份 用于查询第二水量*/
-    Integer monthBefore = Integer.parseInt(TimeUtil.formatTimeStr(TimeUtil.getMonthFirstDay(new Date(),-1)).substring(5,7));
+    Integer monthBefore = Integer.parseInt(
+        TimeUtil.formatTimeStr(TimeUtil.getMonthFirstDay(new Date(), -1)).substring(5, 7));
     /**上月所处的年份*/
-    Integer monthBeforeYear = Integer.parseInt(TimeUtil.formatTimeStr(TimeUtil.getMonthFirstDay(new Date(),-1)).substring(0,4));
+    Integer monthBeforeYear = Integer.parseInt(
+        TimeUtil.formatTimeStr(TimeUtil.getMonthFirstDay(new Date(), -1)).substring(0, 4));
     /**本月月份 用于查询第一水量*/
-    Integer thisMonth = Integer.parseInt(TimeUtil.formatTimeStr(new Date()).substring(5,7));
+    Integer thisMonth = Integer.parseInt(TimeUtil.formatTimeStr(new Date()).substring(5, 7));
     /**本月所处的年份*/
-    Integer thisMonthYear = Integer.parseInt(TimeUtil.formatTimeStr(new Date()).substring(0,4));
+    Integer thisMonthYear = Integer.parseInt(TimeUtil.formatTimeStr(new Date()).substring(0, 4));
 
-    map.put("monthBefore",monthBefore);
-    map.put("monthBeforeYear",monthBeforeYear);
-    map.put("thisMonth",thisMonth);
-    map.put("thisMonthYear",thisMonthYear);
+    map.put("monthBefore", monthBefore);
+    map.put("monthBeforeYear", monthBeforeYear);
+    map.put("thisMonth", thisMonth);
+    map.put("thisMonthYear", thisMonthYear);
     result = this.baseMapper.queryMessage(map);
     return result;
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public ApiResponse initiateSettlement(User user,JSONObject jsonObject) throws Exception {
+  public ApiResponse initiateSettlement(User user, JSONObject jsonObject) throws Exception {
 
     ApiResponse response = new ApiResponse();
     String unitCode = jsonObject.getString("unitCode");
@@ -516,7 +528,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     String waterMeterCode = jsonObject.getString("waterMeterCode");
     Integer planYear = jsonObject.getInteger("planYear");
     String paperType = jsonObject.getString("paperType");//调整类型(申报类型)
-    Double firstQuarter =jsonObject.getDouble("firstQuarter");
+    Double firstQuarter = jsonObject.getDouble("firstQuarter");
     Double secondQuarter = jsonObject.getDouble("secondQuarter");
     Double thirdQuarter = jsonObject.getDouble("thirdQuarter");
     Double fourthQuarter = jsonObject.getDouble("fourthQuarter");
@@ -525,10 +537,11 @@ public class PlanDailyAdjustmentServiceImpl extends
 //    String quarter = jsonObject.getString("quarter");//季度
     String opinions = jsonObject.getString("opinions");//意见
     List<FileVO> auditFiles = jsonObject.getJSONArray("auditFiles").toJavaList(FileVO.class);
-    List<FileVO> waterProofFiles = jsonObject.getJSONArray("waterProofFiles").toJavaList(FileVO.class);
+    List<FileVO> waterProofFiles = jsonObject.getJSONArray("waterProofFiles")
+        .toJavaList(FileVO.class);
     List<FileVO> otherFiles = jsonObject.getJSONArray("otherFiles").toJavaList(FileVO.class);
-    String auditorName =jsonObject.getString("auditorName");//审核人员名称
-    String auditorId =jsonObject.getString("auditorId");//审核人员id
+    String auditorName = jsonObject.getString("auditorName");//审核人员名称
+    String auditorId = jsonObject.getString("auditorId");//审核人员id
     String businessJson = jsonObject.getString("businessJson");
     String detailConfig = jsonObject.getString("detailConfig");
     String nextNodeId = jsonObject.getString("nextNodeId");
@@ -536,17 +549,17 @@ public class PlanDailyAdjustmentServiceImpl extends
     String waterPlanWXId = jsonObject.getString("waterPlanWXId");
 
     /**待办内容*/
-    String todoContent ="";
+    String todoContent = "";
     /**待办类型*/
-    String todoType ="";
+    String todoType = "";
     /**查询该用水单位是否存在没有走完办结流程的办结单*/
     QueryWrapper wrapper = new QueryWrapper();
     wrapper.eq("node_code", user.getNodeCode());
     wrapper.eq("unit_code", unitCode);
     wrapper.eq("plan_year", planYear);
     UseWaterPlan useWaterPlan = this.getOne(wrapper);
-     /**有则不让在发起*/
-    if(null !=useWaterPlan && "1".equals(useWaterPlan.getExistSettlementForm())){
+    /**有则不让在发起*/
+    if (null != useWaterPlan && "1".equals(useWaterPlan.getExistSettlementForm())) {
       response.recordError("该计划已存在未完成的办结单");
       response.setCode(501);
       return response;
@@ -564,7 +577,7 @@ public class PlanDailyAdjustmentServiceImpl extends
     endPaper.setCreaterId(user.getId());
     endPaper.setCreaterName(user.getUsername());
     endPaper.setPlanYear(planYear);
-   // endPaper.setChangeQuarter(quarter);
+    // endPaper.setChangeQuarter(quarter);
     endPaper.setMinusPayStatus(useWaterPlan.getMinusPayStatus());
     endPaper.setBalanceTest(useWaterPlan.getBalanceTest());
     endPaper.setCreateType(useWaterPlan.getCreateType());
@@ -574,19 +587,20 @@ public class PlanDailyAdjustmentServiceImpl extends
     endPaper.setSecondWater(secondWater);
     endPaper.setWaterPlanWXId(waterPlanWXId);
     /**相关附件信息*/
-    if (!auditFiles.isEmpty()){
-      List<String> auditFileIds =this.handleFiles(auditFiles);
-      String auditFileId = StringUtils.strip(auditFileIds.toString(),"[]").replace(" ", "");
+    if (!auditFiles.isEmpty()) {
+      List<String> auditFileIds = this.handleFiles(auditFiles);
+      String auditFileId = StringUtils.strip(auditFileIds.toString(), "[]").replace(" ", "");
       endPaper.setAuditFileId(auditFileId);
     }
-    if (!waterProofFiles.isEmpty()){
+    if (!waterProofFiles.isEmpty()) {
       List<String> waterProofFileIds = this.handleFiles(waterProofFiles);
-      String waterProofFileId = StringUtils.strip(waterProofFileIds.toString(),"[]").replace(" ", "");
+      String waterProofFileId = StringUtils.strip(waterProofFileIds.toString(), "[]")
+          .replace(" ", "");
       endPaper.setWaterProofFileId(waterProofFileId);
     }
-    if (!otherFiles.isEmpty()){
+    if (!otherFiles.isEmpty()) {
       List<String> otherFileIds = this.handleFiles(otherFiles);
-      String otherFileId = StringUtils.strip(otherFileIds.toString(),"[]").replace(" ", "");
+      String otherFileId = StringUtils.strip(otherFileIds.toString(), "[]").replace(" ", "");
       endPaper.setOtherFileId(otherFileId);
     }
 
@@ -598,8 +612,9 @@ public class PlanDailyAdjustmentServiceImpl extends
       endPaper.setCurYearPlan(firstQuarter + secondQuarter + thirdQuarter + fourthQuarter);
       /**审核流程信息新增*/
       /**查询办结单审核流程的流程节点数据、流程线数据并复制到流程节点记录表、流程节点线记录表*/
-      String flowCode="endPaperAdjustFlow";//季度间调整审核流程
-      String nextNodeInfoId = flowNodeInfoService.selectAndInsert(user.getNodeCode(),endPaper.getId(),flowCode,nextNodeId);
+      String flowCode = "endPaperAdjustFlow";//季度间调整审核流程
+      String nextNodeInfoId = flowNodeInfoService
+          .selectAndInsert(user.getNodeCode(), endPaper.getId(), flowCode, nextNodeId);
       endPaper.setNextNodeId(nextNodeInfoId);
       /**待办内容*/
       todoContent =
@@ -607,52 +622,55 @@ public class PlanDailyAdjustmentServiceImpl extends
               + "申请调整计划，调整后各季度水量：第一季度水量"
               + firstQuarter + "方，第二季度水量" + secondQuarter + "方，第三季度水量" + thirdQuarter + "方，第四季度水量"
               + fourthQuarter + "方。";
-      todoType=AuditConstants.END_PAPER_TODO_TYPE_AJUST;
+      todoType = AuditConstants.END_PAPER_TODO_TYPE_AJUST;
     }
     if (SystemConstants.PLAN_CHANGE_TYPE_ADD.equals(paperType)) {
       /**审核流程信息新增*/
       /**查询办结单审核流程的流程节点数据、流程线数据并复制到流程节点记录表、流程节点线记录表*/
-      String flowCode="endPaperAddFlow";//增加计划审核流程
-      String nextNodeInfoId = flowNodeInfoService.selectAndInsert(user.getNodeCode(),endPaper.getId(),flowCode,nextNodeId);
+      String flowCode = "endPaperAddFlow";//增加计划审核流程
+      String nextNodeInfoId = flowNodeInfoService
+          .selectAndInsert(user.getNodeCode(), endPaper.getId(), flowCode, nextNodeId);
       endPaper.setNextNodeId(nextNodeInfoId);
       /**待办内容*/
       todoContent =
           "用水单位" + endPaper.getUnitCode() + "(" + endPaper.getUnitName() + ")" + "申请增加计划：第一水量"
-              + firstWater + "方，第二水量" + secondWater+"方。";
-      todoType=AuditConstants.END_PAPER_TODO_TYPE_ADD;
+              + firstWater + "方，第二水量" + secondWater + "方。";
+      todoType = AuditConstants.END_PAPER_TODO_TYPE_ADD;
     }
-    if("2".equals(dataSources)){
+    if ("2".equals(dataSources)) {
       endPaper.setConfirmed("1");//现场申报的都是已确认的
       endPaper.setConfirmTime(new Date());
-    }else if ("1".equals(dataSources)){
+    } else if ("1".equals(dataSources)) {
       endPaper.setConfirmed("0");//网上申报的都是未确认的
     }
     /**流程实例表添加数据*/
     String type = AuditConstants.END_PAPER_TODO_TYPE;
-    flowExampleService.add(user,endPaper.getId(),type);
+    flowExampleService.add(user, endPaper.getId(), type);
     /**审核流新增(3条数据)*/
-    flowProcessService.create(user,endPaper.getId(),opinions,auditorName,auditorId);
+    flowProcessService.create(user, endPaper.getId(), opinions, auditorName, auditorId);
     /**待办表加数据*/
-    if(StringUtils.isNotBlank(todoContent)) {
+    if (StringUtils.isNotBlank(todoContent)) {
       /**查询附件的信息(预览)*/
       endPaper = this.getFiles(endPaper, preViewRealPath);
-      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent, JSONObject.toJSONString(endPaper),
+      todoService.add(endPaper.getId(), user, auditorId, auditorName, todoContent,
+          JSONObject.toJSONString(endPaper),
           detailConfig, todoType);
       /**webSocket推送*/
-      webSocketUtil.pushWaterTodo(user.getNodeCode(),auditorId);
+      webSocketUtil.pushWaterTodo(user.getNodeCode(), auditorId);
     }
     /**办结单新增*/
     endPaperService.save(endPaper);
     /**发起办结单后，将计划表中的“是否存在没有走完办结流程的办结单”的状态改为是(办结流程走完后或者撤销办结单后，改为否)。*/
-    this.updateExistSettlement("1",unitCode,user.getNodeCode(),planYear);
+    this.updateExistSettlement("1", unitCode, user.getNodeCode(), planYear);
     /**日志*/
-    systemLogService.logInsert(user,"用水计划日常调整","发起办结单",null);
+    systemLogService.logInsert(user, "用水计划日常调整", "发起办结单", null);
     return response;
   }
 
   @Override
-  public void updateExistSettlement(String existSettlement,String unitCode, String nodeCode, Integer planYear) {
-    this.baseMapper.updateExistSettlement(existSettlement,unitCode,nodeCode,planYear);
+  public void updateExistSettlement(String existSettlement, String unitCode, String nodeCode,
+      Integer planYear) {
+    this.baseMapper.updateExistSettlement(existSettlement, unitCode, nodeCode, planYear);
   }
 
   @Override
@@ -670,10 +688,10 @@ public class PlanDailyAdjustmentServiceImpl extends
 //    map.put("nodeCode", nodeCode);
     if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
       map.put("nodeCode", jsonObject.getString("nodeCode"));
-    }else{
+    } else {
       map.put("nodeCode", user.getNodeCode());
     }
-    map.put("userId",userId);
+    map.put("userId", userId);
     if (StringUtils.isNotBlank(unitCode)) {
       map.put("unitCode", unitCode);
     }
@@ -696,50 +714,51 @@ public class PlanDailyAdjustmentServiceImpl extends
   }
 
   @Override
-  public ApiResponse export(User user, Integer planYear,String nodeCode, HttpServletRequest request,
+  public ApiResponse export(User user, Integer planYear, String nodeCode,
+      HttpServletRequest request,
       HttpServletResponse response) {
     ApiResponse apiResponse = new ApiResponse();
     /**查询导出数据*/
-   // String nodeCode = user.getNodeCode();
+    // String nodeCode = user.getNodeCode();
     String userId = user.getId();
     Map<String, Object> map = new HashMap();
 //    map.put("nodeCode", nodeCode);
     if (StringUtils.isNotBlank(nodeCode)) {
-      map.put("nodeCode",nodeCode);
-    }else{
+      map.put("nodeCode", nodeCode);
+    } else {
       map.put("nodeCode", user.getNodeCode());
     }
     map.put("userId", userId);
     map.put("planYear", planYear);
-    List<UseWaterPlanExportVO>  useWaterPlans = this.baseMapper.selectExportData(map);
-    if (useWaterPlans.isEmpty()){
+    List<UseWaterPlanExportVO> useWaterPlans = this.baseMapper.selectExportData(map);
+    if (useWaterPlans.isEmpty()) {
       apiResponse.recordError("没有数据需要导出");
       apiResponse.setCode(501);
       return apiResponse;
     }
     Map<String, Object> data = new HashMap<>(8);
-    data.put("useWaterPlans",useWaterPlans);
+    data.put("useWaterPlans", useWaterPlans);
 //    data.put("exportTime", new Date());
 //    SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd");
 //    data.put("dateFormat", dateFmt);
     final String fileName = "计划户最新日常计划调整表.xls";
     final String template = "template/PlanUserLatestPlanAdjust.xls";
-    boolean result = commonService.export(fileName,template,request,response,data);
-    if (!result){
+    boolean result = commonService.export(fileName, template, request, response, data);
+    if (!result) {
       apiResponse.recordError("导出出错");
     }
     /**日志*/
-    systemLogService.logInsert(user,"用水计划日常调整","导出最新计划",null);
+    systemLogService.logInsert(user, "用水计划日常调整", "导出最新计划", null);
     return apiResponse;
   }
 
   @Override
-  public List<Map<String, Object>> secondAuditRole(String nodeCode,String changeType) {
+  public List<Map<String, Object>> secondAuditRole(String nodeCode, String changeType) {
     List<Map<String, Object>> result = new ArrayList<>();
-    if ("0".equals(changeType)){//四个季度间调整
+    if ("0".equals(changeType)) {//四个季度间调整
       result = flowProcessMapper
           .secondAuditRole(AuditConstants.END_PAPER_ADJUST_FLOW_CODE, nodeCode);
-    }else if ("1".equals(changeType)) {//增加计划
+    } else if ("1".equals(changeType)) {//增加计划
       result = flowProcessMapper
           .secondAuditRole(AuditConstants.END_PAPER_ADD_FLOW_CODE, nodeCode);
     }
@@ -751,11 +770,14 @@ public class PlanDailyAdjustmentServiceImpl extends
       throws Exception {
     Date date = new Date();
 
-    long october =TimeUtil.getMonthFirstDay(TimeUtil.getMonthFirstYear(date,0),9).getTime();//本年10月的第一天
-    if (date.getTime() < october){//如果当前时间是本年10月1日前 则年份取当年
-      smsService.sendNotification(user, sendList, SmsConstants.SEND_NOTIFICATION_PLAN, TimeUtil.getYear(new Date(),0));
-    }else if (date.getTime()> october){//大于10月1日年份取下一年
-      smsService.sendNotification(user, sendList, SmsConstants.SEND_NOTIFICATION_PLAN,TimeUtil.getYear(new Date(), 1));
+    long october = TimeUtil.getMonthFirstDay(TimeUtil.getMonthFirstYear(date, 0), 9)
+        .getTime();//本年10月的第一天
+    if (date.getTime() < october) {//如果当前时间是本年10月1日前 则年份取当年
+      smsService.sendNotification(user, sendList, SmsConstants.SEND_NOTIFICATION_PLAN,
+          TimeUtil.getYear(new Date(), 0));
+    } else if (date.getTime() > october) {//大于10月1日年份取下一年
+      smsService.sendNotification(user, sendList, SmsConstants.SEND_NOTIFICATION_PLAN,
+          TimeUtil.getYear(new Date(), 1));
     }
   }
 
@@ -773,10 +795,10 @@ public class PlanDailyAdjustmentServiceImpl extends
 //    map.put("nodeCode", nodeCode);
     if (StringUtils.isNotBlank(jsonObject.getString("nodeCode"))) {
       map.put("nodeCode", jsonObject.getString("nodeCode"));
-    }else{
+    } else {
       map.put("nodeCode", user.getNodeCode());
     }
-    map.put("userId",userId);
+    map.put("userId", userId);
     if (StringUtils.isNotBlank(unitCode)) {
       map.put("unitCode", unitCode);
     }
@@ -784,42 +806,43 @@ public class PlanDailyAdjustmentServiceImpl extends
       map.put("unitCodeGroup", unitCodeGroup);
     }
     //昨年的10月1日
-    long octoberOfLastYear =TimeUtil.getMonthFirstDay(TimeUtil.getMonthFirstYear(date,-1),9).getTime();//上年年10月1日
+    long octoberOfLastYear = TimeUtil.getMonthFirstDay(TimeUtil.getMonthFirstYear(date, -1), 9)
+        .getTime();//上年年10月1日
     Date startTime = new Date(octoberOfLastYear);
     //今年的10月1日
-    long octoberOfThisYear = TimeUtil.getMonthFirstDay(TimeUtil.getMonthFirstYear(date,0),9).getTime();//今年10月1日
+    long octoberOfThisYear = TimeUtil.getMonthFirstDay(TimeUtil.getMonthFirstYear(date, 0), 9)
+        .getTime();//今年10月1日
     Date endTime = new Date(octoberOfThisYear);
     //当前时间
     long currentTime = date.getTime();
 //    map.put("startTime",startTime);
 //    map.put("endTime",endTime);
 
-
     String messageTypecode = SmsConstants.SEND_NOTIFICATION_PLAN;
-    JSONObject json =new JSONObject();
-    json.put("messageTypecode",messageTypecode);
-    if (currentTime<= octoberOfThisYear){
-      map.put("year",TimeUtil.getYear(date,0));//当年
-      json.put("startTime",startTime);
-      json.put("endTime",endTime);
-    }else if (currentTime > octoberOfThisYear ){
-      json.put("endTime",endTime);
-      map.put("year",TimeUtil.getYear(date,1));//下年
+    JSONObject json = new JSONObject();
+    json.put("messageTypecode", messageTypecode);
+    if (currentTime <= octoberOfThisYear) {
+      map.put("year", TimeUtil.getYear(date, 0));//当年
+      json.put("startTime", startTime);
+      json.put("endTime", endTime);
+    } else if (currentTime > octoberOfThisYear) {
+      json.put("endTime", endTime);
+      map.put("year", TimeUtil.getYear(date, 1));//下年
     }
     if (StringUtils.isNotBlank(status)) {
       json.put("status", status);
     }
     Map<String, Object> result = new LinkedHashMap<>();
-    List<Map<String,Object>> records = new ArrayList<>();
+    List<Map<String, Object>> records = new ArrayList<>();
     /**查询单位信息*/
     List<SendListVO> list = this.baseMapper.queryUnit(map);
-    if (list.isEmpty()){
-      result.put("total",0);//满足条件的总条数
+    if (list.isEmpty()) {
+      result.put("total", 0);//满足条件的总条数
       result.put("size", size);//每页条数
       result.put("pages", 0);//一共有多少页
       result.put("current", current);//当前页
       result.put("records", records);
-    }else {
+    } else {
       /**查出满足条件的共有多少条*/
       int num = smsSendService.sendInfoNum(list, json);
       result.put("total", num);//满足条件的总条数
@@ -829,29 +852,54 @@ public class PlanDailyAdjustmentServiceImpl extends
       /**查出满足条件的数据*/
       json.put("current", current);
       json.put("pageSize", size);
-      records = smsSendService.sendInfoPage(list,json);
+      records = smsSendService.sendInfoPage(list, json);
       result.put("records", records);
     }
     return result;
   }
 
-  private List<String> handleFiles(List<FileVO> fileVOS){
-  List<File> deletedFiles = new ArrayList<>();
-  List<String> fileIds = new ArrayList<>();
-  for (FileVO fileVO :fileVOS){
-    if ("0".equals(fileVO.getDeleted())){
-      fileIds.add(fileVO.getId());
-    }else if ("1".equals(fileVO.getDeleted())){
-     File file =  new File();
-     file.setId(fileVO.getId());
-     file.setDeleted("1");
-     deletedFiles.add(file);
+  @Override
+  public double selectQuotaAddNumber(User user, JSONObject jsonObject) {
+    String useWaterUnitId = jsonObject.getString("useWaterUnitId");
+    if (StringUtils.isNotBlank(useWaterUnitId)) {
+      jsonObject.put("useWaterUnitId", useWaterUnitId);
+    } else {
+      return 0;
     }
+    String number = jsonObject.getString("number");
+    if (StringUtils.isNotBlank(number)) {
+      jsonObject.put("number", number);
+    } else {
+      return 0;
+    }
+    double ratio = 0.25;
+    List<String> arry = jsonObject.getJSONArray("changeQuarter").toJavaList(String.class);
+    if (!arry.isEmpty()) {
+      jsonObject.put("ratio", ratio * arry.size());
+
+    } else {
+      return 0;
+    }
+    return useWaterQuotaService.selectQuotaAddNumber(jsonObject);
   }
-  /**更新附件信息(前端进行了删除操作的附件更新deleted字段为已删除)*/
-  fileService.updateBusinessId(null,deletedFiles);
-  return fileIds;
-}
+
+  private List<String> handleFiles(List<FileVO> fileVOS) {
+    List<File> deletedFiles = new ArrayList<>();
+    List<String> fileIds = new ArrayList<>();
+    for (FileVO fileVO : fileVOS) {
+      if ("0".equals(fileVO.getDeleted())) {
+        fileIds.add(fileVO.getId());
+      } else if ("1".equals(fileVO.getDeleted())) {
+        File file = new File();
+        file.setId(fileVO.getId());
+        file.setDeleted("1");
+        deletedFiles.add(file);
+      }
+    }
+    /**更新附件信息(前端进行了删除操作的附件更新deleted字段为已删除)*/
+    fileService.updateBusinessId(null, deletedFiles);
+    return fileIds;
+  }
 
   private EndPaper getFiles(EndPaper paper, String path) {
     try {
@@ -876,14 +924,14 @@ public class PlanDailyAdjustmentServiceImpl extends
     }
     return paper;
   }
+
   /**
-   * 向上十位取整
-   * 34512 返回34520。
-   * */
-  private int UpRoundTen(double num){
+   * 向上十位取整 34512 返回34520。
+   */
+  private int UpRoundTen(double num) {
     int upNumber;
-    upNumber= (int) Math.ceil(num / 10);
-    return upNumber*10;
+    upNumber = (int) Math.ceil(num / 10);
+    return upNumber * 10;
   }
 
 }

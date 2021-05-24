@@ -1,6 +1,7 @@
 package com.zjtc.mapper.waterBiz;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.UseWaterQuota;
 import java.util.List;
@@ -17,4 +18,6 @@ import org.apache.ibatis.annotations.Param;
 public interface UseWaterQuotaMapper extends BaseMapper<UseWaterQuota> {
 
   List<UseWaterQuota> queryByUnitId(@Param("useWaterUnitId") String useWaterUnitId);
+
+  double selectQuotaAddNumber(JSONObject jsonObject);
 }
