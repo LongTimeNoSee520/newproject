@@ -1,4 +1,4 @@
-package com.zjtc.controller;
+package com.zjtc.controller.print;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
