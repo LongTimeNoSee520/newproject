@@ -131,6 +131,23 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   }
 
   @Override
+  public Map<String, Object> selectByMobileNumberWX(String openId, String unitCode) {
+    Map<String, Object> map = new HashMap<>();
+    if (StringUtils.isBlank(unitCode)) {
+      return map;
+    }
+//    查询当前登录者所在的单位
+    UseWaterUnit useWaterUnit = this.baseMapper
+        .selectByMobileNumberAllWX(openId, unitCode);
+//      查询部门下的人员名称
+    List<String> persons = this.baseMapper
+        .selectByUnitIdInquirePersonWX(useWaterUnit.getId(), openId);
+    map.put("unit", useWaterUnit);
+    map.put("personnel", persons);
+    return map;
+  }
+
+  @Override
   public List<UnitVo> selectOperatorPublic(String mobileNumber) {
 //    1、查询登录人所对应的单位信息
     List<UnitVo> useWaterUnits = this.baseMapper.selectUnitCode(mobileNumber,null);

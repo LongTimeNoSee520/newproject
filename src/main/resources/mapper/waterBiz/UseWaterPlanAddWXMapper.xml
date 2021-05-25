@@ -453,9 +453,9 @@
     <if test=" auditResult != null and auditResult != ''">
       audit_result = #{ auditResult },
     </if>
-
-    audit_time = #{ auditTime },
-
+    <if test="auditTime != null and auditTime != ''">
+      audit_time = #{ auditTime },
+    </if>
     <if test="firstWater != null and  firstWater != ''">
       first_water = #{firstWater},
     </if>
@@ -508,4 +508,22 @@
     where id = #{useWaterPlanAddWX.id}
   </update>
 
+  <select id="selectFirstAndSecondWater" resultType="com.zjtc.model.vo.WaterVo">
+    select  first_water as firstWater, second_water as secondWater from t_wx_use_water_plan_add where id = #{id}
+  </select>
+
+
+  <update id="updateAudit">
+    UPDATE t_wx_use_water_plan_add
+    SET
+      audit_person_id = Null,
+      audit_person = Null,
+      audit_status = '1',
+      audit_result = Null,
+      audit_time = Null,
+      first_water = #{firstWater},
+      second_water = #{secondWater}
+    WHERE
+    id = #{id}
+  </update>
 </mapper>

@@ -3,6 +3,7 @@ package com.zjtc.mapper.waterBiz;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.vo.UseWaterPlanAddWXVO;
+import com.zjtc.model.vo.WaterVo;
 import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -99,4 +100,15 @@ public interface UseWaterPlanAddWXMapper extends BaseMapper<UseWaterPlanAddWX> {
    */
   int update(@Param("useWaterPlanAddWX") UseWaterPlanAddWX useWaterPlanAddWX);
 
+  WaterVo selectFirstAndSecondWater(@Param("id") String id);
+
+  /**
+   * 异常后恢复之前的值
+   */
+
+  int recover(
+      @Param("id") String id,
+      @Param("firstWater") Double firstWater,
+      @Param("secondWater") Double secondWater
+  );
 }

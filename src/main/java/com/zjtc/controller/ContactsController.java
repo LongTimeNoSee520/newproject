@@ -42,7 +42,7 @@ public class ContactsController {
   private ContactsService contactsService;
 
   @RequestMapping(value = "selectByMobileNumber", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation("通过联系电话查询所在部门和该部门下所有的人员")
+  @ApiOperation("通过联系电话查询所在部门和该部门下所有的人员  --公共服务平台")
   public ApiResponse selectByMobileNumber(@RequestBody JSONObject jsonObject,
       @RequestHeader("token") String token) {
     ApiResponse response = new ApiResponse();
@@ -63,8 +63,25 @@ public class ContactsController {
       response.setData(map);
       return response;
     } catch (Exception e) {
-      response.recordError("通过联系电话查询所在部门和该部门下所有的人员");
-      log.error("通过联系电话查询所在部门和该部门下所有的人员,errMsg==={}", e.getMessage());
+      response.recordError("通过联系电话查询所在部门和该部门下所有的人员异常");
+      log.error("通过联系电话查询所在部门和该部门下所有的人员异常,errMsg==={}", e.getMessage());
+      e.printStackTrace();
+    }
+    return response;
+  }
+
+  @RequestMapping(value = "selectByMobileNumberWX", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation("通过微信号查询所在部门和该部门下所有的人员  --微信公众号")
+  public ApiResponse selectByMobileNumber(@RequestBody JSONObject jsonObject,
+      @RequestHeader("openId") String openId,@RequestHeader("unitCode") String unitCode) {
+    ApiResponse response = new ApiResponse();
+    try {
+      Map<String, Object> map = contactsService.selectByMobileNumberWX(openId,unitCode);
+      response.setData(map);
+      return response;
+    } catch (Exception e) {
+      response.recordError("通过微信号查询所在部门和该部门下所有的人员异常");
+      log.error("通过微信号查询所在部门和该部门下所有的人员异常,errMsg==={}", e.getMessage());
       e.printStackTrace();
     }
     return response;

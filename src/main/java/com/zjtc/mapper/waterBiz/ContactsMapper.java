@@ -80,4 +80,8 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * @return
    */
   List<UnitVo> selectUnitCode(@Param("mobileNumber") String mobileNumber,@Param("openId") String openId);
+
+  UseWaterUnit selectByMobileNumberAllWX(@Param("openId") String openId,@Param("unitCode") String unitCode);
+
+  List<String> selectByUnitIdInquirePersonWX(@Param("id") String id,@Param("openId") String openId);
 }

@@ -70,6 +70,12 @@ public interface ContactsService extends IService<Contacts> {
   Map<String, Object> selectByMobileNumber(String mobileNumber, String personId, String unitCode);
 
   /**
+   * 通过微信号查询所在部门和该部门下所有的人员
+   */
+  Map<String, Object> selectByMobileNumberWX(String openId, String unitCode);
+
+
+  /**
    * 查询经办人信息公共服务平台
    * @param mobileNumber 联系电话
    * @return

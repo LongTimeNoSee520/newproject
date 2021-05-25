@@ -61,60 +61,60 @@
   </select>
 
 
-<!--  <select id="selectContacts" resultType="com.zjtc.model.vo.OrgTreeVO">-->
-<!--    SELECT-->
-<!--    t1.id,-->
-<!--    t1.use_water_unit_id AS parentId,-->
-<!--    t1.node_code AS nodeCode,-->
-<!--    null AS orgRank,-->
-<!--    contacts AS orgName,-->
-<!--    t1.phone_number AS dutyTel,-->
-<!--    'person' AS tag,-->
-<!--    (SELECT unit_name from t_w_use_water_unit t2 WHERE t2.id = t1.use_water_unit_id) AS personOrg,-->
-<!--    contacts AS userName,-->
-<!--    t1.mobile_number AS mobilePhone,-->
-<!--    t1.id AS drawerId,-->
-<!--    t1.contacts AS drawer,-->
-<!--    t1.unit_code as unitCode,-->
-<!--    '1' as son-->
-<!--    FROM-->
-<!--    t_w_use_water_unit_contacts t1 WHERE deleted = '0'-->
-<!--    <if test="nodeCodes != null and nodeCodes.size > 0">-->
-<!--      AND node_code in-->
-<!--      <foreach collection="nodeCodes"  item="nodeCode" open="(" close=")" separator=",">-->
-<!--        #{nodeCode}-->
-<!--      </foreach>-->
-<!--    </if>-->
-<!--    <if test="condition != null and condition != ''">-->
-<!--      and contacts LIKE '%${condition}%'-->
-<!--    </if>-->
-<!--  </select>-->
+  <!--  <select id="selectContacts" resultType="com.zjtc.model.vo.OrgTreeVO">-->
+  <!--    SELECT-->
+  <!--    t1.id,-->
+  <!--    t1.use_water_unit_id AS parentId,-->
+  <!--    t1.node_code AS nodeCode,-->
+  <!--    null AS orgRank,-->
+  <!--    contacts AS orgName,-->
+  <!--    t1.phone_number AS dutyTel,-->
+  <!--    'person' AS tag,-->
+  <!--    (SELECT unit_name from t_w_use_water_unit t2 WHERE t2.id = t1.use_water_unit_id) AS personOrg,-->
+  <!--    contacts AS userName,-->
+  <!--    t1.mobile_number AS mobilePhone,-->
+  <!--    t1.id AS drawerId,-->
+  <!--    t1.contacts AS drawer,-->
+  <!--    t1.unit_code as unitCode,-->
+  <!--    '1' as son-->
+  <!--    FROM-->
+  <!--    t_w_use_water_unit_contacts t1 WHERE deleted = '0'-->
+  <!--    <if test="nodeCodes != null and nodeCodes.size > 0">-->
+  <!--      AND node_code in-->
+  <!--      <foreach collection="nodeCodes"  item="nodeCode" open="(" close=")" separator=",">-->
+  <!--        #{nodeCode}-->
+  <!--      </foreach>-->
+  <!--    </if>-->
+  <!--    <if test="condition != null and condition != ''">-->
+  <!--      and contacts LIKE '%${condition}%'-->
+  <!--    </if>-->
+  <!--  </select>-->
 
   <select id="selectContacts" resultType="com.zjtc.model.vo.AddressBook">
     SELECT DISTINCT
-      t1.id,
-      t1.use_water_unit_id AS parentId,
-      t1.node_code AS nodeCode,
-      t2.unit_name AS orgName,
-      'person' AS tag,
-      contacts AS userName,
-      t1.mobile_number AS mobilePhone,
-      t1.unit_code AS unitCode,
-      '1' AS son
+    t1.id,
+    t1.use_water_unit_id AS parentId,
+    t1.node_code AS nodeCode,
+    t2.unit_name AS orgName,
+    'person' AS tag,
+    contacts AS userName,
+    t1.mobile_number AS mobilePhone,
+    t1.unit_code AS unitCode,
+    '1' AS son
     FROM
     t_w_use_water_unit_contacts t1 INNER JOIN
     ( SELECT
-      id,unit_name
-      FROM t_w_use_water_unit
-      WHERE
-      deleted = '0'
+    id,unit_name
+    FROM t_w_use_water_unit
+    WHERE
+    deleted = '0'
     <if test="nodeCode != null ">
       and node_code = #{nodeCode}
     </if>
     <if test="fathers != null">
       AND SUBSTRING ( unit_code, 5, 2 ) in
-      <foreach collection="fathers"  item="father" index="index" open="(" close=")" separator=",">
-          #{father.id}
+      <foreach collection="fathers" item="father" index="index" open="(" close=")" separator=",">
+        #{father.id}
       </foreach>
     </if>
     ) t2 ON t1.use_water_unit_Id = t2.id
@@ -135,7 +135,7 @@
     unit_address,
     department
     FROM
-    t_w_use_water_unit t1 where  1 = 1
+    t_w_use_water_unit t1 where 1 = 1
     <if test="unitCode != null and unitCode != ''">
       and unit_code = #{unitCode}
     </if>
@@ -155,12 +155,13 @@
 
 
   <select id="selectByUnitIdInquirePerson" resultType="String">
-    SELECT contacts FROM t_w_use_water_unit_contacts WHERE deleted = '0' AND use_water_unit_id = #{id}
+    SELECT contacts FROM t_w_use_water_unit_contacts WHERE deleted = '0' AND use_water_unit_id =
+    #{id}
     <if test="mobileNumber != null and mobileNumber != ''">
-    AND mobile_number != #{mobileNumber}
+      AND mobile_number != #{mobileNumber}
     </if>
     <if test="personId != null and personId != '' ">
-    and  person_id != #{personId}
+      and person_id != #{personId}
     </if>
   </select>
 
@@ -170,7 +171,8 @@
     person_id
     FROM
     t_w_use_water_unit_role t1
-    INNER JOIN ( SELECT SUBSTRING ( unit_code, 5, 2 ) AS unit_code FROM t_w_use_water_unit_contacts WHERE deleted = '0' AND unit_code = #{unitCode}  ) t2 ON t1.unit_type_code = t2.unit_code
+    INNER JOIN ( SELECT SUBSTRING ( unit_code, 5, 2 ) AS unit_code FROM t_w_use_water_unit_contacts
+    WHERE deleted = '0' AND unit_code = #{unitCode} ) t2 ON t1.unit_type_code = t2.unit_code
   </select>
 
   <select id="selectUnitCode" resultMap="unitVoModel">
@@ -187,12 +189,41 @@
       AND mobile_number = #{mobileNumber}
     </if>
     <if test="openId != null and openId != ''">
-    AND open_id = #{openId}
+      AND open_id = #{openId}
     </if>
     ) t2 ON t1.unit_code = t2.unit_code
     WHERE
     t1.deleted = '0'
     order by t1.unit_code asc
+  </select>
+
+  <select id="selectByMobileNumberAllWX" resultType="com.zjtc.model.UseWaterUnit">
+    SELECT
+    id,
+    node_code,
+    unit_code,
+    unit_name,
+    unit_address,
+    department
+    FROM
+    t_w_use_water_unit t1 where 1 = 1
+    <if test="unitCode != null and unitCode != ''">
+      and unit_code = #{unitCode}
+    </if>
+    <if test="openId != null and openId != ''">
+      and id IN ( SELECT use_water_unit_id
+      FROM t_w_use_water_unit_contacts
+      WHERE 1 = 1
+      and open_id = #{openId}
+      AND deleted = '0' )
+    </if>
+  </select>
+
+  <select id="selectByUnitIdInquirePersonWX" resultType="String">
+    SELECT contacts FROM t_w_use_water_unit_contacts WHERE deleted = '0' AND use_water_unit_id = #{id}
+    <if test="openId != null and openId != ''">
+      AND open_id != #{openId}
+    </if>
   </select>
 
 </mapper>

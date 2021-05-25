@@ -9,6 +9,7 @@ import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAddWX;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.UseWaterPlanAddWXVO;
+import com.zjtc.model.vo.WaterVo;
 import com.zjtc.service.FileService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.PersonService;
@@ -192,6 +193,8 @@ public class UseWaterPlanAddWXServiceImpl extends
       response.recordError("系统异常");
       return response;
     }
+//    在审核之前先查询第一水量和第二水量，如果后面出错，恢复第一水量和第二水量的值
+    WaterVo waterVo = this.baseMapper.selectFirstAndSecondWater(id);
     int i = 0;
 //    审核增加或调整水量申请
     i = this.baseMapper
@@ -349,7 +352,6 @@ public class UseWaterPlanAddWXServiceImpl extends
         response.recordError("系统异常");
         return response;
       }
-
       messageContent =
           "用水单位" + useWaterPlanAddWX.getUnitCode() +
               "(" + useWaterPlanAddWX.getUnitName() + ")" +
@@ -367,14 +369,14 @@ public class UseWaterPlanAddWXServiceImpl extends
         response.setCode(200);
 //      日志记录
         systemLogService.logInsert(user, "用水计划调整审核", "用水计划增加/调整审核", "");
-
 //      取消待办
         todoService.editByBusinessId(id);
         return response;
       } else if (Objects.requireNonNull(response1).getCode() == 500) {
         log.info(response1.getMessage() + ",数据id为:" + useWaterPlanAddWX.getId());
         response.recordError(response1.getMessage());
-        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        this.baseMapper.recover( id, waterVo.getFirstWater(),waterVo.getSecondWater());
+//        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         return response;
       }
     }
