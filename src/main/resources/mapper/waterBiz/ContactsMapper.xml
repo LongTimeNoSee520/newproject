@@ -128,6 +128,7 @@
 
   <select id="selectByMobileNumberAll" resultType="com.zjtc.model.UseWaterUnit">
     SELECT
+    top 1
     id,
     node_code,
     unit_code,
@@ -135,7 +136,7 @@
     unit_address,
     department
     FROM
-    t_w_use_water_unit t1 where 1 = 1
+    t_w_use_water_unit t1 where deleted = '0'
     <if test="unitCode != null and unitCode != ''">
       and unit_code = #{unitCode}
     </if>
@@ -199,6 +200,7 @@
 
   <select id="selectByMobileNumberAllWX" resultType="com.zjtc.model.UseWaterUnit">
     SELECT
+    top 1
     id,
     node_code,
     unit_code,
@@ -206,23 +208,26 @@
     unit_address,
     department
     FROM
-    t_w_use_water_unit t1 where 1 = 1
-    <if test="unitCode != null and unitCode != ''">
-      and unit_code = #{unitCode}
-    </if>
-    <if test="openId != null and openId != ''">
-      and id IN ( SELECT use_water_unit_id
-      FROM t_w_use_water_unit_contacts
-      WHERE 1 = 1
-      and open_id = #{openId}
-      AND deleted = '0' )
-    </if>
+    t_w_use_water_unit t1 where deleted = '0'
+    <choose>
+      <when test="unitCode != null and unitCode != ''">
+        and unit_code = #{unitCode}
+      </when>
+      <otherwise>
+        <if test="openId != null and openId != ''">
+          and id IN ( SELECT use_water_unit_id
+          FROM t_w_use_water_unit_contacts
+          WHERE deleted = '0'
+          and open_id = #{openId})
+        </if>
+      </otherwise>
+    </choose>
   </select>
 
   <select id="selectByUnitIdInquirePersonWX" resultType="String">
     SELECT contacts FROM t_w_use_water_unit_contacts WHERE deleted = '0' AND use_water_unit_id = #{id}
     <if test="openId != null and openId != ''">
-      AND open_id != #{openId}
+      AND (open_id != #{openId} or open_id is null or open_id = '')
     </if>
   </select>
 

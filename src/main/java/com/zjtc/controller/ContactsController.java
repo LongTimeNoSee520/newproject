@@ -4,14 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
-import com.zjtc.model.vo.OperatorVo;
-import com.zjtc.model.vo.OrgTreeVO;
 import com.zjtc.model.vo.UnitVo;
-import com.zjtc.model.vo.UseWaterPlanAddWXVO;
 import com.zjtc.service.ContactsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -72,11 +67,11 @@ public class ContactsController {
 
   @RequestMapping(value = "selectByMobileNumberWX", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation("通过微信号查询所在部门和该部门下所有的人员  --微信公众号")
-  public ApiResponse selectByMobileNumber(@RequestBody JSONObject jsonObject,
-      @RequestHeader("openId") String openId,@RequestHeader("unitCode") String unitCode) {
+  public ApiResponse selectByMobileNumberWX(@RequestBody JSONObject jsonObject,
+      @RequestHeader("openId") String openId) {
     ApiResponse response = new ApiResponse();
     try {
-      Map<String, Object> map = contactsService.selectByMobileNumberWX(openId,unitCode);
+      Map<String, Object> map = contactsService.selectByMobileNumberWX(openId,jsonObject.getString("unitCode"));
       response.setData(map);
       return response;
     } catch (Exception e) {

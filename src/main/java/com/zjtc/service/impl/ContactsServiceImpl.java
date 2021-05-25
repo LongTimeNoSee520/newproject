@@ -123,8 +123,11 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
     UseWaterUnit useWaterUnit = this.baseMapper
         .selectByMobileNumberAll(mobileNumber, personId, unitCode);
 //      查询部门下的人员名称
-    List<String> persons = this.baseMapper
-        .selectByUnitIdInquirePerson(useWaterUnit.getId(), mobileNumber, personId);
+    List<String> persons = new ArrayList<>();
+    if (null != useWaterUnit) {
+      persons = this.baseMapper
+          .selectByUnitIdInquirePerson(useWaterUnit.getId(), mobileNumber, personId);
+    }
     map.put("unit", useWaterUnit);
     map.put("personnel", persons);
     return map;
@@ -140,8 +143,11 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
     UseWaterUnit useWaterUnit = this.baseMapper
         .selectByMobileNumberAllWX(openId, unitCode);
 //      查询部门下的人员名称
-    List<String> persons = this.baseMapper
-        .selectByUnitIdInquirePersonWX(useWaterUnit.getId(), openId);
+    List<String> persons = new ArrayList<>();
+    if (null != useWaterUnit) {
+      persons = this.baseMapper
+          .selectByUnitIdInquirePersonWX(useWaterUnit.getId(), openId);
+    }
     map.put("unit", useWaterUnit);
     map.put("personnel", persons);
     return map;
@@ -150,16 +156,16 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   @Override
   public List<UnitVo> selectOperatorPublic(String mobileNumber) {
 //    1、查询登录人所对应的单位信息
-    List<UnitVo> useWaterUnits = this.baseMapper.selectUnitCode(mobileNumber,null);
+    List<UnitVo> useWaterUnits = this.baseMapper.selectUnitCode(mobileNumber, null);
 //    System.out.println("查询到的单位信息：" + useWaterUnits);
 //    2、根据单位编号查询对应的节水办人员id
-    for (UnitVo unitVo : useWaterUnits){
+    for (UnitVo unitVo : useWaterUnits) {
       List<String> personIds = this.baseMapper.selectPersonIdPublic(unitVo.getUnitCode());
 //      System.out.println("查询到的人员id"+ personIds);
 //    3、根据人员id查询人员信息
       List<OperatorVo> operatorVos = personMapper.selectOperatorPublic(personIds);
 //      System.out.println("查询到的人员信息："+operatorVos);
-      for (OperatorVo operatorVo : operatorVos){
+      for (OperatorVo operatorVo : operatorVos) {
         operatorVo.setUnitType(unitVo.getUnitType());
       }
       unitVo.setOperatorVos(operatorVos);
@@ -170,16 +176,16 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, Contacts> i
   @Override
   public List<UnitVo> selectOperatorWX(String openId) {
 //    1、查询登录人所对应的单位信息
-    List<UnitVo> useWaterUnits = this.baseMapper.selectUnitCode(null,openId);
+    List<UnitVo> useWaterUnits = this.baseMapper.selectUnitCode(null, openId);
 //    System.out.println("查询到的单位信息：" + useWaterUnits);
 //    2、根据单位编号查询对应的节水办人员id
-    for (UnitVo unitVo : useWaterUnits){
+    for (UnitVo unitVo : useWaterUnits) {
       List<String> personIds = this.baseMapper.selectPersonIdPublic(unitVo.getUnitCode());
 //      System.out.println("查询到的人员id"+ personIds);
 //    3、根据人员id查询人员信息
       List<OperatorVo> operatorVos = personMapper.selectOperatorPublic(personIds);
 //      System.out.println("查询到的人员信息："+operatorVos);
-      for (OperatorVo operatorVo : operatorVos){
+      for (OperatorVo operatorVo : operatorVos) {
         operatorVo.setUnitType(unitVo.getUnitType());
       }
       unitVo.setOperatorVos(operatorVos);
