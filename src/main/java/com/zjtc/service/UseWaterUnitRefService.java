@@ -37,6 +37,11 @@ public interface UseWaterUnitRefService extends IService<UseWaterUnitRef> {
    */
   boolean deleteBatch(List<String> ids);
 
-  boolean isRootNode(String useWaterUnitIdRef);
+  /**
+   * 查询根节点
+   * @param useWaterUnitIdRef
+   * @return
+   */
+  String selectRootNode(String useWaterUnitIdRef,String nodeCode);
 }
 

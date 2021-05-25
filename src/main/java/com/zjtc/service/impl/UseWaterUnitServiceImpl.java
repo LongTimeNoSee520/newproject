@@ -200,19 +200,23 @@ public class UseWaterUnitServiceImpl extends
 
   /**
    * 关联相关编号这里做一个约定 新增、修改是选择的相关编号、选择主户与该单位都是被关联关系 例：单位A,关联单位B   B被A关联 A(unit_id),---> B（unit_id_ref）
-   * 为满足树型结构，在新增或修改时都需要去判断被关联的B,是否是根节点 1，是根节点 A(unit_id),---> B（unit_id_ref） 可行 2.不是根节点
-   * B(unit_id),---> A（unit_id_ref） 可行
+   * 为满足树型结构，在新增或修改时都需要去判断被关联的B,是否是根节点 始终关联 被关联的节点的根节点
    *
    * @param useWaterUnitId 用水单位id
    * @param newId 要关联的id
    */
   private void unitRefCheck(String useWaterUnitId, String newId, String nodeCode) {
-    if (useWaterUnitRefService.isRootNode(newId)) {
-      useWaterUnitRefService
-          .save(useWaterUnitId, newId, nodeCode);
-    } else {
-      useWaterUnitRefService
-          .save(newId, useWaterUnitId, nodeCode);
+    String rootId = useWaterUnitRefService.selectRootNode(newId, nodeCode);
+    if(StringUtils.isNotBlank(rootId)){
+      if (newId ==rootId) {
+        useWaterUnitRefService
+            .save(useWaterUnitId, newId, nodeCode);
+      }else{
+        useWaterUnitRefService
+            .save(rootId, newId, nodeCode);
+        useWaterUnitRefService
+            .save(useWaterUnitId, rootId, nodeCode);
+      }
     }
   }
 

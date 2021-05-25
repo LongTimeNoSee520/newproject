@@ -60,10 +60,9 @@ public class UseWaterUnitRefServiceImpl extends
   }
 
   @Override
-  public boolean isRootNode(String useWaterUnitIdRef) {
-    QueryWrapper queryWrapper=new QueryWrapper();
-    queryWrapper.eq("use_water_unit_id_ref",useWaterUnitIdRef);
-    return this.count(queryWrapper) <=0;
+  public String selectRootNode(String useWaterUnitIdRef,String nodeCode) {
+    findPrent(useWaterUnitIdRef, nodeCode);
+    return rootId;
   }
 
   private void recursion(List<String> param) {
