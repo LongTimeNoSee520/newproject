@@ -2,6 +2,45 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zjtc.mapper.waterBiz.UseWaterUnitMapper">
+  <resultMap id="useWaterUnitPage_map" type="com.zjtc.model.vo.UseWaterUnitVo">
+  <id column="id" property="id" jdbcType="VARCHAR"/>
+  <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+  <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+  <result column="unit_address" property="unitAddress" jdbcType="VARCHAR"/>
+  <result column="industry" property="industry" jdbcType="VARCHAR"/>
+  <result column="industryName" property="industryName" jdbcType="VARCHAR"/>
+  <result column="zip_name" property="zipName" jdbcType="VARCHAR"/>
+  <result column="zip_address" property="zipAddress" jdbcType="VARCHAR"/>
+  <result column="invoice_unit_name" property="invoiceUnitName" jdbcType="VARCHAR"/>
+  <result column="save_unit_type" property="saveUnitType" jdbcType="VARCHAR"/>
+  <result column="save_unit_time" property="saveUnitTime" jdbcType="TIMESTAMP"/>
+  <result column="water_balance_type" property="waterBalanceType" jdbcType="VARCHAR"/>
+  <result column="water_balance_time" property="waterBalanceTime" jdbcType="TIMESTAMP"/>
+  <result column="gisX" property="gisX" jdbcType="DOUBLE"/>
+  <result column="gisY" property="gisY" jdbcType="DOUBLE"/>
+  <result column="imain" property="imain" jdbcType="VARCHAR"/>
+  <result column="department" property="department" jdbcType="VARCHAR"/>
+  <result column="area_country" property="areaCountry" jdbcType="VARCHAR"/>
+  <result column="remark" property="remark" jdbcType="VARCHAR"/>
+  <result column="abnormal" property="abnormal" jdbcType="VARCHAR"/>
+  <result column="abnormal_cause" property="abnormalCause" jdbcType="VARCHAR"/>
+  <result column="responsibility_code" property="responsibilityCode" jdbcType="VARCHAR"/>
+  <result column="bank_of_deposit" property="bankOfDeposit" jdbcType="VARCHAR"/>
+  <result column="bank_account" property="bankAccount" jdbcType="VARCHAR"/>
+  <result column="signed" property="signed" jdbcType="VARCHAR"/>
+  <result column="unit_code_group" property="unitCodeGroup" jdbcType="VARCHAR"/>
+  <result column="unit_code_type" property="unitCodeType" jdbcType="VARCHAR"/>
+  <result column="contacts" property="contacts" jdbcType="VARCHAR"/>
+  <result column="mobile_number" property="mobileNumber" jdbcType="VARCHAR"/>
+  <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
+  <result column="water_meter_code" property="waterMeterCode" jdbcType="VARCHAR"/>
+  <result column="people_bank_pay_sys_number" property="peopleBankPaySysNumber" jdbcType="VARCHAR"/>
+  <result column="entrust_unit_name" property="entrustUnitName" jdbcType="VARCHAR"/>
+  <result column="agreement_number" property="agreementNumber" jdbcType="VARCHAR"/>
+  <result column="focus_user_remark" property="focusUserRemark" jdbcType="VARCHAR"/>
+  <result column="other_bank" property="otherBank" jdbcType="VARCHAR"/>
+  <result column="signedEntrust" property="signedEntrust" jdbcType="VARCHAR"/>
+  </resultMap>
   <resultMap id="useWaterUnit_map" type="com.zjtc.model.vo.UseWaterUnitVo">
     <id column="id" property="id" jdbcType="VARCHAR"/>
     <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
@@ -203,7 +242,7 @@
     </if>
   </select>
 
-  <select id="queryPage" resultMap="useWaterUnit_map">
+  <select id="queryPage" resultMap="useWaterUnitPage_map">
     SELECT
     top ${size}
     id,
@@ -483,26 +522,69 @@
 
 
   <select id="selectById" resultMap="useWaterUnit_map">
-    select
+    SELECT
+    a.id,
+    a.node_code,
+    a.unit_code,
+    a.unit_code_type,
+    a.unit_code_group,
+    a.unit_name,
+    d.id AS industry,
+    d.industryName,
+    save_unit_type,
+    save_unit_time,
+    water_balance_type,
+    water_balance_time,
+    unit_address,
+    zip_name,
+    zip_address,
+    department,
+    invoice_unit_name,
+    area_country,
+    gisX,
+    gisY,
+    imain,
+    abnormal,
+    abnormal_cause,
+    remark
+    FROM
+    (select
     id,
-    node_code ,
-    unit_code ,
-    unit_name ,
-    unit_address ,
-    industry ,
-    zip_name ,
-    zip_address ,
-    invoice_unit_name ,
-    save_unit_type ,
-    gisX ,
-    gisY ,
-    imain ,
-    department ,
-    area_country ,
-    abnormal ,
-    abnormal_cause
+    industry,
+    node_code,
+    unit_code,
+    unit_code_type,
+    unit_code_group,
+    responsibility_code,
+    unit_name,
+    save_unit_type,
+    save_unit_time,
+    water_balance_type,
+    water_balance_time,
+    unit_address,
+    zip_name,
+    zip_address,
+    department,
+    invoice_unit_name,
+    area_country,
+    gisX,
+    gisY,
+    imain,
+    abnormal,
+    abnormal_cause,
+    remark
     from t_w_use_water_unit
-    where id=#{id}
+    where deleted= '0'
+	and id=#{id}
+    AND node_code=#{nodeCode}
+    ) AS a
+    inner join (
+    SELECT unit_type_code  FROM t_w_use_water_unit_role WHERE person_id =#{userId}
+    group by unit_type_code
+    ) as f on a.unit_code_type=f.unit_type_code
+    left join (
+    select id,industry_name as industryName from t_w_quota_info
+    ) as d on d.id=a.industry
   </select>
   <select id="selectUseWaterUnitMeter" resultMap="WaterMonthUseDataModel">
     select
