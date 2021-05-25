@@ -377,16 +377,22 @@
     FROM
     t_w_water_month_use_data t2
     WHERE 1 = 1
-    <if test="waterMeterCode != null and waterMeterCode != ''">
-      and t2.water_meter_code = #{waterMeterCode}
+    <if test="waterMeterCodes != null and waterMeterCodes != ''">
+      and t2.water_meter_code in
+      <foreach collection="waterMeterCodes" item="waterMeterCode" open="(" close=")" separator=",">
+        #{waterMeterCode}
+      </foreach>
     </if>
     AND t1.id = t2.id
     ) AS waterNumber
     FROM
     t_w_water_month_use_data t1
     WHERE 1 = 1
-    <if test="waterMeterCode != null and waterMeterCode != ''">
-      and water_meter_code = #{waterMeterCode}
+    <if test="waterMeterCodes != null and waterMeterCodes != ''">
+      and water_meter_code in
+      <foreach collection="waterMeterCodes" item="waterMeterCode" open="(" close=")" separator=",">
+        #{waterMeterCode}
+      </foreach>
     </if>
     ORDER BY use_year desc
   </select>

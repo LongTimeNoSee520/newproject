@@ -102,8 +102,8 @@ public class WaterUseDataController {
           .selectWaterUseData(waterMeterCodes, useWaterUnitId);
 //      System.out.println("查出的数据1："+waterMonthUseDataList);
       if (null == waterMonthUseDataList || waterMonthUseDataList.size() == 0) {
-        response.setCode(501);
         response.setMessage("未查到该水表信息");
+        response.setCode(501);
         return response;
       } else {
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList) {
