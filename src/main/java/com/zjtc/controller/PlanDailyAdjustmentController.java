@@ -481,13 +481,13 @@ public class PlanDailyAdjustmentController {
   /**
    * 计算定额增加水量
    */
-  @RequestMapping(value = "selectquotaAddNumber", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "selectquotaAddNumber", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @ApiOperation(value = "查询定额增加水量")
   public ApiResponse selectquotaAddNumber(@RequestHeader("token") String token,
      @ApiParam("{\n"
          + "    \"useWaterUnitId\":\"用水单位id,必填\",\n"
          + "    \"number\":\"数量。必填\",\n"
-         + "    \"changeQuarter\":[\"调整季度数组，例：3-4季度，就取3，4\"]\n"
+         + "    \"changeQuarter\":\"字符串逗号隔开\",\n"
          + "}") @RequestBody JSONObject jsonObject) {
 
     ApiResponse response = new ApiResponse();

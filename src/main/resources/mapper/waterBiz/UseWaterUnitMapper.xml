@@ -1304,8 +1304,7 @@
     (
     SELECT
     row_number ( ) over (
-    ORDER BY
-    unit_code
+    ORDER BY unit_code_type ,cast(SUBSTRING(unit_code,7,10) as INTEGER)
     ) AS rownumber,
     id,
     unit_code ,

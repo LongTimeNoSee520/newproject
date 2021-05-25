@@ -873,9 +873,9 @@ public class PlanDailyAdjustmentServiceImpl extends
       return 0;
     }
     double ratio = 0.25;
-    List<String> arry = jsonObject.getJSONArray("changeQuarter").toJavaList(String.class);
-    if (!arry.isEmpty()) {
-      jsonObject.put("ratio", ratio * arry.size());
+    String[] arry = jsonObject.getString("changeQuarter").split(",");
+    if (arry.length > 0) {
+      jsonObject.put("ratio", ratio * arry.length);
 
     } else {
       return 0;
