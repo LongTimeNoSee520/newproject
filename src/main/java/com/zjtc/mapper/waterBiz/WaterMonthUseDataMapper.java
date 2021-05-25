@@ -60,9 +60,9 @@ public interface WaterMonthUseDataMapper extends BaseMapper<WaterMonthUseData> {
 
   /**
    * 查询出未被使用的水表档案号
-   * @param waterMeterCode
+   * @param waterMeterCodes
    * @param useWaterUnitId
    * @return
    */
-  WaterMonthUseData selectWaterUseData(@Param("waterMeterCode") String waterMeterCode,@Param("useWaterUnitId")String useWaterUnitId);
+  List<WaterMonthUseData> selectWaterUseData(@Param("waterMeterCodes") List<String> waterMeterCodes,@Param("useWaterUnitId")String useWaterUnitId);
 }

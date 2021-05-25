@@ -92,7 +92,7 @@ public class WaterUseDataController {
     List<String> waterMeterCodes = jsonObject.getJSONArray("waterMeterCode")
         .toJavaList(String.class);
     if (null == waterMeterCodes || waterMeterCodes.size() == 0) {
-      response.setMessage("未查到该水表信息");
+      response.setMessage("请输入水表档案号");
       response.setCode(501);
       return response;
     }
@@ -100,6 +100,12 @@ public class WaterUseDataController {
     try {
       List<WaterMonthUseData> waterMonthUseDataList = waterMonthUseDataService
           .selectWaterUseData(waterMeterCodes, useWaterUnitId);
+//      System.out.println("查出的数据1："+waterMonthUseDataList);
+      if (null == waterMonthUseDataList || waterMonthUseDataList.size() == 0) {
+        response.setCode(501);
+        response.setMessage("未查到该水表信息");
+        return response;
+      } else {
       for (WaterMonthUseData waterMonthUseData : waterMonthUseDataList) {
         if (StringUtils.isNotBlank(waterMonthUseData.getUseWaterUnitId()) && !waterMonthUseData
             .getUseWaterUnitId()
@@ -111,11 +117,6 @@ public class WaterUseDataController {
           return response;
         }
       }
-      if (null == waterMonthUseDataList || waterMonthUseDataList.size() == 0) {
-        response.setCode(501);
-        response.setMessage("未查到该水表信息");
-        return response;
-      } else {
         response.setCode(200);
         response.setData(waterMonthUseDataList);
         return response;

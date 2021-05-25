@@ -90,12 +90,12 @@ public class WaterMonthUseDataServiceImpl extends
 
   @Override
   public List<WaterMonthUseData> selectWaterUseData(List<String> waterMeterCodes,String useWaterUnitId) {
-    List<WaterMonthUseData> list = new ArrayList<>();
-    for (String waterMeterCode : waterMeterCodes) {
-      WaterMonthUseData waterMonthUseData = this.baseMapper.selectWaterUseData(waterMeterCode,useWaterUnitId);
-      list.add(waterMonthUseData);
+    List<WaterMonthUseData> waterMonthUseDatas = this.baseMapper.selectWaterUseData(waterMeterCodes,useWaterUnitId);
+    if (waterMonthUseDatas.isEmpty()){
+      return null;
     }
-    return list;
+//    System.out.println("查出的数据："+waterMonthUseDatas);
+    return waterMonthUseDatas;
   }
 
   @Override
