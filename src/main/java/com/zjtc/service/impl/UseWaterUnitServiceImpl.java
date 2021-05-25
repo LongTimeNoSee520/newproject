@@ -191,12 +191,29 @@ public class UseWaterUnitServiceImpl extends
     }
     /**新增相关编号信息数据*/
     if (StringUtils.isNotBlank(entity.getUseWaterUnitIdRef())) {
-      useWaterUnitRefService
-          .save(entity.getUseWaterUnitIdRef(), entity.getId(), user.getNodeCode());
+      this.unitRefCheck(entity.getId(), entity.getUseWaterUnitIdRef(), user.getNodeCode());
     }
     systemLogService.logInsert(user, "用水单位管理", "新增", null);
     return apiResponse;
 
+  }
+
+  /**
+   * 关联相关编号这里做一个约定 新增、修改是选择的相关编号、选择主户与该单位都是被关联关系 例：单位A,关联单位B   B被A关联 A(unit_id),---> B（unit_id_ref）
+   * 为满足树型结构，在新增或修改时都需要去判断被关联的B,是否是根节点 1，是根节点 A(unit_id),---> B（unit_id_ref） 可行 2.不是根节点
+   * B(unit_id),---> A（unit_id_ref） 可行
+   *
+   * @param useWaterUnitId 用水单位id
+   * @param newId 要关联的id
+   */
+  private void unitRefCheck(String useWaterUnitId, String newId, String nodeCode) {
+    if (useWaterUnitRefService.isRootNode(newId)) {
+      useWaterUnitRefService
+          .save(useWaterUnitId, newId, nodeCode);
+    } else {
+      useWaterUnitRefService
+          .save(newId, useWaterUnitId, nodeCode);
+    }
   }
 
   @Override
@@ -261,8 +278,7 @@ public class UseWaterUnitServiceImpl extends
 
       } else {
         /**1.2.2.如果是之前没有关联关系的数据，加入关联关系,这是选择关联的账户，为下级单位*/
-        useWaterUnitRefService
-            .save(entity.getId(), userWaterUnitId, user.getNodeCode());
+        this.unitRefCheck(entity.getId(), userWaterUnitId, user.getNodeCode());
       }
       systemLogService.logInsert(user, "用水单位管理", "修改", null);
     }
@@ -480,7 +496,7 @@ public class UseWaterUnitServiceImpl extends
           List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
               .queryUnitRef(idList, nodeCode, jsonObject.getString("userId"),
                   item.getId());
-         // item.setUseWaterUnitRefList(useWaterUnitRefList);
+          // item.setUseWaterUnitRefList(useWaterUnitRefList);
           //相关编号，用逗号隔开
           String useWaterUnitIdRef = "";
           if (!useWaterUnitRefList.isEmpty()) {
@@ -770,7 +786,7 @@ public class UseWaterUnitServiceImpl extends
       }
       String areaCountry =
           null == item.get("areaCountry") ? null : item.get("areaCountry").toString();
-      if(StringUtils.isNotBlank(areaCountry)){
+      if (StringUtils.isNotBlank(areaCountry)) {
         //查询所属区域
         item.put("areaCountryName",
             dictUtils.getDictItemNameCountry(AREA_COUNTRY_CODE,
@@ -835,8 +851,9 @@ public class UseWaterUnitServiceImpl extends
   }
 
   @Override
-  public List<Map<String, Object>> selectCodeByName(String userId,String nodeCode,String unitName,Double actualAmount) {
-    return baseMapper.selectCodeByName(userId,nodeCode,unitName,actualAmount);
+  public List<Map<String, Object>> selectCodeByName(String userId, String nodeCode, String unitName,
+      Double actualAmount) {
+    return baseMapper.selectCodeByName(userId, nodeCode, unitName, actualAmount);
   }
 
   @Override
@@ -906,7 +923,6 @@ public class UseWaterUnitServiceImpl extends
     return sql;
   }
 
-
 //  @Override
 //  public List<OrgTreeVO> selectUnitCode(String nodeCode, String condition,String userId) {
 ////    查询全部类型,相当于是顶级部门
@@ -931,16 +947,16 @@ public class UseWaterUnitServiceImpl extends
 //  }
 
   @Override
-  public List<AddressBook> selectUnitCode(String nodeCode, String condition,String userId) {
+  public List<AddressBook> selectUnitCode(String nodeCode, String condition, String userId) {
 //    查询全部类型,相当于是顶级部门 orgTreeVOS
-    LinkedList<AddressBook> orgTreeVOS = useWaterUnitRoleService.selectUnitRoles(userId,nodeCode);
+    LinkedList<AddressBook> orgTreeVOS = useWaterUnitRoleService.selectUnitRoles(userId, nodeCode);
 //    LinkedList<AddressBook> grandFathers = removeModelByHashSet(orgTreeVOS);
-    if(null != orgTreeVOS && orgTreeVOS.size()>0){
+    if (null != orgTreeVOS && orgTreeVOS.size() > 0) {
       //查询用水单位数据
-      List<AddressBook> fathers = baseMapper.selectByTypeUnitAll(nodeCode,orgTreeVOS);
+      List<AddressBook> fathers = baseMapper.selectByTypeUnitAll(nodeCode, orgTreeVOS);
 //      if(null != fathers && fathers.size()>0){
       //查询联系人
-      LinkedList<AddressBook> sons = contactsService.selectContacts(nodeCode,orgTreeVOS);
+      LinkedList<AddressBook> sons = contactsService.selectContacts(nodeCode, orgTreeVOS);
       orgTreeVOS.addAll(fathers);
       orgTreeVOS.addAll(sons);
 //      }
@@ -978,13 +994,14 @@ public class UseWaterUnitServiceImpl extends
     //查询当前节点编码下所有可操作批次的所有单位的单位编码、单位名称
     return baseMapper.addUnitCodeList(user.getNodeCode(), user.getId());
   }
+
   @Override
   public void refreshSaveUnitType(String unitCode) {
-    baseMapper.refreshSaveUnitType(unitCode,new Date());
+    baseMapper.refreshSaveUnitType(unitCode, new Date());
   }
 
   @Override
-  public void refreshWaterBalance(String unitCode,Date lastTestTime) {
-     baseMapper.refreshWaterBalance(unitCode,lastTestTime);
+  public void refreshWaterBalance(String unitCode, Date lastTestTime) {
+    baseMapper.refreshWaterBalance(unitCode, lastTestTime);
   }
 }

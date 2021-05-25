@@ -59,6 +59,13 @@ public class UseWaterUnitRefServiceImpl extends
     return this.removeByIds(ids);
   }
 
+  @Override
+  public boolean isRootNode(String useWaterUnitIdRef) {
+    QueryWrapper queryWrapper=new QueryWrapper();
+    queryWrapper.eq("use_water_unit_id_ref",useWaterUnitIdRef);
+    return this.count(queryWrapper) <=0;
+  }
+
   private void recursion(List<String> param) {
     //查询当前单位id得所有关联单位id
     List<String> refList = new ArrayList<>();
