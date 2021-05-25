@@ -340,10 +340,15 @@ public class UseWaterUnitServiceImpl extends
           useWaterUnitRefService.updateBatchById(sonList);
         }
         if (parList.isEmpty() && !sonList.isEmpty()) {
+          //如果是删除的根节点，其他节点建立管理关系,取第一子节点为父节点
+          String firstId = sonList.get(0).getId();
+          //删除第一条子节点的数据
+          useWaterUnitRefService.removeById(firstId);
+          //修改父节点为第一个子节点
           for (UseWaterUnitRef ref : sonList) {
-            sonIds.add(ref.getId());
+            ref.setUseWaterUnitId(firstId);
           }
-          useWaterUnitRefService.deleteBatch(sonIds);
+          useWaterUnitRefService.updateBatchById(sonList);
         }
         if (sonList.isEmpty() && !parList.isEmpty()) {
           useWaterUnitRefService.removeById(parList.get(0).getId());
@@ -496,7 +501,7 @@ public class UseWaterUnitServiceImpl extends
           List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
               .queryUnitRef(idList, nodeCode, jsonObject.getString("userId"),
                   item.getId());
-          // item.setUseWaterUnitRefList(useWaterUnitRefList);
+          item.setUseWaterUnitRefList(useWaterUnitRefList);
           //相关编号，用逗号隔开
           String useWaterUnitIdRef = "";
           if (!useWaterUnitRefList.isEmpty()) {
@@ -517,11 +522,11 @@ public class UseWaterUnitServiceImpl extends
         item.setAreaCountryName(
             dictUtils.getDictItemNameCountry(AREA_COUNTRY_CODE, item.getAreaCountry(), nodeCode));
         //附件
-//        if (!item.getSysFile().isEmpty()) {
-//            for (File file : item.getSysFile()) {
-//              file.setUrl(preViewRealPath + file.getFilePath());
-//            }
-//        }
+        if (!item.getSysFile().isEmpty()) {
+          for (File file : item.getSysFile()) {
+            file.setUrl(preViewRealPath + file.getFilePath());
+          }
+        }
       }
     }
     page.put("records", result);

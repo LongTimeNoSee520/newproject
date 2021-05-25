@@ -242,7 +242,7 @@
     </if>
   </select>
 
-  <select id="queryPage" resultMap="useWaterUnitPage_map">
+  <select id="queryPage" resultMap="useWaterUnit_map">
     SELECT
     top ${size}
     id,
