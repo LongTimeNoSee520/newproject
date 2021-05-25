@@ -104,7 +104,7 @@
     FROM
     (
     SELECT
-    row_number () OVER ( ORDER BY t1.unit_code asc ) AS rownumber,
+    row_number () OVER ( ORDER BY SUBSTRING(t1.unit_code, 5, 2) asc ) AS rownumber,
     id,
     node_code,
     use_water_unit_id,
