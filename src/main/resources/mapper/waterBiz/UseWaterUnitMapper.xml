@@ -396,8 +396,6 @@
       group  by use_water_unit_Id
       ) as e on e.use_water_unit_Id=a.id
     </if>
-    WHERE 1=1
-    <!--筛选水表档案号-->
     <if test="null !=waterMeterCode and waterMeterCode!=''">
     inner join (
       select top 1 use_water_unit_id  from t_w_use_water_unit_meter where
@@ -425,6 +423,8 @@
       )as t4 on t4.use_water_unit_id=a.id
     </if>
 
+    WHERE 1=1
+    <!--筛选水表档案号-->
     <!--是否异常-->
     <if test="null !=abnormal and  abnormal!=''">
       and a.abnormal =#{abnormal}
@@ -483,7 +483,6 @@
       group  by use_water_unit_Id
       ) as e on e.use_water_unit_Id=a.id
     </if>
-    WHERE 1=1
     <!--筛选水表档案号-->
     <if test="null !=waterMeterCode and waterMeterCode!=''">
       inner join (
@@ -511,7 +510,8 @@
       '%${bankAccount}%' and deleted='0'
       )as t4 on t4.use_water_unit_id=a.id
     </if>
-
+    WHERE 1=1
+    <!--筛选水表档案号-->
     <!--是否异常-->
     <if test="null !=abnormal and  abnormal!=''">
       and a.abnormal =#{abnormal}
