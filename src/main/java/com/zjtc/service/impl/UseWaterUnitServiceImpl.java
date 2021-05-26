@@ -512,9 +512,9 @@ public class UseWaterUnitServiceImpl extends
             for (UseWaterUnitRefVo useWaterUnitRefVo : useWaterUnitRefList) {
               useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
               //主户单位id
-//              if ("1".equals(useWaterUnitRefVo.getImain())) {
-//                item.setImainUnitId(useWaterUnitRefVo.getId());
-//              }
+              if ("1".equals(useWaterUnitRefVo.getImain())) {
+                item.setImainUnitId(useWaterUnitRefVo.getId());
+              }
             }
           }
           if (useWaterUnitIdRef.length() > 0) {

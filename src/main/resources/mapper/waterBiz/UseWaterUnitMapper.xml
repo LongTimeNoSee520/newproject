@@ -399,22 +399,30 @@
     WHERE 1=1
     <!--筛选水表档案号-->
     <if test="null !=waterMeterCode and waterMeterCode!=''">
-      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_meter where
-      water_meter_code like '%${waterMeterCode}%' )
+    inner join (
+      select use_water_unit_id  from t_w_use_water_unit_meter where
+      water_meter_code like '%${waterMeterCode}%'
+      )as t1 on t1.use_water_unit_id=a.id
     </if>
     <!--筛选手机号码-->
     <if test="null !=mobileNumber and  mobileNumber!=''" >
-      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
-      mobile_number like '%${mobileNumber}%' and deleted='0')
+      inner join (
+      select use_water_unit_id from t_w_use_water_unit_contacts where
+      mobile_number like '%${mobileNumber}%' and deleted='0'
+      )as t2 on t2.use_water_unit_id=a.id
     </if>
     <if test="null !=contacts and  contacts!='' ">
-      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
-      contacts like '%${contacts}%' and deleted='0')
+      inner join (
+      select use_water_unit_id from t_w_use_water_unit_contacts where
+      contacts like '%${contacts}%' and deleted='0'
+      )as t3 on t3.use_water_unit_id=a.id
     </if>
     <!--筛选银行账号-->
     <if test="null !=bankAccount and  bankAccount!=''">
-      and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
-      '%${bankAccount}%' and deleted='0')
+      inner join (
+      select use_water_unit_Id from t_w_bank where bank_account like
+      '%${bankAccount}%' and deleted='0'
+      )as t4 on t4.use_water_unit_id=a.id
     </if>
 
     <!--是否异常-->
@@ -478,22 +486,30 @@
     WHERE 1=1
     <!--筛选水表档案号-->
     <if test="null !=waterMeterCode and waterMeterCode!=''">
-      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_meter where
-      water_meter_code like '%${waterMeterCode}%' )
+      inner join (
+      select use_water_unit_id  from t_w_use_water_unit_meter where
+      water_meter_code like '%${waterMeterCode}%'
+      )as t1 on t1.use_water_unit_id=a.id
     </if>
     <!--筛选手机号码-->
     <if test="null !=mobileNumber and  mobileNumber!=''" >
-      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
-      mobile_number like '%${mobileNumber}%' and deleted='0')
+      inner join (
+      select use_water_unit_id from t_w_use_water_unit_contacts where
+      mobile_number like '%${mobileNumber}%' and deleted='0'
+      )as t2 on t2.use_water_unit_id=a.id
     </if>
     <if test="null !=contacts and  contacts!='' ">
-      and a.id in (select use_water_unit_id as id from t_w_use_water_unit_contacts where
-      contacts like '%${contacts}%' and deleted='0')
+      inner join (
+      select use_water_unit_id from t_w_use_water_unit_contacts where
+      contacts like '%${contacts}%' and deleted='0'
+      )as t3 on t3.use_water_unit_id=a.id
     </if>
     <!--筛选银行账号-->
     <if test="null !=bankAccount and  bankAccount!=''">
-      and a.id in (select use_water_unit_Id as id from t_w_bank where bank_account like
-      '%${bankAccount}%' and deleted='0')
+      inner join (
+      select use_water_unit_Id from t_w_bank where bank_account like
+      '%${bankAccount}%' and deleted='0'
+      )as t4 on t4.use_water_unit_id=a.id
     </if>
 
     <!--是否异常-->
