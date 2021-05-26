@@ -1093,7 +1093,6 @@
 		contacts
 		from t_w_use_water_unit_contacts
 		where deleted='0'
-		and main='1'
 		) as t3 on t3.unit_code=t2.unit_code
 
 	</select>
