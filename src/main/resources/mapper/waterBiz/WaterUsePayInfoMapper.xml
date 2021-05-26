@@ -195,7 +195,7 @@
 		SELECT
 		row_number ( ) over (
 		ORDER BY
-		cast(substring(t1.unit_code,3,9) as integer)
+    CONVERT(int,t1.unit_code)
 		 ) AS rownumber,
 		t1.id,
 		t1.pay_type ,

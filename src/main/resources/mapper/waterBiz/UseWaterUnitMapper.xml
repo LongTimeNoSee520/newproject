@@ -302,7 +302,7 @@
     SELECT
     row_number ( ) OVER (
      ORDER BY
-      cast(SUBSTRING(a.unit_code,3,9) as INTEGER)
+      CONVERT(int, a.unit_code)
       ) AS rownumber,
     a.id,
     a.node_code,
@@ -1390,7 +1390,7 @@
     SELECT
     row_number ( ) over (
     ORDER BY
-    cast(SUBSTRING(unit_code,3,9) as INTEGER)
+    CONVERT(int,unit_code)
     ) AS rownumber,
     id,
     unit_code ,
