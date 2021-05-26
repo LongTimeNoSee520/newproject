@@ -160,7 +160,8 @@
     create_type,cur_year_plan,first_quarter,second_quarter,
     third_quarter,fourth_quarter,
     COALESCE (update_time,create_time) AS update_time,remarks,printed,
-    SUBSTRING ( unit_code, 5, 2 ) as sub_code --, SUBSTRING ( unit_code, 7, 3 ) as sort
+    --SUBSTRING ( unit_code, 5, 2 ) as sub_code , CONVERT(INTEGER,SUBSTRING ( t1.unit_code, 7, 3 )) AS sort,CONVERT(INTEGER,SUBSTRING ( unit_code, 3, 2 )) as group
+    CONVERT(int,unit_code) AS sub_code
     FROM
     t_w_use_water_plan
     where 1=1
@@ -181,7 +182,7 @@
     </if>
     )  ta
     inner join (SELECT  unit_type_code FROM t_w_use_water_unit_role WHERE person_id = #{userId} GROUP BY unit_type_code) tb
-    on  ta.sub_code= tb.unit_type_code
+    on  SUBSTRING ( ta.unit_code, 5, 2 )= tb.unit_type_code
     <if test="industry != null and industry != ''">
       inner JOIN (SELECT id AS unit_id FROM t_w_use_water_unit WHERE industry = #{industry})tc
       ON ta.use_water_unit_id=tc.unit_id

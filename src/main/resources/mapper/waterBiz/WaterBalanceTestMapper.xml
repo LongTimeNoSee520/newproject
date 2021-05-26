@@ -96,6 +96,7 @@
 		</if>
 		)t1
 		WHERE  rownumber > (#{current}-1)* #{size}
+		ORDER BY  CONVERT(int,unit_code) ASC
 	</select>
 	<select id="queryProducts" resultMap="productMap">
 		SELECT id,node_code,balance_test_id,product_name,product_code,diff_to_quota,per_use_amount,year_plan,deleted,delete_time,create_time

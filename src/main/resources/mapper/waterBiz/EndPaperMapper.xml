@@ -201,7 +201,7 @@
 		</if>
 		)t1
 		WHERE  rownumber > (#{current}-1)* #{size}
-		ORDER BY SUBSTRING ( t1.unit_code, 5, 2 ) ASC, CONVERT(INTEGER,SUBSTRING ( t1.unit_code, 7, 3 )) ASC
+		ORDER BY CONVERT(int,t1.unit_code) ASC--, CONVERT(int,SUBSTRING ( t1.unit_code, 7, 3 )) ASC
 	</select>
 
 	<select id="queryAuditFiles" resultMap="FileMap">

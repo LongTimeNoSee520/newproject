@@ -189,7 +189,7 @@
 	 )c
  ON a.use_water_unit_id = c.use_water_unit_id
  AND a.year = c.use_year
- ORDER BY 	a.sub_code ASC ,a.sort ASC
+ ORDER BY 	a.sub_code ASC --,a.sort ASC
  </select>
 
 	<resultMap id="exportResultMap" type="com.zjtc.model.vo.UseWaterMonitorExportVO">

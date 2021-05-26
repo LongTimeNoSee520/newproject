@@ -105,7 +105,7 @@
             )t1
         WHERE  rownumber > (#{current}-1)* #{size}
     )a
-    ORDER  BY SUBSTRING(unit_code,5,2) ASC,   plan_year DESC,  create_time DESC
+    ORDER  BY CONVERT(int, a.unit_code) ASC,   plan_year DESC,  create_time DESC
   </select>
   <update id="delete">
     UPDATE t_w_use_water_base_plan SET deleted ='1',
