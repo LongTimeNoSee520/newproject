@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.JWTUtil;
 import com.zjtc.model.User;
-import com.zjtc.model.vo.UnitVo;
+import com.zjtc.model.vo.OperatorVo;
 import com.zjtc.service.ContactsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,15 +47,9 @@ public class ContactsController {
     if (null != user.getMobileNumber()){
       mobileNumber = user.getMobileNumber();
     }
-
-    String personId = null;
-    if (null != user.getId()){
-      personId = user.getId();
-    }
-    String unitCode = user.getUnitCode();
     try {
-      Map<String, Object> map = contactsService.selectByMobileNumber(mobileNumber,personId,unitCode);
-      response.setData(map);
+      List<Map<String, Object>> contacts = contactsService.selectByMobileNumber(mobileNumber);
+      response.setData(contacts);
       return response;
     } catch (Exception e) {
       response.recordError("通过联系电话查询所在部门和该部门下所有的人员异常");
@@ -71,8 +65,8 @@ public class ContactsController {
       @RequestHeader("openId") String openId) {
     ApiResponse response = new ApiResponse();
     try {
-      Map<String, Object> map = contactsService.selectByMobileNumberWX(openId,jsonObject.getString("unitCode"));
-      response.setData(map);
+      List<Map<String, Object>> contacts = contactsService.selectByMobileNumberWX(openId);
+      response.setData(contacts);
       return response;
     } catch (Exception e) {
       response.recordError("通过微信号查询所在部门和该部门下所有的人员异常");
@@ -91,13 +85,12 @@ public class ContactsController {
     System.out.println("登录的用户信息:"+user);
     String mobileNumber = null;
     if (StringUtils.isBlank( user.getMobileNumber())){
-      response.setCode(200);
       return response;
     } else {
       mobileNumber = user.getMobileNumber();
     }
     try {
-      List<UnitVo> operatorVos = contactsService
+      List<OperatorVo> operatorVos = contactsService
           .selectOperatorPublic(mobileNumber);
       response.setData(operatorVos);
       return response;
@@ -115,7 +108,7 @@ public class ContactsController {
       @RequestHeader("openId") String openId) {
     ApiResponse response = new ApiResponse();
     try {
-      List<UnitVo> operatorVos = contactsService.selectOperatorWX(openId);
+      List<OperatorVo> operatorVos = contactsService.selectOperatorWX(openId);
       response.setData(operatorVos);
       return response;
     } catch (Exception e) {

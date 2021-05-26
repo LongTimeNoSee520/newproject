@@ -126,34 +126,36 @@
     use_water_unit_id = #{orgId}
   </select>
 
-  <select id="selectByMobileNumberAll" resultType="com.zjtc.model.UseWaterUnit">
+
+  <!-- 公共服务平台查询单位信息 -->
+  <select id="selectByMobileNumberAll" resultType="java.util.HashMap">
     SELECT
-    top 1
-    id,
-    node_code,
-    unit_code,
-    unit_name,
-    unit_address,
-    department
+    t1.unit_name as unitName
     FROM
-    t_w_use_water_unit t1 where deleted = '0'
-    <if test="unitCode != null and unitCode != ''">
-      and unit_code = #{unitCode}
-    </if>
+    t_w_use_water_unit t1
+    INNER JOIN t_w_use_water_unit_contacts t2 on t1.id = t2.use_water_unit_id
+    where t1.deleted = '0' and t2.deleted = '0'
     <if test="mobileNumber != null and mobileNumber != ''">
-      and id IN ( SELECT use_water_unit_id
-      FROM t_w_use_water_unit_contacts
-      WHERE 1 = 1
-      and mobile_number = #{mobileNumber}
-      AND deleted = '0' )
+      AND t2.mobile_number = #{mobileNumber}
     </if>
-    <if test="personId != null and personId != ''">
-      AND SUBSTRING ( unit_code, 5, 2 ) IN ( SELECT unit_type_code FROM t_w_use_water_unit_role
-      WHERE person_id = #{personId} )
+    <if test="openId != null and openId != ''">
+      AND t2.open_id = #{openId}
     </if>
 
+    GROUP BY t1.unit_name
   </select>
 
+  <!-- 公共服务平台查询联系人信息 -->
+  <select id="selectContactsByUnitName" resultType="java.lang.String">
+    SELECT
+    t2.contacts as contacts
+    FROM
+    t_w_use_water_unit t1
+    LEFT JOIN t_w_use_water_unit_contacts t2 on t1.id = t2.use_water_unit_id
+    where t1.deleted = '0' and t2.deleted = '0' AND t1.unit_name = #{unitName}
+    GROUP BY t2.contacts
+
+  </select>
 
   <select id="selectByUnitIdInquirePerson" resultType="String">
     SELECT contacts FROM t_w_use_water_unit_contacts WHERE deleted = '0' AND use_water_unit_id =
@@ -167,45 +169,40 @@
   </select>
 
 
-  <select id="selectPersonIdPublic" resultType="String">
+  <select id="selectPersonId" resultType="java.lang.String">
     SELECT
-    person_id
+      t3.person_id
     FROM
-    t_w_use_water_unit_role t1
-    INNER JOIN ( SELECT SUBSTRING ( unit_code, 5, 2 ) AS unit_code FROM t_w_use_water_unit_contacts
-    WHERE deleted = '0' AND unit_code = #{unitCode} ) t2 ON t1.unit_type_code = t2.unit_code
-  </select>
-
-  <select id="selectUnitCode" resultMap="unitVoModel">
-    SELECT
-    t1.id,
-    t1.node_code as nodeCode,
-    t1.unit_name as unitName,
-    t1.unit_code as unitCode,
-    SUBSTRING ( t1.unit_code, 5, 2 ) as unitType
-    FROM
-    t_w_use_water_unit t1
-    INNER JOIN ( SELECT unit_code FROM t_w_use_water_unit_contacts WHERE deleted = '0'
-    <if test="mobileNumber != null and mobileNumber != ''">
+      t_w_use_water_unit t1
+    INNER JOIN (
+      SELECT
+        unit_code
+      FROM
+        t_w_use_water_unit_contacts
+      WHERE
+        deleted = '0'
+      <if test="mobileNumber != null and mobileNumber != ''">
       AND mobile_number = #{mobileNumber}
-    </if>
-    <if test="openId != null and openId != ''">
-      AND open_id = #{openId}
-    </if>
+      </if>
+      <if test="openId != null and openId != ''">
+        AND open_id = #{openId}
+      </if>
+      GROUP BY
+        unit_code
     ) t2 ON t1.unit_code = t2.unit_code
+    INNER JOIN t_w_use_water_unit_role t3 on substring(t1.unit_code,5,2) = t3.unit_type_code
     WHERE
-    t1.deleted = '0'
-    order by t1.unit_code asc
+      t1.deleted = '0'
+    GROUP BY t3.person_id
   </select>
 
-  <select id="selectByMobileNumberAllWX" resultType="com.zjtc.model.UseWaterUnit">
+  <select id="selectByMobileNumberAllWX" resultType="java.util.HashMap">
     SELECT
-    top 1
     id,
-    node_code,
-    unit_code,
-    unit_name,
-    unit_address,
+    node_code as nodeCode,
+    unit_code as unitCode,
+    unit_name as unitName,
+    unit_address as unitAddress,
     department
     FROM
     t_w_use_water_unit t1 where deleted = '0'
@@ -218,7 +215,9 @@
           and id IN ( SELECT use_water_unit_id
           FROM t_w_use_water_unit_contacts
           WHERE deleted = '0'
-          and open_id = #{openId})
+          and open_id = #{openId}
+          GROUP BY use_water_unit_id
+          )
         </if>
       </otherwise>
     </choose>

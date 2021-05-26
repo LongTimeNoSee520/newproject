@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.vo.AddressBook;
 import com.zjtc.model.vo.OperatorVo;
-import com.zjtc.model.vo.UnitVo;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -67,12 +66,12 @@ public interface ContactsService extends IService<Contacts> {
   /**
    * 通过联系电话查询所在部门和该部门下所有的人员
    */
-  Map<String, Object> selectByMobileNumber(String mobileNumber, String personId, String unitCode);
+  List<Map<String, Object>> selectByMobileNumber(String mobileNumber);
 
   /**
    * 通过微信号查询所在部门和该部门下所有的人员
    */
-  Map<String, Object> selectByMobileNumberWX(String openId, String unitCode);
+  List<Map<String, Object>> selectByMobileNumberWX(String openId);
 
 
   /**
@@ -80,7 +79,7 @@ public interface ContactsService extends IService<Contacts> {
    * @param mobileNumber 联系电话
    * @return
    */
-  List<UnitVo> selectOperatorPublic(String mobileNumber);
+  List<OperatorVo> selectOperatorPublic(String mobileNumber);
 
   /**
    * 查询经办人信息公共服务平台
@@ -88,5 +87,5 @@ public interface ContactsService extends IService<Contacts> {
    * @param openId
    * @return
    */
-  List<UnitVo> selectOperatorWX(String openId);
+  List<OperatorVo> selectOperatorWX(String openId);
 }

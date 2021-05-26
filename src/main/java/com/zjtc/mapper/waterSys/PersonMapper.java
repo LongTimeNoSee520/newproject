@@ -76,5 +76,5 @@ public interface PersonMapper extends BaseMapper<Person> {
    * @param personIds
    * @return
    */
-  List<OperatorVo> selectOperatorPublic(@Param("personIds") List<String> personIds);
+  List<OperatorVo> selectOperator(@Param("personIds") List<String> personIds);
 }

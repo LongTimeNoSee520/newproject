@@ -3,11 +3,11 @@ package com.zjtc.mapper.waterBiz;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjtc.model.Contacts;
-import com.zjtc.model.UseWaterUnit;
 import com.zjtc.model.vo.AddressBook;
 import com.zjtc.model.vo.UnitVo;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -54,7 +54,7 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * @param mobileNumber
    * @return
    */
-  UseWaterUnit selectByMobileNumberAll(@Param("mobileNumber") String mobileNumber,@Param("personId") String personId,@Param("unitCode") String unitCode);
+  List<Map<String,Object>> selectByMobileNumberAll(@Param("mobileNumber") String mobileNumber,@Param("openId") String openId);
 
   /**
    * 通过单位id查询该单位下对用的人员
@@ -67,7 +67,7 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    * 通过单位编码查询对应的人员id
    * @return
    */
-  List<String> selectPersonIdPublic(@Param("unitCode") String unitCode);
+  List<String> selectPersonId(@Param("mobileNumber") String mobileNumber,@Param("openId") String openId);
 
   List<String> selectUnitType(@Param("mobileNumber") String mobileNumber);
 
@@ -81,7 +81,9 @@ public interface ContactsMapper extends BaseMapper<Contacts> {
    */
   List<UnitVo> selectUnitCode(@Param("mobileNumber") String mobileNumber,@Param("openId") String openId);
 
-  UseWaterUnit selectByMobileNumberAllWX(@Param("openId") String openId,@Param("unitCode") String unitCode);
+  List<Map<String,Object>> selectByMobileNumberAllWX(@Param("openId") String openId,@Param("unitCode") String unitCode);
+
+  List<String> selectContactsByUnitName(@Param("unitName")String unitName);
 
   List<String> selectByUnitIdInquirePersonWX(@Param("id") String id,@Param("openId") String openId);
 }
