@@ -505,16 +505,16 @@ public class UseWaterUnitServiceImpl extends
           List<UseWaterUnitRefVo> useWaterUnitRefList = baseMapper
               .queryUnitRef(idList, nodeCode, jsonObject.getString("userId"),
                   item.getId());
-          item.setUseWaterUnitRefList(useWaterUnitRefList);
+         // item.setUseWaterUnitRefList(useWaterUnitRefList);
           //相关编号，用逗号隔开
           String useWaterUnitIdRef = "";
           if (!useWaterUnitRefList.isEmpty()) {
             for (UseWaterUnitRefVo useWaterUnitRefVo : useWaterUnitRefList) {
               useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
               //主户单位id
-              if ("1".equals(useWaterUnitRefVo.getImain())) {
-               // item.setImainUnitId(useWaterUnitRefVo.getId());
-              }
+//              if ("1".equals(useWaterUnitRefVo.getImain())) {
+//                item.setImainUnitId(useWaterUnitRefVo.getId());
+//              }
             }
           }
           if (useWaterUnitIdRef.length() > 0) {
@@ -569,21 +569,21 @@ public class UseWaterUnitServiceImpl extends
             .queryUnitRef(idList, user.getNodeCode(), jsonObject.getString("userId"),
                 useWaterUnit.getId());
         useWaterUnit.setUseWaterUnitRefList(useWaterUnitRefList);
-        //相关编号，用逗号隔开
-        String useWaterUnitIdRef = "";
-        if (!useWaterUnitRefList.isEmpty()) {
-          for (UseWaterUnitRefVo useWaterUnitRefVo : useWaterUnitRefList) {
-            useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
-            //主户单位id
-            if ("1".equals(useWaterUnitRefVo.getImain())) {
-              useWaterUnit.setImainUnitId(useWaterUnitRefVo.getId());
-            }
-          }
-        }
-        if (useWaterUnitIdRef.length() > 0) {
-          useWaterUnit.setUseWaterUnitIdRef(
-              useWaterUnitIdRef.substring(0, useWaterUnitIdRef.length() - 1));
-        }
+//        //相关编号，用逗号隔开
+//        String useWaterUnitIdRef = "";
+//        if (!useWaterUnitRefList.isEmpty()) {
+//          for (UseWaterUnitRefVo useWaterUnitRefVo : useWaterUnitRefList) {
+//            useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
+//            //主户单位id
+//            if ("1".equals(useWaterUnitRefVo.getImain())) {
+//              useWaterUnit.setImainUnitId(useWaterUnitRefVo.getId());
+//            }
+//          }
+//        }
+//        if (useWaterUnitIdRef.length() > 0) {
+//          useWaterUnit.setUseWaterUnitIdRef(
+//              useWaterUnitIdRef.substring(0, useWaterUnitIdRef.length() - 1));
+//        }
       }
       //附件
       if (!useWaterUnit.getSysFile().isEmpty()) {
