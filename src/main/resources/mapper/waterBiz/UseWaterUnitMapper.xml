@@ -300,7 +300,10 @@
     FROM
     (
     SELECT
-    row_number ( ) OVER ( ORDER BY a.unit_code_type ,cast(SUBSTRING(a.unit_code,7,10) as INTEGER) ) AS rownumber,
+    row_number ( ) OVER (
+     ORDER BY
+      cast(SUBSTRING(a.unit_code,3,9) as INTEGER)
+      ) AS rownumber,
     a.id,
     a.node_code,
     a.unit_code,
@@ -1386,7 +1389,8 @@
     (
     SELECT
     row_number ( ) over (
-    ORDER BY unit_code_type ,cast(SUBSTRING(unit_code,7,10) as INTEGER)
+    ORDER BY
+    cast(SUBSTRING(unit_code,3,9) as INTEGER)
     ) AS rownumber,
     id,
     unit_code ,
@@ -1397,7 +1401,8 @@
     id,
     unit_code,
     unit_name,
-    unit_code_type
+    unit_code_type,
+    unit_code_group
     from t_w_use_water_unit
     where deleted='0'
     and node_code=#{nodeCode}
