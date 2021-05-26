@@ -392,7 +392,7 @@
     <!--是否签约-->
     <if test="null !=signed and signed!=''">
       inner join (
-      select use_water_unit_Id from t_w_bank where deleted='0'  and signed=#{signed}
+      select top 1 use_water_unit_Id from t_w_bank where deleted='0'  and signed=#{signed}
       group  by use_water_unit_Id
       ) as e on e.use_water_unit_Id=a.id
     </if>
@@ -400,27 +400,27 @@
     <!--筛选水表档案号-->
     <if test="null !=waterMeterCode and waterMeterCode!=''">
     inner join (
-      select use_water_unit_id  from t_w_use_water_unit_meter where
+      select top 1 use_water_unit_id  from t_w_use_water_unit_meter where
       water_meter_code like '%${waterMeterCode}%'
       )as t1 on t1.use_water_unit_id=a.id
     </if>
     <!--筛选手机号码-->
     <if test="null !=mobileNumber and  mobileNumber!=''" >
       inner join (
-      select use_water_unit_id from t_w_use_water_unit_contacts where
+      select top 1 use_water_unit_id from t_w_use_water_unit_contacts where
       mobile_number like '%${mobileNumber}%' and deleted='0'
       )as t2 on t2.use_water_unit_id=a.id
     </if>
     <if test="null !=contacts and  contacts!='' ">
       inner join (
-      select use_water_unit_id from t_w_use_water_unit_contacts where
+      select top 1  use_water_unit_id from t_w_use_water_unit_contacts where
       contacts like '%${contacts}%' and deleted='0'
       )as t3 on t3.use_water_unit_id=a.id
     </if>
     <!--筛选银行账号-->
     <if test="null !=bankAccount and  bankAccount!=''">
       inner join (
-      select use_water_unit_Id from t_w_bank where bank_account like
+      select top 1 use_water_unit_Id from t_w_bank where bank_account like
       '%${bankAccount}%' and deleted='0'
       )as t4 on t4.use_water_unit_id=a.id
     </if>
@@ -487,27 +487,27 @@
     <!--筛选水表档案号-->
     <if test="null !=waterMeterCode and waterMeterCode!=''">
       inner join (
-      select use_water_unit_id  from t_w_use_water_unit_meter where
+      select top 1 use_water_unit_id  from t_w_use_water_unit_meter where
       water_meter_code like '%${waterMeterCode}%'
       )as t1 on t1.use_water_unit_id=a.id
     </if>
     <!--筛选手机号码-->
     <if test="null !=mobileNumber and  mobileNumber!=''" >
       inner join (
-      select use_water_unit_id from t_w_use_water_unit_contacts where
+      select top 1 use_water_unit_id from t_w_use_water_unit_contacts where
       mobile_number like '%${mobileNumber}%' and deleted='0'
       )as t2 on t2.use_water_unit_id=a.id
     </if>
     <if test="null !=contacts and  contacts!='' ">
       inner join (
-      select use_water_unit_id from t_w_use_water_unit_contacts where
+      select top 1 use_water_unit_id from t_w_use_water_unit_contacts where
       contacts like '%${contacts}%' and deleted='0'
       )as t3 on t3.use_water_unit_id=a.id
     </if>
     <!--筛选银行账号-->
     <if test="null !=bankAccount and  bankAccount!=''">
       inner join (
-      select use_water_unit_Id from t_w_bank where bank_account like
+      select top 1 use_water_unit_Id from t_w_bank where bank_account like
       '%${bankAccount}%' and deleted='0'
       )as t4 on t4.use_water_unit_id=a.id
     </if>
