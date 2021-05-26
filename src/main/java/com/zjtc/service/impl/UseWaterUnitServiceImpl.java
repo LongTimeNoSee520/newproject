@@ -513,7 +513,7 @@ public class UseWaterUnitServiceImpl extends
               useWaterUnitIdRef += useWaterUnitRefVo.getUnitCode() + ",";
               //主户单位id
               if ("1".equals(useWaterUnitRefVo.getImain())) {
-                item.setImainUnitId(useWaterUnitRefVo.getId());
+               // item.setImainUnitId(useWaterUnitRefVo.getId());
               }
             }
           }
@@ -526,11 +526,11 @@ public class UseWaterUnitServiceImpl extends
         item.setAreaCountryName(
             dictUtils.getDictItemNameCountry(AREA_COUNTRY_CODE, item.getAreaCountry(), nodeCode));
         //附件
-        if (!item.getSysFile().isEmpty()) {
-          for (File file : item.getSysFile()) {
-            file.setUrl(preViewRealPath + file.getFilePath());
-          }
-        }
+//        if (!item.getSysFile().isEmpty()) {
+//          for (File file : item.getSysFile()) {
+//            file.setUrl(preViewRealPath + file.getFilePath());
+//          }
+//        }
       }
     }
     page.put("records", result);

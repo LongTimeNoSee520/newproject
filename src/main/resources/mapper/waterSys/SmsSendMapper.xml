@@ -85,9 +85,11 @@
       <when test="null ==json.status or json.status==''">
         and 1=1
       </when>
+      <!--未发送-->
       <when test="json.status ==3">
         and	status is null or status =''
       </when>
+      <!---->
       <otherwise >
         and	status=#{json.status}
       </otherwise>
