@@ -195,13 +195,14 @@
 		SELECT
 		row_number ( ) over (
 		ORDER BY
-    CONVERT(int,t1.unit_code)
+		t2.unit_code_type,
+		t2.unit_code
 		 ) AS rownumber,
 		t1.id,
 		t1.pay_type ,
 		t1.unit_code ,
 		t1.unit_name ,
-		t2.unit_code_group ,
+		t2.unit_code_type ,
 		t1.count_year ,
 		t1.count_quarter ,
 		round(t1.price,2) as price,
@@ -298,7 +299,8 @@
 		[water_meter_code] = STUFF (
 		( SELECT ',' + [water_meter_code] FROM t_w_use_water_unit_meter t WHERE t.use_water_unit_id = uu.id FOR XML PATH ( '' ) ),1,1,''),
 		responsibility_code,
-		unit_code_group
+		unit_code_type,
+		unit_code
 		from t_w_use_water_unit uu
 		<!--筛选当前用户可操作的用户类型-->
 		inner join (

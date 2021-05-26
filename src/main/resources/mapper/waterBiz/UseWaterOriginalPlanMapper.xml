@@ -208,7 +208,8 @@
     <!--去掉算法中的新户-->
     and t1.unit_code_group not in (t6.new_batch_num)
     ORDER BY
-    CONVERT(int,t1.unit_code)
+    t1.unit_code_type,
+    t1.unit_code
   </select>
 
   <select id="nowYearPlanOld" resultType="java.util.LinkedHashMap">
@@ -284,7 +285,9 @@
       and unit_code_group=#{unitCodeStart}
     </if>
     ) as u on u.id=p.useWaterUnitId
-    ORDER BY  CONVERT(int,u.unitCode)
+    ORDER BY
+    u.unit_code_type,
+    u.unitCode
   </select>
   <select id="nowYearPlanNew" resultType="java.util.LinkedHashMap">
     SELECT
@@ -454,7 +457,8 @@
     group by a.use_water_unit_id
     ) t4 on t4.use_water_unit_id=t1.id
     ORDER BY
-    CONVERT(int,t1.unit_code)
+    t1.unit_code_type,
+    t1.unit_code
   </select>
 
   <select id="initPlanOldPage" resultType="java.util.LinkedHashMap">

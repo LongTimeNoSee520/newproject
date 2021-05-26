@@ -302,7 +302,8 @@
     SELECT
     row_number ( ) OVER (
      ORDER BY
-      CONVERT(int, a.unit_code)
+       a.unit_code_type,
+       a.unit_code
       ) AS rownumber,
     a.id,
     a.node_code,
@@ -1406,7 +1407,8 @@
     SELECT
     row_number ( ) over (
     ORDER BY
-    CONVERT(int,unit_code)
+    t1.unit_code_type,
+    t1.unit_code
     ) AS rownumber,
     id,
     unit_code ,
