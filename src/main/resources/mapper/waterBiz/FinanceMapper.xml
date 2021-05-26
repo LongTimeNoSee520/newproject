@@ -36,7 +36,7 @@
     FROM
     (
     SELECT
-    row_number () OVER ( ORDER BY [SUBSTRING(unit_code,5,2)] asc ) AS rownumber,
+    row_number () OVER ( ORDER BY payment_date desc ) AS rownumber,
     id,
     node_code,
     unit_name,
