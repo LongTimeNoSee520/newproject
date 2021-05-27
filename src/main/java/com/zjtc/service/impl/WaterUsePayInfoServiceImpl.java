@@ -377,7 +377,7 @@ public class WaterUsePayInfoServiceImpl extends
   @Override
   public Map<String, Object> selectPayNotice(JSONObject jsonObject) {
     Map<String, Object> page = new HashMap<>();
-    Integer year = jsonObject.getInteger("year");
+    Integer year = jsonObject.getInteger("countYear");
     if (null == year || "0".equals(year)) {
       //默认当年
       Calendar now = Calendar.getInstance();
@@ -448,8 +448,8 @@ public class WaterUsePayInfoServiceImpl extends
       HttpServletResponse response) throws IOException {
     ApiResponse result = new ApiResponse();
     String nodeCode = jsonObject.getString("nodeCode");
-    String year = jsonObject.getString("year");
-    String quarter = jsonObject.getString("quarter");
+    String year = jsonObject.getString("countYear");
+    String quarter = jsonObject.getString("countQuarter");
     //所有单位编号
     List<Map<String, Object>> list = baseMapper.selectUser(jsonObject);
 //    //根据单位编号查询单位信息
@@ -519,8 +519,8 @@ public class WaterUsePayInfoServiceImpl extends
   public ApiResponse exportPayInfo(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
     ApiResponse result = new ApiResponse();
-    String year = jsonObject.getString("year");
-    String quarter = jsonObject.getString("quarter");
+    String year = jsonObject.getString("countYear");
+    String quarter = jsonObject.getString("countQuarter");
     List<Map<String, Object>> list = baseMapper.exportPayInfo(jsonObject);
     if (!list.isEmpty()) {
       Map<String, Object> data = new HashMap<>();
@@ -548,8 +548,8 @@ public class WaterUsePayInfoServiceImpl extends
   public ApiResponse exportBankInfo(User user, JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) throws IOException {
     ApiResponse apiResponse = new ApiResponse();
-    String year = jsonObject.getString("year");
-    String quarter = jsonObject.getString("quarter");
+    String year = jsonObject.getString("countYear");
+    String quarter = jsonObject.getString("countQuarter");
     //List<Map> list = jsonObject.getJSONArray("data").toJavaList(Map.class);
     List<Map<String, Object>> list = baseMapper.exportBankInfo(jsonObject);
     String str = "";
@@ -619,8 +619,8 @@ public class WaterUsePayInfoServiceImpl extends
       HttpServletRequest request,
       HttpServletResponse response) throws IOException {
     ApiResponse apiResponse = new ApiResponse();
-    String year = jsonObject.getString("year");
-    String quarter = jsonObject.getString("quarter");
+    String year = jsonObject.getString("countYear");
+    String quarter = jsonObject.getString("countQuarter");
     //List<Map> list = jsonObject.getJSONArray("data").toJavaList(Map.class);
     List<Map<String, Object>> list = baseMapper.exportOtherBankInfo(jsonObject);
     list.addAll(list);

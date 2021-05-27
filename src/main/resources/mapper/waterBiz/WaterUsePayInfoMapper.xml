@@ -787,9 +787,14 @@
 		from
 		t_w_water_use_pay_info as t1
 		LEFT JOIN ( SELECT * FROM t_w_bank WHERE deleted = '0' and signed='1') t4 ON t4.use_water_unit_id = t1.use_water_unit_id
-		where
-		count_year=#{year}
-		and count_quarter=#{quarter}
+		where 1=1
+		<if test="null !=countYear">
+			and count_year=#{countYear}
+		</if>
+		<if test="null !=countQuarter">
+			and count_quarter=#{countQuarter}
+		</if>
+
 	</select>
 
 	<select id="exportBankInfo" resultType="java.util.LinkedHashMap">
@@ -812,8 +817,12 @@
 			t_w_water_use_pay_info as t1
 			where
 			entrusted='1'
-			and count_year=#{year}
-			and count_quarter=#{quarter}
+		<if test="null !=countYear">
+			and count_year=#{countYear}
+		</if>
+		<if test="null !=countQuarter">
+			and count_quarter=#{countQuarter}
+		</if>
 		) as a
 		inner join
 		(
@@ -847,8 +856,12 @@
 			t_w_water_use_pay_info as t1
 			where
 			entrusted ='1'
-			and count_year=#{year}
-			and count_quarter=#{quarter}
+		<if test="null !=countYear">
+			and count_year=#{countYear}
+		</if>
+		<if test="null !=countQuarter">
+			and count_quarter=#{countQuarter}
+		</if>
 		) as a
 		inner join
 		(
@@ -903,11 +916,11 @@
 		select use_water_unit_id
 		from t_w_water_use_pay_info
 		where 1=1
-		<if test="null !=year">
-			and count_year=#{year}
+		<if test="null !=countYear">
+			and count_year=#{countYear}
 		</if>
-		<if test="null !=quarter">
-			and count_quarter=#{quarter}
+		<if test="null !=countQuarter">
+			and count_quarter=#{countQuarter}
 		</if>
 		) t1
 		inner join (select id,unit_code,unit_name,unit_address,area_country,responsibility_code,save_unit_type,zip_address,zip_name,invoice_unit_name,unit_code_type,industry,department,abnormal_cause from t_w_use_water_unit where deleted='0' and unit_code_type in (select unit_type_code as unit_code_type from t_w_use_water_unit_role where person_id=#{userId} group by unit_type_code))t2 on t2.id=t1.use_water_unit_id

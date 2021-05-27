@@ -167,8 +167,8 @@ public class WaterUsePayInfoController {
       + "  \"unitCode\":\"单位编号\",\n"
       + "  \"unitName\":\"单位名称\",\n"
       + "  \"waterMeterCode\":\"水表档案号\",\n"
-      + "  \"year\":\"年\",\n"
-      + "  \"quarter\":\"季度\",\n"
+      + "  \"countYear\":\"年\",\n"
+      + "  \"countQuarter\":\"季度\",\n"
       + "  \"money\":\"减免金额\",\n"
       + "  \"reason\":\"减免原因\",\n"
       + "  \"treatmentAdvice\":\"服务人员意见\",\n"
@@ -207,8 +207,8 @@ public class WaterUsePayInfoController {
       + "    \"unitCode\":\"单位编号\",\n"
       + "    \"unitName\":\"单位名称\",\n"
       + "    \"waterMeterCode\":\"水表档案号\",\n"
-      + "    \"year\":\"年\",\n"
-      + "    \"quarter\":\"季度\",\n"
+      + "    \"countYear\":\"年\",\n"
+      + "    \"countQuarter\":\"季度\",\n"
       + "    \"actualAmount\":\"实收金额\",\n"
       + "    \"money\":\"退款金额\",\n"
       + "    \"reason\":\"退款原因\",\n"
@@ -313,7 +313,7 @@ public class WaterUsePayInfoController {
   public ApiResponse selectPayNotice(@RequestHeader("token") String token, @ApiParam("{\n"
       + "  \"current\":\"\"\n"
       + "  \"size\":\"\"\n"
-      + "  \"year\":\"年份,int\"\n"
+      + "  \"countYear\":\"年份,int\"\n"
       + "  \"unitCode\":\"单位编号 stirng\"\n"
       + "  \"status\":\"状态\"\n"
       + "}") @RequestBody JSONObject jsonObject) {
@@ -379,8 +379,8 @@ public class WaterUsePayInfoController {
   @RequestMapping(value = "exportUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse exportUser(@RequestHeader("token") String token,
       @ApiParam("{\n"
-          + "  \"year\":\"年份，必填\",\n"
-          + "  \"quarter\":\"季度\"\n"
+          + "  \"countYear\":\"年份，必填\",\n"
+          + "  \"countQuarter\":\"季度\"\n"
           + "  \n"
           + "}") @RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
@@ -407,8 +407,8 @@ public class WaterUsePayInfoController {
   @ApiOperation(value = "导出计划用水户超计划情况汇总表")
   @RequestMapping(value = "exportPayInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse exportPayInfo(@ApiParam("{\n"
-      + "        \"year\":\"年份，必填\",\n"
-      + "       \"quarter\":\"季度\"\n"
+      + "        \"countYear\":\"年份，必填\",\n"
+      + "       \"countQuarter\":\"季度\"\n"
       + "}") @RequestHeader("token") String token,
       @RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
@@ -436,8 +436,8 @@ public class WaterUsePayInfoController {
   @RequestMapping(value = "exportBankInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse exportBankInfo(@RequestHeader("token") String token,
       @ApiParam("{\n"
-          + "  \"year\":\"年份，必填\",\n"
-          + "  \"quarter\":\"季度\"\n"
+          + "  \"countYear\":\"年份，必填\",\n"
+          + "  \"countQuarter\":\"季度\"\n"
           + "  \n"
           + "}") @RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
@@ -465,8 +465,8 @@ public class WaterUsePayInfoController {
   @RequestMapping(value = "exportOtherBankInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ApiResponse exportOtherBankInfo(@RequestHeader("token") String token,
       @ApiParam("{\n"
-          + "  \"year\":\"年份，必填\",\n"
-          + "  \"quarter\":\"季度\"\n"
+          + "  \"countYear\":\"年份，必填\",\n"
+          + "  \"countQuarter\":\"季度\"\n"
           + "  \n"
           + "}") @RequestBody JSONObject jsonObject, HttpServletRequest request,
       HttpServletResponse response) {
