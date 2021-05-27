@@ -1113,6 +1113,7 @@
     unit_code_type
     from t_w_use_water_unit
     where node_code=#{nodeCode}
+    and deleted = '0'
     GROUP BY unit_code_type order by unit_code_type
   </select>
 
