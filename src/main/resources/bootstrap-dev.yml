@@ -88,11 +88,11 @@ file:
   fileUploadRootPath: D:/
   #附件上传目录
   #    fileUploadPath : Desktop/file
-  fileUploadPath : upload/
+  fileUploadPath : /ftp/upload/
 #  #导入错误日志文件目录
 #  importErrorFilePath : importError
   #文件上下文
-  preViewRealPath: http://120.79.162.253:8073
+  preViewRealPath: http://120.79.162.253:8081
 waterSms:
 #waterSms转发ip
   transIp: http://120.79.162.253:8073
@@ -121,13 +121,13 @@ waterOperator:
 #ftp相关配置
 Ftp:
   #服务ip
-  ip: 10.11.18.8
+  ip: 172.18.205.191
   #端口
   port: 21
   #用户名
-  username: yu
+  username: ftp1
   #密码
-  password: 123456
+  password: zjtc321!
 
 #节水中心nodeCode
 city:
