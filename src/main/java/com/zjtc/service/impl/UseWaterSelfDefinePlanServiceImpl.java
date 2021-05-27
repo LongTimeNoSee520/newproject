@@ -394,7 +394,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       try {
 //        短信通知用水单位
         smsService
-            .sendMsgToUnit(user, useWaterSelfDefinePlan.getUnitCode(), messageContent, "计划通知");
+            .sendMsgToUnit(user,useWaterSelfDefinePlan.getUnitName(), useWaterSelfDefinePlan.getUnitCode(), messageContent, "计划通知");
 //      webSocket消息推送
         webSocketUtil.pushPublicNews(useWaterSelfDefinePlan.getNodeCode(),
             useWaterSelfDefinePlan.getUnitCode());

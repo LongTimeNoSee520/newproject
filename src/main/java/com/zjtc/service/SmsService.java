@@ -15,7 +15,7 @@ public interface SmsService {
   /**
    * 单位
    */
-  void sendMsgToUnit(User user, String unitCode, String messageContent, String messageType)
+  void sendMsgToUnit(User user,String unitName, String unitCode, String messageContent, String messageType)
       throws Exception;
 
   /**

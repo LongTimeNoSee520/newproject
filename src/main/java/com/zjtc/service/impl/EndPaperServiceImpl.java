@@ -291,7 +291,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
             waterPlanAddWX.setAddNumber(addNumber);
             useWaterPlanAddWXService.update(waterPlanAddWX, user);
             /**异步发通知、短信、webSocket*/
-            commonService.handleResultMessage(user,endPaper.getNodeCode(),messageContent1,endPaper.getUnitCode());
+            commonService.handleResultMessage(user,endPaper.getNodeCode(),messageContent1,endPaper.getUnitCode(),endPaper.getUnitName());
           }
         }
         /**新增通知给发起人*/
@@ -331,7 +331,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
                   + firstWater + "方，第二水量" + secondWater + "方)]审核未通过。";
         }
         /**异步新增消息、发送短信、webSocket推送给单位*/
-        commonService.handleMessageToUnit(user,endPaper.getUnitCode(),messageContent,endPaper.getNodeCode());
+        commonService.handleMessageToUnit(user,endPaper.getUnitName(),endPaper.getUnitCode(),messageContent,endPaper.getNodeCode());
       }
       //修改待办状态
       todoService.edit(endPaper.getId(), user.getNodeCode(), user.getId());
@@ -577,7 +577,7 @@ public class EndPaperServiceImpl extends ServiceImpl<EndPaperMapper, EndPaper> i
             .getFirstQuarter() + "方,二季度"
             + useWaterPlan.getSecondQuarter() + "方,三季度" + useWaterPlan.getThirdQuarter() + "方,四季度"
             + useWaterPlan.getFourthQuarter() + "方。";
-    commonService.handleExecuteMessage(user,useWaterPlan.getUnitCode(),messageContent,useWaterPlan.getNodeCode());
+    commonService.handleExecuteMessage(user,useWaterPlan.getUnitName(),useWaterPlan.getUnitCode(),messageContent,useWaterPlan.getNodeCode());
     /**日志*/
     systemLogService.logInsert(user, "办结单管理", "执行", null);
     return response;

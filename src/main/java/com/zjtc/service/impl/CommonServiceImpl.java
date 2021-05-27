@@ -218,14 +218,14 @@ public class CommonServiceImpl implements CommonService{
 
   @Override
   @Async("asyncExecutor")
-  public void handleResultMessage(User user, String nodeCode, String messageContent, String unitCode)
+  public void handleResultMessage(User user, String nodeCode, String messageContent, String unitCode,String unitName)
   {
     try {
       /**新增通知给用水单位*/
       messageService.messageToUnit(unitCode, messageContent,
           AuditConstants.END_PAPER_TODO_TITLE);
       /**短信通知给用水单位*/
-      smsService.sendMsgToUnit(user, unitCode, messageContent, "调整结果通知");
+      smsService.sendMsgToUnit(user,unitName, unitCode, messageContent, "调整结果通知");
       // webSocket推送到公共服务端
       webSocketUtil.pushPublicNews(nodeCode,unitCode);
     }catch (Exception e){
@@ -252,12 +252,12 @@ public class CommonServiceImpl implements CommonService{
 
   @Override
   @Async("asyncExecutor")
-  public void handleMessageToUnit(User user,String unitCode, String messageContent, String nodeCode)
+  public void handleMessageToUnit(User user,String unitName,String unitCode, String messageContent, String nodeCode)
   {
     try{
       messageService.messageToUnit(unitCode, messageContent,AuditConstants.END_PAPER_TODO_TITLE);
       /**短信通知给用水单位*/
-      smsService.sendMsgToUnit(user, unitCode, messageContent, "计划通知");
+      smsService.sendMsgToUnit(user,unitName, unitCode, messageContent, "计划通知");
       // webSocket推送到公共服务端
       webSocketUtil.pushPublicNews(nodeCode,unitCode);
     }catch (Exception e){
@@ -267,12 +267,12 @@ public class CommonServiceImpl implements CommonService{
 
   @Override
   @Async("asyncExecutor")
-  public void handleExecuteMessage(User user,String unitCode, String messageContent, String nodeCode) {
+  public void handleExecuteMessage(User user,String unitName,String unitCode, String messageContent, String nodeCode) {
     try {
       messageService.messageToUnit(unitCode, messageContent,
           AuditConstants.END_PAPER_TODO_TITLE);
       /**向用水单位发送短信*/
-      smsService.sendMsgToUnit(user, unitCode, messageContent, "计划通知");
+      smsService.sendMsgToUnit(user,unitName, unitCode, messageContent, "计划通知");
       // webSocket向公共服务平台推送消息
       webSocketUtil.pushPublicNews(nodeCode, unitCode);
     } catch (Exception e) {

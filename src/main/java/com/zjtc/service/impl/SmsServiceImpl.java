@@ -45,14 +45,13 @@ public class SmsServiceImpl implements SmsService {
   private PersonService personService;
 
   @Override
-  public void sendMsgToUnit(User user, String unitCode, String messageContent, String messageType)
+  public void sendMsgToUnit(User user,String unitName, String unitCode, String messageContent, String messageType)
       throws Exception {
     /**通过单位编号查询主要联系人信息*/
     Contacts contacts = contactsService.selectByUnitCode(unitCode);
     this
-        .sendMessages(user, messageContent, contacts.getMobileNumber(), null,
-            contacts.getContacts(),
-            messageType);
+        .sendMessages(user, messageContent, contacts.getMobileNumber(), unitName, unitCode, null,
+            contacts.getContacts(), messageType);
   }
 
   @Override
@@ -60,7 +59,9 @@ public class SmsServiceImpl implements SmsService {
       String messageContent, String messageType) throws Exception {
     /**通过发起人id查询其电话号码*/
     String phoneNumber = personService.selectByUserId(operatorId);
-    this.sendMessages(user, messageContent, phoneNumber, operatorId, operator, "审核通知");
+    //User user, String messageContent, String phoneNumber,String unitName,String unitCode, String receiverId,
+    //    String receiverName, String messageType
+    this.sendMessages(user, messageContent, phoneNumber,null,null, operatorId, operator, "审核通知");
   }
 
   @Override
@@ -112,7 +113,7 @@ public class SmsServiceImpl implements SmsService {
     HttpUtil.doPost(token, ipPort + sendUrl, postJson.toJSONString());
   }
 
-  private void sendMessages(User user, String messageContent, String phoneNumber, String receiverId,
+  private void sendMessages(User user, String messageContent, String phoneNumber,String unitName,String unitCode, String receiverId,
       String receiverName, String messageType) throws Exception {
     JSONObject jsonObject = new JSONObject();
     String publicKey = jwtUtil.getPublicKey();
@@ -127,6 +128,12 @@ public class SmsServiceImpl implements SmsService {
     }
     sendToInfo.put("receiverName", receiverName);
     sendToInfo.put("phoneNumber", phoneNumber);
+    if (StringUtils.isNotBlank(unitCode)) {
+      sendToInfo.put("unitCode", unitCode);
+    }
+    if (StringUtils.isNotBlank(unitName)) {
+    sendToInfo.put("unitName", unitName);
+    }
     sendTo.add(sendToInfo);
     jsonObject.put("sendTo", sendTo);
     JSONArray msgList = new JSONArray();

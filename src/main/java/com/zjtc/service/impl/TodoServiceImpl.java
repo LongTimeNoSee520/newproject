@@ -136,7 +136,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         messageService.messageToUnit(endPaper.getUnitCode(), passContent,
             AuditConstants.END_PAPER_TODO_TITLE);
         /**短信通知给用水单位*/
-        smsService.sendMsgToUnit(user, endPaper.getUnitCode(), passContent, "计划通知");
+        smsService.sendMsgToUnit(user,endPaper.getUnitName(), endPaper.getUnitCode(), passContent, "计划通知");
         // webSocket推送到公共服务端
         webSocketUtil.pushPublicNews(endPaper.getNodeCode(),endPaper.getUnitCode());
       }
