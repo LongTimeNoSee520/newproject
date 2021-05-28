@@ -34,4 +34,6 @@ public interface FlowProcessMapper extends BaseMapper<FlowProcess> {
 
   List<FlowProcess> queryPrintAuditData(@Param("businessId") String businessId,
       @Param("nodeCode") String nodeCode);
+
+  Map<String,Object> smsAudit(String nodeCode);
 }

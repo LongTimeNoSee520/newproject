@@ -97,6 +97,7 @@ waterSms:
 #waterSms转发ip
   transIp: http://120.79.162.253:8073
   sendUrl: /water/sms/smsManage/sendMessages
+  commitUrl: /water/sms/smsManage/commits
 
 waterReport:
   reportUrl: /water/service/todo/report

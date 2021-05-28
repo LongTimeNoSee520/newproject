@@ -69,4 +69,10 @@ public interface FlowProcessService extends IService<FlowProcess> {
    * @param businessId,nodeCode
    */
   List<FlowProcess> queryPrintAuditData(String businessId, String nodeCode);
+
+  /**
+   * 查询短信第一环节审核人(取第一个)
+   * @param nodeCode
+   */
+  Map<String,Object> smsAudit(String nodeCode);
 }

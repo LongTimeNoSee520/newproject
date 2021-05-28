@@ -142,4 +142,9 @@ public class FlowProcessServiceImpl extends ServiceImpl<FlowProcessMapper, FlowP
   public List<FlowProcess> queryPrintAuditData(String businessId, String nodeCode) {
     return this.baseMapper.queryPrintAuditData(businessId,nodeCode);
   }
+
+  @Override
+  public Map<String,Object> smsAudit(String nodeCode) {
+    return this.baseMapper.smsAudit(nodeCode);
+  }
 }

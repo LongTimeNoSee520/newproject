@@ -175,4 +175,36 @@
     )as t2 on t1.create_time=t2.create_time and t1.sort=t2.sort
     order by t1.sort
   </select>
+
+  <select id="smsAudit" resultType="java.util.LinkedHashMap">
+   SELECT top 1
+        t1.userId,
+        t1.username
+      FROM
+        (
+      SELECT
+        id AS userRoleRefId,
+        user_id AS userId,
+        user_name AS username,
+        role_name,
+        rank
+      FROM
+        t_user_role_ref
+      WHERE
+        role_id = (
+      SELECT
+        top 1 flow_node_role_id AS role_id
+      FROM
+        t_flow_node
+      WHERE
+        flow_id = ( SELECT id FROM t_flow WHERE node_code = #{nodeCode} AND flow_code = 'smsFlow' )
+      AND node_code = #{nodeCode}
+      ORDER BY
+        flow_sort ASC
+        )
+        ) t1
+        inner JOIN ( SELECT id, org_id FROM t_user  where node_code=#{nodeCode}) t2 ON t1.userId = t2.id
+      ORDER BY
+        t1.rank ASC
+  </select>
 </mapper>

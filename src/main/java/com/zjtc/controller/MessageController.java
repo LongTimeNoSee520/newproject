@@ -75,7 +75,7 @@ public class MessageController {
       response.setData(result);
     } catch (Exception e) {
       response.setCode(500);
-      response.setMessage("用水量分页查询异常");
+      response.setMessage("通知信息查询异常");
       log.error("查询错误,errMsg==={}", e.getMessage());
       e.printStackTrace();
     }

@@ -6,14 +6,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.zjtc.base.constant.SmsConstants;
 import com.zjtc.base.util.HttpUtil;
 import com.zjtc.base.util.JWTUtil;
+import com.zjtc.mapper.waterSys.FlowProcessMapper;
 import com.zjtc.model.Contacts;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.SendListVO;
 import com.zjtc.service.ContactsService;
+import com.zjtc.service.FlowProcessService;
 import com.zjtc.service.PersonService;
 import com.zjtc.service.SmsService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +38,20 @@ public class SmsServiceImpl implements SmsService {
 
   @Value("${waterSms.transIp}")
   private String ipPort;
-
+ //直接发送短信的接口url
   @Value("${waterSms.sendUrl}")
   private String sendUrl;
+  //短信提交审核的接口url
+  @Value("${waterSms.commitUrl}")
+  private  String commitUrl;
+
   @Autowired
   private ContactsService contactsService;
 
   @Autowired
   private PersonService personService;
+  @Autowired
+  private FlowProcessService flowProcessService;
 
   @Override
   public void sendMsgToUnit(User user,String unitName, String unitCode, String messageContent, String messageType)
@@ -107,10 +116,19 @@ public class SmsServiceImpl implements SmsService {
       sendInfoList.add(sendInfo);
     }
     JSONObject postJson = new JSONObject();
+    /**查询短信审核人员(取第一个人)*/
+   Map<String,Object> map = flowProcessService.smsAudit(user.getNodeCode());
+   if (null != map){
+     postJson.put("auditorName",map.get("username"));
+     postJson.put("auditorId",map.get("userId"));
+   }
     postJson.put("msgList",sendInfoList);
     String publicKey = jwtUtil.getPublicKey();
     String token = jwtUtil.creatToken(user, publicKey);
-    HttpUtil.doPost(token, ipPort + sendUrl, postJson.toJSONString());
+    JSONObject post = JSONObject.parseObject(HttpUtil.doPost(token, ipPort + commitUrl, postJson.toJSONString()))  ;
+    if (null == post || 500 == post.getInteger("code") ) {
+      log.error("批量提交短信审核失败,发送列表的信息为==={}" + sendInfoList );
+    }
   }
 
   private void sendMessages(User user, String messageContent, String phoneNumber,String unitName,String unitCode, String receiverId,
