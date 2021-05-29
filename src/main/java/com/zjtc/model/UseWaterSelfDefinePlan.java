@@ -33,7 +33,7 @@ public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
    *
    */
   @ApiModelProperty("主键")
-  @TableId(value = "id",  type = IdType.UUID)
+  @TableId(value = "id", type = IdType.UUID)
   private String id;
   /**
    *
@@ -104,7 +104,7 @@ public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
   /**
    *
    */
-  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
   @ApiModelProperty("创建时间")
   @TableField(value = "create_time", exist = true, fill = FieldFill.INSERT)
   private Date createTime;
@@ -117,7 +117,7 @@ public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
   /**
    *
    */
-  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
   @ApiModelProperty("审核时间")
   @TableField(value = "audit_time", exist = true)
   private Date auditTime;
@@ -148,7 +148,7 @@ public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
   /**
    *
    */
-  @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
   @ApiModelProperty("执行时间")
   @TableField(value = "execute_time", exist = true)
   private Date executeTime;
@@ -171,6 +171,14 @@ public class UseWaterSelfDefinePlan extends Model<UseWaterSelfDefinePlan> {
   @TableField(value = "execute_result", exist = true)
   private String executeResult;
 
+
+  @ApiModelProperty("是否打印")
+  @TableField(value = "printed", exist = true)
+  private String printed;
+
+  @ApiModelProperty("自平数据确认")
+  @TableField(value = "data_sure", exist = true)
+  private String dataSure;
 
 //  @ApiModelProperty("状态(1:初始值,2:待确认,3:已确认,4:执行")
 //  @TableField(value = "status", exist = true)

@@ -169,6 +169,7 @@ public class UseWaterOriginalPlanServiceImpl extends
       //自平表需要的数据
       UseWaterSelfDefinePlan useWaterSelfDefinePlan = new UseWaterSelfDefinePlan();
       useWaterSelfDefinePlan.setCreateTime(new Date());
+
       useWaterSelfDefinePlan.setAuditStatus("3");
       useWaterSelfDefinePlan.setNodeCode(user.getNodeCode());
       useWaterSelfDefinePlan.setUseWaterUnitId(useWaterPlan.getUseWaterUnitId());
@@ -182,6 +183,10 @@ public class UseWaterOriginalPlanServiceImpl extends
       useWaterSelfDefinePlan.setThirdQuarter(useWaterPlan.getThirdQuarter());
       useWaterSelfDefinePlan.setFourthQuarter(useWaterPlan.getFourthQuarter());
       useWaterSelfDefinePlan.setExecuted("0");
+      //是否打印
+      useWaterSelfDefinePlan.setPrinted("0");
+      //是否自平确认
+      useWaterSelfDefinePlan.setDataSure("0");
       selfDefinePlanList.add(useWaterSelfDefinePlan);
       useWaterPlanList.add(useWaterPlan);
       //通知需要的单位编号
