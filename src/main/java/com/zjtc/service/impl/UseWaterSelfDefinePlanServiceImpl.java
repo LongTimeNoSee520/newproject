@@ -201,6 +201,9 @@ public class UseWaterSelfDefinePlanServiceImpl extends
     }
     String messageContent = null;
     if ("1".equals(auditStatus)) {
+      //打回，重新自平
+      useWaterSelfDefinePlan.setDataSure("0");
+      useWaterSelfDefinePlan.setPrinted("0");
 //      消息推送用水单位
       messageContent =
           "用水单位" + useWaterSelfDefinePlan.getUnitCode() +
