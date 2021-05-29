@@ -71,8 +71,9 @@ public class UseWaterSelfDefinePlanController {
       if (null != jsonObject.getString("nodeCode")) {
         nodeCode = jsonObject.getString("nodeCode");
         response = tWUseWaterSelfDefinePlanService.queryPage(jsonObject, nodeCode, user.getId());
-      }else{
-        response = tWUseWaterSelfDefinePlanService.queryPage(jsonObject, user.getNodeCode(), user.getId());
+      } else {
+        response = tWUseWaterSelfDefinePlanService
+            .queryPage(jsonObject, user.getNodeCode(), user.getId());
       }
       return response;
     } catch (Exception e) {
@@ -129,11 +130,27 @@ public class UseWaterSelfDefinePlanController {
     String nextNodeId = jsonObject.getString("nextNodeId");
     try {
       response = tWUseWaterSelfDefinePlanService
-          .audit(user,id, user.getUsername(), user.getId(),auditStatus, auditResult,auditorName,auditorId,businessJson,detailConfig,nextNodeId);
+          .audit(user, id, user.getUsername(), user.getId(), auditStatus, auditResult, auditorName,
+              auditorId, businessJson, detailConfig, nextNodeId);
       return response;
     } catch (Exception e) {
       log.error("审核自平申请异常==" + e.getMessage());
       e.printStackTrace();
+    }
+    return response;
+  }
+
+  @ResponseBody
+  @ApiOperation(value = "查询所有可审核的自平申请")
+  @RequestMapping(value = "selectAllAudit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ApiResponse selectAllAudit(@RequestHeader("token") String token
+  ) {
+    ApiResponse response = new ApiResponse();
+    User user = jwtUtil.getUserByToken(token);
+    if (null != user) {
+      response.setData(tWUseWaterSelfDefinePlanService.selectAllAudit(user));
+    } else {
+      response.recordError("系统异常");
     }
     return response;
   }
@@ -155,7 +172,8 @@ public class UseWaterSelfDefinePlanController {
 //  执行的数据id
     List<String> list = jsonObject.getJSONArray("ids").toJavaList(String.class);
     try {
-      response = tWUseWaterSelfDefinePlanService.execute(user,list, user.getUsername(), user.getId(),user.getNodeCode());
+      response = tWUseWaterSelfDefinePlanService
+          .execute(user, list, user.getUsername(), user.getId(), user.getNodeCode());
       return response;
     } catch (Exception e) {
       log.error("执行自平申请异常==" + e.getMessage());

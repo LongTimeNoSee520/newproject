@@ -7,6 +7,7 @@ import com.zjtc.base.response.ApiResponse;
 import com.zjtc.model.UseWaterSelfDefinePlan;
 import com.zjtc.model.User;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TWUseWaterSelfDefinePlan的服务接口 用水自平计划表
@@ -54,6 +55,5 @@ public interface UseWaterSelfDefinePlanService extends IService<UseWaterSelfDefi
    */
   ApiResponse selectByUnitCode(List<String> unitCodes);
 
-
-
+  List<Map<String ,Object>> selectAllAudit(User user);
 }

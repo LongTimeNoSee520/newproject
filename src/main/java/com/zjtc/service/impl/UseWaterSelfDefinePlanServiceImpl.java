@@ -14,6 +14,7 @@ import com.zjtc.model.UseWaterSelfDefinePlan;
 import com.zjtc.model.User;
 import com.zjtc.model.vo.FileVO;
 import com.zjtc.model.vo.UseWaterSelfDefinePlanVO;
+import com.zjtc.service.FileService;
 import com.zjtc.service.MessageService;
 import com.zjtc.service.PersonService;
 import com.zjtc.service.SmsService;
@@ -53,6 +54,9 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 
   @Autowired
   private UseWaterPlanService useWaterPlanService;
+
+  @Autowired
+  private FileService fileService;
 
   @Autowired
   private MessageService messageService;
@@ -443,5 +447,17 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       response.setCode(501);
       return response;
     }
+  }
+
+  @Override
+  public List<Map<String, Object>> selectAllAudit(User user) {
+    List<Map<String, Object>> result= baseMapper.selectAllAudit(user.getId(),user.getNodeCode());
+    if(!result.isEmpty()){
+      for(Map map: result){
+        String id= map.get("id").toString();
+         map.put("url",fileService.findByBusinessId(id));
+      }
+    }
+    return result;
   }
 }

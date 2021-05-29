@@ -60,6 +60,7 @@ public class UseWaterOriginalPlanServiceImpl extends
     List<UseWaterOriginalPlan> entity = jsonObject.getJSONArray("data")
         .toJavaList(UseWaterOriginalPlan.class);
     for (UseWaterOriginalPlan item : entity) {
+      item.setCreateTime(new Date());
       //已编制的数据不能再编制
       if (item.getPlaned().equals("1")) {
         apiResponse.recordError("当前保存的数据中存在已编制数据");
@@ -73,7 +74,8 @@ public class UseWaterOriginalPlanServiceImpl extends
         break;
       }
       /**如果是新增户，并且本年计划为空*/
-      if ("1".equals(item.getAdded()) && null == item.getCurYearPlan()) {
+      if ("1".equals(item.getAdded()) && (null == item.getCurYearPlan() || "0"
+          .equals(item.getCurYearPlan()))) {
         //本年计划等于下年终计划(基础)
         item.setCurYearPlan(item.getNextYearBaseStartPlan());
       }
@@ -118,7 +120,8 @@ public class UseWaterOriginalPlanServiceImpl extends
         break;
       }
       /**如果是新增户，并且本年计划为空*/
-      if ("1".equals(item.getAdded()) && null == item.getCurYearPlan()) {
+      if ("1".equals(item.getAdded()) && (null == item.getCurYearPlan() || "0"
+          .equals(item.getCurYearPlan()))) {
         //本年计划等于下年终计划(基础)
         item.setCurYearPlan(item.getNextYearBaseStartPlan());
       }
@@ -338,11 +341,11 @@ public class UseWaterOriginalPlanServiceImpl extends
       //计算当前年前三季度(当前年中间俩进度，下一年编制是2021，则今年就是2020)
       threeWaterMonth = "april_count + may_count + june_count + july_count + august_count + september_count";
     }
-    long start= System.currentTimeMillis();
+    long start = System.currentTimeMillis();
     //初始化的数据
     list = baseMapper
         .initPlanNew(year, userId, nodeCode, ParamOne, ParamTwo, threeWaterMonth, fourWaterMonth);
-    long end= System.currentTimeMillis()-start;
+    long end = System.currentTimeMillis() - start;
     System.out.println(end);
     /**初始化基础算法*/
     Algorithm algorithmBase = algorithmService.queryAlgorithm(nodeCode, "1");

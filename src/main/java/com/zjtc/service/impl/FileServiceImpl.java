@@ -13,6 +13,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,12 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
 
   @Autowired
   FtpUtil ftpUtil;
+
+  /**
+   * 上下文
+   */
+  @Value("${file.preViewRealPath}")
+  private String preViewRealPath;
 
   @Override
   public String uploadFile(MultipartFile file) {
@@ -104,6 +111,15 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
   public List<FileVO> findByIds(List<String> ids, String path) {
     if (null != ids && ids.size() > 0) {
       return this.baseMapper.findByIds(ids, path);
+    }
+    return null;
+  }
+
+  @Override
+  public String findByBusinessId(String businessId) {
+    String filePath=baseMapper.findByBusinessId(businessId);
+    if(StringUtils.isNotBlank(filePath)){
+      return preViewRealPath+filePath;
     }
     return null;
   }

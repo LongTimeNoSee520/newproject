@@ -6,6 +6,7 @@ import com.zjtc.model.UseWaterSelfDefinePlan;
 import com.zjtc.model.vo.UseWaterSelfDefinePlanVO;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -153,4 +154,11 @@ public interface UseWaterSelfDefinePlanMapper extends BaseMapper<UseWaterSelfDef
    * @return
    */
   UseWaterSelfDefinePlan selectByUnitCode(@Param("unitCode") String unitCode);
+
+  /**
+   * 查询所有可审核的自平记录
+   * @param
+   * @return
+   */
+  List<Map<String ,Object>> selectAllAudit(@Param("userId") String id,@Param("nodeCode")String nodeCode);
 }

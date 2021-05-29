@@ -25,4 +25,15 @@
 			#{item}
 		</foreach>
 	</select>
+
+	<select id="findByBusinessId" resultType="java.lang.String">
+		select
+		top 1
+		file_path
+		from t_file
+		where deleted='0'
+		<if test="null !=businessId">
+		and business_id=#{businessId}
+		</if>
+	</select>
 </mapper>
