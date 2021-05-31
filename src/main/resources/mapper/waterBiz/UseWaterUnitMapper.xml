@@ -671,10 +671,21 @@
   </select>
   <select id="selectUseWaterQuota" resultMap="BaseResultMap_UseWaterQuota">
     SELECT
-    id,industry,sub_industry,product,quota_unit,quota_value,amount,advance_value,common_value,quota_rate,
+    a.id,industry,sub_industry,product,b.quota_unit,b.quota_value,amount,b.advance_value,b.common_value,b.quota_rate,
     (select industry_name as subIndustryName from t_w_quota_info where id=a.sub_industry)as subIndustryName,
     (select industry_name  as productName from t_w_quota_info where id=a.product) as productName
     FROM t_w_use_water_quota as a
+    left join (
+    select
+    id,
+    industry_name,
+    quota_unit,
+    quota_value,
+    advance_value,
+    common_value,
+    quota_rate
+    from t_w_quota_info
+    ) b on a.product=b.id
     WHERE use_water_unit_id = #{id}
     ORDER BY create_time desc
   </select>
