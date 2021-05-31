@@ -178,7 +178,7 @@
     FROM
     (
     SELECT
-    row_number () OVER ( ORDER BY [planYear] DESC,SUBSTRING(unitCode,5,2) asc) AS rownumber,
+    row_number () OVER ( ORDER BY CAST(unitCode as int) asc ,[planYear] DESC) AS rownumber,
     *
     FROM
     (
