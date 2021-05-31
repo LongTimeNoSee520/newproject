@@ -173,6 +173,12 @@ public class UseWaterSelfDefinePlanServiceImpl extends
           .equals(useWaterSelfDefinePlanVO.getExecuted())) {
         useWaterSelfDefinePlanVO.setAuditOperationStatus(true);
       }
+      String id = useWaterSelfDefinePlanVO.getId();
+      File file = fileService.findByBusinessId(id);
+      if(null !=file.getFilePath()){
+        useWaterSelfDefinePlanVO.setFilePath(preViewRealPath+ file.getFilePath());
+        useWaterSelfDefinePlanVO.setFileName(file.getFileName());
+      }
     }
     map.put("total", total);
     map.put("size", pageSize);
@@ -461,7 +467,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       for (Map map : result) {
         String id = map.get("id").toString();
         File file = fileService.findByBusinessId(id);
-        if(null !=file){
+        if(null !=file.getFilePath()){
           map.put("filePath",preViewRealPath+ file.getFilePath());
           map.put("fileName", file.getFileName());
         }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.zjtc.model.File;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -190,6 +189,12 @@ public class UseWaterSelfDefinePlanVO extends Model<UseWaterSelfDefinePlanVO> {
 
   @ApiModelProperty("审核状态,用作前端验证是否可审核")
   private boolean auditOperationStatus = false;
+
+  @ApiModelProperty("预览路径")
+  private String filePath;
+
+  @ApiModelProperty("预览路径")
+  private String fileName;
 
   /**
    * 实例化
