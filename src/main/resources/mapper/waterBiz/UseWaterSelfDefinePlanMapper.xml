@@ -391,7 +391,6 @@
     from t_file
     where business_id = #{id}
     and deleted='0'
-    and node_code = #{nodeCode}
     order by create_time desc
   </select>
 
@@ -545,7 +544,8 @@
   <select id="selectAllAudit" resultType="java.util.LinkedHashMap">
     select
     id,
-    url=null
+    filePath=null,
+    filePath=null
     from t_w_use_water_self_define_plan
     <!--待审核-->
     where audit_status='0'

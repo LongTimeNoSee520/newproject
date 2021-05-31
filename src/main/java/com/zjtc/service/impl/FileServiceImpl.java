@@ -116,12 +116,16 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
   }
 
   @Override
-  public String findByBusinessId(String businessId) {
-    String filePath=baseMapper.findByBusinessId(businessId);
-    if(StringUtils.isNotBlank(filePath)){
-      return preViewRealPath+filePath;
+  public File findByBusinessId(String businessId) {
+    QueryWrapper wrapper = new QueryWrapper();
+    wrapper.eq("business_id",businessId);
+    wrapper.orderByDesc("create_time");
+    File file=new File();
+    List<File> result=this.list(wrapper);
+    if(! result.isEmpty()){
+      file =result.get(0);
     }
-    return null;
+   return file;
   }
 
 

@@ -8,6 +8,7 @@ import com.zjtc.base.constant.AuditConstants;
 import com.zjtc.base.response.ApiResponse;
 import com.zjtc.base.util.WebSocketUtil;
 import com.zjtc.mapper.waterBiz.UseWaterSelfDefinePlanMapper;
+import com.zjtc.model.File;
 import com.zjtc.model.UseWaterPlan;
 import com.zjtc.model.UseWaterPlanAdd;
 import com.zjtc.model.UseWaterSelfDefinePlan;
@@ -258,7 +259,7 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       todoService.edit(id, user.getNodeCode(), user.getId());
       systemLogService.logInsert(user, "用水计划自平", "用水计划自平审核通过", "");
 //        //      取消待办
-        todoService.editByBusinessId(id);
+      todoService.editByBusinessId(id);
 
       return response;
     } else {
@@ -401,7 +402,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
       try {
 //        短信通知用水单位
         smsService
-            .sendMsgToUnit(user,useWaterSelfDefinePlan.getUnitName(), useWaterSelfDefinePlan.getUnitCode(), messageContent, "计划通知");
+            .sendMsgToUnit(user, useWaterSelfDefinePlan.getUnitName(),
+                useWaterSelfDefinePlan.getUnitCode(), messageContent, "计划通知");
 //      webSocket消息推送
         webSocketUtil.pushPublicNews(useWaterSelfDefinePlan.getNodeCode(),
             useWaterSelfDefinePlan.getUnitCode());
@@ -422,8 +424,8 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 //      }
 ////      取消待办
       for (String id : ids) {
-          todoService.editByBusinessId(id);
-        }
+        todoService.editByBusinessId(id);
+      }
 
       return response;
     } else {
@@ -454,11 +456,15 @@ public class UseWaterSelfDefinePlanServiceImpl extends
 
   @Override
   public List<Map<String, Object>> selectAllAudit(User user) {
-    List<Map<String, Object>> result= baseMapper.selectAllAudit(user.getId(),user.getNodeCode());
-    if(!result.isEmpty()){
-      for(Map map: result){
-        String id= map.get("id").toString();
-         map.put("url",fileService.findByBusinessId(id));
+    List<Map<String, Object>> result = baseMapper.selectAllAudit(user.getId(), user.getNodeCode());
+    if (!result.isEmpty()) {
+      for (Map map : result) {
+        String id = map.get("id").toString();
+        File file = fileService.findByBusinessId(id);
+        if(null !=file){
+          map.put("filePath",preViewRealPath+ file.getFilePath());
+          map.put("fileName", file.getFileName());
+        }
       }
     }
     return result;

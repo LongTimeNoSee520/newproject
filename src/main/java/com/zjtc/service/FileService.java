@@ -59,5 +59,5 @@ public interface FileService extends IService<File> {
    *
    * @param businessId 业务id
    */
-  String  findByBusinessId(String businessId);
+  File findByBusinessId(String businessId);
 }
